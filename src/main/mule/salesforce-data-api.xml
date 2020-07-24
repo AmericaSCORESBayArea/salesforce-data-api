@@ -206,7 +206,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
             </ee:variables>
         </ee:transform>
         <salesforce:query doc:name="Query" doc:id="30344094-f0f1-44d4-bdc9-9897cbc2a741" config-ref="Salesforce_Config">
-			<salesforce:salesforce-query ><![CDATA[SELECT Id,Name, Total_Number_of_Players__c, (SELECT Id, Name, Session_Topic__c, Session_Date__c From Sessions__r WHERE Session_Date__c = ':date'),(SELECT Id,Contact__r.Name,Contact__c From Enrollments__r) FROM Team_Season__c WHERE (Coach_Soccer__c = ':coachid' OR Coach_Writing__c = ':coachid') AND Season_Start_Date__c < ':date' AND Season_End_Date__c > ':date']]></salesforce:salesforce-query>
+			<salesforce:salesforce-query ><![CDATA[SELECT Id,Name, Total_Number_of_Players__c, (SELECT Id, Name, Session_Topic__c, Session_Date__c From Sessions__r WHERE Session_Date__c = :date),(SELECT Id,Contact__r.Name,Contact__c From Enrollments__r) FROM Team_Season__c WHERE (Coach_Soccer__c = ':coachid' OR Coach_Writing__c = ':coachid') AND Season_Start_Date__c < :date AND Season_End_Date__c > :date]]></salesforce:salesforce-query>
 			<salesforce:parameters ><![CDATA[#[output application/java
 ---
 {
