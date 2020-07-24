@@ -147,14 +147,6 @@ output application/json
 		<logger level="INFO" doc:name="Log request"
 			doc:id="1ca2fef3-57b9-433a-9b11-4d18746f8931"
 			message="Request received for #[attributes.method] #[attributes.requestPath] - Payload #[payload]" />
-		<ee:transform
-			xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
-			doc:name="Store request path and method">
-			<ee:variables>
-				<ee:set-variable variableName="requestPath"><![CDATA[attributes.requestPath]]></ee:set-variable>
-				<ee:set-variable variableName="method"><![CDATA[attributes.method]]></ee:set-variable>
-			</ee:variables>
-		</ee:transform>
 	</sub-flow>
 	<sub-flow name="exit-flow"
 		doc:id="748c4e8c-e935-4b46-83ec-a963f8551eb9">
@@ -272,8 +264,24 @@ payload map ( payload01 , indexOfPayload01 ) -> {
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-{
-  message: "Error retrieving Team-Seasons"
+payload map ( payload01 , indexOfPayload01 ) -> {
+	Enrollments: payload01.Enrollments__r map ( enrollmentsr , indexOfEnrollmentsr ) -> {
+		EnrollmentId: enrollmentsr.Id,
+		StudentName: enrollmentsr.Contact__r[0],
+		StudentId: enrollmentsr.Contact__c
+	},
+	Sessions: payload01.Sessions__r map ( sessionsr , indexOfSessionsr ) -> {
+		TeamSeasonId: payload01.Id,
+		SessionId: sessionsr.Id,
+		SessionName: sessionsr.Name,
+		SessionDate: sessionsr.Session_Date__c as String,
+		SessionTopic: sessionsr.Session_Topic__c
+	},
+	CoachSoccer: vars.coachId,
+	CoachWriting: vars.coachId,
+	TotalNoOfPlayers: payload01.Total_Number_of_Players__c default 0,
+	TeamSeasonName: payload01.Name default "",
+	TeamSeasonId: (payload01.Id default "") ++ (payload01.Id default "")
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>
