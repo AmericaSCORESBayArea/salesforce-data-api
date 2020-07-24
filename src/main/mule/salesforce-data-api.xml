@@ -222,7 +222,7 @@ output application/json
 payload map ( payload01 , indexOfPayload01 ) -> {
 	Enrollments: payload01.Enrollments__r map ( enrollmentsr , indexOfEnrollmentsr ) -> {
 		EnrollmentId: enrollmentsr.Id,
-		StudentName: enrollmentsr.Contact__r[0],
+		StudentName: enrollmentsr.Contact__r.Name,
 		StudentId: enrollmentsr.Contact__c
 	},
 	Sessions: payload01.Sessions__r map ( sessionsr , indexOfSessionsr ) -> {
