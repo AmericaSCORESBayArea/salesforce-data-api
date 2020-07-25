@@ -8,7 +8,7 @@
         <salesforce:basic-connection username="${sfdc.user}" password="${sfdc.password}" securityToken="${sfdc.token}" url="${sfdc.url}" />
     </salesforce:sfdc-config>
     <configuration-properties doc:name="Configuration properties" doc:id="031c2472-faec-452c-9fa9-b18871f154af" file="properties/qa.properties" />
-	<flow name="salesforce-data-api-main">
+    <flow name="salesforce-data-api-main">
         <http:listener config-ref="salesforce-data-api-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
                 <http:headers>#[vars.outboundHeaders default {}]</http:headers>
@@ -92,51 +92,63 @@ output application/json
 output application/json
 ---
 {message: "Not Implemented"}]]></ee:set-payload>
-					</ee:message>
-					<ee:variables>
-						<ee:set-variable variableName="httpStatus">501
-						</ee:set-variable>
-					</ee:variables>
-				</ee:transform>
-			</on-error-propagate>
-		</error-handler>
-	</flow>
-	<sub-flow name="entry-flow"
-		doc:id="077e2d7c-81f0-4362-a3da-541e9c96751f">
-		<logger level="INFO" doc:name="Log request"
-			doc:id="1ca2fef3-57b9-433a-9b11-4d18746f8931"
-			message="Request received for #[attributes.method] #[attributes.requestPath] - Payload #[payload]" />
-			 <ee:transform doc:name="Store request path and method">
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">501</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+        </error-handler>
+    </flow>
+        <flow name="salesforce-data-api-console">
+        <http:listener config-ref="salesforce-data-api-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="salesforce-data-api-config" />
+        <error-handler>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">404</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+        </error-handler>
+    </flow>
+    <sub-flow name="entry-flow" doc:id="077e2d7c-81f0-4362-a3da-541e9c96751f">
+        <logger level="INFO" doc:name="Log request" doc:id="1ca2fef3-57b9-433a-9b11-4d18746f8931" message="Request received for #[attributes.method] #[attributes.requestPath] - Payload #[payload]" />
+        <ee:transform doc:name="Store request path and method">
             <ee:variables>
                 <ee:set-variable variableName="requestPath"><![CDATA[attributes.requestPath]]></ee:set-variable>
                 <ee:set-variable variableName="method"><![CDATA[attributes.method]]></ee:set-variable>
             </ee:variables>
         </ee:transform>
-	</sub-flow>
-	<sub-flow name="exit-flow"
-		doc:id="748c4e8c-e935-4b46-83ec-a963f8551eb9">
-		<logger level="INFO" doc:name="Log response"
-			doc:id="f07808f1-2396-4154-8ad1-64e2761b6f01"
-			message="Sending response for GET #[vars.requestPath] - #[payload]" />
-
-
-	</sub-flow>
-	<flow
-		name="get:\coach\(coachId)\teamseasons:salesforce-data-api-config">
-		<flow-ref doc:name="entry-flow"
-			doc:id="82b50611-bf96-4408-bc9f-ce11e969853b" name="entry-flow" />
-		<ee:transform
-			xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
-			doc:name="Store URI parameters">
-			<ee:variables>
-				<ee:set-variable variableName="coachId"><![CDATA[attributes.uriParams.'coachId']]></ee:set-variable>
-			</ee:variables>
-		</ee:transform>
-		<salesforce:query doc:name="Query"
-			doc:id="c4a7d532-abc4-4dab-abe9-60d8bfaaa69c"
-			config-ref="Salesforce_Config">
-			<salesforce:salesforce-query><![CDATA[SELECT Anticipated_Players_Enrollment__c,Coach_Soccer__c,Coach_Writing__c,CreatedById,CreatedDate,Date_Last_Session_Attended__c,Id,IsDeleted,LastActivityDate,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate,Name,Number_of_Attendance_Completed__c,Number_of_Attendance_Incomplete__c,Number_of_Students_Absent__c,Number_of_Students_Present__c,Number_of_Team_Seasons__c,Partnership__c,Percent_of_Attendance_Completed__c,Percent_of_Students_Present__c,Schedule__c,School_Site__c,SCORES_Program_Coordinator__c,SCORES_Program_Manager__c,Season_End_Date__c,Season_Start_Date__c,Season__c,SystemModstamp,Team__c,Total_Number_of_Players__c,Total_Number_of_Sessions__c,Coach_Soccer__r.Name,Coach_Writing__r.Name,Team__r.Name,Season__r.Name FROM Team_Season__c WHERE Coach_Soccer__c = ':coachId' OR Coach_Writing__c = ':coachId']]></salesforce:salesforce-query>
-			<salesforce:parameters><![CDATA[#[output application/java
+    </sub-flow>
+    <sub-flow name="exit-flow" doc:id="748c4e8c-e935-4b46-83ec-a963f8551eb9">
+        <logger level="INFO" doc:name="Log response" doc:id="f07808f1-2396-4154-8ad1-64e2761b6f01" message="Sending response for GET #[vars.requestPath] - #[payload]" />
+    </sub-flow>
+    <flow name="get:\coach\(coachId)\teamseasons:salesforce-data-api-config">
+        <flow-ref doc:name="entry-flow" doc:id="82b50611-bf96-4408-bc9f-ce11e969853b" name="entry-flow" />
+        <ee:transform doc:name="Store URI parameters">
+            <ee:variables>
+                <ee:set-variable variableName="coachId"><![CDATA[attributes.uriParams.'coachId']]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <salesforce:query doc:name="Query" doc:id="c4a7d532-abc4-4dab-abe9-60d8bfaaa69c" config-ref="Salesforce_Config">
+            <salesforce:salesforce-query><![CDATA[SELECT Anticipated_Players_Enrollment__c,Coach_Soccer__c,Coach_Writing__c,CreatedById,CreatedDate,Date_Last_Session_Attended__c,Id,IsDeleted,LastActivityDate,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate,Name,Number_of_Attendance_Completed__c,Number_of_Attendance_Incomplete__c,Number_of_Students_Absent__c,Number_of_Students_Present__c,Number_of_Team_Seasons__c,Partnership__c,Percent_of_Attendance_Completed__c,Percent_of_Students_Present__c,Schedule__c,School_Site__c,SCORES_Program_Coordinator__c,SCORES_Program_Manager__c,Season_End_Date__c,Season_Start_Date__c,Season__c,SystemModstamp,Team__c,Total_Number_of_Players__c,Total_Number_of_Sessions__c,Coach_Soccer__r.Name,Coach_Writing__r.Name,Team__r.Name,Season__r.Name FROM Team_Season__c WHERE Coach_Soccer__c = ':coachId' OR Coach_Writing__c = ':coachId']]></salesforce:salesforce-query>
+            <salesforce:parameters><![CDATA[#[output application/java
 ---
 {
 	coachId : vars.coachId
@@ -206,15 +218,15 @@ payload map ( payload01 , indexOfPayload01 ) -> {
             </ee:variables>
         </ee:transform>
         <salesforce:query doc:name="Query" doc:id="30344094-f0f1-44d4-bdc9-9897cbc2a741" config-ref="Salesforce_Config">
-			<salesforce:salesforce-query ><![CDATA[SELECT Id,Name, Total_Number_of_Players__c, (SELECT Id, Name, Session_Topic__c, Session_Date__c From Sessions__r WHERE Session_Date__c = :date),(SELECT Id,Contact__r.Name,Contact__c From Enrollments__r) FROM Team_Season__c WHERE (Coach_Soccer__c = ':coachid' OR Coach_Writing__c = ':coachid') AND Season_Start_Date__c < :date AND Season_End_Date__c > :date]]></salesforce:salesforce-query>
-			<salesforce:parameters ><![CDATA[#[output application/java
+            <salesforce:salesforce-query><![CDATA[SELECT Id,Name, Total_Number_of_Players__c, (SELECT Id, Name, Session_Topic__c, Session_Date__c From Sessions__r WHERE Session_Date__c = :date),(SELECT Id,Contact__r.Name,Contact__c From Enrollments__r) FROM Team_Season__c WHERE (Coach_Soccer__c = ':coachid' OR Coach_Writing__c = ':coachid') AND Season_Start_Date__c < :date AND Season_End_Date__c > :date]]></salesforce:salesforce-query>
+            <salesforce:parameters><![CDATA[#[output application/java
 ---
 {
 	date : attributes.queryParams.date,
 	coachid : vars.coachId
 }]]]></salesforce:parameters>
-		</salesforce:query>
-		<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+        </salesforce:query>
+        <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -283,7 +295,9 @@ payload map ( payload01 , indexOfPayload01 ) -> {
             </ee:variables>
         </ee:transform>
         <!--         <salesforce:invoke-apex-rest-method doc:name="Invoke apex rest method" doc:id="a8f750dc-7861-4c1b-9a3d-1172a58bcc1d" config-ref="Salesforce_Config"/> -->
-        <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+        <ee:transform xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
