@@ -200,9 +200,9 @@ payload map ( payload01 , indexOfPayload01 ) -> {
     </flow>
     <flow name="get:\coach\(coachId)\all:salesforce-data-api-config">
         <flow-ref doc:name="entry-flow" doc:id="a9ae0f9c-dfcc-4a12-be0d-6e329dfbe7b8" name="entry-flow" />
-        <ee:transform doc:name="Store URI parameters">
+        <ee:transform doc:name="Store URI parameters" doc:id="6784dd16-d76e-4fa4-a526-ab370875d02b">
             <ee:variables>
-                <ee:set-variable variableName="coachId">attributes.uriParams.'coachId'</ee:set-variable>
+                <ee:set-variable variableName="coachId"><![CDATA[attributes.uriParams.'coachId']]></ee:set-variable>
             </ee:variables>
         </ee:transform>
         <salesforce:query doc:name="Query" doc:id="30344094-f0f1-44d4-bdc9-9897cbc2a741" config-ref="Salesforce_Config">
@@ -214,7 +214,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	coachid : vars.coachId
 }]]]></salesforce:parameters>
 		</salesforce:query>
-		<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+		<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="2e4560c3-3fd9-4697-9927-098a4fdc0436">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -234,7 +234,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	},
 	CoachSoccer: vars.coachId,
 	CoachWriting: vars.coachId,
-	TotalNoOfPlayers: payload01.Total_Number_of_Players__c default 0,
+	TotalNoOfPlayers: payload01.Total_Number_of_Players__c default 0 as Number,
 	TeamSeasonName: payload01.Name default "",
 	TeamSeasonId: (payload01.Id default "") ++ (payload01.Id default "")
 }]]></ee:set-payload>
