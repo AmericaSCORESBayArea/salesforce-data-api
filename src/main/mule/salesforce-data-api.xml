@@ -287,11 +287,11 @@ payload map ( payload01 , indexOfPayload01 ) -> {
     </flow>
     <flow name="post:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\attendances:application\json:salesforce-data-api-config">
         <flow-ref doc:name="entry-flow" doc:id="319d3747-39e8-43d4-a9c2-9afd1935dd5e" name="entry-flow" />
-        <ee:transform doc:name="Store URI parameters">
+        <ee:transform doc:name="Store URI parameters" doc:id="f711ee79-c3c7-4cdb-af46-28723e067b8f">
             <ee:variables>
-                <ee:set-variable variableName="coachId">attributes.uriParams.'coachId'</ee:set-variable>
-                <ee:set-variable variableName="teamSeasonId">attributes.uriParams.'teamSeasonId'</ee:set-variable>
-                <ee:set-variable variableName="sessionId">attributes.uriParams.'sessionId'</ee:set-variable>
+                <ee:set-variable variableName="coachId"><![CDATA[attributes.uriParams.'coachId']]></ee:set-variable>
+                <ee:set-variable variableName="teamSeasonId"><![CDATA[attributes.uriParams.'teamSeasonId']]></ee:set-variable>
+                <ee:set-variable variableName="sessionId"><![CDATA[attributes.uriParams.'sessionId']]></ee:set-variable>
             </ee:variables>
         </ee:transform>
 		<salesforce:upsert doc:name="Upsert" doc:id="96226f7b-9c73-4b6c-80d2-bce874e4cfb2" config-ref="Salesforce_Config" objectType="Attendance__c" externalIdFieldName="ExternalId__c">
@@ -305,7 +305,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	ExternalId__c: payload01.StudentId ++ '-' ++ vars.sessionId
 }]]]></salesforce:records>
         </salesforce:upsert>
-        <ee:transform xsi:schemaLocation=" http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+        <ee:transform xsi:schemaLocation=" http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="02b48aab-bddb-4054-8872-ac1433da5ffd">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
