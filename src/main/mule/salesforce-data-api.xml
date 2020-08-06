@@ -334,7 +334,7 @@ output application/json
 	sessionid : vars.sessionId
 }]]]></salesforce:parameters>
 		</salesforce:query>
-		<ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+		<ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="cc0b30b2-4bb2-4b3c-bfa8-72626dc8dc02">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
