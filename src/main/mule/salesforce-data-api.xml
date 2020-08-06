@@ -3,7 +3,7 @@
     <http:listener-config name="salesforce-data-api-httpListenerConfig">
         <http:listener-connection host="${http.host}" port="${http.port}" />
     </http:listener-config>
-    <apikit:config name="salesforce-data-api-config" api="resource::6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd:salesforce-data-api:1.0.7:raml:zip:salesforce-data-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <apikit:config name="salesforce-data-api-config" api="resource::6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd:salesforce-data-api:1.0.8:raml:zip:salesforce-data-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="012e809f-72bb-49a5-b21f-28fa4b364ab3">
         <salesforce:basic-connection username="${sfdc.user}" password="${sfdc.password}" securityToken="${sfdc.token}" url="${sfdc.url}" />
     </salesforce:sfdc-config>
@@ -294,7 +294,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
                 <ee:set-variable variableName="sessionId">attributes.uriParams.'sessionId'</ee:set-variable>
             </ee:variables>
         </ee:transform>
-        <salesforce:upsert doc:name="Upsert" doc:id="96226f7b-9c73-4b6c-80d2-bce874e4cfb2" config-ref="Salesforce_Config" objectType="Attendance__c" externalIdFieldName="ExternalId__c">
+		<salesforce:upsert doc:name="Upsert" doc:id="96226f7b-9c73-4b6c-80d2-bce874e4cfb2" config-ref="Salesforce_Config" objectType="Attendance__c" externalIdFieldName="ExternalId__c">
             <salesforce:records><![CDATA[#[%dw 2.0
 output application/java
 ---
@@ -316,5 +316,36 @@ output application/json
             </ee:message>
         </ee:transform>
         <flow-ref doc:name="exit flow" doc:id="32b947ab-3abc-4f72-b6a5-79c51e3e786f" name="exit-flow" />
+    </flow>
+    <flow name="get:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\attendances:salesforce-data-api-config">
+		<flow-ref doc:name="entry-flow" doc:id="fdc4bec9-fecd-4335-980a-0908eaeb9a17" name="entry-flow" />
+		<ee:transform doc:name="Store URI parameters" doc:id="86784c2c-83e8-4a5e-ae64-c5093cbacdbe">
+			<ee:variables>
+				<ee:set-variable variableName="coachId"><![CDATA[attributes.uriParams.'coachId']]></ee:set-variable>
+				<ee:set-variable variableName="teamSeasonId"><![CDATA[attributes.uriParams.'teamSeasonId']]></ee:set-variable>
+				<ee:set-variable variableName="sessionId"><![CDATA[attributes.uriParams.'sessionId']]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<salesforce:query doc:name="Query" doc:id="2c95dcd3-8d07-446c-883b-98f1ae79ed9c" config-ref="Salesforce_Config">
+			<salesforce:salesforce-query><![CDATA[SELECT Contact__r.Name,Contact__c,Attended__c FROM Attendance__c WHERE Session__c = ':sessionid']]></salesforce:salesforce-query>
+			<salesforce:parameters><![CDATA[#[output application/java
+---
+{
+	sessionid : vars.sessionId
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	StudentName: payload01.Contact__r.Name,
+	Attended: payload01.Attended__c default false,
+	StudentId: payload01.Contact__c default ""
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<flow-ref doc:name="exit flow" doc:id="e74de323-770f-4f76-a146-ee79831b8028" name="exit-flow" />
     </flow>
 </mule>
