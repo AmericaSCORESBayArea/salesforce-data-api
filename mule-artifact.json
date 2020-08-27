@@ -1,3 +1,17 @@
 {
-  "minMuleVersion": "4.3.0"
+  "secureProperties": ["runtime.decryptionkey"],
+  "redeploymentEnabled": true,
+  "name": "secure-properties",
+  "minMuleVersion": "4.3.0",
+  "requiredProduct": "MULE_EE",
+  "classLoaderModelLoaderDescriptor": {
+    "id": "mule",
+    "attributes": {
+      "exportedResources": []
+    }
+  },
+  "bundleDescriptorLoader": {
+    "id": "mule",
+    "attributes": {}
+  }
 }
