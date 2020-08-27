@@ -9,7 +9,7 @@
     </salesforce:sfdc-config>
     <configuration-properties doc:name="Configuration properties" doc:id="031c2472-faec-452c-9fa9-b18871f154af" file="properties/qa.properties" />
     <flow name="salesforce-data-api-main">
-        <http:listener config-ref="salesforce-data-api-httpListenerConfig" path="/api/*">
+        <http:listener config-ref="salesforce-data-api-httpListenerConfig" path="/api-internal/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
                 <http:headers>#[vars.outboundHeaders default {}]</http:headers>
             </http:response>
