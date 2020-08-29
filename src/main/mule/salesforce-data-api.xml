@@ -260,7 +260,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	CoachWriting: vars.coachId,
 	TotalNoOfPlayers: payload01.Total_Number_of_Players__c default 0 as Number,
 	TeamSeasonName: payload01.Name default "",
-	TeamSeasonId: (payload01.Id default "") ++ (payload01.Id default "")
+	TeamSeasonId: payload01.Id default ""
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>
