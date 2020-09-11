@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
-http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
     <http:listener-config name="salesforce-data-api-httpListenerConfig">
         <http:listener-connection host="${http.host}" port="${http.private.port}" />
     </http:listener-config>
-    <apikit:config name="salesforce-data-api-config" api="resource::6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd:salesforce-data-api:1.0.8:raml:zip:salesforce-data-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <apikit:config name="salesforce-data-api-config" api="resource::6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd:salesforce-data-api:1.0.9:raml:zip:salesforce-data-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="012e809f-72bb-49a5-b21f-28fa4b364ab3">
         <salesforce:basic-connection username="${sfdc.user}" password="${secure::sfdc.password}" securityToken="${secure::sfdc.token}" url="${sfdc.url}" />
     </salesforce:sfdc-config>
     <configuration-properties doc:name="Configuration properties" doc:id="031c2472-faec-452c-9fa9-b18871f154af" file="properties/${env}.properties" />
-    <secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="76e4d1c6-1d87-4c40-8b1a-ae9370b49e34" file="properties/${env}-secure.properties" key="${runtime.decryptionkey}" >
-		<secure-properties:encrypt algorithm="Blowfish" />
-	</secure-properties:config>
- 	<flow name="salesforce-data-api-main">
+    <secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="76e4d1c6-1d87-4c40-8b1a-ae9370b49e34" file="properties/${env}-secure.properties" key="${runtime.decryptionkey}">
+        <secure-properties:encrypt algorithm="Blowfish" />
+    </secure-properties:config>
+    <flow name="salesforce-data-api-main">
         <http:listener config-ref="salesforce-data-api-httpListenerConfig" path="/api-internal/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
                 <http:headers>#[vars.outboundHeaders default {}]</http:headers>
@@ -144,15 +143,15 @@ output application/json
         <logger level="INFO" doc:name="Log response" doc:id="f07808f1-2396-4154-8ad1-64e2761b6f01" message="Sending response for GET #[vars.requestPath] - #[payload]" />
     </sub-flow>
     <flow name="get:\coach\(coachId)\teamseasons:salesforce-data-api-config">
-		<flow-ref doc:name="entry-flow" doc:id="82b50611-bf96-4408-bc9f-ce11e969853b" name="entry-flow" />
-        <logger level="INFO" doc:name="Log entry-flow" doc:id="db2b444c-d384-4b60-a94b-5a4cedc87b30" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. Also for this request we have queryParam: date=#[attributes.queryParams[0]]"/>
-		<ee:transform doc:name="Store URI parameters" doc:id="ba85bd36-9eef-4b6a-8e4c-c013e46e8271">
+        <flow-ref doc:name="entry-flow" doc:id="82b50611-bf96-4408-bc9f-ce11e969853b" name="entry-flow" />
+        <logger level="INFO" doc:name="Log entry-flow" doc:id="db2b444c-d384-4b60-a94b-5a4cedc87b30" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. Also for this request we have queryParam: date=#[attributes.queryParams[0]]" />
+        <ee:transform doc:name="Store URI parameters" doc:id="ba85bd36-9eef-4b6a-8e4c-c013e46e8271">
             <ee:variables>
                 <ee:set-variable variableName="coachId"><![CDATA[attributes.uriParams.'coachId']]></ee:set-variable>
             </ee:variables>
         </ee:transform>
-        <logger level="INFO" doc:name="Log Stored URI Params" doc:id="8027a799-c637-4b02-8cd4-2ca51dd5a969" message="URI Param - coachId: #[vars.coachId] - stored as var "/>
-		<salesforce:query doc:name="Query" doc:id="c4a7d532-abc4-4dab-abe9-60d8bfaaa69c" config-ref="Salesforce_Config">
+        <logger level="INFO" doc:name="Log Stored URI Params" doc:id="8027a799-c637-4b02-8cd4-2ca51dd5a969" message="URI Param - coachId: #[vars.coachId] - stored as var " />
+        <salesforce:query doc:name="Query" doc:id="c4a7d532-abc4-4dab-abe9-60d8bfaaa69c" config-ref="Salesforce_Config">
             <salesforce:salesforce-query><![CDATA[SELECT Anticipated_Players_Enrollment__c,Coach_Soccer__c,Coach_Writing__c,CreatedById,CreatedDate,Date_Last_Session_Attended__c,Id,IsDeleted,LastActivityDate,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate,Name,Number_of_Attendance_Completed__c,Number_of_Attendance_Incomplete__c,Number_of_Students_Absent__c,Number_of_Students_Present__c,Number_of_Team_Seasons__c,Partnership__c,Percent_of_Attendance_Completed__c,Percent_of_Students_Present__c,Schedule__c,School_Site__c,SCORES_Program_Coordinator__c,SCORES_Program_Manager__c,Season_End_Date__c,Season_Start_Date__c,Season__c,SystemModstamp,Team__c,Total_Number_of_Players__c,Total_Number_of_Sessions__c,Coach_Soccer__r.Name,Coach_Writing__r.Name,Team__r.Name,Season__r.Name FROM Team_Season__c WHERE Coach_Soccer__c = ':coachId' OR Coach_Writing__c = ':coachId']]></salesforce:salesforce-query>
             <salesforce:parameters><![CDATA[#[output application/java
 ---
@@ -160,7 +159,7 @@ output application/json
 	coachId : vars.coachId
 }]]]></salesforce:parameters>
         </salesforce:query>
-		<ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response">
+        <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -181,20 +180,20 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>
-        <logger level="INFO" doc:name="Log Created Response" doc:id="7d4746f9-9dc9-4598-9bc2-4599b8e2b7be" message="#[payload]"/>
-		<flow-ref doc:name="exit flow" doc:id="5fc85786-b9a4-4331-9601-903904e52064" name="exit-flow" />
+        <logger level="INFO" doc:name="Log Created Response" doc:id="7d4746f9-9dc9-4598-9bc2-4599b8e2b7be" message="#[payload]" />
+        <flow-ref doc:name="exit flow" doc:id="5fc85786-b9a4-4331-9601-903904e52064" name="exit-flow" />
     </flow>
     <flow name="get:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions:salesforce-data-api-config">
         <flow-ref doc:name="entry-flow" doc:id="be3843a3-1c41-4712-9459-43e9b393b6c0" name="entry-flow" />
         <logger level="INFO" doc:name="Log entry-flow" doc:id="55be03c4-09b5-4a1a-95ef-a24ed2008fbf" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. Also for this request we have queryParam: date=#[attributes.queryParams[0]]" />
-		<ee:transform doc:name="Store URI parameters">
+        <ee:transform doc:name="Store URI parameters">
             <ee:variables>
                 <ee:set-variable variableName="coachId">attributes.uriParams.'coachId'</ee:set-variable>
                 <ee:set-variable variableName="teamSeasonId">attributes.uriParams.'teamSeasonId'</ee:set-variable>
             </ee:variables>
         </ee:transform>
         <logger level="INFO" doc:name="Log Stored URI Params" doc:id="12fa02b2-d184-4129-8f1b-763187926e20" message="URI Param - coachId: #[vars.coachId] , teamseasonId: #[vars.teamSeasonId] - stored as vars" />
-		<salesforce:query doc:name="Query" doc:id="e2c7a8f4-85c1-4108-be94-83f757bfde43" config-ref="Salesforce_Config">
+        <salesforce:query doc:name="Query" doc:id="e2c7a8f4-85c1-4108-be94-83f757bfde43" config-ref="Salesforce_Config">
             <salesforce:salesforce-query><![CDATA[SELECT CreatedById,CreatedDate,Id,IsDeleted,LastActivityDate,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate,Name,Number_of_Students_Absent__c,Number_of_Students_Present__c,Percent_of_Students_Present__c,Session_Date__c,Session_Topic__c,Session_Weekday__c,SystemModstamp,Team_Season__c FROM Session__c WHERE Team_Season__c = ':teamseasonid' AND (Team_Season__r.Coach_Soccer__c = ':coachid' OR Team_Season__r.Coach_Writing__c = ':coachid')]]></salesforce:salesforce-query>
             <salesforce:parameters><![CDATA[#[output application/java
 ---
@@ -218,18 +217,18 @@ payload map ( payload01 , indexOfPayload01 ) -> {
             </ee:message>
         </ee:transform>
         <logger level="INFO" doc:name="Log Created Response" doc:id="19aaf94d-5c4a-4481-8d9d-59a24c6e950c" message="#[payload]" />
-		<flow-ref doc:name="exit flow" doc:id="87c1ea24-9a65-4fdf-9651-94d38ae6b8ee" name="exit-flow" />
+        <flow-ref doc:name="exit flow" doc:id="87c1ea24-9a65-4fdf-9651-94d38ae6b8ee" name="exit-flow" />
     </flow>
     <flow name="get:\coach\(coachId)\all:salesforce-data-api-config">
         <flow-ref doc:name="entry-flow" doc:id="a9ae0f9c-dfcc-4a12-be0d-6e329dfbe7b8" name="entry-flow" />
         <logger level="INFO" doc:name="Log entry-flow" doc:id="263e01d8-85d7-422a-b3fa-e4adf99f6ad5" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. Also for this request we have queryParam: date=#[attributes.queryParams[0]]" />
-		<ee:transform doc:name="Store URI parameters" doc:id="6784dd16-d76e-4fa4-a526-ab370875d02b">
+        <ee:transform doc:name="Store URI parameters" doc:id="6784dd16-d76e-4fa4-a526-ab370875d02b">
             <ee:variables>
                 <ee:set-variable variableName="coachId"><![CDATA[attributes.uriParams.'coachId']]></ee:set-variable>
             </ee:variables>
         </ee:transform>
         <logger level="INFO" doc:name="Log Stored URI Params" doc:id="3d3be5d0-aed9-491c-94ae-1172c08100e3" message="URI Param - coachId: #[vars.coachId] - stored as vars" />
-		<salesforce:query doc:name="Query" doc:id="30344094-f0f1-44d4-bdc9-9897cbc2a741" config-ref="Salesforce_Config">
+        <salesforce:query doc:name="Query" doc:id="30344094-f0f1-44d4-bdc9-9897cbc2a741" config-ref="Salesforce_Config">
             <salesforce:salesforce-query><![CDATA[SELECT Id,Name, Total_Number_of_Players__c, (SELECT Id, Name, Session_Topic__c, Session_Date__c From Sessions__r WHERE Session_Date__c = :date),(SELECT Id,Contact__r.Name,Contact__c From Enrollments__r) FROM Team_Season__c WHERE (Coach_Soccer__c = ':coachid' OR Coach_Writing__c = ':coachid') AND Season_Start_Date__c < :date AND Season_End_Date__c > :date]]></salesforce:salesforce-query>
             <salesforce:parameters><![CDATA[#[output application/java
 ---
@@ -265,19 +264,19 @@ payload map ( payload01 , indexOfPayload01 ) -> {
             </ee:message>
         </ee:transform>
         <logger level="INFO" doc:name="Log Created Response" doc:id="22b14f46-310f-4768-ab87-5128e5f11c61" message="#[payload]" />
-		<flow-ref doc:name="exit flow" doc:id="1778e3a5-0c0f-4238-b272-a093a9306f18" name="exit-flow" />
+        <flow-ref doc:name="exit flow" doc:id="1778e3a5-0c0f-4238-b272-a093a9306f18" name="exit-flow" />
     </flow>
     <flow name="get:\coach\(coachId)\teamseasons\(teamSeasonId)\enrollments:salesforce-data-api-config">
         <flow-ref doc:name="entry-flow" doc:id="a0883b26-6773-4d5c-8d61-b8a8361f90e8" name="entry-flow" />
         <logger level="INFO" doc:name="Log entry-flow" doc:id="5f5fe59f-a13b-4ef1-9c1c-2772b5c7643c" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]." />
-		<ee:transform doc:name="Store URI parameters">
+        <ee:transform doc:name="Store URI parameters">
             <ee:variables>
                 <ee:set-variable variableName="coachId">attributes.uriParams.'coachId'</ee:set-variable>
                 <ee:set-variable variableName="teamSeasonId">attributes.uriParams.'teamSeasonId'</ee:set-variable>
             </ee:variables>
         </ee:transform>
         <logger level="INFO" doc:name="Log Stored URI Params" doc:id="5a22dfa1-fcbc-4f88-ad3a-107abbcaac12" message="URI Param - coachId: #[vars.coachId], teamseasonId: #[vars.teamSeasonId] - storfed as vars" />
-		<salesforce:query doc:name="Query" doc:id="2938911f-53b8-43a5-a53e-14fca711003d" config-ref="Salesforce_Config">
+        <salesforce:query doc:name="Query" doc:id="2938911f-53b8-43a5-a53e-14fca711003d" config-ref="Salesforce_Config">
             <salesforce:salesforce-query><![CDATA[SELECT Contact__c,CreatedById,CreatedDate,End_Date__c,Id,IsDeleted,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate,Name,Number_of_Enrollments__c,Start_Date__c,SystemModstamp,Team_Season__c FROM Enrollment__c WHERE Team_Season__c = ':teamseasonid' AND (Team_Season__r.Coach_Soccer__c = ':coachid' OR Team_Season__r.Coach_Writing__c = ':coachid')]]></salesforce:salesforce-query>
             <salesforce:parameters><![CDATA[#[output application/java
 ---
@@ -299,20 +298,20 @@ payload map ( payload01 , indexOfPayload01 ) -> {
             </ee:message>
         </ee:transform>
         <logger level="INFO" doc:name="Log Created Response" doc:id="6d1746e6-35ac-4064-9cb3-03e2d2aa2dad" message="#[payload]" />
-		<flow-ref doc:name="exit flow" doc:id="fc0d90c2-2581-49e2-aaef-d58ba1013d8e" name="exit-flow" />
+        <flow-ref doc:name="exit flow" doc:id="fc0d90c2-2581-49e2-aaef-d58ba1013d8e" name="exit-flow" />
     </flow>
     <flow name="post:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\attendances:application\json:salesforce-data-api-config">
         <flow-ref doc:name="entry-flow" doc:id="319d3747-39e8-43d4-a9c2-9afd1935dd5e" name="entry-flow" />
         <logger level="INFO" doc:name="Log entry-flow" doc:id="c341f736-e33b-41d9-9587-79be5aded28f" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]." />
-		<ee:transform doc:name="Store URI parameters" doc:id="f711ee79-c3c7-4cdb-af46-28723e067b8f">
+        <ee:transform doc:name="Store URI parameters" doc:id="f711ee79-c3c7-4cdb-af46-28723e067b8f">
             <ee:variables>
                 <ee:set-variable variableName="coachId"><![CDATA[attributes.uriParams.'coachId']]></ee:set-variable>
                 <ee:set-variable variableName="teamSeasonId"><![CDATA[attributes.uriParams.'teamSeasonId']]></ee:set-variable>
                 <ee:set-variable variableName="sessionId"><![CDATA[attributes.uriParams.'sessionId']]></ee:set-variable>
             </ee:variables>
         </ee:transform>
-		<logger level="INFO" doc:name="Log Stored URI Params" doc:id="89586974-34cf-4491-9ece-93f323634c60" message="URI Param - coachId: #[vars.coachId], teamseasonId: #[vars.teamSeasonId], sessionId: #[vars.sessionId] - stored as vars" />
-		<salesforce:upsert doc:name="Upsert" doc:id="96226f7b-9c73-4b6c-80d2-bce874e4cfb2" config-ref="Salesforce_Config" objectType="Attendance__c" externalIdFieldName="ExternalId__c">
+        <logger level="INFO" doc:name="Log Stored URI Params" doc:id="89586974-34cf-4491-9ece-93f323634c60" message="URI Param - coachId: #[vars.coachId], teamseasonId: #[vars.teamSeasonId], sessionId: #[vars.sessionId] - stored as vars" />
+        <salesforce:upsert doc:name="Upsert" doc:id="96226f7b-9c73-4b6c-80d2-bce874e4cfb2" config-ref="Salesforce_Config" objectType="Attendance__c" externalIdFieldName="ExternalId__c">
             <salesforce:records><![CDATA[#[%dw 2.0
 output application/java
 ---
@@ -323,13 +322,8 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	ExternalId__c: payload01.StudentId ++ '-' ++ vars.sessionId
 }]]]></salesforce:records>
         </salesforce:upsert>
-        <logger level="INFO" doc:name="Log Upsert" doc:id="3e70143c-8c88-4080-95ad-7efe4bd82a1e" message='#[output application/json
-
----
-payload.items map ( payload01 , indexOfPayload01 ) -&gt; {
-	Message: payload01.payload default ""
-}]'/>
-		<ee:transform xsi:schemaLocation=" http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="02b48aab-bddb-4054-8872-ac1433da5ffd">
+        <logger level="INFO" doc:name="Log Upsert" doc:id="3e70143c-8c88-4080-95ad-7efe4bd82a1e" message="#[output application/json  --- payload.items map ( payload01 , indexOfPayload01 ) -&gt; {  Message: payload01.payload default &quot;&quot; }]" />
+        <ee:transform xsi:schemaLocation=" http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="02b48aab-bddb-4054-8872-ac1433da5ffd">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -340,28 +334,28 @@ output application/json
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>
-		<flow-ref doc:name="exit flow" doc:id="32b947ab-3abc-4f72-b6a5-79c51e3e786f" name="exit-flow" />
+        <flow-ref doc:name="exit flow" doc:id="32b947ab-3abc-4f72-b6a5-79c51e3e786f" name="exit-flow" />
     </flow>
     <flow name="get:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\attendances:salesforce-data-api-config">
-		<flow-ref doc:name="entry-flow" doc:id="fdc4bec9-fecd-4335-980a-0908eaeb9a17" name="entry-flow" />
-		<logger level="INFO" doc:name="Log entry-flow" doc:id="3ea68664-17b8-4854-8e58-7f6d03285b44" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]." />
-		<ee:transform doc:name="Store URI parameters" doc:id="86784c2c-83e8-4a5e-ae64-c5093cbacdbe">
-			<ee:variables>
-				<ee:set-variable variableName="coachId"><![CDATA[attributes.uriParams.'coachId']]></ee:set-variable>
-				<ee:set-variable variableName="teamSeasonId"><![CDATA[attributes.uriParams.'teamSeasonId']]></ee:set-variable>
-				<ee:set-variable variableName="sessionId"><![CDATA[attributes.uriParams.'sessionId']]></ee:set-variable>
-			</ee:variables>
-		</ee:transform>
-		<logger level="INFO" doc:name="Log Stored URI Params" doc:id="f5fb5455-22c7-4d1f-b316-fa26806f3f1b" message="URI Param - coachId: #[vars.coachId], teamseasonId: #[vars.teamSeasonId], sessionId: #[vars.sessionId] - stored as vars" />
-		<salesforce:query doc:name="Query" doc:id="2c95dcd3-8d07-446c-883b-98f1ae79ed9c" config-ref="Salesforce_Config">
-			<salesforce:salesforce-query><![CDATA[SELECT Contact__r.Name,Contact__c,Attended__c FROM Attendance__c WHERE Session__c = ':sessionid']]></salesforce:salesforce-query>
-			<salesforce:parameters><![CDATA[#[output application/java
+        <flow-ref doc:name="entry-flow" doc:id="fdc4bec9-fecd-4335-980a-0908eaeb9a17" name="entry-flow" />
+        <logger level="INFO" doc:name="Log entry-flow" doc:id="3ea68664-17b8-4854-8e58-7f6d03285b44" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]." />
+        <ee:transform doc:name="Store URI parameters" doc:id="86784c2c-83e8-4a5e-ae64-c5093cbacdbe">
+            <ee:variables>
+                <ee:set-variable variableName="coachId"><![CDATA[attributes.uriParams.'coachId']]></ee:set-variable>
+                <ee:set-variable variableName="teamSeasonId"><![CDATA[attributes.uriParams.'teamSeasonId']]></ee:set-variable>
+                <ee:set-variable variableName="sessionId"><![CDATA[attributes.uriParams.'sessionId']]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <logger level="INFO" doc:name="Log Stored URI Params" doc:id="f5fb5455-22c7-4d1f-b316-fa26806f3f1b" message="URI Param - coachId: #[vars.coachId], teamseasonId: #[vars.teamSeasonId], sessionId: #[vars.sessionId] - stored as vars" />
+        <salesforce:query doc:name="Query" doc:id="2c95dcd3-8d07-446c-883b-98f1ae79ed9c" config-ref="Salesforce_Config">
+            <salesforce:salesforce-query><![CDATA[SELECT Contact__r.Name,Contact__c,Attended__c FROM Attendance__c WHERE Session__c = ':sessionid']]></salesforce:salesforce-query>
+            <salesforce:parameters><![CDATA[#[output application/java
 ---
 {
 	sessionid : vars.sessionId
 }]]]></salesforce:parameters>
-		</salesforce:query>
-		<ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="cc0b30b2-4bb2-4b3c-bfa8-72626dc8dc02">
+        </salesforce:query>
+        <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="cc0b30b2-4bb2-4b3c-bfa8-72626dc8dc02">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -373,7 +367,82 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>
-		<logger level="INFO" doc:name="Log Created Response" doc:id="30a1023d-5242-40d6-9a42-a3f0668043c7" message="#[payload]" />
-		<flow-ref doc:name="exit flow" doc:id="e74de323-770f-4f76-a146-ee79831b8028" name="exit-flow" />
+        <logger level="INFO" doc:name="Log Created Response" doc:id="30a1023d-5242-40d6-9a42-a3f0668043c7" message="#[payload]" />
+        <flow-ref doc:name="exit flow" doc:id="e74de323-770f-4f76-a146-ee79831b8028" name="exit-flow" />
+    </flow>
+    <flow name="post:\contact:application\json:salesforce-data-api-config">
+        <logger level="INFO" doc:name="Logger" doc:id="a8942ace-aaa2-488b-8842-a75bc77b4d45" message="payload"/>
+		<ee:transform doc:name="Transform Message" doc:id="4b040bb0-7cd2-4008-aba2-12df19735ca8" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="ContactRecordType" ><![CDATA['01250000000VBbXAAW']]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<salesforce:create doc:name="Create" doc:id="45632d40-a2a7-4304-930a-a2fa81d78f0d" config-ref="Salesforce_Config" type="Contact">
+			<salesforce:records ><![CDATA[#[output application/java
+---
+[{
+	LastName: payload.LastName,
+	FirstName: payload.FirstName,
+	MiddleName: payload.MiddleName,
+	RecordTypeId: vars.ContactRecordType,
+	MailingStreet: payload.MailingStreet,
+	MailingCity: payload.MailingCity,
+	MailingState: payload.MailingState,
+	MailingPostalCode: payload.MailingZip as String default "",
+	MailingCountry: payload.MailingCountry,
+	HomePhone: payload.HomePhone,
+	Email: payload.PersonalEmail,
+	Birthdate: payload.Birthdate as Date default "",
+	Gender__c: payload.Gender,
+	Allergies__c: payload.Allergies,
+	Data_Release__c: payload.DataReleaseWaiver,
+	Emergency_Contact_Name_Phone_01__c: payload.Emergency_Contact_Phone1,
+	Emergency_Contact_Name_Phone_02__c: payload.Emergency_Contact_Phone2,
+	Emergency_Contact_Name_Phone_03__c: payload.Emergency_Contact_Phone3,
+	Emergency_Contact_Name__c: payload.Emergency_Contact_Name,
+	Emergency_Contact_Permission_to_Pick_Up__c: payload.Emergency_Contact_Permission_to_Pickup_child,
+	Emergency_Contact_Relationship_to_Child__c: payload.Emergency_Contact_Relationship,
+	Ethnicity__c: payload.Ethnicity,
+	Grade__c: payload.Grade,
+	DCYF_Student_ID__c: payload.DCYFStuID,
+	School_Attending__c: payload.SchoolName,
+	Liability__c: payload.LiabilityWaiver,
+	Media_Release__c: payload.MediaReleaseWaiver,
+	Parent_Email_Address__c: payload.ParentEmail,
+	Parent_English_Fluency__c: payload.ParentEnglishFluency,
+	Parent_First_Name__c: payload.ParentFName,
+	Parent_Home_Language__c: payload.ParentHomeLang,
+	Parent_Last_Name__c: payload.ParentLName,
+	Parent_Other_Language__c: payload.OtherLang default "",
+	Parent_Phone_01__c: payload.ParentPhone1 as String default "",
+	Parent_Phone_02__c: payload.ParentPhone2 as String default "",
+	Parent_Phone_03__c: payload.ParentPhone3 as String default "",
+	Parent_Relationship_to_Child__c: payload.Relationship,
+	Permission_to_Commute_Alone__c: payload.PermissiontoCommuteAlone,
+	Reduced_Price_Lunch__c: payload.ReducedPriceLunch,
+	Second_Emerg_Contact_Relationship_Child__c: payload.Second_Emergency_Contact_Relationship,
+	Second_Emergency_Contact_Name__c: payload.Second_Emergency_Contact_Name,
+	Second_Emergency_Permission_to_Pick_Up__c: payload.Second_Emergency_Contact_Permission_to_Pickup_child,
+	Second_Emergency_Phone_01__c: payload.Second_Emergency_Contact_Phone1,
+	Second_Emergency_Phone_02__c: payload.Second_Emergency_Contact_Phone2,
+	Second_Emergency_Phone_03__c: payload.Second_Emergency_Contact_Phone3,
+	Volunteer_for_this_Program_Parent__c: payload.Volunteer
+}]]]]></salesforce:records>
+		</salesforce:create>
+		<ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="29de979e-5346-4cf1-85d1-5d39079a4735">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Successful_Registration: payload.successful,
+	message: "Registration Complete"
+}]]></ee:set-payload>
+            </ee:message>
+			<ee:variables >
+			</ee:variables>
+        </ee:transform>
     </flow>
 </mule>
