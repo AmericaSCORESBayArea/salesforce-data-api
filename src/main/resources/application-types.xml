@@ -1,7 +1,21 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
-  <types:catalog/>
+  <types:catalog>
+    <types:type name="contact_ID" format="java">
+      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
+type: string]]></types:shape>
+    </types:type>
+  </types:catalog>
   <types:enrichment select="#ba85bd36-9eef-4b6a-8e4c-c013e46e8271"/>
   <types:enrichment select="#29de979e-5346-4cf1-85d1-5d39079a4735"/>
   <types:enrichment select="#4b040bb0-7cd2-4008-aba2-12df19735ca8"/>
+  <types:enrichment select="#ac5bb0c5-0ca5-4fe5-abe1-77e446a15104">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="contact_ID"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
 </types:mule>
