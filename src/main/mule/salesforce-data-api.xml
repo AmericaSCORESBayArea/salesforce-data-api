@@ -371,7 +371,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
         <flow-ref doc:name="exit flow" doc:id="e74de323-770f-4f76-a146-ee79831b8028" name="exit-flow" />
     </flow>
     <flow name="post:\contact:application\json:salesforce-data-api-config">
-        <logger level="INFO" doc:name="Logger" doc:id="a8942ace-aaa2-488b-8842-a75bc77b4d45" message="payload"/>
+        <logger level="INFO" doc:name="Logger" doc:id="a8942ace-aaa2-488b-8842-a75bc77b4d45" message="#[payload]"/>
 		<ee:transform doc:name="Transform Message" doc:id="4d186f67-169d-4c69-8a7a-1d102a7cdd35" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
@@ -384,17 +384,18 @@ output application/java
 				<ee:set-variable variableName="stored_payload" ><![CDATA[payload]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="00a4fb5b-b824-4235-ad85-fac2b04fdc72" message="vars.payload"/>
+		<logger level="INFO" doc:name="Logger" doc:id="00a4fb5b-b824-4235-ad85-fac2b04fdc72" message="#[vars.stored_payload]"/>
 		<salesforce:query doc:name="Query" doc:id="61c0f5f7-6cee-4580-a92a-2432384dba3c" config-ref="Salesforce_Config">
-			<salesforce:salesforce-query ><![CDATA[SELECT Name, Email, Id FROM Contact where (Email=':email') OR (name=':FullName')]]></salesforce:salesforce-query>
+			<salesforce:salesforce-query ><![CDATA[SELECT Name, Email, Birthdate, Id FROM Contact where (Email=':email' AND Birthdate=:bday) OR (name=':FullName' AND Birthdate=:bday)]]></salesforce:salesforce-query>
 			<salesforce:parameters ><![CDATA[#[output application/java
 ---
 {
+	bday : vars.stored_payload.Birthdate,
 	FullName : vars.stored_payload.FirstName ++ " " ++ vars.stored_payload.LastName,
 	email : vars.stored_payload.PersonalEmail
 }]]]></salesforce:parameters>
 		</salesforce:query>
-		<logger level="INFO" doc:name="Logger" doc:id="25b33a82-fc31-44ef-98c8-36ea8aacd912" message="payload"/>
+		<logger level="INFO" doc:name="Logger" doc:id="25b33a82-fc31-44ef-98c8-36ea8aacd912" message="#[payload]"/>
 		<choice doc:name="Choice" doc:id="cd1069b5-ca55-422d-9a92-739a54104316" >
 			<when expression="#[(sizeOf(payload)) == 0]">
 				<logger level="INFO" doc:name="Logger" doc:id="03fa150f-5d4f-406f-80ed-cbddd924ba81" message="No Contacts found"/>
@@ -528,6 +529,7 @@ output application/json
 				</salesforce:update> 
 			</otherwise>
 		</choice>
+		<logger level="INFO" doc:name="Logger" doc:id="aa6d154b-820c-4b9e-bb0b-984abebfe401" message="#[payload.items[0].exception]"/>
 		<ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="29de979e-5346-4cf1-85d1-5d39079a4735">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
@@ -535,6 +537,7 @@ output application/json
 ---
 {
 	Successful_Registration: payload.successful //boolean value
+	
 }]]></ee:set-payload>
             </ee:message>
 			<ee:variables >
