@@ -382,15 +382,176 @@ payload map ( payload01 , indexOfPayload01 ) -> {
         <flow-ref doc:name="exit flow" doc:id="e74de323-770f-4f76-a146-ee79831b8028" name="exit-flow" />
     </flow>
     <flow name="post:\contact:application\json:salesforce-data-api-config">
-        <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+        <logger level="INFO" doc:name="Logger" doc:id="a8942ace-aaa2-488b-8842-a75bc77b4d45" message="#[payload]"/>
+		<ee:transform doc:name="Transform Message" doc:id="4d186f67-169d-4c69-8a7a-1d102a7cdd35" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="stored_payload" ><![CDATA[payload]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="00a4fb5b-b824-4235-ad85-fac2b04fdc72" message="#[vars.stored_payload]"/>
+		<salesforce:query doc:name="Query" doc:id="61c0f5f7-6cee-4580-a92a-2432384dba3c" config-ref="Salesforce_Config">
+			<salesforce:salesforce-query ><![CDATA[SELECT Name, Email, Birthdate, Id FROM Contact where (Email=':email' AND Birthdate=:bday) OR (name=':FullName' AND Birthdate=:bday)]]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[output application/java
+---
+{
+	bday : vars.stored_payload.Birthdate,
+	FullName : vars.stored_payload.FirstName ++ " " ++ vars.stored_payload.LastName,
+	email : vars.stored_payload.PersonalEmail
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<logger level="INFO" doc:name="Logger" doc:id="25b33a82-fc31-44ef-98c8-36ea8aacd912" message="#[payload]"/>
+		<choice doc:name="Choice" doc:id="cd1069b5-ca55-422d-9a92-739a54104316" >
+			<when expression="#[(sizeOf(payload)) == 0]">
+				<logger level="INFO" doc:name="Logger" doc:id="03fa150f-5d4f-406f-80ed-cbddd924ba81" message="No Contacts found"/>
+				<ee:transform doc:name="Transform Message" doc:id="4b040bb0-7cd2-4008-aba2-12df19735ca8">
+			<ee:message>
+			</ee:message>
+			<ee:variables>
+				<ee:set-variable variableName="ContactRecordType"><![CDATA['01250000000VBbXAAW']]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+				<salesforce:create doc:name="Create" doc:id="45632d40-a2a7-4304-930a-a2fa81d78f0d" config-ref="Salesforce_Config" type="Contact">
+			<salesforce:records><![CDATA[#[output application/java
+---
+[{
+	LastName: vars.stored_payload.LastName,
+	FirstName: vars.stored_payload.FirstName,
+	MiddleName: vars.stored_payload.MiddleName,
+	RecordTypeId: vars.ContactRecordType,
+	MailingStreet: vars.stored_payload.MailingStreet,
+	MailingCity: vars.stored_payload.MailingCity,
+	MailingState: vars.stored_payload.MailingState,
+	MailingPostalCode: vars.stored_payload.MailingZip as String default "",
+	MailingCountry: vars.stored_payload.MailingCountry,
+	HomePhone: vars.stored_payload.HomePhone,
+	Email: vars.stored_payload.PersonalEmail,
+	Birthdate: vars.stored_payload.Birthdate as Date default "",
+	Gender__c: vars.stored_payload.Gender,
+	Allergies__c: vars.stored_payload.Allergies,
+	Data_Release__c: vars.stored_payload.DataReleaseWaiver,
+	Emergency_Contact_Name_Phone_01__c: vars.stored_payload.Emergency_Contact_Phone1,
+	Emergency_Contact_Name_Phone_02__c: vars.stored_payload.Emergency_Contact_Phone2,
+	Emergency_Contact_Name_Phone_03__c: vars.stored_payload.Emergency_Contact_Phone3,
+	Emergency_Contact_Name__c: vars.stored_payload.Emergency_Contact_Name,
+	Emergency_Contact_Permission_to_Pick_Up__c: vars.stored_payload.Emergency_Contact_Permission_to_Pickup_child,
+	Emergency_Contact_Relationship_to_Child__c: vars.stored_payload.Emergency_Contact_Relationship,
+	Ethnicity__c: vars.stored_payload.Ethnicity,
+	Grade__c: vars.stored_payload.Grade,
+	DCYF_Student_ID__c: vars.stored_payload.DCYFStuID,
+	School_Attending__c: vars.stored_payload.SchoolName,
+	Liability__c: vars.stored_payload.LiabilityWaiver,
+	Media_Release__c: vars.stored_payload.MediaReleaseWaiver,
+	Parent_Email_Address__c: vars.stored_payload.ParentEmail,
+	Parent_English_Fluency__c: vars.stored_payload.ParentEnglishFluency,
+	Parent_First_Name__c: vars.stored_payload.ParentFName,
+	Parent_Home_Language__c: vars.stored_payload.ParentHomeLang,
+	Parent_Last_Name__c: vars.stored_payload.ParentLName,
+	Parent_Other_Language__c: vars.stored_payload.OtherLang default "",
+	Parent_Phone_01__c: vars.stored_payload.ParentPhone1 as String default "",
+	Parent_Phone_02__c: vars.stored_payload.ParentPhone2 as String default "",
+	Parent_Phone_03__c: vars.stored_payload.ParentPhone3 as String default "",
+	Parent_Relationship_to_Child__c: vars.stored_payload.Relationship,
+	Permission_to_Commute_Alone__c: vars.stored_payload.PermissiontoCommuteAlone,
+	Reduced_Price_Lunch__c: vars.stored_payload.ReducedPriceLunch,
+	Second_Emerg_Contact_Relationship_Child__c: vars.stored_payload.Second_Emergency_Contact_Relationship,
+	Second_Emergency_Contact_Name__c: vars.stored_payload.Second_Emergency_Contact_Name,
+	Second_Emergency_Permission_to_Pick_Up__c: vars.stored_payload.Second_Emergency_Contact_Permission_to_Pickup_child,
+	Second_Emergency_Phone_01__c: vars.stored_payload.Second_Emergency_Contact_Phone1,
+	Second_Emergency_Phone_02__c: vars.stored_payload.Second_Emergency_Contact_Phone2,
+	Second_Emergency_Phone_03__c: vars.stored_payload.Second_Emergency_Contact_Phone3,
+	Volunteer_for_this_Program_Parent__c: vars.stored_payload.Volunteer
+}]]]]></salesforce:records>
+		</salesforce:create>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="7710ae15-a22f-4abf-8f0c-ce7a7c344977" message="Contact with same name or email has been found"/>
+				<ee:transform doc:name="Transform Message" doc:id="ac5bb0c5-0ca5-4fe5-abe1-77e446a15104" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	contact__ID: payload[0].Id
+}]]></ee:set-payload>
+					</ee:message>
+					<ee:variables >
+					</ee:variables>
+				</ee:transform>
+				<salesforce:update type="Contact" doc:name="Update" doc:id="3e66bb09-890a-4a89-b212-51dcebd38eaa" config-ref="Salesforce_Config">
+					<salesforce:records ><![CDATA[#[output application/java
+---
+[{
+	
+	Id: payload.contact__ID,
+	(LastName: vars.stored_payload.LastName) if (vars.stored_payload.LastName != null),
+	(FirstName: vars.stored_payload.FirstName) if (vars.stored_payload.FirstName != null),
+	(MiddleName: vars.stored_payload.MiddleName) if (vars.stored_payload.MiddleName != null),
+	RecordTypeId: vars.ContactRecordType,
+	(MailingStreet: vars.stored_payload.MailingStreet) if (vars.stored_payload.MailingStreet != null),
+	(MailingCity: vars.stored_payload.MailingCity) if (vars.stored_payload.MailingCity != null),
+	(MailingState: vars.stored_payload.MailingState) if (vars.stored_payload.MailingState != null),
+	(MailingPostalCode: vars.stored_payload.MailingZip as String default "") if (vars.stored_payload.MailingZip != null),
+	(MailingCountry: vars.stored_payload.MailingCountry) if (vars.stored_payload.MailingCountry != null),
+	(HomePhone: vars.stored_payload.HomePhone) if (vars.stored_payload.HomePhone != null),
+	(Email: vars.stored_payload.PersonalEmail) if (vars.stored_payload.PersonalEmail != null),
+	(Birthdate: vars.stored_payload.Birthdate as Date default "") if (vars.stored_payload.Birthdate != null),
+	(Gender__c: vars.stored_payload.Gender) if (vars.stored_payload.Gender != null),
+	(Allergies__c: vars.stored_payload.Allergies) if (vars.stored_payload.Allergies != null),
+	(Data_Release__c: vars.stored_payload.DataReleaseWaiver) if (vars.stored_payload.DataReleaseWaiver != null),
+	(Emergency_Contact_Name_Phone_01__c: vars.stored_payload.Emergency_Contact_Phone1) if (vars.stored_payload.Emergency_Contact_Phone1 != null),
+	(Emergency_Contact_Name_Phone_02__c: vars.stored_payload.Emergency_Contact_Phone2) if (vars.stored_payload.Emergency_Contact_Phone2 != null),
+	(Emergency_Contact_Name_Phone_03__c: vars.stored_payload.Emergency_Contact_Phone3) if (vars.stored_payload.Emergency_Contact_Phone3 != null),
+	(Emergency_Contact_Name__c: vars.stored_payload.Emergency_Contact_Name) if (vars.stored_payload.Emergency_Contact_Name != null),
+	(Emergency_Contact_Permission_to_Pick_Up__c: vars.stored_payload.Emergency_Contact_Permission_to_Pickup_child) if (vars.stored_payload.Emergency_Contact_Permission_to_Pickup_child != null),
+	(Emergency_Contact_Relationship_to_Child__c: vars.stored_payload.Emergency_Contact_Relationship) if (vars.stored_payload.Emergency_Contact_Relationship != null),
+	(Ethnicity__c: vars.stored_payload.Ethnicity) if (vars.stored_payload.Ethnicity != null),
+	(Grade__c: vars.stored_payload.Grade) if (vars.stored_payload.Grade != null),
+	(DCYF_Student_ID__c: vars.stored_payload.DCYFStuID) if (vars.stored_payload.DCYFStuID != null),
+	(School_Attending__c: vars.stored_payload.SchoolName) if (vars.stored_payload.SchoolName != null),
+	(Liability__c: vars.stored_payload.LiabilityWaiver) if (vars.stored_payload.LiabilityWaiver != null),
+	(Media_Release__c: vars.stored_payload.MediaReleaseWaiver) if (vars.stored_payload.MediaReleaseWaiver != null),
+	(Parent_Email_Address__c: vars.stored_payload.ParentEmail) if (vars.stored_payload.ParentEmail != null),
+	(Parent_English_Fluency__c: vars.stored_payload.ParentEnglishFluency) if (vars.stored_payload.ParentEnglishFluency != null),
+	(Parent_First_Name__c: vars.stored_payload.ParentFName) if (vars.stored_payload.ParentFName != null),
+	(Parent_Home_Language__c: vars.stored_payload.ParentHomeLang) if (vars.stored_payload.ParentHomeLang != null),
+	(Parent_Last_Name__c: vars.stored_payload.ParentLName) if (vars.stored_payload.ParentLName != null),
+	(Parent_Other_Language__c: vars.stored_payload.OtherLang default "") if (vars.stored_payload.OtherLang != null),
+	(Parent_Phone_01__c: vars.stored_payload.ParentPhone1 as String default "") if (vars.stored_payload.ParentPhone1 != null),
+	(Parent_Phone_02__c: vars.stored_payload.ParentPhone2 as String default "") if (vars.stored_payload.ParentPhone2 != null),
+	(Parent_Phone_03__c: vars.stored_payload.ParentPhone3 as String default "") if (vars.stored_payload.ParentPhone3 != null),
+	(Parent_Relationship_to_Child__c: vars.stored_payload.Relationship) if (vars.stored_payload.Relationship != null),
+	(Permission_to_Commute_Alone__c: vars.stored_payload.PermissiontoCommuteAlone) if (vars.stored_payload.PermissiontoCommuteAlone != null),
+	(Reduced_Price_Lunch__c: vars.stored_payload.ReducedPriceLunch) if (vars.stored_payload.ReducedPriceLunch != null),
+	(Second_Emerg_Contact_Relationship_Child__c: vars.stored_payload.Second_Emergency_Contact_Relationship) if (vars.stored_payload.Second_Emergency_Contact_Relationship != null),
+	(Second_Emergency_Contact_Name__c: vars.stored_payload.Second_Emergency_Contact_Name) if (vars.stored_payload.Second_Emergency_Contact_Name != null),
+	(Second_Emergency_Permission_to_Pick_Up__c: vars.stored_payload.Second_Emergency_Contact_Permission_to_Pickup_child) if (vars.stored_payload.Second_Emergency_Contact_Permission_to_Pickup_child != null),
+	(Second_Emergency_Phone_01__c: vars.stored_payload.Second_Emergency_Contact_Phone1) if (vars.stored_payload.Second_Emergency_Contact_Phone1 != null),
+	(Second_Emergency_Phone_02__c: vars.stored_payload.Second_Emergency_Contact_Phone2) if (vars.stored_payload.Second_Emergency_Contact_Phone2 != null),
+	(Second_Emergency_Phone_03__c: vars.stored_payload.Second_Emergency_Contact_Phone3) if (vars.stored_payload.Second_Emergency_Contact_Phone3 != null),
+	(Volunteer_for_this_Program_Parent__c: vars.stored_payload.Volunteer) if (vars.stored_payload.Volunteer != null)
+}]]]]></salesforce:records>
+				</salesforce:update> 
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="Logger" doc:id="aa6d154b-820c-4b9e-bb0b-984abebfe401" message="#[payload.items[0].exception]"/>
+		<ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="29de979e-5346-4cf1-85d1-5d39079a4735">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
-  message: "Registration Complete"
+	Successful_Registration: payload.successful //boolean value
 }]]></ee:set-payload>
             </ee:message>
+			<ee:variables >
+			</ee:variables>
         </ee:transform>
     </flow>
 </mule>
