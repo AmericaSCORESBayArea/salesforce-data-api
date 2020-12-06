@@ -294,5 +294,119 @@ assert_expression_payload::main({payload: payload, attributes: attributes, vars:
 			</munit-tools:verify-call>
 		</munit:validation>
 	</munit:test>
+	<munit:test name="patch:\contacts\(id):application\json:salesforce-data-api-config-test" doc:id="17bd4f48-e8d1-410d-ab41-0afdb103f982" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock Update" doc:id="3aa3ddcd-d95a-4ba1-b0f9-7e727204eb9d" processor="salesforce:update">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="22d1f2d0-03bc-4987-82e8-200abcd9b67a" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- readUrl('classpath://patchcontactsidapplicationjsonsalesforcedataapiconfigtest/mock_payload.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://patchcontactsidapplicationjsonsalesforcedataapiconfigtest/mock_variable_.dwl')]" />
+						<munit-tools:variable key="method" value="#[output application/java --- readUrl('classpath://patchcontactsidapplicationjsonsalesforcedataapiconfigtest/mock_variable_1.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="requestPath" value="#[output application/java --- readUrl('classpath://patchcontactsidapplicationjsonsalesforcedataapiconfigtest/mock_variable_2.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="id" value="#[output application/java --- readUrl('classpath://patchcontactsidapplicationjsonsalesforcedataapiconfigtest/mock_variable_3.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="f79e8275-4a1a-4824-b4e1-f9b1533abc57" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://patchcontactsidapplicationjsonsalesforcedataapiconfigtest/set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://patchcontactsidapplicationjsonsalesforcedataapiconfigtest/set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://patchcontactsidapplicationjsonsalesforcedataapiconfigtest/set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to patch:\contacts\(id):application\json:salesforce-data-api-config" doc:id="67a283b4-682f-4db3-80a1-f6aaa678c7eb" name="patch:\contacts\(id):application\json:salesforce-data-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="16b08886-6e23-47ae-957a-4a31146f0112" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import patchcontactsidapplicationjsonsalesforcedataapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="get:\contacts:salesforce-data-api-config-test" doc:id="74902c1d-8f62-4a08-827f-03069bbc16b2" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock Query" doc:id="68ca44c0-d0c7-488e-8771-981d63e9b148" processor="salesforce:query">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="2d2bd613-7cc8-48df-b3e3-e1c628982996" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- readUrl('classpath://getcontactssalesforcedataapiconfigtest/mock_payload.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="firstName" value="#[output application/java --- readUrl('classpath://getcontactssalesforcedataapiconfigtest/mock_variable_.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="lastName" value="#[output application/java --- readUrl('classpath://getcontactssalesforcedataapiconfigtest/mock_variable_1.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://getcontactssalesforcedataapiconfigtest/mock_variable_2.dwl')]" />
+						<munit-tools:variable key="method" value="#[output application/java --- readUrl('classpath://getcontactssalesforcedataapiconfigtest/mock_variable_3.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="dcyfId" value="#[output application/java --- readUrl('classpath://getcontactssalesforcedataapiconfigtest/mock_variable_4.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="requestPath" value="#[output application/java --- readUrl('classpath://getcontactssalesforcedataapiconfigtest/mock_variable_5.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="birthDate" value="#[output application/java --- readUrl('classpath://getcontactssalesforcedataapiconfigtest/mock_variable_6.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="c9f850eb-8958-425d-b0f3-983196e9c082" >
+				<munit:payload value="#[readUrl('classpath://getcontactssalesforcedataapiconfigtest/set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://getcontactssalesforcedataapiconfigtest/set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getcontactssalesforcedataapiconfigtest/set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\contacts:salesforce-data-api-config" doc:id="86339616-3682-48bb-938c-49c6f7dcd5d9" name="get:\contacts:salesforce-data-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="cccb0032-639d-4939-af8a-f87e40b03262" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import getcontactssalesforcedataapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="get:\contacts\(id):salesforce-data-api-config-test" doc:id="f8b9e064-6fa7-4ce7-a953-7f584d00112d" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock Query" doc:id="6fc2843f-eb02-4356-b777-692f8c56fbf7" processor="salesforce:query">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="484bbe2a-c7aa-42d5-9463-cd953b4abb1e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- readUrl('classpath://getcontactsidsalesforcedataapiconfigtest/mock_payload.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="firstName" value="#[output application/java --- readUrl('classpath://getcontactsidsalesforcedataapiconfigtest/mock_variable_.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="lastName" value="#[output application/java --- readUrl('classpath://getcontactsidsalesforcedataapiconfigtest/mock_variable_1.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://getcontactsidsalesforcedataapiconfigtest/mock_variable_2.dwl')]" />
+						<munit-tools:variable key="method" value="#[output application/java --- readUrl('classpath://getcontactsidsalesforcedataapiconfigtest/mock_variable_3.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="requestPath" value="#[output application/java --- readUrl('classpath://getcontactsidsalesforcedataapiconfigtest/mock_variable_4.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="id" value="#[output application/java --- readUrl('classpath://getcontactsidsalesforcedataapiconfigtest/mock_variable_5.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="birthDate" value="#[output application/java --- readUrl('classpath://getcontactsidsalesforcedataapiconfigtest/mock_variable_6.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="adecfd57-0fcf-48f5-972a-d991f0a5da9b" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://getcontactsidsalesforcedataapiconfigtest/set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://getcontactsidsalesforcedataapiconfigtest/set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getcontactsidsalesforcedataapiconfigtest/set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\contacts\(id):salesforce-data-api-config" doc:id="759082be-690a-4f7b-bd25-0876fc5116e1" name="get:\contacts\(id):salesforce-data-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="e61c8d4b-6da0-49c7-a3a1-5c42432cb509" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import getcontactsidsalesforcedataapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
 
 </mule>

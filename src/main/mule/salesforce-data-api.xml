@@ -3,7 +3,7 @@
     <http:listener-config name="salesforce-data-api-httpListenerConfig">
         <http:listener-connection host="${http.host}" port="${http.private.port}" />
     </http:listener-config>
-    <apikit:config name="salesforce-data-api-config" api="resource::6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd:salesforce-data-api:2.0.0:raml:zip:salesforce-data-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <apikit:config name="salesforce-data-api-config" api="resource::6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd:salesforce-data-api:2.0.2:raml:zip:salesforce-data-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="012e809f-72bb-49a5-b21f-28fa4b364ab3">
         <salesforce:basic-connection username="${sfdc.user}" password="${secure::sfdc.password}" securityToken="${secure::sfdc.token}" url="${sfdc.url}" />
     </salesforce:sfdc-config>
@@ -382,43 +382,42 @@ payload map ( payload01 , indexOfPayload01 ) -> {
         <flow-ref doc:name="exit flow" doc:id="e74de323-770f-4f76-a146-ee79831b8028" name="exit-flow" />
     </flow>
     <flow name="post:\contact:application\json:salesforce-data-api-config">
-        <logger level="INFO" doc:name="Logger" doc:id="a8942ace-aaa2-488b-8842-a75bc77b4d45" message="#[payload]"/>
-		<ee:transform doc:name="Transform Message" doc:id="4d186f67-169d-4c69-8a7a-1d102a7cdd35" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+        <logger level="INFO" doc:name="Logger" doc:id="a8942ace-aaa2-488b-8842-a75bc77b4d45" message="#[payload]" />
+        <ee:transform doc:name="Transform Message" doc:id="4d186f67-169d-4c69-8a7a-1d102a7cdd35">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 output application/java
 ---
 {
 }]]></ee:set-payload>
-			</ee:message>
-			<ee:variables >
-				<ee:set-variable variableName="stored_payload" ><![CDATA[payload]]></ee:set-variable>
-			</ee:variables>
-		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="00a4fb5b-b824-4235-ad85-fac2b04fdc72" message="#[vars.stored_payload]"/>
-		<salesforce:query doc:name="Query" doc:id="61c0f5f7-6cee-4580-a92a-2432384dba3c" config-ref="Salesforce_Config">
-			<salesforce:salesforce-query ><![CDATA[SELECT Name, Email, Birthdate, Id FROM Contact where (Email=':email' AND Birthdate=:bday) OR (name=':FullName' AND Birthdate=:bday)]]></salesforce:salesforce-query>
-			<salesforce:parameters ><![CDATA[#[output application/java
+            </ee:message>
+            <ee:variables>
+                <ee:set-variable variableName="stored_payload"><![CDATA[payload]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <logger level="INFO" doc:name="Logger" doc:id="00a4fb5b-b824-4235-ad85-fac2b04fdc72" message="#[vars.stored_payload]" />
+        <salesforce:query doc:name="Query" doc:id="61c0f5f7-6cee-4580-a92a-2432384dba3c" config-ref="Salesforce_Config">
+            <salesforce:salesforce-query><![CDATA[SELECT Name, Email, Birthdate, Id FROM Contact where (Email=':email' AND Birthdate=:bday) OR (name=':FullName' AND Birthdate=:bday)]]></salesforce:salesforce-query>
+            <salesforce:parameters><![CDATA[#[output application/java
 ---
 {
 	bday : vars.stored_payload.Birthdate,
 	FullName : vars.stored_payload.FirstName ++ " " ++ vars.stored_payload.LastName,
 	email : vars.stored_payload.PersonalEmail
 }]]]></salesforce:parameters>
-		</salesforce:query>
-		<logger level="INFO" doc:name="Logger" doc:id="25b33a82-fc31-44ef-98c8-36ea8aacd912" message="#[payload]"/>
-		<choice doc:name="Choice" doc:id="cd1069b5-ca55-422d-9a92-739a54104316" >
-			<when expression="#[(sizeOf(payload)) == 0]">
-				<logger level="INFO" doc:name="Logger" doc:id="03fa150f-5d4f-406f-80ed-cbddd924ba81" message="No Contacts found"/>
-				<ee:transform doc:name="Transform Message" doc:id="4b040bb0-7cd2-4008-aba2-12df19735ca8">
-			<ee:message>
-			</ee:message>
-			<ee:variables>
-				<ee:set-variable variableName="ContactRecordType"><![CDATA['01250000000VBbXAAW']]></ee:set-variable>
-			</ee:variables>
-		</ee:transform>
-				<salesforce:create doc:name="Create" doc:id="45632d40-a2a7-4304-930a-a2fa81d78f0d" config-ref="Salesforce_Config" type="Contact">
-			<salesforce:records><![CDATA[#[output application/java
+        </salesforce:query>
+        <logger level="INFO" doc:name="Logger" doc:id="25b33a82-fc31-44ef-98c8-36ea8aacd912" message="#[payload]" />
+        <choice doc:name="Choice" doc:id="cd1069b5-ca55-422d-9a92-739a54104316">
+            <when expression="#[(sizeOf(payload)) == 0]">
+                <logger level="INFO" doc:name="Logger" doc:id="03fa150f-5d4f-406f-80ed-cbddd924ba81" message="No Contacts found" />
+                <ee:transform doc:name="Transform Message" doc:id="4b040bb0-7cd2-4008-aba2-12df19735ca8">
+                    <ee:message />
+                    <ee:variables>
+                        <ee:set-variable variableName="ContactRecordType"><![CDATA['01250000000VBbXAAW']]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+                <salesforce:create doc:name="Create" doc:id="45632d40-a2a7-4304-930a-a2fa81d78f0d" config-ref="Salesforce_Config" type="Contact">
+                    <salesforce:records><![CDATA[#[output application/java
 ---
 [{
 	LastName: vars.stored_payload.LastName,
@@ -468,24 +467,23 @@ output application/java
 	Second_Emergency_Phone_03__c: vars.stored_payload.Second_Emergency_Contact_Phone3,
 	Volunteer_for_this_Program_Parent__c: vars.stored_payload.Volunteer
 }]]]]></salesforce:records>
-		</salesforce:create>
-			</when>
-			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="7710ae15-a22f-4abf-8f0c-ce7a7c344977" message="Contact with same name or email has been found"/>
-				<ee:transform doc:name="Transform Message" doc:id="ac5bb0c5-0ca5-4fe5-abe1-77e446a15104" >
-					<ee:message >
-						<ee:set-payload ><![CDATA[%dw 2.0
+                </salesforce:create>
+            </when>
+            <otherwise>
+                <logger level="INFO" doc:name="Logger" doc:id="7710ae15-a22f-4abf-8f0c-ce7a7c344977" message="Contact with same name or email has been found" />
+                <ee:transform doc:name="Transform Message" doc:id="ac5bb0c5-0ca5-4fe5-abe1-77e446a15104">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
 	contact__ID: payload[0].Id
 }]]></ee:set-payload>
-					</ee:message>
-					<ee:variables >
-					</ee:variables>
-				</ee:transform>
-				<salesforce:update type="Contact" doc:name="Update" doc:id="3e66bb09-890a-4a89-b212-51dcebd38eaa" config-ref="Salesforce_Config">
-					<salesforce:records ><![CDATA[#[output application/java
+                    </ee:message>
+                    <ee:variables />
+                </ee:transform>
+                <salesforce:update type="Contact" doc:name="Update" doc:id="3e66bb09-890a-4a89-b212-51dcebd38eaa" config-ref="Salesforce_Config">
+                    <salesforce:records><![CDATA[#[output application/java
 ---
 [{
 	
@@ -537,11 +535,11 @@ output application/json
 	(Second_Emergency_Phone_03__c: vars.stored_payload.Second_Emergency_Contact_Phone3) if (vars.stored_payload.Second_Emergency_Contact_Phone3 != null),
 	(Volunteer_for_this_Program_Parent__c: vars.stored_payload.Volunteer) if (vars.stored_payload.Volunteer != null)
 }]]]]></salesforce:records>
-				</salesforce:update> 
-			</otherwise>
-		</choice>
-		<logger level="INFO" doc:name="Logger" doc:id="aa6d154b-820c-4b9e-bb0b-984abebfe401" message="#[payload.items[0].exception]"/>
-		<ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="29de979e-5346-4cf1-85d1-5d39079a4735">
+                </salesforce:update>
+            </otherwise>
+        </choice>
+        <logger level="INFO" doc:name="Logger" doc:id="aa6d154b-820c-4b9e-bb0b-984abebfe401" message="#[payload.items[0].exception]" />
+        <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="29de979e-5346-4cf1-85d1-5d39079a4735">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -550,8 +548,203 @@ output application/json
 	Successful_Registration: payload.successful //boolean value
 }]]></ee:set-payload>
             </ee:message>
-			<ee:variables >
-			</ee:variables>
+            <ee:variables />
         </ee:transform>
+    </flow>
+    <flow name="get:\teams\(teamId):salesforce-data-api-config">
+        <flow-ref doc:name="entry-flow" doc:id="09219ac2-68fc-482e-847b-46c6eee13f71" name="entry-flow" />
+        <logger level="INFO" doc:name="Log entry-flow" doc:id="ac416d60-8471-494b-86d1-830116c72fd3" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]." />
+        <ee:transform doc:name="Store URI parameters" doc:id="534e8c14-01b9-4735-bbd4-a8fe6613574b">
+            <ee:variables>
+                <ee:set-variable variableName="teamId"><![CDATA[attributes.uriParams.'teamId']]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <logger level="INFO" doc:name="Log Stored URI Params" doc:id="bb3a5048-bfb2-4fc2-b112-5c5db4d9e103" message="URI Param - teamId: #[vars.teamId] - stored as vars" />
+        <salesforce:query doc:name="Query" doc:id="d1b574db-b455-4582-958f-f9a7b6af26bf" config-ref="Salesforce_Config">
+            <salesforce:salesforce-query><![CDATA[SELECT * FROM Team__c WHERE Team__c = ':teamid']]></salesforce:salesforce-query>
+            <salesforce:parameters><![CDATA[#[output application/java
+---
+{
+	teamid : vars.teamId
+}]]]></salesforce:parameters>
+        </salesforce:query>
+        <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="1abae06c-e9d8-427d-943d-8833afadf555">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	TeamName: payload01.Team__r.Name,
+	TeamId: payload01.Team__c default "",
+	AccountId: payload01.Team__r.Account default ""
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+        <logger level="INFO" doc:name="Log Created Response" doc:id="12fcc381-4976-4d20-96c7-f0741c31902a" message="#[payload]" />
+        <flow-ref doc:name="exit flow" doc:id="279192f6-8c9e-4489-abf1-f961504574d5" name="exit-flow" />
+    </flow>
+    <flow name="patch:\contacts\(id):application\json:salesforce-data-api-config">
+        <flow-ref doc:name="entry-flow" doc:id="ea712ccc-883f-484d-96c5-5d4f6e5782e7" name="entry-flow" />
+		<logger level="INFO" doc:name="Log entry-flow" doc:id="630fb42f-aa01-455b-84ab-ae96ae695b29" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
+		<ee:transform doc:name="Store Query parameters" doc:id="16374a77-ca21-4661-a15f-b4d0f23e368b">
+			<ee:variables>
+				<ee:set-variable variableName="id"><![CDATA[attributes.uriParams.'id']]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<ee:transform doc:name="Transform Message" doc:id="592cfbca-f5bb-4ed0-842a-8e72b8d5c977" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+[{
+	Id: payload.Id,
+	(FirstName: payload.FirstName) if payload.FirstName != null,
+	(LastName: payload.LastName) if payload.LastName != null,
+	(Birthdate: payload.DateOfBirth as Date {format: 'yyyy-MM-dd'}) if payload.DateOfBirth != null,
+	(MailingStreet: payload.StreetAddress) if payload.StreetAddress != null,
+	(MailingCity: payload.City) if payload.City != null,
+	(MailingState: payload.State) if payload.State != null,
+	(MailingPostalCode: payload.Zip) if payload.Zip != null,
+	(Parent_Home_Language__c: payload.HomeLanguage) if payload.HomeLanguage != null,
+	(Ethnicity__c: payload.Ethnicity) if payload.Ethnicity != null,
+	(Gender__c: payload.Gender) if payload.Gender != null,
+	(School_Attending__c: payload.SchoolAttending) if payload.SchoolAttending != null
+}]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce:update type="Contact" doc:name="Update" doc:id="22d1f2d0-03bc-4987-82e8-200abcd9b67a" config-ref="Salesforce_Config"/>
+		<choice doc:name="Update successful?" doc:id="61a478f2-2c8f-430b-a6ad-a5435c432f7a" >
+			<when expression="#[payload.items[0].successful == false]">
+				<ee:transform doc:name="Transform Message" doc:id="7c3a7df0-eb2b-4a4d-9182-1fcfd74a48fb" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: payload.items[0].message
+}]]></ee:set-payload>
+					</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[400]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  message: "Contact updated"
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="Log Created Response" doc:id="07b47086-0cbc-4db9-9012-faaabb58cff9" message="#[payload]" />
+		<flow-ref doc:name="exit flow" doc:id="db9d32e6-d89b-4614-8b62-e0a9368b687d" name="exit-flow" />
+    </flow>
+    <flow name="get:\contacts:salesforce-data-api-config">
+        <flow-ref doc:name="entry-flow" doc:id="c9b03396-87ae-4cc7-a322-5a02422f56ec" name="entry-flow" />
+        <logger level="INFO" doc:name="Log entry-flow" doc:id="4757f003-ed95-4269-9939-0811ef781500" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
+        <ee:transform doc:name="Store Query parameters" doc:id="13306605-ff4a-46bf-a760-5257cb741357">
+			<ee:variables>
+				<ee:set-variable variableName="dcyfId" ><![CDATA[attributes.queryParams.'dcyfId']]></ee:set-variable>
+				<ee:set-variable variableName="firstName" ><![CDATA[attributes.queryParams.'firstName']]></ee:set-variable>
+				<ee:set-variable variableName="lastName" ><![CDATA[attributes.queryParams.'lastName']]></ee:set-variable>
+				<ee:set-variable variableName="birthDate" ><![CDATA[attributes.queryParams.'birthDate']]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<salesforce:query doc:name="Query" doc:id="2d2bd613-7cc8-48df-b3e3-e1c628982996" config-ref="Salesforce_Config">
+            <salesforce:salesforce-query><![CDATA[SELECT Birthdate,Contact_Type__c,DCYF_Student_ID__c,Ethnicity__c,FirstName,Gender__c,Grade__c,Id,LastName,Level__c,MailingAddress,MailingCity,MailingCountry,MailingPostalCode,MailingState,MailingStreet,MiddleName,Name,Parent_Home_Language__c,RecordTypeId,School_Attending__c,Zip_First_Five_Digits__c FROM Contact WHERE Contact_Type__c = 'SCORES Student' AND (DCYF_Student_ID__c 
+ = ':dcyfId' OR (FirstName = ':firstName' AND LastName = ':lastName' AND BirthDate = :birthDate))]]></salesforce:salesforce-query>
+            <salesforce:parameters><![CDATA[#[output application/java
+---
+{
+	dcyfId : vars.dcyfId default 'aaa',
+	firstName: vars.firstName default '',
+	lastName: vars.lastName default '',
+	birthDate: vars.birthDate as Date {format: 'yyyy-MM-dd'}
+}]]]></salesforce:parameters>
+        </salesforce:query>
+		<ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	Id: payload01.Id as String default "",
+FirstName: payload01.FirstName as String default "",
+LastName: payload01.LastName as String default "",
+Status: payload01.Status as String default "",
+DateOfBirth: payload01.Birthdate as String default "",
+HousingStatus: payload01.Contact_c as String default "",
+StreetAddress: payload01.MailingStreet as String default "",
+City: payload01.MailingCity as String default "",
+State: payload01.MailingState as String default "",
+Zip: payload01.MailingPostalCode as String default "",
+HomeLanguage: payload01.Parent_Home_Language__c as String default "",
+Ethnicity: payload01.Ethnicity__c as String default "",
+Gender: payload01.Gender__c as String default "",
+EducationalAttainment: payload01.Grade_c as String default "",
+SchoolAttending: payload01.School_Attending__c as String default "",
+SchoolEntryDate: payload01.Contact_c as String default "",
+SFUSDEntryDate: payload01.Contact_c as String default "",
+K12GradeLevel: payload01.Level__c as String default ""
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+        <logger level="INFO" doc:name="Log Created Response" doc:id="b374f207-dfe3-48d7-99a2-b74e757cdb96" message="#[payload]" />
+        <flow-ref doc:name="exit flow" doc:id="17176b6b-a1c0-4851-984e-43b59c0506eb" name="exit-flow" />
+    </flow>
+    <flow name="get:\contacts\(id):salesforce-data-api-config">
+        <flow-ref doc:name="entry-flow" doc:id="3cefb3dd-a787-43f6-b305-ea08ddd5c2ce" name="entry-flow" />
+        <logger level="INFO" doc:name="Log entry-flow" doc:id="259840a7-a4b5-4c17-9326-0794dfea6b26" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
+        <ee:transform doc:name="Store URI parameters" doc:id="f0ca847c-5413-4e76-bde8-9aec2edd7b7d">
+			<ee:variables>
+				<ee:set-variable variableName="firstName" ><![CDATA[attributes.queryParams.'firstName']]></ee:set-variable>
+				<ee:set-variable variableName="lastName" ><![CDATA[attributes.queryParams.'lastName']]></ee:set-variable>
+				<ee:set-variable variableName="birthDate" ><![CDATA[attributes.queryParams.'birthDate']]></ee:set-variable>
+				<ee:set-variable variableName="id" ><![CDATA[attributes.uriParams.'id']]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<salesforce:query doc:name="Query" doc:id="484bbe2a-c7aa-42d5-9463-cd953b4abb1e" config-ref="Salesforce_Config">
+            <salesforce:salesforce-query><![CDATA[SELECT Birthdate,Contact_Type__c,DCYF_Student_ID__c,Ethnicity__c,FirstName,Gender__c,Grade__c,Id,LastName,Level__c,MailingAddress,MailingCity,MailingCountry,MailingPostalCode,MailingState,MailingStreet,MiddleName,Name,Parent_Home_Language__c,RecordTypeId,School_Attending__c,Zip_First_Five_Digits__c FROM Contact WHERE Contact_Type__c = 'SCORES Student' AND Id = ':id']]></salesforce:salesforce-query>
+            <salesforce:parameters><![CDATA[#[output application/java
+---
+{
+	id : vars.id
+}]]]></salesforce:parameters>
+        </salesforce:query>
+		<ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	Id: payload01.Id as String default "",
+FirstName: payload01.FirstName as String default "",
+LastName: payload01.LastName as String default "",
+Status: payload01.Status as String default "",
+DateOfBirth: payload01.Birthdate as String default "",
+HousingStatus: payload01.Contact_c as String default "",
+StreetAddress: payload01.MailingStreet as String default "",
+City: payload01.MailingCity as String default "",
+State: payload01.MailingState as String default "",
+Zip: payload01.MailingPostalCode as String default "",
+HomeLanguage: payload01.Parent_Home_Language__c as String default "",
+Ethnicity: payload01.Ethnicity__c as String default "",
+Gender: payload01.Gender__c as String default "",
+EducationalAttainment: payload01.Grade_c as String default "",
+SchoolAttending: payload01.School_Attending__c as String default "",
+SchoolEntryDate: payload01.Contact_c as String default "",
+SFUSDEntryDate: payload01.Contact_c as String default "",
+K12GradeLevel: payload01.Level__c as String default ""
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+        <logger level="INFO" doc:name="Log Created Response" doc:id="eb926194-1a98-423e-b0c5-d3910cc9ec21" message="#[payload]" />
+        <flow-ref doc:name="exit flow" doc:id="dbbecd8d-132a-4dcc-8e5b-4443895e0d71" name="exit-flow" />
     </flow>
 </mule>
