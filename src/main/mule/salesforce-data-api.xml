@@ -657,8 +657,10 @@ output application/json
 				<ee:set-variable variableName="birthDate" ><![CDATA[attributes.queryParams.'birthDate']]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<salesforce:query doc:name="Query" doc:id="2d2bd613-7cc8-48df-b3e3-e1c628982996" config-ref="Salesforce_Config">
-            <salesforce:salesforce-query><![CDATA[SELECT Birthdate,Contact_Type__c,DCYF_Student_ID__c,Ethnicity__c,FirstName,Gender__c,Grade__c,Id,LastName,Level__c,MailingAddress,MailingCity,MailingCountry,MailingPostalCode,MailingState,MailingStreet,MiddleName,Name,Parent_Home_Language__c,RecordTypeId,School_Attending__c,Zip_First_Five_Digits__c FROM Contact WHERE Contact_Type__c = 'SCORES Student' AND (DCYF_Student_ID__c 
+		<choice doc:name="Choice" doc:id="d8bc290a-d74d-4841-828e-6faa4b57e36b" >
+			<when expression="#[vars.birthDate != null and vars.birthDate != '']">
+				<salesforce:query doc:name="Select Query with Birthdate" doc:id="2d2bd613-7cc8-48df-b3e3-e1c628982996" config-ref="Salesforce_Config">
+            <salesforce:salesforce-query><![CDATA[SELECT Birthdate,Contact_Type__c,DCYF_Student_ID__c,Ethnicity__c,FirstName,Gender__c,Grade__c,Id,LastName,Level__c,MailingAddress,MailingCity,MailingCountry,MailingPostalCode,MailingState,MailingStreet,MiddleName,Name,Parent_Home_Language__c,RecordTypeId,School_Attending__c,Zip_First_Five_Digits__c FROM Contact WHERE (DCYF_Student_ID__c 
  = ':dcyfId' OR (FirstName = ':firstName' AND LastName = ':lastName' AND BirthDate = :birthDate))]]></salesforce:salesforce-query>
             <salesforce:parameters><![CDATA[#[output application/java
 ---
@@ -669,6 +671,21 @@ output application/json
 	birthDate: vars.birthDate as Date {format: 'yyyy-MM-dd'}
 }]]]></salesforce:parameters>
         </salesforce:query>
+			</when>
+			<otherwise >
+				<salesforce:query doc:name="Select Query without Birthdate" doc:id="ec730d90-d661-40ce-b9c0-d05dd4fc28a0" config-ref="Salesforce_Config">
+					<salesforce:salesforce-query><![CDATA[SELECT Birthdate,Contact_Type__c,DCYF_Student_ID__c,Ethnicity__c,FirstName,Gender__c,Grade__c,Id,LastName,Level__c,MailingAddress,MailingCity,MailingCountry,MailingPostalCode,MailingState,MailingStreet,MiddleName,Name,Parent_Home_Language__c,RecordTypeId,School_Attending__c,Zip_First_Five_Digits__c FROM Contact WHERE (DCYF_Student_ID__c 
+ = ':dcyfId' OR (FirstName = ':firstName' AND LastName = ':lastName'))]]></salesforce:salesforce-query>
+					<salesforce:parameters><![CDATA[#[output application/java
+---
+{
+	dcyfId : vars.dcyfId default 'aaa',
+	firstName: vars.firstName default '',
+	lastName: vars.lastName default ''
+}]]]></salesforce:parameters>
+				</salesforce:query>
+			</otherwise>
+		</choice>
 		<ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
@@ -704,14 +721,11 @@ K12GradeLevel: payload01.Level__c as String default ""
         <logger level="INFO" doc:name="Log entry-flow" doc:id="259840a7-a4b5-4c17-9326-0794dfea6b26" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
         <ee:transform doc:name="Store URI parameters" doc:id="f0ca847c-5413-4e76-bde8-9aec2edd7b7d">
 			<ee:variables>
-				<ee:set-variable variableName="firstName" ><![CDATA[attributes.queryParams.'firstName']]></ee:set-variable>
-				<ee:set-variable variableName="lastName" ><![CDATA[attributes.queryParams.'lastName']]></ee:set-variable>
-				<ee:set-variable variableName="birthDate" ><![CDATA[attributes.queryParams.'birthDate']]></ee:set-variable>
 				<ee:set-variable variableName="id" ><![CDATA[attributes.uriParams.'id']]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
 		<salesforce:query doc:name="Query" doc:id="484bbe2a-c7aa-42d5-9463-cd953b4abb1e" config-ref="Salesforce_Config">
-            <salesforce:salesforce-query><![CDATA[SELECT Birthdate,Contact_Type__c,DCYF_Student_ID__c,Ethnicity__c,FirstName,Gender__c,Grade__c,Id,LastName,Level__c,MailingAddress,MailingCity,MailingCountry,MailingPostalCode,MailingState,MailingStreet,MiddleName,Name,Parent_Home_Language__c,RecordTypeId,School_Attending__c,Zip_First_Five_Digits__c FROM Contact WHERE Contact_Type__c = 'SCORES Student' AND Id = ':id']]></salesforce:salesforce-query>
+            <salesforce:salesforce-query><![CDATA[SELECT Birthdate,Contact_Type__c,DCYF_Student_ID__c,Ethnicity__c,FirstName,Gender__c,Grade__c,Id,LastName,Level__c,MailingAddress,MailingCity,MailingCountry,MailingPostalCode,MailingState,MailingStreet,MiddleName,Name,Parent_Home_Language__c,RecordTypeId,School_Attending__c,Zip_First_Five_Digits__c FROM Contact WHERE Id = ':id']]></salesforce:salesforce-query>
             <salesforce:parameters><![CDATA[#[output application/java
 ---
 {
