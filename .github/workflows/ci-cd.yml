@@ -27,7 +27,7 @@ jobs:
         server-username: ANYPOINT_CICD_USERNAME
         server-password: ANYPOINT_CICD_PASSWORD
     - name: Build
-      run: mvn -B package --file pom.xml
+      run: mvn -X -B package --file pom.xml
     - name: Stamp artifact file name with commit hash
       run: |
         artifactName1=$(ls target/*.jar | head -1)
