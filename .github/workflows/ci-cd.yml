@@ -24,8 +24,8 @@ jobs:
       with:
         java-version: 1.8
         server-id: maven
-        server-username: ANYPOINT_CICD_USERNAME
-        server-password: ANYPOINT_CICD_PASSWORD
+        server-username: ${{ secrets.anypoint_cicd_username }}
+        server-password: ${{ secrets.anypoint_cicd_password }}
     - name: Build
       run: mvn -e -B package --file pom.xml
     - name: Stamp artifact file name with commit hash
