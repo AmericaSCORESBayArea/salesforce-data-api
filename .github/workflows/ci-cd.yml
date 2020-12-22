@@ -52,8 +52,8 @@ jobs:
         name: artifacts
     - name: Deploy to CloudHub
       env:
-        USERNAME: ${{ secrets.anypoint-cicd-username }}
-        PASSWORD: ${{ secrets.anypoint-cicd-password }}
+        USERNAME: ${{ secrets.anypoint_cicd_username }}
+        PASSWORD: ${{ secrets.anypoint_cicd_password }}
       run: |
         artifactName=$(ls *.jar | head -1)
         mvn mule:deploy -Dmule.artifact=$artifactName -Danypoint.userName="$USERNAME" -Danypoint.password="$PASSWORD"
