@@ -114,7 +114,13 @@
     </dependencies>
 
 	<repositories>
-          <repository>
+         <repository>
+            <id>scores-repository</id>
+            <name>SCORES Repository</name>
+            <url>https://maven.anypoint.mulesoft.com/api/v1/organizations/6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd/maven</url>
+            <layout>default</layout>
+        </repository>
+	<repository>
             <id>anypoint-exchange-v2</id>
             <name>Anypoint Exchange</name>
             <url>https://maven.anypoint.mulesoft.com/api/v2/maven</url>
