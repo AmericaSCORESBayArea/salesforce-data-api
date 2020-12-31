@@ -21,7 +21,7 @@
   "localAddress": "/127.0.0.1:8091",
   "relativePath": "/api-internal/contacts/0031T000049b9P7QAI",
   "uriParams": {
-    "id": "0031T000049b9P7QAI"
+    "contactId": "0031T000049b9P7QAI"
   },
   "rawRequestUri": "/api-internal/contacts/0031T000049b9P7QAI",
   "rawRequestPath": "/api-internal/contacts/0031T000049b9P7QAI",
