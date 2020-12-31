@@ -1,0 +1,1028 @@
+{
+	"info": {
+		"_postman_id": "f38f6974-8dff-491f-a78f-a15ecf90c816",
+		"name": "Scores - Salesforce Data API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const jar = pm.cookies.jar();",
+							"jar.clear(pm.request.url, function (error) {",
+							"  console.log(\"Clear Cookies\");",
+							"});",
+							"",
+							"var response = pm.response.json();",
+							"var access_token = response[\"access_token\"];",
+							"pm.environment.set(\"access_token\", access_token);",
+							"",
+							"console.log(\"Access Token \" + access_token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "{{ap_username}}",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{{ap_password}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://anypoint.mulesoft.com/accounts/login",
+					"protocol": "https",
+					"host": [
+						"anypoint",
+						"mulesoft",
+						"com"
+					],
+					"path": [
+						"accounts",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "API contracts",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://anypoint.mulesoft.com/apimanager/api/v1/organizations/{{org_id}}/environments/{{env_id}}/apis/16276606/contracts",
+					"protocol": "https",
+					"host": [
+						"anypoint",
+						"mulesoft",
+						"com"
+					],
+					"path": [
+						"apimanager",
+						"api",
+						"v1",
+						"organizations",
+						"{{org_id}}",
+						"environments",
+						"{{env_id}}",
+						"apis",
+						"16276606",
+						"contracts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Revoke contract",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "https://anypoint.mulesoft.com/apimanager/xapi/v1/organizations/{{org_id}}/environments/{{env_id}}/apis/16276606/contracts/1095542/revoke",
+					"protocol": "https",
+					"host": [
+						"anypoint",
+						"mulesoft",
+						"com"
+					],
+					"path": [
+						"apimanager",
+						"xapi",
+						"v1",
+						"organizations",
+						"{{org_id}}",
+						"environments",
+						"{{env_id}}",
+						"apis",
+						"16276606",
+						"contracts",
+						"1095542",
+						"revoke"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Revoke contract",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://anypoint.mulesoft.com/apimanager/xapi/v1/organizations/{{org_id}}/environments/{{env_id}}/apis/16315655/contracts/1140421/revoke",
+							"protocol": "https",
+							"host": [
+								"anypoint",
+								"mulesoft",
+								"com"
+							],
+							"path": [
+								"apimanager",
+								"xapi",
+								"v1",
+								"organizations",
+								"{{org_id}}",
+								"environments",
+								"{{env_id}}",
+								"apis",
+								"16315655",
+								"contracts",
+								"1140421",
+								"revoke"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Security-Policy",
+							"value": "default-src 'self'"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 Aug 2020 23:09:45 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"692-dAUPCMY/FDdqSU5aL7/b67nb0Xg\""
+						},
+						{
+							"key": "Expires",
+							"value": "-1"
+						},
+						{
+							"key": "Server",
+							"value": "nginx"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=31536000; includeSubDomains"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1682"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"audit\": {\n        \"created\": {\n            \"date\": \"2020-08-17T06:05:36.162Z\"\n        },\n        \"updated\": {\n            \"date\": \"2020-08-28T23:09:45.823Z\"\n        }\n    },\n    \"masterOrganizationId\": \"6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd\",\n    \"organizationId\": \"6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd\",\n    \"id\": 1140421,\n    \"status\": \"REVOKED\",\n    \"approvedDate\": \"2020-08-17T06:05:36.199Z\",\n    \"rejectedDate\": null,\n    \"revokedDate\": \"2020-08-28T23:09:45.823Z\",\n    \"applicationId\": 476399,\n    \"application\": {\n        \"audit\": {\n            \"created\": {\n                \"date\": \"2020-07-25T00:27:15.713Z\"\n            },\n            \"updated\": {}\n        },\n        \"masterOrganizationId\": \"6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd\",\n        \"id\": 476399,\n        \"name\": \"react-app\",\n        \"description\": \"Carlos' mobile app\",\n        \"clientProvider\": {\n            \"providerId\": null\n        },\n        \"coreServicesId\": \"a647e195e65c4a358563bd950916e28d\",\n        \"url\": null,\n        \"grantTypes\": [],\n        \"redirectUri\": [],\n        \"clientId\": \"a647e195e65c4a358563bd950916e28d\",\n        \"clientSecret\": \"45CDe2241f4C4D238d320fc6A7521C71\",\n        \"owner\": \"Archana Patel\",\n        \"email\": \"archana.patel@mulesoft.com\",\n        \"owners\": [\n            {\n                \"id\": \"48d02e04-855a-4e0c-8a1f-2eccb946b938\",\n                \"createdAt\": \"2020-07-08T04:27:53.160Z\",\n                \"updatedAt\": \"2020-08-28T22:55:12.407Z\",\n                \"organizationId\": \"6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd\",\n                \"firstName\": \"Archana\",\n                \"lastName\": \"Patel\",\n                \"email\": \"archana.patel@mulesoft.com\",\n                \"phoneNumber\": \"0279516410\",\n                \"idprovider_id\": \"mulesoft\",\n                \"username\": \"archana-scores\",\n                \"enabled\": true,\n                \"deleted\": false,\n                \"lastLogin\": \"2020-08-28T22:55:00.000Z\",\n                \"roles\": [\n                    \"cc43e20e-c04b-4c86-a29e-49ac7e7f8b58\"\n                ],\n                \"type\": \"host\"\n            }\n        ]\n    },\n    \"tierId\": null,\n    \"tier\": null,\n    \"requestedTierId\": null,\n    \"requestedTier\": null,\n    \"terms\": null,\n    \"groupInstanceId\": null,\n    \"groupInstance\": null,\n    \"partyId\": null,\n    \"partyName\": null,\n    \"condition\": \"NOT_APPLIED\",\n    \"apiId\": 16315655,\n    \"api\": {\n        \"audit\": {\n            \"created\": {},\n            \"updated\": {}\n        },\n        \"organizationId\": \"6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd\",\n        \"id\": 16315655\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Delete contract",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://anypoint.mulesoft.com/apimanager/api/v1/organizations/{{org_id}}/environments/{{env_id}}/apis/16276606/contracts/1095542",
+					"protocol": "https",
+					"host": [
+						"anypoint",
+						"mulesoft",
+						"com"
+					],
+					"path": [
+						"apimanager",
+						"api",
+						"v1",
+						"organizations",
+						"{{org_id}}",
+						"environments",
+						"{{env_id}}",
+						"apis",
+						"16276606",
+						"contracts",
+						"1095542"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Revoke contract",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://anypoint.mulesoft.com/apimanager/xapi/v1/organizations/{{org_id}}/environments/{{env_id}}/apis/16315655/contracts/1140421/revoke",
+							"protocol": "https",
+							"host": [
+								"anypoint",
+								"mulesoft",
+								"com"
+							],
+							"path": [
+								"apimanager",
+								"xapi",
+								"v1",
+								"organizations",
+								"{{org_id}}",
+								"environments",
+								"{{env_id}}",
+								"apis",
+								"16315655",
+								"contracts",
+								"1140421",
+								"revoke"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Security-Policy",
+							"value": "default-src 'self'"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 28 Aug 2020 23:09:45 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"692-dAUPCMY/FDdqSU5aL7/b67nb0Xg\""
+						},
+						{
+							"key": "Expires",
+							"value": "-1"
+						},
+						{
+							"key": "Server",
+							"value": "nginx"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=31536000; includeSubDomains"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1682"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"audit\": {\n        \"created\": {\n            \"date\": \"2020-08-17T06:05:36.162Z\"\n        },\n        \"updated\": {\n            \"date\": \"2020-08-28T23:09:45.823Z\"\n        }\n    },\n    \"masterOrganizationId\": \"6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd\",\n    \"organizationId\": \"6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd\",\n    \"id\": 1140421,\n    \"status\": \"REVOKED\",\n    \"approvedDate\": \"2020-08-17T06:05:36.199Z\",\n    \"rejectedDate\": null,\n    \"revokedDate\": \"2020-08-28T23:09:45.823Z\",\n    \"applicationId\": 476399,\n    \"application\": {\n        \"audit\": {\n            \"created\": {\n                \"date\": \"2020-07-25T00:27:15.713Z\"\n            },\n            \"updated\": {}\n        },\n        \"masterOrganizationId\": \"6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd\",\n        \"id\": 476399,\n        \"name\": \"react-app\",\n        \"description\": \"Carlos' mobile app\",\n        \"clientProvider\": {\n            \"providerId\": null\n        },\n        \"coreServicesId\": \"a647e195e65c4a358563bd950916e28d\",\n        \"url\": null,\n        \"grantTypes\": [],\n        \"redirectUri\": [],\n        \"clientId\": \"a647e195e65c4a358563bd950916e28d\",\n        \"clientSecret\": \"45CDe2241f4C4D238d320fc6A7521C71\",\n        \"owner\": \"Archana Patel\",\n        \"email\": \"archana.patel@mulesoft.com\",\n        \"owners\": [\n            {\n                \"id\": \"48d02e04-855a-4e0c-8a1f-2eccb946b938\",\n                \"createdAt\": \"2020-07-08T04:27:53.160Z\",\n                \"updatedAt\": \"2020-08-28T22:55:12.407Z\",\n                \"organizationId\": \"6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd\",\n                \"firstName\": \"Archana\",\n                \"lastName\": \"Patel\",\n                \"email\": \"archana.patel@mulesoft.com\",\n                \"phoneNumber\": \"0279516410\",\n                \"idprovider_id\": \"mulesoft\",\n                \"username\": \"archana-scores\",\n                \"enabled\": true,\n                \"deleted\": false,\n                \"lastLogin\": \"2020-08-28T22:55:00.000Z\",\n                \"roles\": [\n                    \"cc43e20e-c04b-4c86-a29e-49ac7e7f8b58\"\n                ],\n                \"type\": \"host\"\n            }\n        ]\n    },\n    \"tierId\": null,\n    \"tier\": null,\n    \"requestedTierId\": null,\n    \"requestedTier\": null,\n    \"terms\": null,\n    \"groupInstanceId\": null,\n    \"groupInstance\": null,\n    \"partyId\": null,\n    \"partyName\": null,\n    \"condition\": \"NOT_APPLIED\",\n    \"apiId\": 16315655,\n    \"api\": {\n        \"audit\": {\n            \"created\": {},\n            \"updated\": {}\n        },\n        \"organizationId\": \"6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd\",\n        \"id\": 16315655\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "a647e195e65c4a358563bd950916e28d",
+						"type": "text"
+					},
+					{
+						"key": "client_secret",
+						"value": "45CDe2241f4C4D238d320fc6A7521C71",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://salesforce-auth-api.us-e2.cloudhub.io/api/auth/login?useridentifier=415-815-7825&serviceprovider=Phone",
+					"protocol": "https",
+					"host": [
+						"salesforce-auth-api",
+						"us-e2",
+						"cloudhub",
+						"io"
+					],
+					"path": [
+						"api",
+						"auth",
+						"login"
+					],
+					"query": [
+						{
+							"key": "useridentifier",
+							"value": "415-815-7825"
+						},
+						{
+							"key": "serviceprovider",
+							"value": "Phone"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8091/api/-internal/coach/0031T00003OcljGQAR/all?date=2019-08-15",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8091",
+					"path": [
+						"api",
+						"-internal",
+						"coach",
+						"0031T00003OcljGQAR",
+						"all"
+					],
+					"query": [
+						{
+							"key": "date",
+							"value": "2019-08-15"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "teamseasons",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/api/coach/0031T00003OcljGQAR/teamseasons?date=2020-07-15",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"coach",
+						"0031T00003OcljGQAR",
+						"teamseasons"
+					],
+					"query": [
+						{
+							"key": "date",
+							"value": "2020-07-15"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "sessions",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8091/api-internal/coach/0031T00003OcljGQAR/teamseasons/a0q1T000008Jt3NQAS/sessions?date=2019-08-21",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8091",
+					"path": [
+						"api-internal",
+						"coach",
+						"0031T00003OcljGQAR",
+						"teamseasons",
+						"a0q1T000008Jt3NQAS",
+						"sessions"
+					],
+					"query": [
+						{
+							"key": "date",
+							"value": "2019-08-21"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "environments",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://anypoint.mulesoft.com/apiplatform/repository/v2/organizations/{{org_id}}/environments",
+					"protocol": "https",
+					"host": [
+						"anypoint",
+						"mulesoft",
+						"com"
+					],
+					"path": [
+						"apiplatform",
+						"repository",
+						"v2",
+						"organizations",
+						"{{org_id}}",
+						"environments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all - via CH Impl",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "a647e195e65c4a358563bd950916e28d",
+						"type": "text"
+					},
+					{
+						"key": "client_secret",
+						"value": "45CDe2241f4C4D238d320fc6A7521C71",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://salesforce-data-api.us-e2.cloudhub.io/api/coach/0031T00003OcljGQAR/all?date=2019-08-21",
+					"protocol": "http",
+					"host": [
+						"salesforce-data-api",
+						"us-e2",
+						"cloudhub",
+						"io"
+					],
+					"path": [
+						"api",
+						"coach",
+						"0031T00003OcljGQAR",
+						"all"
+					],
+					"query": [
+						{
+							"key": "date",
+							"value": "2019-08-21"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all - via Proxy",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "a647e195e65c4a358563bd950916e28d",
+						"type": "text"
+					},
+					{
+						"key": "client_secret",
+						"value": "45CDe2241f4C4D238d320fc6A7521C71",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://salesforce-data-api-proxy.us-e2.cloudhub.io/api/coach/0031T00003OcljGQAR/all?date=2019-08-21",
+					"protocol": "https",
+					"host": [
+						"salesforce-data-api-proxy",
+						"us-e2",
+						"cloudhub",
+						"io"
+					],
+					"path": [
+						"api",
+						"coach",
+						"0031T00003OcljGQAR",
+						"all"
+					],
+					"query": [
+						{
+							"key": "date",
+							"value": "2019-08-21"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "teamseasons - via Proxy",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "a647e195e65c4a358563bd950916e28d",
+						"type": "text"
+					},
+					{
+						"key": "client_secret",
+						"value": "45CDe2241f4C4D238d320fc6A7521C71",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://salesforce-data-api-proxy.us-e2.cloudhub.io/api/coach/0031T00003OcljGQAR/teamseasons?date=2019-08-21",
+					"protocol": "https",
+					"host": [
+						"salesforce-data-api-proxy",
+						"us-e2",
+						"cloudhub",
+						"io"
+					],
+					"path": [
+						"api",
+						"coach",
+						"0031T00003OcljGQAR",
+						"teamseasons"
+					],
+					"query": [
+						{
+							"key": "date",
+							"value": "2019-08-21"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "sessions - via Proxy",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "a647e195e65c4a358563bd950916e28d",
+						"type": "text"
+					},
+					{
+						"key": "client_secret",
+						"value": "45CDe2241f4C4D238d320fc6A7521C71",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://salesforce-data-api-proxy.us-e2.cloudhub.io/api/coach/0031T00003OcljGQAR/teamseasons/a0q1T000008Jt3NQAS/sessions",
+					"protocol": "https",
+					"host": [
+						"salesforce-data-api-proxy",
+						"us-e2",
+						"cloudhub",
+						"io"
+					],
+					"path": [
+						"api",
+						"coach",
+						"0031T00003OcljGQAR",
+						"teamseasons",
+						"a0q1T000008Jt3NQAS",
+						"sessions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "enrollments - via Proxy",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "a647e195e65c4a358563bd950916e28d",
+						"type": "text"
+					},
+					{
+						"key": "client_secret",
+						"value": "45CDe2241f4C4D238d320fc6A7521C71",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://salesforce-data-api-proxy.us-e2.cloudhub.io/api/coach/0031T00003OcljGQAR/teamseasons/a0q1T000008Jt3NQAS/enrollments",
+					"protocol": "https",
+					"host": [
+						"salesforce-data-api-proxy",
+						"us-e2",
+						"cloudhub",
+						"io"
+					],
+					"path": [
+						"api",
+						"coach",
+						"0031T00003OcljGQAR",
+						"teamseasons",
+						"a0q1T000008Jt3NQAS",
+						"enrollments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "session attendances - via Proxy",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "a647e195e65c4a358563bd950916e28d",
+						"type": "text"
+					},
+					{
+						"key": "client_secret",
+						"value": "45CDe2241f4C4D238d320fc6A7521C71",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://salesforce-data-api-proxy.us-e2.cloudhub.io/api/coach/0031T00003OcljGQAR/teamseasons/a0q1T000008Jt3NQAS/sessions/a0p1T00000IGusCQAT/attendances",
+					"protocol": "https",
+					"host": [
+						"salesforce-data-api-proxy",
+						"us-e2",
+						"cloudhub",
+						"io"
+					],
+					"path": [
+						"api",
+						"coach",
+						"0031T00003OcljGQAR",
+						"teamseasons",
+						"a0q1T000008Jt3NQAS",
+						"sessions",
+						"a0p1T00000IGusCQAT",
+						"attendances"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all - via Proxy - prod",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "87de15a992ad4510bf4f4a43d2f0e4bc",
+						"type": "text"
+					},
+					{
+						"key": "client_secret",
+						"value": "415d5220915f4c81814978896a4AEcC3",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://salesforce-data-api-proxy-prod.us-e2.cloudhub.io/api/coach/0031T00003OcljGQAR/all?date=2019-08-21",
+					"protocol": "https",
+					"host": [
+						"salesforce-data-api-proxy-prod",
+						"us-e2",
+						"cloudhub",
+						"io"
+					],
+					"path": [
+						"api",
+						"coach",
+						"0031T00003OcljGQAR",
+						"all"
+					],
+					"query": [
+						{
+							"key": "date",
+							"value": "2019-08-21"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Auth - prod",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "client_id",
+						"type": "text",
+						"value": "87de15a992ad4510bf4f4a43d2f0e4bc"
+					},
+					{
+						"key": "client_secret",
+						"type": "text",
+						"value": "415d5220915f4c81814978896a4AEcC3"
+					}
+				],
+				"url": {
+					"raw": "https://salesforce-auth-api-prod.us-e2.cloudhub.io/api/auth/login?useridentifier=4157135017&serviceprovider=Phone",
+					"protocol": "https",
+					"host": [
+						"salesforce-auth-api-prod",
+						"us-e2",
+						"cloudhub",
+						"io"
+					],
+					"path": [
+						"api",
+						"auth",
+						"login"
+					],
+					"query": [
+						{
+							"key": "useridentifier",
+							"value": "4157135017"
+						},
+						{
+							"key": "serviceprovider",
+							"value": "Phone"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "contacts",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "87de15a992ad4510bf4f4a43d2f0e4bc",
+						"type": "text"
+					},
+					{
+						"key": "client_secret",
+						"value": "415d5220915f4c81814978896a4AEcC3",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8091/api-internal/contacts?dcyfId=46890847&firstName=Ray'shonte&lastName=Rogers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8091",
+					"path": [
+						"api-internal",
+						"contacts"
+					],
+					"query": [
+						{
+							"key": "dcyfId",
+							"value": "46890847"
+						},
+						{
+							"key": "firstName",
+							"value": "Ray'shonte"
+						},
+						{
+							"key": "lastName",
+							"value": "Rogers"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "contacts",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"Id\": \"0031T000049b9P7QAI\",\n    \"FirstName\": \"Ariana\",\n    \"LastName\": \"Gutierrez\",\n     \"StreetAddress\": \"75 Canal Street Apt. C3\",\n    \"City\": \"San Rafael\",\n    \"State\": \"CA\",\n    \"Zip\": \"94901\",\n    \"HomeLanguage\": \"Spanish\",\n    \"Ethnicity\": \"Hispanic/Latino\",\n    \"Gender\": \"Female\",\n    \"EducationalAttainment\": \"\",\n    \"SchoolAttending\": \"\",\n    \"SchoolEntryDate\": \"\",\n    \"SFUSDEntryDate\": \"\",\n    \"K12GradeLevel\": \"\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8091/api-internal/contacts/0031T000049b9P7QAI",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8091",
+					"path": [
+						"api-internal",
+						"contacts",
+						"0031T000049b9P7QAI"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "contacts/{id}",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"Id\": \"0031T000049b9P7QAI\",\n    \"FirstName\": \"Ariana\",\n    \"LastName\": \"Gutierrez\",\n     \"StreetAddress\": \"75 Canal Street Apt. C3\",\n    \"City\": \"San Rafael\",\n    \"State\": \"CA\",\n    \"Zip\": \"94901\",\n    \"HomeLanguage\": \"Spanish\",\n    \"Ethnicity\": \"Hispanic/Latino\",\n    \"Gender\": \"Female\",\n    \"EducationalAttainment\": \"\",\n    \"SchoolAttending\": \"\",\n    \"SchoolEntryDate\": \"\",\n    \"SFUSDEntryDate\": \"\",\n    \"K12GradeLevel\": \"\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8091/api-internal/contacts/0031T00003d3qVnQAI",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8091",
+					"path": [
+						"api-internal",
+						"contacts",
+						"0031T00003d3qVnQAI"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "teams/{id}",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8091/api-internal/teams/a1N1T000005wL4GUAU",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8091",
+					"path": [
+						"api-internal",
+						"teams",
+						"a1N1T000005wL4GUAU"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "contacts/{id} - via proxy",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "a647e195e65c4a358563bd950916e28d",
+						"type": "text"
+					},
+					{
+						"key": "client_secret",
+						"value": "45CDe2241f4C4D238d320fc6A7521C71",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"Id\": \"0031T000049b9P7QAI\",\n    \"FirstName\": \"Ariana\",\n    \"LastName\": \"Gutierrez\",\n     \"StreetAddress\": \"75 Canal Street Apt. C3\",\n    \"City\": \"San Rafael\",\n    \"State\": \"CA\",\n    \"Zip\": \"94901\",\n    \"HomeLanguage\": \"Spanish\",\n    \"Ethnicity\": \"Hispanic/Latino\",\n    \"Gender\": \"Female\",\n    \"EducationalAttainment\": \"\",\n    \"SchoolAttending\": \"\",\n    \"SchoolEntryDate\": \"\",\n    \"SFUSDEntryDate\": \"\",\n    \"K12GradeLevel\": \"\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://salesforce-data-api-proxy.us-e2.cloudhub.io/api/contacts/0031T00003d3qVnQAI",
+					"protocol": "https",
+					"host": [
+						"salesforce-data-api-proxy",
+						"us-e2",
+						"cloudhub",
+						"io"
+					],
+					"path": [
+						"api",
+						"contacts",
+						"0031T00003d3qVnQAI"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
