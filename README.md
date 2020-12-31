@@ -2,33 +2,6 @@
 
 ## Manual Deployment Process 
 
-### Production Checklist:
-
-
-1. App - salesforce-data-api
-    1. externalise properties
-    2. encrypt credentials and sensitive configs (https://docs.mulesoft.com/mule-runtime/4.3/secure-configuration-properties#parameter-reference)
-    3. store decryption key in a safe place
-2. Create a proxy in API manager (Basic Endpoint) - prerequisite - RAML specification has to be published to Exchange
-    1. Manage API from Exchange
-    2. Name - salesforce-data-api (should be the RAML for which the proxy is created)
-    3. Basic Endpoint
-    4. Mule Application
-    5. Mule 4
-    6. Implementation URL - salesforce-data-api-proxy.us-e2.cloudhub.io (http://salesforce-data-api-proxy.us-e2.cloudhub.io/)
-    7. Save
-    8. Note API Instance ID
-3. API Proxy - salesforce-data-api-proxy
-    1. Configure API AutoDiscovery on proxy app (salesforce-data-api-proxy) - https://dzone.com/articles/implementing-api-auto-discovery-for-mulesoft-appli
-    2. create TLS context (https://docs.mulesoft.com/mule-runtime/4.3/build-an-https-service)
-        1. create a keystore (https://blogs.oracle.com/blogbypuneeth/steps-to-create-a-self-signed-certificate-using-openssl)
-    3. externalise properties
-    4. encrypt credentials and sensitive configs
-    5. store decryption key in a safe place
-
-Potential Risk - production.p12 is not stored in Github but it’s uploaded as part of the jar from local. Anyone with access to download jar file from Runtime Manager will have access to p12 file.
-
-
 ### Deploying to Sandbox
 
 1. Check the configuration properties are correct
@@ -77,6 +50,32 @@ Potential Risk - production.p12 is not stored in Github but it’s uploaded as p
     6. Deploy
     7. create alerts for deployment failures and worker unresponsive notifications
 
+
+### Production-ready Checklist:
+
+
+1. App - salesforce-data-api
+    1. externalise properties
+    2. encrypt credentials and sensitive configs (https://docs.mulesoft.com/mule-runtime/4.3/secure-configuration-properties#parameter-reference)
+    3. store decryption key in a safe place
+2. Create a proxy in API manager (Basic Endpoint) - prerequisite - RAML specification has to be published to Exchange
+    1. Manage API from Exchange
+    2. Name - salesforce-data-api (should be the RAML for which the proxy is created)
+    3. Basic Endpoint
+    4. Mule Application
+    5. Mule 4
+    6. Implementation URL - salesforce-data-api-proxy.us-e2.cloudhub.io (http://salesforce-data-api-proxy.us-e2.cloudhub.io/)
+    7. Save
+    8. Note API Instance ID
+3. API Proxy - salesforce-data-api-proxy
+    1. Configure API AutoDiscovery on proxy app (salesforce-data-api-proxy) - https://dzone.com/articles/implementing-api-auto-discovery-for-mulesoft-appli
+    2. create TLS context (https://docs.mulesoft.com/mule-runtime/4.3/build-an-https-service)
+        1. create a keystore (https://blogs.oracle.com/blogbypuneeth/steps-to-create-a-self-signed-certificate-using-openssl)
+    3. externalise properties
+    4. encrypt credentials and sensitive configs
+    5. store decryption key in a safe place
+
+Potential Risk - production.p12 is not stored in Github but it’s uploaded as part of the jar from local. Anyone with access to download jar file from Runtime Manager will have access to p12 file.
 
 ### Pending tasks - 
 
