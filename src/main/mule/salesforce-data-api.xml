@@ -663,11 +663,12 @@ output application/json
             <salesforce:salesforce-query><![CDATA[SELECT Birthdate,Contact_Type__c,DCYF_Student_ID__c,Ethnicity__c,FirstName,Gender__c,Grade__c,Id,LastName,Level__c,MailingAddress,MailingCity,MailingCountry,MailingPostalCode,MailingState,MailingStreet,MiddleName,Name,Parent_Home_Language__c,RecordTypeId,School_Attending__c,Zip_First_Five_Digits__c FROM Contact WHERE (DCYF_Student_ID__c 
  = ':dcyfId' OR (FirstName = ':firstName' AND LastName = ':lastName' AND BirthDate = :birthDate))]]></salesforce:salesforce-query>
             <salesforce:parameters><![CDATA[#[output application/java
+import * from modules::GlobalModules
 ---
 {
 	dcyfId : vars.dcyfId default 'aaa',
-	firstName: vars.firstName default '',
-	lastName: vars.lastName default '',
+	firstName: escapeSpecialSOQLChars(vars.firstName, chars) default '',
+	lastName: escapeSpecialSOQLChars(vars.lastName, chars) default '',
 	birthDate: vars.birthDate as Date {format: 'yyyy-MM-dd'}
 }]]]></salesforce:parameters>
         </salesforce:query>
@@ -677,11 +678,12 @@ output application/json
 					<salesforce:salesforce-query><![CDATA[SELECT Birthdate,Contact_Type__c,DCYF_Student_ID__c,Ethnicity__c,FirstName,Gender__c,Grade__c,Id,LastName,Level__c,MailingAddress,MailingCity,MailingCountry,MailingPostalCode,MailingState,MailingStreet,MiddleName,Name,Parent_Home_Language__c,RecordTypeId,School_Attending__c,Zip_First_Five_Digits__c FROM Contact WHERE (DCYF_Student_ID__c 
  = ':dcyfId' OR (FirstName = ':firstName' AND LastName = ':lastName'))]]></salesforce:salesforce-query>
 					<salesforce:parameters><![CDATA[#[output application/java
+import * from modules::GlobalModules
 ---
 {
 	dcyfId : vars.dcyfId default 'aaa',
-	firstName: vars.firstName default '',
-	lastName: vars.lastName default ''
+	firstName: escapeSpecialSOQLChars(vars.firstName, chars) default '',
+	lastName: escapeSpecialSOQLChars(vars.lastName, chars) default ''
 }]]]></salesforce:parameters>
 				</salesforce:query>
 			</otherwise>
