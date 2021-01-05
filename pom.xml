@@ -115,8 +115,8 @@
 
 	<repositories>
          <repository>
-            <id>scores-repository</id>
-            <name>SCORES Repository</name>
+            <id>scores-exchange</id>
+            <name>SCORES Exchange</name>
             <url>https://maven.anypoint.mulesoft.com/api/v2/organizations/6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd/maven</url>
             <layout>default</layout>
         </repository>
