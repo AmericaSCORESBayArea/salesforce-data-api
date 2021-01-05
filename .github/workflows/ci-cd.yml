@@ -5,8 +5,6 @@ name: Java CI with Maven
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
 
 jobs:
   build:
@@ -23,16 +21,19 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-        server-id: maven
-        server-username: ${{ secrets.anypoint_cicd_username }}
-        server-password: ${{ secrets.anypoint_cicd_password }}
-    - name: Build
-      run: mvn -e -B package --file pom.xml
+        server-id: scores-exchange
+        server-username: USERNAME
+        server-password: PASSWORD
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml -X
+      env:
+        USERNAME: ${{ secrets.anypoint_cicd_username }}
+        PASSWORD: ${{ secrets.anypoint_cicd_password }}
     - name: Stamp artifact file name with commit hash
       run: |
         artifactName1=$(ls target/*.jar | head -1)
         commitHash=$(git rev-parse --short "$GITHUB_SHA")
-        artifactName2=$(ls target/*.jar | head -1 | sed "s/.jar/.$commitHash.jar/g")
+        artifactName2=$(ls target/*.jar | head -1 | sed "s/.jar/-$commitHash.jar/g")
         mv $artifactName1 $artifactName2
     - uses: actions/upload-artifact@master
       with:
@@ -53,10 +54,10 @@ jobs:
     - uses: actions/download-artifact@master
       with:
         name: artifacts
-    - name: Deploy to CloudHub
+    - name: Deploy to Sandbox
       env:
         USERNAME: ${{ secrets.anypoint_cicd_username }}
         PASSWORD: ${{ secrets.anypoint_cicd_password }}
       run: |
         artifactName=$(ls *.jar | head -1)
-        mvn mule:deploy -Dmule.artifact=$artifactName -Danypoint.userName="$USERNAME" -Danypoint.password="$PASSWORD"
+        mvn mule:deploy -e -X -Dmule.artifact=$artifactName -Danypoint.username="$USERNAME" -Danypoint.password="$PASSWORD" -Denv=Sandbox
