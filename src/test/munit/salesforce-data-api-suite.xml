@@ -212,7 +212,7 @@ assert_expression_payload::main({payload: payload, attributes: attributes, vars:
 			</munit:set-event>
 		</munit:behavior>
 		<munit:execution >
-			<flow-ref doc:name="Flow-ref to post:\contact:application\json:salesforce-data-api-config" doc:id="e463fb79-0079-4a5d-84c0-7d8af532582f" name="post:\contact:application\json:salesforce-data-api-config"/>
+			<flow-ref doc:name="Flow-ref to post:\contact:application\json:salesforce-data-api-config" doc:id="e463fb79-0079-4a5d-84c0-7d8af532582f" name="post:\contacts:application\json:salesforce-data-api-config"/>
 		</munit:execution>
 		<munit:validation >
 			<munit-tools:assert doc:name="Assert payload" doc:id="9892c5b6-668f-4216-bc0c-a0a90f3618e1" message="The payload does not match">
@@ -337,7 +337,7 @@ assert_expression_payload::main({payload: payload, attributes: attributes, vars:
 			</munit:set-event>
 		</munit:behavior>
 		<munit:execution >
-			<flow-ref doc:name="Flow-ref to patch:\contacts\(id):application\json:salesforce-data-api-config" doc:id="b3daf84a-2b4d-486f-9b35-8946b7921167" name="patch:\contacts\(id):application\json:salesforce-data-api-config"/>
+			<flow-ref doc:name="Flow-ref to patch:\contacts\(id):application\json:salesforce-data-api-config" doc:id="b3daf84a-2b4d-486f-9b35-8946b7921167" name="patch:\contacts\(contactId):application\json:salesforce-data-api-config"/>
 		</munit:execution>
 		<munit:validation >
 			<munit-tools:assert doc:name="Assert payload" doc:id="4175422c-6e1e-4ae2-855c-54ed161ec458" message="The payload does not match">
@@ -415,7 +415,7 @@ assert_expression_payload::main({payload: payload, attributes: attributes, vars:
 			</munit:set-event>
 		</munit:behavior>
 		<munit:execution >
-			<flow-ref doc:name="Flow-ref to get:\contacts\(id):salesforce-data-api-config" doc:id="c12bee89-f8b4-485b-8976-83f6eb60b42f" name="get:\contacts\(id):salesforce-data-api-config"/>
+			<flow-ref doc:name="Flow-ref to get:\contacts\(id):salesforce-data-api-config" doc:id="c12bee89-f8b4-485b-8976-83f6eb60b42f" name="get:\contacts\(contactId):salesforce-data-api-config"/>
 		</munit:execution>
 		<munit:validation >
 			<munit-tools:assert doc:name="Assert payload" doc:id="a907a8cb-3ffc-4bbe-8903-b3dd597046bd" message="The payload does not match">

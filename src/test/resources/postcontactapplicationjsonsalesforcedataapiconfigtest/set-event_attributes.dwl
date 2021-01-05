@@ -18,16 +18,16 @@
   "method": "POST",
   "scheme": "http",
   "queryParams": {},
-  "requestUri": "/api-internal/contact",
+  "requestUri": "/api-internal/contacts",
   "queryString": "",
   "version": "HTTP/1.1",
-  "maskedRequestPath": "/contact",
+  "maskedRequestPath": "/contacts",
   "listenerPath": "/api-internal/*",
   "localAddress": "/127.0.0.1:8091",
-  "relativePath": "/api-internal/contact",
+  "relativePath": "/api-internal/contacts",
   "uriParams": {},
-  "rawRequestUri": "/api-internal/contact",
-  "rawRequestPath": "/api-internal/contact",
+  "rawRequestUri": "/api-internal/contacts",
+  "rawRequestPath": "/api-internal/contacts",
   "remoteAddress": "/127.0.0.1:56258",
-  "requestPath": "/api-internal/contact"
+  "requestPath": "/api-internal/contacts"
 }
