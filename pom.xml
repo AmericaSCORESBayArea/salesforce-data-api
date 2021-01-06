@@ -65,8 +65,8 @@
 				</executions>
 				<configuration>
 					<systemPropertyVariables>
-						<env>Sandbox</env>
-						<runtime.decryptionkey>eHcI828i7noG</runtime.decryptionkey>
+						<env>${env}</env>
+						<runtime.decryptionkey>${runtime.decryptionkey}</runtime.decryptionkey>
 					</systemPropertyVariables>
 					<coverage>
 						<runCoverage>true</runCoverage>
