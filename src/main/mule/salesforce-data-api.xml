@@ -176,7 +176,9 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	TeamSeasonId: payload01.Id default "",
 	TeamName: payload01.Team__r[0].Name default "",
 	SchoolSite: payload01.School_Site__c default "",
-	SeasonEndDate: payload01.Season_End_Date__c as String default ""
+	SeasonEndDate: payload01.Season_End_Date__c as String default "",
+	ScoresProgramManager: payload01.SCORES_Program_Manager__r[0].Name default "",
+	ProgramCoordinator:  payload01.SCORES_Program_Coordinator__r[0].Name default "",
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>
@@ -1133,7 +1135,65 @@ payload map ( payload01 , indexOfPayload01 ) -> {
           <flow-ref doc:name="message-for-not-implemented-endpoints" doc:id="8401f088-397e-4ce3-bb7a-afc2337aebef" name="message-for-not-implemented-endpoints" />
     </flow>
     <flow name="get:\coach\(coachId)\teamseasons\(teamSeasonId)\teamseasonsNotOwnedByCoach:salesforce-data-api-config">
-           <flow-ref doc:name="message-for-not-implemented-endpoints" doc:id="45d5b862-ee43-49ae-a4cd-cf7a9a98b5da" name="message-for-not-implemented-endpoints" />
+		<flow-ref doc:name="entry-flow" doc:id="595c7a13-1782-41e6-86d9-5eea0c897a44" name="entry-flow" />
+		<logger level="INFO" doc:name="Log entry-flow" doc:id="952e2fd2-8dd4-4d5f-b0dc-a4a534bfade2" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. Also for this request we have queryParams: date=#[attributes.queryParams[0]]" />
+		<ee:transform doc:name="Stored URI Parameters" doc:id="d7d2fa73-57a0-424d-bcfd-f5b6eea3476a" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="coachId" ><![CDATA[attributes.uriParams.'coachId']]></ee:set-variable>
+				<ee:set-variable variableName="teamSeasonId" ><![CDATA[attributes.uriParams.'teamSeasonId']]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger level="INFO" doc:name="Log Stored URI Params" doc:id="ee0bb9ae-03bd-4790-b91f-bef10e316e6d" message="URI Param - coachId: #[vars.coachId] - stored as var and URI Param - teamSeasonID: #[vars.teamSeasonID] - stored as var" />
+		<salesforce:query doc:name="Query for Region" doc:id="8513ca2f-bc4f-4cd8-b545-1e933ff51cba" config-ref="Salesforce_Config" >
+			<salesforce:salesforce-query ><![CDATA[SELECT Team__r.School_Site__r.Region__c FROM Team_Season__c WHERE  ID = ':teamSeasonId']]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[output application/java
+---
+{
+	teamSeasonId : vars.teamSeasonId
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<set-variable value="payload.Team__r.School_Site__r.Region__c" doc:name="Region" doc:id="72db62b6-2331-4945-8c01-1401f95cdbd2" variableName="region" />
+		<salesforce:query doc:name="Query for Season" doc:id="e810c534-3df2-4a94-b8db-44d2b1d134bd" config-ref="Salesforce_Config" >
+			<salesforce:salesforce-query ><![CDATA[SELECT Id FROM Season__c ORDER BY CreatedDate DESC limit 1]]></salesforce:salesforce-query>
+		</salesforce:query>
+		<set-variable value="payload.Id" doc:name="Season" doc:id="598eb6c0-f1af-4780-8834-eb3e14ca2678" variableName="season" />
+		<salesforce:query doc:name="Query" doc:id="eedce5c0-b752-483e-9de9-5168740b7687" config-ref="Salesforce_Config" >
+			<salesforce:salesforce-query ><![CDATA[SELECT Anticipated_Players_Enrollment__c,Coach_Soccer__c,Coach_Writing__c,CreatedById,CreatedDate,Date_Last_Session_Attended__c,Id,IsDeleted,LastActivityDate,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate,Name,Number_of_Attendance_Completed__c,Number_of_Attendance_Incomplete__c,Number_of_Students_Absent__c,Number_of_Students_Present__c,Number_of_Team_Seasons__c,Partnership__c,Percent_of_Attendance_Completed__c,Percent_of_Students_Present__c,Schedule__c,School_Site__c,SCORES_Program_Coordinator__c,SCORES_Program_Manager__c,Season_End_Date__c,Season_Start_Date__c,Season__c,SystemModstamp,Team__c,Total_Number_of_Players__c,Total_Number_of_Sessions__c FROM Team_Season__c WHERE (Coach_Soccer__c != ':coachId' OR Coach_Writing__c != ':coachId' OR SCORES_Program_Coordinator__c != ':coachId' OR SCORES_Program_Manager__c != ':coachId') AND (Team__r.School_Site__r.Region__c = ':region') AND (Season__c = ':season']]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[output application/java
+---
+{
+	season : vars.season,
+	region : vars.region,
+	coachId : vars.coachId
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<ee:transform doc:name="Create Response" doc:id="6ae427b2-6646-4403-97e1-d22bab32a86e" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	SeasonStartDate: payload01.Season_Start_Date__c as String default "",
+	TotalNoOfSessions: payload01.Total_Number_of_Sessions__c default 0,
+	CoachWriting: payload01.Coach_Writing__r[0].Name default "",
+	Partnership: payload01.Partnership__c default "",
+	SeasonName: payload01.Season__r[0].Name default "",
+	TotalNoOfPlayers: payload01.Total_Number_of_Players__c default 0,
+	TeamSeasonName: payload01.Name default "",
+	CoachSoccer: payload01.Coach_Soccer__r[0].Name default "",
+	TeamSeasonId: payload01.Id default "",
+	TeamName: payload01.Team__r[0].Name default "",
+	SchoolSite: payload01.School_Site__c default "",
+	SeasonEndDate: payload01.Season_End_Date__c as String default "",
+	ProgramCoordinator:  payload01.SCORES_Program_Coordinator__r[0].Name default "",
+	ScoreProgramManager: payload01.SCORES_Program_Manager__r[0].Name default ""
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Log Created Response" doc:id="1d986f67-ea09-4823-8445-bd5447a11b9f" message="#[payload]" />
+		<flow-ref doc:name="exit flow" doc:id="c7a3dc41-c900-4b0a-a4f5-cb64ffa4e418" name="exit-flow" />
     </flow>
     <flow name="post:\teamSeasons:application\json:salesforce-data-api-config">
         <flow-ref doc:name="message-for-not-implemented-endpoints" doc:id="1f87c942-094b-467e-a602-82dbc1f67bcf" name="message-for-not-implemented-endpoints" />
