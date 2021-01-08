@@ -64,10 +64,6 @@
 					</execution>
 				</executions>
 				<configuration>
-					<systemPropertyVariables>
-						<env>${env}</env>
-						<runtime.decryptionkey>${runtime.decryptionkey}</runtime.decryptionkey>
-					</systemPropertyVariables>
 					<coverage>
 						<runCoverage>true</runCoverage>
 						<formats>
