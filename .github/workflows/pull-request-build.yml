@@ -25,17 +25,7 @@ jobs:
     - name: Add Maven Settings
       uses: s4u/maven-settings-action@v2.3.0
       with:
-        servers: |
-          [{
-              "id": "scores-exchange",
-              "username": "${{ secrets.anypoint_cicd_username }}",
-              "password": "${{ secrets.anypoint_cicd_password }}"
-          },
-          {
-              "id": "mule-enterprise",
-              "username": "${{ secrets.mule_nexus_username }}",
-              "password": "${{ secrets.mule_nexus_password }}"
-          }]
+        servers: '[{ "id": "scores-exchange", "username": "${{ secrets.anypoint_cicd_username }}", "password": "${{ secrets.anypoint_cicd_password }}"},{ "id": "mule-enterprise", "username": "${{ secrets.mule_nexus_username }}", "password": "${{ secrets.mule_nexus_password }}"}]'
     - name: Print effective Maven Settings
       run: mvn help:effective-settings
     - name: Build with Maven
