@@ -25,6 +25,7 @@ jobs:
     - name: Add Maven Settings
       uses: s4u/maven-settings-action@v2.3.0
       with:
+        override: true
         servers: '[{ "id": "scores-exchange", "username": "${{ secrets.anypoint_cicd_username }}", "password": "${{ secrets.anypoint_cicd_password }}"},{ "id": "mule-enterprise", "username": "${{ secrets.mule_nexus_username }}", "password": "${{ secrets.mule_nexus_password }}"}]'
     - name: Build with Maven
-      run: mvn -B test --file pom.xml -e
+      run: mvn -B package --file pom.xml -X -e
