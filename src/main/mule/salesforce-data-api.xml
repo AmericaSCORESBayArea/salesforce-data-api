@@ -1137,7 +1137,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
     <flow name="get:\coach\(coachId)\teamseasons\(teamSeasonId)\teamseasonsNotOwnedByCoach:salesforce-data-api-config">
 		<flow-ref doc:name="entry-flow" doc:id="595c7a13-1782-41e6-86d9-5eea0c897a44" name="entry-flow" />
 		<logger level="INFO" doc:name="Log entry-flow" doc:id="952e2fd2-8dd4-4d5f-b0dc-a4a534bfade2" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. Also for this request we have queryParams: date=#[attributes.queryParams[0]]" />
-		<ee:transform doc:name="Stored URI Parameters" doc:id="d7d2fa73-57a0-424d-bcfd-f5b6eea3476a" >
+		<ee:transform doc:name="Store URI Parameters" doc:id="d7d2fa73-57a0-424d-bcfd-f5b6eea3476a" >
 			<ee:message >
 			</ee:message>
 			<ee:variables >
@@ -1146,21 +1146,21 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			</ee:variables>
 		</ee:transform>
 		<logger level="INFO" doc:name="Log Stored URI Params" doc:id="ee0bb9ae-03bd-4790-b91f-bef10e316e6d" message="URI Param - coachId: #[vars.coachId] - stored as var and URI Param - teamSeasonID: #[vars.teamSeasonID] - stored as var" />
-		<salesforce:query doc:name="Query for Region" doc:id="8513ca2f-bc4f-4cd8-b545-1e933ff51cba" config-ref="Salesforce_Config" >
-			<salesforce:salesforce-query ><![CDATA[SELECT Team__r.School_Site__r.Region__c FROM Team_Season__c WHERE  ID = ':teamSeasonId']]></salesforce:salesforce-query>
+		<salesforce:query doc:name="Query for Region" doc:id="baf09cac-302c-4c6a-9a26-8ec98054cd54" config-ref="Salesforce_Config">
+			<salesforce:salesforce-query ><![CDATA[SELECT Team__r.School_Site__r.Region__c FROM Team_Season__c WHERE ID = ':teamSeasonId']]></salesforce:salesforce-query>
 			<salesforce:parameters ><![CDATA[#[output application/java
 ---
 {
 	teamSeasonId : vars.teamSeasonId
 }]]]></salesforce:parameters>
 		</salesforce:query>
-		<set-variable value="payload.Team__r.School_Site__r.Region__c" doc:name="Region" doc:id="72db62b6-2331-4945-8c01-1401f95cdbd2" variableName="region" />
+		<set-variable value='#[payload.Team__r.School_Site__r[0].Region__c]' doc:name="Region" doc:id="72db62b6-2331-4945-8c01-1401f95cdbd2" variableName="region" />
 		<salesforce:query doc:name="Query for Season" doc:id="e810c534-3df2-4a94-b8db-44d2b1d134bd" config-ref="Salesforce_Config" >
 			<salesforce:salesforce-query ><![CDATA[SELECT Id FROM Season__c ORDER BY CreatedDate DESC limit 1]]></salesforce:salesforce-query>
 		</salesforce:query>
-		<set-variable value="payload.Id" doc:name="Season" doc:id="598eb6c0-f1af-4780-8834-eb3e14ca2678" variableName="season" />
+		<set-variable value='#[payload[0].Id]' doc:name="Season" doc:id="598eb6c0-f1af-4780-8834-eb3e14ca2678" variableName="season" />
 		<salesforce:query doc:name="Query" doc:id="eedce5c0-b752-483e-9de9-5168740b7687" config-ref="Salesforce_Config" >
-			<salesforce:salesforce-query ><![CDATA[SELECT Anticipated_Players_Enrollment__c,Coach_Soccer__c,Coach_Writing__c,CreatedById,CreatedDate,Date_Last_Session_Attended__c,Id,IsDeleted,LastActivityDate,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate,Name,Number_of_Attendance_Completed__c,Number_of_Attendance_Incomplete__c,Number_of_Students_Absent__c,Number_of_Students_Present__c,Number_of_Team_Seasons__c,Partnership__c,Percent_of_Attendance_Completed__c,Percent_of_Students_Present__c,Schedule__c,School_Site__c,SCORES_Program_Coordinator__c,SCORES_Program_Manager__c,Season_End_Date__c,Season_Start_Date__c,Season__c,SystemModstamp,Team__c,Total_Number_of_Players__c,Total_Number_of_Sessions__c FROM Team_Season__c WHERE (Coach_Soccer__c != ':coachId' OR Coach_Writing__c != ':coachId' OR SCORES_Program_Coordinator__c != ':coachId' OR SCORES_Program_Manager__c != ':coachId') AND (Team__r.School_Site__r.Region__c = ':region') AND (Season__c = ':season']]></salesforce:salesforce-query>
+			<salesforce:salesforce-query ><![CDATA[SELECT Anticipated_Players_Enrollment__c,Coach_Soccer__c,Coach_Writing__c,CreatedById,CreatedDate,Date_Last_Session_Attended__c,Id,IsDeleted,LastActivityDate,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate,Name,Number_of_Attendance_Completed__c,Number_of_Attendance_Incomplete__c,Number_of_Students_Absent__c,Number_of_Students_Present__c,Number_of_Team_Seasons__c,Partnership__c,Percent_of_Attendance_Completed__c,Percent_of_Students_Present__c,Schedule__c,School_Site__c,SCORES_Program_Coordinator__c,SCORES_Program_Manager__c,Season_End_Date__c,Season_Start_Date__c,Season__c,SystemModstamp,Team__c,Total_Number_of_Players__c,Total_Number_of_Sessions__c FROM Team_Season__c WHERE (Coach_Soccer__c != ':coachId' OR Coach_Writing__c != ':coachId' OR SCORES_Program_Coordinator__c != ':coachId' OR SCORES_Program_Manager__c != ':coachId') AND (Team__r.School_Site__r.Region__c = ':region') AND (Season__c = ':season')]]></salesforce:salesforce-query>
 			<salesforce:parameters ><![CDATA[#[output application/java
 ---
 {
