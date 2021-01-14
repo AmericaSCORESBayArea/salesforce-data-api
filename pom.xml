@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project
-	xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.mycompany</groupId>
@@ -64,10 +61,6 @@
 					</execution>
 				</executions>
 				<configuration>
-					<systemPropertyVariables>
-						<env>${env}</env>
-						<runtime.decryptionkey>${runtime.decryptionkey}</runtime.decryptionkey>
-					</systemPropertyVariables>
 					<coverage>
 						<runCoverage>true</runCoverage>
 						<formats>
@@ -126,14 +119,14 @@
 			<version>1.2.3</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
-		<dependency>
-			<groupId>6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd</groupId>
-			<artifactId>salesforce-data-api</artifactId>
-			<version>3.0.2</version>
-			<classifier>raml</classifier>
-			<type>zip</type>
-		</dependency>
-	</dependencies>
+    	<dependency>
+            <groupId>6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd</groupId>
+            <artifactId>salesforce-data-api</artifactId>
+            <version>3.0.4</version>
+            <classifier>raml</classifier>
+            <type>zip</type>
+        </dependency>
+    </dependencies>
 
 	<repositories>
 		<repository>
@@ -153,6 +146,18 @@
 			<name>Anypoint Exchange</name>
 			<url>https://maven.anypoint.mulesoft.com/api/v2/maven</url>
 			<layout>default</layout>
+		</repository>
+		<repository>
+			<id>mule-enterprise</id>
+			<name>Mule Enterprise Repository</name>
+			<url>https://repository.mulesoft.org/nexus-ee/content/repositories/releases-ee/</url>
+			<layout>default</layout>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
 		</repository>
 	</repositories>
 	<pluginRepositories>
