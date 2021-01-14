@@ -7,9 +7,9 @@
     <salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="012e809f-72bb-49a5-b21f-28fa4b364ab3">
         <salesforce:basic-connection username="${sfdc.user}" password="${secure::sfdc.password}" securityToken="${secure::sfdc.token}" url="${sfdc.url}" />
     </salesforce:sfdc-config>
-    <configuration-properties doc:name="Configuration properties" doc:id="0eb48937-d16f-4295-9b69-1d573a11de0a" file="properties/${env}.properties" />
-    <secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="68ad0b7f-e973-4ac4-a892-4b3c1899d82d" file="properties/${env}-secure.properties" key="${runtime.decryptionkey}">
-        <secure-properties:encrypt algorithm="Blowfish" />
+  <configuration-properties doc:name="Configuration properties" doc:id="7c250965-7498-46d2-a4cf-47c6cca0411c" file="properties/${env}.properties" />
+    <secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="4ed16836-9f40-444f-b5cd-974fcd24e5bc" file="properties/${env}-secure.properties" key="${runtime.decryptionkey}"> 
+         <secure-properties:encrypt algorithm="Blowfish" />
     </secure-properties:config>
     <flow name="salesforce-data-api-main">
         <http:listener config-ref="salesforce-data-api-httpListenerConfig" path="/api-internal/*">

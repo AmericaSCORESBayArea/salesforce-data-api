@@ -2,7 +2,7 @@
   "secureProperties": ["runtime.decryptionkey"],
   "redeploymentEnabled": true,
   "name": "secure-properties",
-  "minMuleVersion": "4.2.0",
+  "minMuleVersion": "4.3.0",
   "requiredProduct": "MULE_EE",
   "classLoaderModelLoaderDescriptor": {
     "id": "mule",
