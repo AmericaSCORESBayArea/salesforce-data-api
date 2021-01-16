@@ -152,14 +152,14 @@ output application/json
         </ee:transform>
         <logger level="INFO" doc:name="Log Stored URI Params" doc:id="8027a799-c637-4b02-8cd4-2ca51dd5a969" message="URI Param - coachId: #[vars.coachId] - stored as var " />
         <salesforce:query doc:name="Query" doc:id="c4a7d532-abc4-4dab-abe9-60d8bfaaa69c" config-ref="Salesforce_Config">
-            <salesforce:salesforce-query><![CDATA[SELECT Anticipated_Players_Enrollment__c,Coach_Soccer__c,Coach_Writing__c,CreatedById,CreatedDate,Date_Last_Session_Attended__c,Id,IsDeleted,LastActivityDate,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate,Name,Number_of_Attendance_Completed__c,Number_of_Attendance_Incomplete__c,Number_of_Students_Absent__c,Number_of_Students_Present__c,Number_of_Team_Seasons__c,Partnership__c,Percent_of_Attendance_Completed__c,Percent_of_Students_Present__c,Schedule__c,School_Site__c,SCORES_Program_Coordinator__c,SCORES_Program_Manager__c,Season_End_Date__c,Season_Start_Date__c,Season__c,SystemModstamp,Team__c,Total_Number_of_Players__c,Total_Number_of_Sessions__c,Coach_Soccer__r.Name,Coach_Writing__r.Name,Team__r.Name,Season__r.Name FROM Team_Season__c WHERE Coach_Soccer__c = ':coachId' OR Coach_Writing__c = ':coachId' OR SCORES_Program_Coordinator__c = ':coachId' OR SCORES_Program_Manager__c = ':coachId']]></salesforce:salesforce-query>
+            <salesforce:salesforce-query><![CDATA[SELECT Anticipated_Players_Enrollment__c,Coach_Soccer__c,Coach_Writing__c,Season__r.Id,CreatedById,CreatedDate,Date_Last_Session_Attended__c,Id,IsDeleted,LastActivityDate,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate,Name,Number_of_Attendance_Completed__c,Number_of_Attendance_Incomplete__c,Number_of_Students_Absent__c,Number_of_Students_Present__c,Number_of_Team_Seasons__c,Partnership__c,Percent_of_Attendance_Completed__c,Percent_of_Students_Present__c,Schedule__c,School_Site__c,SCORES_Program_Coordinator__c,SCORES_Program_Manager__c,Season_End_Date__c,Season_Start_Date__c,Season__c,SystemModstamp,Team__c,Total_Number_of_Players__c,Total_Number_of_Sessions__c,Coach_Soccer__r.Name,Coach_Writing__r.Name,Team__r.Name,Season__r.Name,Team__r.School_Site__r.Region__c FROM Team_Season__c WHERE Coach_Soccer__c = ':coachId' OR Coach_Writing__c = ':coachId' OR SCORES_Program_Coordinator__c = ':coachId' OR SCORES_Program_Manager__c = ':coachId' ORDER BY Season_End_Date__c DESC]]></salesforce:salesforce-query>
             <salesforce:parameters><![CDATA[#[output application/java
 ---
 {
 	coachId : vars.coachId
 }]]]></salesforce:parameters>
         </salesforce:query>
-        <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response" doc:id="ee51a2d1-3e3a-4fbb-aedb-6cf116319685">
+		<ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response" doc:id="ee51a2d1-3e3a-4fbb-aedb-6cf116319685">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -167,18 +167,20 @@ output application/json
 payload map ( payload01 , indexOfPayload01 ) -> {
 	SeasonStartDate: payload01.Season_Start_Date__c as String default "",
 	TotalNoOfSessions: payload01.Total_Number_of_Sessions__c default 0,
-	CoachWriting: payload01.Coach_Writing__r[0].Name default "",
+	CoachWriting: payload01.Coach_Writing__r.Name default  "" as String,
 	Partnership: payload01.Partnership__c default "",
-	SeasonName: payload01.Season__r[0].Name default "",
+	SeasonName: payload01.Season__r.Name default "" as String,
 	TotalNoOfPlayers: payload01.Total_Number_of_Players__c default 0,
 	TeamSeasonName: payload01.Name default "",
-	CoachSoccer: payload01.Coach_Soccer__r[0].Name default "",
+	CoachSoccer: payload01.Coach_Soccer__r.Name,
 	TeamSeasonId: payload01.Id default "",
-	TeamName: payload01.Team__r[0].Name default "",
+	TeamName: payload01.Team__r.Name default "" as String,
 	SchoolSite: payload01.School_Site__c default "",
 	SeasonEndDate: payload01.Season_End_Date__c as String default "",
-	ScoresProgramManager: payload01.SCORES_Program_Manager__r[0].Name default "",
-	ProgramCoordinator:  payload01.SCORES_Program_Coordinator__r[0].Name default "",
+	ScoresProgramManager: payload01.SCORES_Program_Manager__r.Name,
+	ProgramCoordinator:  payload01.SCORES_Program_Coordinator__r.Name,
+	Region: payload01.Team__r.School_Site__r.Region__c,
+	SeasonId: payload01.Season__r.Id default "" as String
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>
@@ -1143,24 +1145,21 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			<ee:variables >
 				<ee:set-variable variableName="coachId" ><![CDATA[attributes.uriParams.'coachId']]></ee:set-variable>
 				<ee:set-variable variableName="teamSeasonId" ><![CDATA[attributes.uriParams.'teamSeasonId']]></ee:set-variable>
+				<ee:set-variable variableName="region" ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-variable>
+				<ee:set-variable variableName="season" ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
 		<logger level="INFO" doc:name="Log Stored URI Params" doc:id="ee0bb9ae-03bd-4790-b91f-bef10e316e6d" message="URI Param - coachId: #[vars.coachId] - stored as var and URI Param - teamSeasonID: #[vars.teamSeasonID] - stored as var" />
-		<salesforce:query doc:name="Query for Region" doc:id="baf09cac-302c-4c6a-9a26-8ec98054cd54" config-ref="Salesforce_Config">
-			<salesforce:salesforce-query ><![CDATA[SELECT Team__r.School_Site__r.Region__c FROM Team_Season__c WHERE ID = ':teamSeasonId']]></salesforce:salesforce-query>
-			<salesforce:parameters ><![CDATA[#[output application/java
----
-{
-	teamSeasonId : vars.teamSeasonId
-}]]]></salesforce:parameters>
-		</salesforce:query>
-		<set-variable value='#[payload.Team__r.School_Site__r[0].Region__c]' doc:name="Region" doc:id="72db62b6-2331-4945-8c01-1401f95cdbd2" variableName="region" />
-		<salesforce:query doc:name="Query for Season" doc:id="e810c534-3df2-4a94-b8db-44d2b1d134bd" config-ref="Salesforce_Config" >
-			<salesforce:salesforce-query ><![CDATA[SELECT Id FROM Season__c ORDER BY CreatedDate DESC limit 1]]></salesforce:salesforce-query>
-		</salesforce:query>
-		<set-variable value='#[payload[0].Id]' doc:name="Season" doc:id="598eb6c0-f1af-4780-8834-eb3e14ca2678" variableName="season" />
 		<salesforce:query doc:name="Query" doc:id="eedce5c0-b752-483e-9de9-5168740b7687" config-ref="Salesforce_Config" >
-			<salesforce:salesforce-query ><![CDATA[SELECT Anticipated_Players_Enrollment__c,Coach_Soccer__c,Coach_Writing__c,CreatedById,CreatedDate,Date_Last_Session_Attended__c,Id,IsDeleted,LastActivityDate,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate,Name,Number_of_Attendance_Completed__c,Number_of_Attendance_Incomplete__c,Number_of_Students_Absent__c,Number_of_Students_Present__c,Number_of_Team_Seasons__c,Partnership__c,Percent_of_Attendance_Completed__c,Percent_of_Students_Present__c,Schedule__c,School_Site__c,SCORES_Program_Coordinator__c,SCORES_Program_Manager__c,Season_End_Date__c,Season_Start_Date__c,Season__c,SystemModstamp,Team__c,Total_Number_of_Players__c,Total_Number_of_Sessions__c FROM Team_Season__c WHERE (Coach_Soccer__c != ':coachId' OR Coach_Writing__c != ':coachId' OR SCORES_Program_Coordinator__c != ':coachId' OR SCORES_Program_Manager__c != ':coachId') AND (Team__r.School_Site__r.Region__c = ':region') AND (Season__c = ':season')]]></salesforce:salesforce-query>
+			<salesforce:salesforce-query ><![CDATA[SELECT Anticipated_Players_Enrollment__c,Coach_Soccer__c,Coach_Writing__c,CreatedById,CreatedDate,Date_Last_Session_Attended__c,Id,IsDeleted,LastActivityDate,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate,Name,Number_of_Attendance_Completed__c,Number_of_Attendance_Incomplete__c,Number_of_Students_Absent__c,Number_of_Students_Present__c,Number_of_Team_Seasons__c,Partnership__c,Percent_of_Attendance_Completed__c,Percent_of_Students_Present__c,Schedule__c,School_Site__c,SCORES_Program_Coordinator__c,SCORES_Program_Manager__c,Season_End_Date__c,Season_Start_Date__c,Season__c,SystemModstamp,Team__c,Total_Number_of_Players__c,Total_Number_of_Sessions__c,Coach_Soccer__r.Name,Coach_Writing__r.Name,SCORES_Program_Coordinator__r.Name,SCORES_Program_Manager__r.Name,Team__r.Name,Season__r.Name FROM Team_Season__c WHERE (Coach_Soccer__c != ':coachId' OR Coach_Writing__c != ':coachId' OR SCORES_Program_Coordinator__c != ':coachId' OR SCORES_Program_Manager__c != ':coachId') AND (Team__r.School_Site__r.Region__c = ':region') AND (Season__c = ':season')]]></salesforce:salesforce-query>
 			<salesforce:parameters ><![CDATA[#[output application/java
 ---
 {
@@ -1177,18 +1176,18 @@ output application/json
 payload map ( payload01 , indexOfPayload01 ) -> {
 	SeasonStartDate: payload01.Season_Start_Date__c as String default "",
 	TotalNoOfSessions: payload01.Total_Number_of_Sessions__c default 0,
-	CoachWriting: payload01.Coach_Writing__r[0].Name default "",
+	CoachWriting: payload01.Coach_Writing__r.Name default "" as String,
 	Partnership: payload01.Partnership__c default "",
 	SeasonName: payload01.Season__r[0].Name default "",
 	TotalNoOfPlayers: payload01.Total_Number_of_Players__c default 0,
 	TeamSeasonName: payload01.Name default "",
-	CoachSoccer: payload01.Coach_Soccer__r[0].Name default "",
+	CoachSoccer: payload01.Coach_Soccer__r.Name default "" as String,
 	TeamSeasonId: payload01.Id default "",
 	TeamName: payload01.Team__r[0].Name default "",
 	SchoolSite: payload01.School_Site__c default "",
 	SeasonEndDate: payload01.Season_End_Date__c as String default "",
-	ProgramCoordinator:  payload01.SCORES_Program_Coordinator__r[0].Name default "",
-	ScoreProgramManager: payload01.SCORES_Program_Manager__r[0].Name default ""
+	ProgramCoordinator:  payload01.SCORES_Program_Coordinator__r.Name default "" as String,
+	ScoreProgramManager: payload01.SCORES_Program_Manager__r.Name default "" as String
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
