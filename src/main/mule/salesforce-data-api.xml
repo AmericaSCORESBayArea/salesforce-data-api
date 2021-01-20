@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
     <http:listener-config name="salesforce-data-api-httpListenerConfig">
-        <http:listener-connection host="${http.host}" port="${http.port}" />
+        <http:listener-connection host="${http.host}" port="${http.private.port}" />
     </http:listener-config>
     <apikit:config name="salesforce-data-api-config" api="resource::6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd:salesforce-data-api:3.0.6:raml:zip:salesforce-data-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="012e809f-72bb-49a5-b21f-28fa4b364ab3">
         <salesforce:basic-connection username="${sfdc.user}" password="${secure::sfdc.password}" securityToken="${secure::sfdc.token}" url="${sfdc.url}" />
     </salesforce:sfdc-config>
-    <configuration-properties doc:name="Configuration properties" doc:id="031c2472-faec-452c-9fa9-b18871f154af" file="properties/${env}.properties" />
-    <secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="76e4d1c6-1d87-4c40-8b1a-ae9370b49e34" file="properties/${env}-secure.properties" key="${runtime.decryptionkey}">
-        <secure-properties:encrypt algorithm="Blowfish" />
+  <configuration-properties doc:name="Configuration properties" doc:id="7c250965-7498-46d2-a4cf-47c6cca0411c" file="properties/${env}.properties" />
+    <secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="4ed16836-9f40-444f-b5cd-974fcd24e5bc" file="properties/${env}-secure.properties" key="${runtime.decryptionkey}"> 
+         <secure-properties:encrypt algorithm="Blowfish" />
     </secure-properties:config>
     <flow name="salesforce-data-api-main">
         <http:listener config-ref="salesforce-data-api-httpListenerConfig" path="/api-internal/*">
@@ -788,7 +788,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	sessionId : vars.sessionId
 }]]]></salesforce:parameters>
         </salesforce:query>
-        <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response">
+        <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response" doc:id="38b8c4e6-30f7-47de-ab7f-fe680da96cfe">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -845,7 +845,7 @@ output application/json
                 </ee:transform>
             </when>
             <otherwise>
-                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response" doc:id="670a74ce-14c7-4302-80c8-99b2088d97db">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -893,7 +893,7 @@ output application/json
                 </ee:transform>
             </when>
             <otherwise>
-                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response" doc:id="ff94dfa8-e1fe-445f-920b-5c9f3ebf43c0">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -924,7 +924,7 @@ output application/json
 	teamSeasonId : vars.teamSeasonId
 }]]]></salesforce:parameters>
         </salesforce:query>
-        <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response">
+        <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response" doc:id="7f248e8c-5c33-48cd-beb3-6e53050d6319">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -963,7 +963,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	enrollmentId : vars.enrollmentId
 }]]]></salesforce:parameters>
         </salesforce:query>
-        <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response">
+        <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response" doc:id="b58f80e5-f19b-40b8-ae19-235e06068521">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -1026,7 +1026,7 @@ output application/json
                 </ee:transform>
             </when>
             <otherwise>
-                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response" doc:id="df7487db-f467-4cf5-ba4a-d38339357b91">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -1075,7 +1075,7 @@ output application/json
                 </ee:transform>
             </when>
             <otherwise>
-                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response" doc:id="41697d23-fc1d-4997-b18b-54bd0ead2b8c">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -1136,6 +1136,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
     <flow name="get:\teamSeasons\(teamSeasonId):salesforce-data-api-config">
         <flow-ref doc:name="message-for-not-implemented-endpoints" doc:id="8401f088-397e-4ce3-bb7a-afc2337aebef" name="message-for-not-implemented-endpoints" />
     </flow>
+    
     <flow name="post:\teamSeasons:application\json:salesforce-data-api-config">
         <flow-ref doc:name="message-for-not-implemented-endpoints" doc:id="1f87c942-094b-467e-a602-82dbc1f67bcf" name="message-for-not-implemented-endpoints" />
     </flow>
@@ -1205,15 +1206,28 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 		<flow-ref doc:name="exit flow" doc:id="90679941-f7e0-4b12-a9fe-f461fb6ca5dc" name="exit-flow" />
     </flow>
     <flow name="post:\attendances:application\json:salesforce-data-api-config">
-        <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+        <flow-ref doc:name="entry-flow" doc:id="4f5d6453-199a-4e08-8ca8-e337a0a5e592" name="entry-flow" />
+        <logger level="INFO" doc:name="Log entry-flow" doc:id="7b13314a-f957-48c3-b129-d54ffca9992b" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]." />
+        <salesforce:upsert doc:name="Upsert" doc:id="4d233e6e-69b4-4f9d-89ee-4839571ab171" config-ref="Salesforce_Config" objectType="Attendance__c" externalIdFieldName="ExternalId__c">
+            <salesforce:records><![CDATA[#[%dw 2.0
+output application/java
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	Contact__c: payload01.StudentId,
+	Session__c: payload01.SessionId,
+	Attended__c: payload01.Attended,
+	ExternalId__c: payload01.StudentId ++ '-' ++ payload01.SessionId
+}]]]></salesforce:records>
+        </salesforce:upsert>
+        <ee:transform xsi:schemaLocation=" http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="b1e33ff7-6e73-4898-8ea2-4134f7f4ed17" doc:name="Create response">
+
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-{
-  AttendanceId: "abc123"
-}]]></ee:set-payload>
+payload.items.*payload]]></ee:set-payload>
             </ee:message>
         </ee:transform>
+        <flow-ref doc:name="exit flow" doc:id="37b06898-f43a-4d5a-ae2a-00bee3f194ce" name="exit-flow" />
     </flow>
 </mule>
