@@ -3,7 +3,7 @@
     <http:listener-config name="salesforce-data-api-httpListenerConfig">
         <http:listener-connection host="${http.host}" port="${http.private.port}" />
     </http:listener-config>
-    <apikit:config name="salesforce-data-api-config" api="resource::6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd:salesforce-data-api:3.0.4:raml:zip:salesforce-data-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <apikit:config name="salesforce-data-api-config" api="resource::6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd:salesforce-data-api:3.0.6:raml:zip:salesforce-data-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="012e809f-72bb-49a5-b21f-28fa4b364ab3">
         <salesforce:basic-connection username="${sfdc.user}" password="${secure::sfdc.password}" securityToken="${secure::sfdc.token}" url="${sfdc.url}" />
     </salesforce:sfdc-config>
@@ -152,7 +152,7 @@ output application/json
         </ee:transform>
         <logger level="INFO" doc:name="Log Stored URI Params" doc:id="8027a799-c637-4b02-8cd4-2ca51dd5a969" message="URI Param - coachId: #[vars.coachId] - stored as var " />
         <salesforce:query doc:name="Query" doc:id="c4a7d532-abc4-4dab-abe9-60d8bfaaa69c" config-ref="Salesforce_Config">
-            <salesforce:salesforce-query><![CDATA[SELECT Anticipated_Players_Enrollment__c,Coach_Soccer__c,Coach_Writing__c,CreatedById,CreatedDate,Date_Last_Session_Attended__c,Id,IsDeleted,LastActivityDate,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate,Name,Number_of_Attendance_Completed__c,Number_of_Attendance_Incomplete__c,Number_of_Students_Absent__c,Number_of_Students_Present__c,Number_of_Team_Seasons__c,Partnership__c,Percent_of_Attendance_Completed__c,Percent_of_Students_Present__c,Schedule__c,School_Site__c,SCORES_Program_Coordinator__c,SCORES_Program_Manager__c,Season_End_Date__c,Season_Start_Date__c,Season__c,SystemModstamp,Team__c,Total_Number_of_Players__c,Total_Number_of_Sessions__c,Coach_Soccer__r.Name,Coach_Writing__r.Name,Team__r.Name,Season__r.Name FROM Team_Season__c WHERE Coach_Soccer__c = ':coachId' OR Coach_Writing__c = ':coachId' OR SCORES_Program_Coordinator__c = ':coachId' OR SCORES_Program_Manager__c = ':coachId']]></salesforce:salesforce-query>
+            <salesforce:salesforce-query><![CDATA[SELECT Anticipated_Players_Enrollment__c,Coach_Soccer__c,Coach_Writing__c,Season__r.Id,CreatedById,CreatedDate,Date_Last_Session_Attended__c,Id,IsDeleted,LastActivityDate,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate,Name,Number_of_Attendance_Completed__c,Number_of_Attendance_Incomplete__c,Number_of_Students_Absent__c,Number_of_Students_Present__c,Number_of_Team_Seasons__c,Partnership__c,Percent_of_Attendance_Completed__c,Percent_of_Students_Present__c,Schedule__c,School_Site__c,SCORES_Program_Coordinator__r.Name,SCORES_Program_Manager__r.Name,Season_End_Date__c,Season_Start_Date__c,Season__c,SystemModstamp,Team__c,Total_Number_of_Players__c,Total_Number_of_Sessions__c,Coach_Soccer__r.Name,Coach_Writing__r.Name,Team__r.Name,Season__r.Name,Team__r.School_Site__r.Region__c FROM Team_Season__c WHERE Coach_Soccer__c = ':coachId' OR Coach_Writing__c = ':coachId' OR SCORES_Program_Coordinator__c = ':coachId' OR SCORES_Program_Manager__c = ':coachId' ORDER BY Season_End_Date__c DESC]]></salesforce:salesforce-query>
             <salesforce:parameters><![CDATA[#[output application/java
 ---
 {
@@ -167,16 +167,20 @@ output application/json
 payload map ( payload01 , indexOfPayload01 ) -> {
 	SeasonStartDate: payload01.Season_Start_Date__c as String default "",
 	TotalNoOfSessions: payload01.Total_Number_of_Sessions__c default 0,
-	CoachWriting: payload01.Coach_Writing__r[0].Name default "",
+	CoachWriting: payload01.Coach_Writing__r.Name default  "" as String,
 	Partnership: payload01.Partnership__c default "",
-	SeasonName: payload01.Season__r[0].Name default "",
+	SeasonName: payload01.Season__r.Name default "" as String,
 	TotalNoOfPlayers: payload01.Total_Number_of_Players__c default 0,
 	TeamSeasonName: payload01.Name default "",
-	CoachSoccer: payload01.Coach_Soccer__r[0].Name default "",
+	CoachSoccer: payload01.Coach_Soccer__r.Name,
 	TeamSeasonId: payload01.Id default "",
-	TeamName: payload01.Team__r[0].Name default "",
+	TeamName: payload01.Team__r.Name default "" as String,
 	SchoolSite: payload01.School_Site__c default "",
-	SeasonEndDate: payload01.Season_End_Date__c as String default ""
+	SeasonEndDate: payload01.Season_End_Date__c as String default "",
+	ScoresProgramManager: payload01.SCORES_Program_Manager__r.Name default  "" as String,
+	ProgramCoordinator:  payload01.SCORES_Program_Coordinator__r.Name default  "" as String,
+	Region: payload01.Team__r.School_Site__r.Region__c,
+	SeasonId: payload01.Season__r.Id default "" as String
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>
@@ -1132,9 +1136,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
     <flow name="get:\teamSeasons\(teamSeasonId):salesforce-data-api-config">
         <flow-ref doc:name="message-for-not-implemented-endpoints" doc:id="8401f088-397e-4ce3-bb7a-afc2337aebef" name="message-for-not-implemented-endpoints" />
     </flow>
-    <flow name="get:\coach\(coachId)\teamseasons\(teamSeasonId)\teamseasonsNotOwnedByCoach:salesforce-data-api-config">
-        <flow-ref doc:name="message-for-not-implemented-endpoints" doc:id="45d5b862-ee43-49ae-a4cd-cf7a9a98b5da" name="message-for-not-implemented-endpoints" />
-    </flow>
+    
     <flow name="post:\teamSeasons:application\json:salesforce-data-api-config">
         <flow-ref doc:name="message-for-not-implemented-endpoints" doc:id="1f87c942-094b-467e-a602-82dbc1f67bcf" name="message-for-not-implemented-endpoints" />
     </flow>
@@ -1154,6 +1156,55 @@ output application/json
     <flow name="post:\teams:application\json:salesforce-data-api-config">
         <flow-ref doc:name="message-for-not-implemented-endpoints" doc:id="e552c3e8-8bde-47fe-8689-6ea52172bd5d" name="message-for-not-implemented-endpoints" />
     </flow>
+    <flow name="get:\coach\(coachId)\teamseasonsNotOwnedByCoach:salesforce-data-api-config">
+		<flow-ref doc:name="entry-flow" doc:id="80461e4d-5d8c-4847-8fb9-2b4956ce843f" name="entry-flow" />
+		<logger level="INFO" doc:name="Log entry-flow" doc:id="edb65e58-9ab1-4ce3-840f-e95990ae5961" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. Also for this request we have queryParams: date=#[attributes.queryParams[0]]" />
+		<ee:transform doc:name="Store Parameters" doc:id="0370b773-5268-4c82-b21b-fff6de1b3fe6" >
+			<ee:message />
+			<ee:variables >
+				<ee:set-variable variableName="coachId" ><![CDATA[attributes.uriParams.'coachId']]></ee:set-variable>
+				<ee:set-variable variableName="teamSeasonId" ><![CDATA[attributes.uriParams.'teamSeasonId']]></ee:set-variable>
+				<ee:set-variable variableName="region" ><![CDATA[attributes.queryParams.'region']]></ee:set-variable>
+				<ee:set-variable variableName="season" ><![CDATA[attributes.queryParams.'season']]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger level="INFO" doc:name="Log Stored Params" doc:id="436b78d3-4d20-4a5a-8dc0-1a0a2be43a1b" message="URI Param - coachId: #[vars.coachId] - stored as var and URI Param - teamSeasonID: #[vars.teamSeasonID] - stored as var" />
+		<salesforce:query doc:name="Query" doc:id="cf0e3b35-eb45-4493-b40a-ab9cd3f99273" config-ref="Salesforce_Config" >
+			<salesforce:salesforce-query ><![CDATA[SELECT Anticipated_Players_Enrollment__c,Coach_Soccer__c,Coach_Writing__c,CreatedById,CreatedDate,Date_Last_Session_Attended__c,Id,IsDeleted,LastActivityDate,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate,Name,Number_of_Attendance_Completed__c,Number_of_Attendance_Incomplete__c,Number_of_Students_Absent__c,Number_of_Students_Present__c,Number_of_Team_Seasons__c,Partnership__c,Percent_of_Attendance_Completed__c,Percent_of_Students_Present__c,Schedule__c,School_Site__c,SCORES_Program_Coordinator__c,SCORES_Program_Manager__c,Season_End_Date__c,Season_Start_Date__c,Season__c,SystemModstamp,Team__c,Total_Number_of_Players__c,Total_Number_of_Sessions__c,Coach_Soccer__r.Name,Coach_Writing__r.Name,SCORES_Program_Coordinator__r.Name,SCORES_Program_Manager__r.Name,Team__r.Name,Season__r.Name FROM Team_Season__c WHERE (Coach_Soccer__c != ':coachId' OR Coach_Writing__c != ':coachId' OR SCORES_Program_Coordinator__c != ':coachId' OR SCORES_Program_Manager__c != ':coachId') AND (Team__r.School_Site__r.Region__c = ':region') AND (Season__c = ':season')]]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[output application/java
+---
+{
+	season : vars.season,
+	region : vars.region,
+	coachId : vars.coachId
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<ee:transform doc:name="Create Response" doc:id="9fa45ae2-07a4-4857-af7c-7487c2fe453c" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	SeasonStartDate: payload01.Season_Start_Date__c as String default "",
+	TotalNoOfSessions: payload01.Total_Number_of_Sessions__c default 0,
+	CoachWriting: payload01.Coach_Writing__r.Name default "" as String,
+	Partnership: payload01.Partnership__c default "",
+	SeasonName: payload01.Season__r.Name default "" as String,
+	TotalNoOfPlayers: payload01.Total_Number_of_Players__c default 0,
+	TeamSeasonName: payload01.Name default "",
+	CoachSoccer: payload01.Coach_Soccer__r.Name default "" as String,
+	TeamSeasonId: payload01.Id default "",
+	TeamName: payload01.Team__r.Name default "" as String,
+	SchoolSite: payload01.School_Site__c default "",
+	SeasonEndDate: payload01.Season_End_Date__c as String default "",
+	ProgramCoordinator:  payload01.SCORES_Program_Coordinator__r.Name default "" as String,
+	ScoreProgramManager: payload01.SCORES_Program_Manager__r.Name default "" as String
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Log Created Response" doc:id="d8ecc282-d9e5-4701-9daa-79d507b4401e" message="#[payload]" />
+		<flow-ref doc:name="exit flow" doc:id="90679941-f7e0-4b12-a9fe-f461fb6ca5dc" name="exit-flow" />
+    </flow>
     <flow name="post:\attendances:application\json:salesforce-data-api-config">
         <flow-ref doc:name="entry-flow" doc:id="4f5d6453-199a-4e08-8ca8-e337a0a5e592" name="entry-flow" />
         <logger level="INFO" doc:name="Log entry-flow" doc:id="7b13314a-f957-48c3-b129-d54ffca9992b" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]." />
@@ -1169,6 +1220,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 }]]]></salesforce:records>
         </salesforce:upsert>
         <ee:transform xsi:schemaLocation=" http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="b1e33ff7-6e73-4898-8ea2-4134f7f4ed17" doc:name="Create response">
+
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
