@@ -8,7 +8,7 @@ Interactive API specification can be found [here](https://anypoint.mulesoft.com/
 
 [CloudHub Deployment](https://github.com/AmericaSCORESBayArea/salesforce-data-api/blob/master/cloudhub-deployment.md)
 
-# Running app locally in Anypoint Studio
+## Running app locally in Anypoint Studio
 
 1. Clone git repo and download code to your local machine.
 2. Import project in Anypoint Studio.
