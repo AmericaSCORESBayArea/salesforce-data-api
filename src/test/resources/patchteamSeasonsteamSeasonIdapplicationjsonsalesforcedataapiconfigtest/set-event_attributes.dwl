@@ -1,30 +1,33 @@
 {
   "headers": {
-    "content-type": "application/json",
-    "user-agent": "PostmanRuntime/7.26.8",
-    "accept": "*/*",
-    "postman-token": "bb5e4067-1f3f-4ac2-80c0-e618082b75ad",
     "host": "localhost:8091",
-    "accept-encoding": "gzip, deflate, br",
+    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0",
+    "accept": "*/*",
+    "accept-language": "en-US,en;q=0.5",
+    "accept-encoding": "gzip, deflate",
+    "content-type": "application/json",
+    "content-length": "171",
+    "origin": "http://localhost:8091",
     "connection": "keep-alive",
-    "content-length": "118"
+    "referer": "http://localhost:8091/console/",
+    "sec-gpc": "1"
   },
   "clientCertificate": null,
   "method": "PATCH",
   "scheme": "http",
   "queryParams": {},
-  "requestUri": "/api-internal/teamSeasons/a0q1T000009ovGyQAI",
+  "requestUri": "/api-internal/teamSeasons/a0q2i000000bKsPAAU",
   "queryString": "",
   "version": "HTTP/1.1",
-  "maskedRequestPath": "/teamSeasons/a0q1T000009ovGyQAI",
+  "maskedRequestPath": "/teamSeasons/a0q2i000000bKsPAAU",
   "listenerPath": "/api-internal/*",
+  "relativePath": "/api-internal/teamSeasons/a0q2i000000bKsPAAU",
   "localAddress": "/127.0.0.1:8091",
-  "relativePath": "/api-internal/teamSeasons/a0q1T000009ovGyQAI",
   "uriParams": {
-    "teamSeasonId": "a0q1T000009ovGyQAI"
+    "teamSeasonId": "a0q2i000000bKsPAAU"
   },
-  "rawRequestUri": "/api-internal/teamSeasons/a0q1T000009ovGyQAI",
-  "rawRequestPath": "/api-internal/teamSeasons/a0q1T000009ovGyQAI",
-  "remoteAddress": "/127.0.0.1:63591",
-  "requestPath": "/api-internal/teamSeasons/a0q1T000009ovGyQAI"
+  "rawRequestUri": "/api-internal/teamSeasons/a0q2i000000bKsPAAU",
+  "rawRequestPath": "/api-internal/teamSeasons/a0q2i000000bKsPAAU",
+  "remoteAddress": "/127.0.0.1:61829",
+  "requestPath": "/api-internal/teamSeasons/a0q2i000000bKsPAAU"
 }

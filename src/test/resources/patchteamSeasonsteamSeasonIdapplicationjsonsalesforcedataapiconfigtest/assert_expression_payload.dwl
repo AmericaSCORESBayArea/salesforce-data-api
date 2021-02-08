@@ -2,5 +2,5 @@
 import * from dw::test::Asserts
 ---
 payload must equalTo({
-  "message": "Not implemented yet"
+  "message": "TeamSeason updated"
 })
