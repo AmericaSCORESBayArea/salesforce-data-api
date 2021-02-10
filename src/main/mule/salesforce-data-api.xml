@@ -3,7 +3,7 @@
     <http:listener-config name="salesforce-data-api-httpListenerConfig">
         <http:listener-connection host="${http.host}" port="${http.private.port}" />
     </http:listener-config>
-    <apikit:config name="salesforce-data-api-config" api="resource::6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd:salesforce-data-api:3.0.6:raml:zip:salesforce-data-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <apikit:config name="salesforce-data-api-config" api="resource::6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd:salesforce-data-api:3.0.8:raml:zip:salesforce-data-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="012e809f-72bb-49a5-b21f-28fa4b364ab3">
         <salesforce:basic-connection username="${sfdc.user}" password="${secure::sfdc.password}" securityToken="${secure::sfdc.token}" url="${sfdc.url}" />
     </salesforce:sfdc-config>
@@ -1125,7 +1125,68 @@ payload map ( payload01 , indexOfPayload01 ) -> {
         <flow-ref doc:name="message-for-not-implemented-endpoints" doc:id="185f08d0-9eca-402f-82e8-8816e56c21e4" name="message-for-not-implemented-endpoints" />
     </flow>
     <flow name="patch:\teamSeasons\(teamSeasonId):application\json:salesforce-data-api-config">
-        <flow-ref doc:name="message-for-not-implemented-endpoints" doc:id="1cfa42da-20e7-4512-9f57-232205e83ac2" name="message-for-not-implemented-endpoints" />
+        <flow-ref doc:name="entry-flow" doc:id="1cfa42da-20e7-4512-9f57-232205e83ac2" name="entry-flow" />
+        <logger level="INFO" doc:name="Log entry-flow" doc:id="aea001ef-efb0-4a3b-9bfc-a5384e805327" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
+        <ee:transform doc:name="Store URI parameters" doc:id="eca43153-b0a0-46d3-b564-69a4019ef7af">
+            <ee:variables>
+                <ee:set-variable variableName="teamSeasonId"><![CDATA[attributes.uriParams.'teamSeasonId']]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform doc:name="Create Request" doc:id="0c469ff4-bb15-41cb-be7b-0d43f82a4b3f">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+[{
+	Id: vars.teamSeasonId,
+	(Name: payload.TeamSeasonName) if payload.TeamSeasonName != null,
+	(Team__c: payload.TeamId) if payload.TeamId != null,
+	(Season__c: payload.SeasonId) if payload.SeasonId != null,
+	(School_Site__c: payload.SchoolSite) if payload.SchoolSite != null,
+	(Partnership__c: payload.Partnership) if payload.Partnership != null,
+	(Total_Number_of_Players__c: payload.TotalNoOfPlayers) if payload.TotalNoOfPlayers != null,
+	(Total_Number_of_Sessions__c: payload.TotalNoOfSessions) if payload.TotalNoOfSessions != null,
+	(Season_Start_Date__c: payload.SeasonStartDate as Date {format: 'yyyy-MM-dd'}) if payload.SeasonStartDate != null,
+	(Season_End_Date__c: payload.SeasonEndDate as Date {format: 'yyyy-MM-dd'}) if payload.SeasonEndDate != null,
+	(Coach_Soccer__c: payload.CoachSoccer) if payload.CoachSoccer != null,
+	(Coach_Writing__c: payload.CoachWriting) if payload.CoachWriting != null,
+	(SCORES_Program_Coordinator__c: payload.ProgramCoordinator) if payload.ProgramCoordinator != null,
+	(SCORES_Program_Manager__c: payload.ProgramManager) if payload.ProgramManager != null
+}]]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+        <salesforce:update type="Team_Season__c" doc:name="Update" doc:id="6e73b821-a977-41ee-87e6-ccd2b9b49342" config-ref="Salesforce_Config" />
+        <choice doc:name="Update successful?" doc:id="bbd03deb-ee72-4820-9802-41525766d0db">
+            <when expression="#[payload.items[0].successful == false]">
+                <ee:transform doc:name="Create Error Response" doc:id="9191216e-971d-4052-a340-4c42aa6327f2">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: payload.items[0].message
+}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </when>
+            <otherwise>
+                <ee:transform doc:name="Create Response" doc:id="96595596-1340-4eda-8652-b6efdef5660b" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  message: "TeamSeason updated"
+}]]></ee:set-payload>
+                    </ee:message>
+                </ee:transform>
+            </otherwise>
+        </choice>
+        <logger level="INFO" doc:name="Log Created Response" doc:id="a4c162aa-a505-4a66-a73f-e94b3d395f91" message="#[payload]" />
+        <flow-ref doc:name="exit flow" doc:id="30a5d601-c1c1-4327-bfea-bb164d4b03d0" name="exit-flow" />
     </flow>
     <flow name="get:\teamSeasons:salesforce-data-api-config">
         <flow-ref doc:name="message-for-not-implemented-endpoints" doc:id="00fa21c8-af1b-41cf-a3a8-5e7c81c94a06" name="message-for-not-implemented-endpoints" />

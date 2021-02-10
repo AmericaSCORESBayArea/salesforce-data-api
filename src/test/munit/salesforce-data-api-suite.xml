@@ -1247,28 +1247,6 @@ assert_expression_payload::main({payload: payload, attributes: attributes, vars:
 			</munit-tools:assert>
 		</munit:validation>
 	</munit:test>
-	<munit:test name="patch:\teamSeasons\(teamSeasonId):application\json:salesforce-data-api-config-test" doc:id="0cafd419-0a75-49d7-ab35-fc3e62dc35e2" >
-		<munit:behavior >
-			<munit:set-event doc:name="Set Input" doc:id="9844cece-f725-4962-aff9-8528aecad912" >
-				<munit:payload value="#[output application/json --- readUrl('classpath://patchteamSeasonsteamSeasonIdapplicationjsonsalesforcedataapiconfigtest/set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
-				<munit:attributes value="#[readUrl('classpath://patchteamSeasonsteamSeasonIdapplicationjsonsalesforcedataapiconfigtest/set-event_attributes.dwl')]" />
-				<munit:variables >
-					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://patchteamSeasonsteamSeasonIdapplicationjsonsalesforcedataapiconfigtest/set-event_variable_.dwl')]" />
-				</munit:variables>
-			</munit:set-event>
-		</munit:behavior>
-		<munit:execution >
-			<flow-ref doc:name="Flow-ref to patch:\teamSeasons\(teamSeasonId):application\json:salesforce-data-api-config" doc:id="7b3d8e99-bb5f-458f-b7ad-d0d7bc680a84" name="patch:\teamSeasons\(teamSeasonId):application\json:salesforce-data-api-config"/>
-		</munit:execution>
-		<munit:validation >
-			<munit-tools:assert doc:name="Assert payload" doc:id="5c6fede1-88fa-4e0f-bb5c-6a962f83f42a" message="The payload does not match">
-				<munit-tools:that ><![CDATA[#[%dw 2.0
-import patchteamSeasonsteamSeasonIdapplicationjsonsalesforcedataapiconfigtest::assert_expression_payload
----
-assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
-			</munit-tools:assert>
-		</munit:validation>
-	</munit:test>
 	<munit:test name="get:\teamSeasons:salesforce-data-api-config-test" doc:id="73ec9d15-5782-43ca-9d02-1cb5eb1609f8" >
 		<munit:behavior >
 			<munit:set-event doc:name="Set Input" doc:id="f393e66e-b174-4a4d-aeca-b0255253fa75" >
@@ -1525,6 +1503,62 @@ assert_expression_payload::main({payload: payload, attributes: attributes, vars:
 			<munit-tools:verify-call doc:name="Verify Create Response" doc:id="aa79b352-7675-45ae-b9d4-cad8bc4f7415" processor="ee:transform" times="1">
 				<munit-tools:with-attributes >
 					<munit-tools:with-attribute whereValue="ee51a2d1-3e3a-4fbb-aedb-6cf116319685" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="patch:\teamSeasons\(teamSeasonId):application\json:salesforce-data-api-config-test" doc:id="c4b85842-3372-4b66-959d-4c1e6b64bf77" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock Update" doc:id="7b4e8ebf-3c34-46ce-9f09-e0145af1d360" processor="salesforce:update">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6e73b821-a977-41ee-87e6-ccd2b9b49342" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- readUrl('classpath://patchteamSeasonsteamSeasonIdapplicationjsonsalesforcedataapiconfigtest\mock_payload.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://patchteamSeasonsteamSeasonIdapplicationjsonsalesforcedataapiconfigtest\mock_variable_.dwl')]" />
+						<munit-tools:variable key="method" value="#[output application/java --- readUrl('classpath://patchteamSeasonsteamSeasonIdapplicationjsonsalesforcedataapiconfigtest\mock_variable_1.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="requestPath" value="#[output application/java --- readUrl('classpath://patchteamSeasonsteamSeasonIdapplicationjsonsalesforcedataapiconfigtest\mock_variable_2.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="teamSeasonId" value="#[output application/java --- readUrl('classpath://patchteamSeasonsteamSeasonIdapplicationjsonsalesforcedataapiconfigtest\mock_variable_3.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="821c6237-b8d8-4afb-a718-47d5147aa67a" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://patchteamSeasonsteamSeasonIdapplicationjsonsalesforcedataapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://patchteamSeasonsteamSeasonIdapplicationjsonsalesforcedataapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://patchteamSeasonsteamSeasonIdapplicationjsonsalesforcedataapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to patch:\teamSeasons\(teamSeasonId):application\json:salesforce-data-api-config" doc:id="fad252bf-50c7-48a4-9089-e9cd36ed9df1" name="patch:\teamSeasons\(teamSeasonId):application\json:salesforce-data-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="a8e5d933-0351-42b6-8cdd-726e3c4274c5" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import patchteamSeasonsteamSeasonIdapplicationjsonsalesforcedataapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify Log entry-flow" doc:id="c1e7a118-fef4-4caa-b842-e4e86a5951ea" processor="logger" times="1">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="aea001ef-efb0-4a3b-9bfc-a5384e805327" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify Store URI parameters" doc:id="da82afb5-69b3-4a94-a0ea-da72d8bf4a9f" processor="ee:transform" times="1">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="eca43153-b0a0-46d3-b564-69a4019ef7af" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify Create Request" doc:id="f42cfc23-d3a3-499c-8aa6-eb9f728a61c1" processor="ee:transform" times="1">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="0c469ff4-bb15-41cb-be7b-0d43f82a4b3f" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify Log Created Response" doc:id="fb18336c-5518-4168-b360-2da312752750" processor="logger" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="a4c162aa-a505-4a66-a73f-e94b3d395f91" attributeName="doc:id" />
 				</munit-tools:with-attributes>
 			</munit-tools:verify-call>
 		</munit:validation>

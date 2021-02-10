@@ -1,0 +1,1 @@
+"/api-internal/teamSeasons/a0q2i000000bKsPAAU"
