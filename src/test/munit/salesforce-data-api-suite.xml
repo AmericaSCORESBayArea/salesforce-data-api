@@ -1563,6 +1563,78 @@ assert_expression_payload::main({payload: payload, attributes: attributes, vars:
 			</munit-tools:verify-call>
 		</munit:validation>
 	</munit:test>
+	<munit:test name="get:\teamSeasons:salesforce-data-api-config-test1" doc:id="ed661441-e8ea-4510-add3-cc6b5e6e0e94" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock Query" doc:id="79a2ba89-93bd-492e-8956-6d41bcada251" processor="salesforce:query">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="1423aba4-cdf4-47d8-a1f7-f904ebc68665" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- readUrl('classpath://getteamSeasonssalesforcedataapiconfigtest1\mock_payload.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://getteamSeasonssalesforcedataapiconfigtest1\mock_variable_.dwl')]" />
+						<munit-tools:variable key="date" value="#[output application/java --- readUrl('classpath://getteamSeasonssalesforcedataapiconfigtest1\mock_variable_1.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="method" value="#[output application/java --- readUrl('classpath://getteamSeasonssalesforcedataapiconfigtest1\mock_variable_2.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="requestPath" value="#[output application/java --- readUrl('classpath://getteamSeasonssalesforcedataapiconfigtest1\mock_variable_3.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="ea825a44-1d9d-48f9-8af4-2e765d1bce7e" >
+				<munit:payload value="#[readUrl('classpath://getteamSeasonssalesforcedataapiconfigtest1\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://getteamSeasonssalesforcedataapiconfigtest1\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getteamSeasonssalesforcedataapiconfigtest1\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\teamSeasons:salesforce-data-api-config" doc:id="cb1ec820-d81e-497d-bdaa-c7f302ae3bfa" name="get:\teamSeasons:salesforce-data-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="1711ae5f-617f-491d-a64c-a15e1afe59bf" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import getteamSeasonssalesforcedataapiconfigtest1::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="get:\teamSeasons:salesforce-data-api-config-test2" doc:id="567b3a55-5610-47bc-985c-bd03ac1c48ab" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock Query" doc:id="985c24a6-3637-4ea5-9f3c-9ed7b1b6d18c" processor="salesforce:query">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="1423aba4-cdf4-47d8-a1f7-f904ebc68665" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- readUrl('classpath://getteamSeasonssalesforcedataapiconfigtest2\mock_payload.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://getteamSeasonssalesforcedataapiconfigtest2\mock_variable_.dwl')]" />
+						<munit-tools:variable key="date" value="#[output application/java --- readUrl('classpath://getteamSeasonssalesforcedataapiconfigtest2\mock_variable_1.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="method" value="#[output application/java --- readUrl('classpath://getteamSeasonssalesforcedataapiconfigtest2\mock_variable_2.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="requestPath" value="#[output application/java --- readUrl('classpath://getteamSeasonssalesforcedataapiconfigtest2\mock_variable_3.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="e7984c0c-9df5-4969-b0f7-1134043e6728" >
+				<munit:payload value="#[readUrl('classpath://getteamSeasonssalesforcedataapiconfigtest2\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://getteamSeasonssalesforcedataapiconfigtest2\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getteamSeasonssalesforcedataapiconfigtest2\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\teamSeasons:salesforce-data-api-config" doc:id="34478566-4f3d-4cd9-b526-b8fbdaaadc06" name="get:\teamSeasons:salesforce-data-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="d3278381-0578-4fd0-810c-b6f62d1b8cf5" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import getteamSeasonssalesforcedataapiconfigtest2::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
 
 
 </mule>
