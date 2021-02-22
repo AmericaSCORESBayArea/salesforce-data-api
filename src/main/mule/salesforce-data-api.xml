@@ -1189,7 +1189,50 @@ output application/json
         <flow-ref doc:name="exit flow" doc:id="30a5d601-c1c1-4327-bfea-bb164d4b03d0" name="exit-flow" />
     </flow>
     <flow name="get:\teamSeasons:salesforce-data-api-config">
-        <flow-ref doc:name="message-for-not-implemented-endpoints" doc:id="00fa21c8-af1b-41cf-a3a8-5e7c81c94a06" name="message-for-not-implemented-endpoints" />
+        <flow-ref doc:name="entry-flow" doc:id="00fa21c8-af1b-41cf-a3a8-5e7c81c94a06" name="entry-flow" />
+		<logger level="INFO" doc:name="Log entry-flow" doc:id="28d4d928-243f-4eb7-bc5b-ec5d9c331af5" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]"/>
+		<ee:transform doc:name="Store Query Parameters" doc:id="49ad3af8-6085-453b-b1fe-d7d14d0c425f" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="date" ><![CDATA[attributes.queryParams.'date']]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<salesforce:query doc:name="Query" doc:id="1423aba4-cdf4-47d8-a1f7-f904ebc68665" config-ref="Salesforce_Config">
+			<salesforce:salesforce-query ><![CDATA[SELECT Anticipated_Players_Enrollment__c,Coach_Soccer__c,Coach_Writing__c,Season__r.Id,CreatedById,CreatedDate,Date_Last_Session_Attended__c,Id,IsDeleted,LastActivityDate,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate,Name,Number_of_Attendance_Completed__c,Number_of_Attendance_Incomplete__c,Number_of_Students_Absent__c,Number_of_Students_Present__c,Number_of_Team_Seasons__c,Partnership__c,Percent_of_Attendance_Completed__c,Percent_of_Students_Present__c,Schedule__c,School_Site__c,SCORES_Program_Coordinator__r.Name,SCORES_Program_Manager__r.Name,Season_End_Date__c,Season_Start_Date__c,Season__c,SystemModstamp,Team__c,Total_Number_of_Players__c,Total_Number_of_Sessions__c,Coach_Soccer__r.Name,Coach_Writing__r.Name,Team__r.Name,Season__r.Name,Team__r.School_Site__r.Region__c FROM Team_Season__c WHERE Season_Start_Date__c = :date ORDER BY Season_End_Date__c DESC]]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[output application/java
+---
+{
+	date: vars.date as Date {format: 'yyyy-MM-dd'}
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<ee:transform doc:name="Create Response" doc:id="f81492cf-b1b4-4956-8f20-91d323cb5e4d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	SeasonStartDate: payload01.Season_Start_Date__c as String default "",
+	TotalNoOfSessions: payload01.Total_Number_of_Sessions__c default 0,
+	CoachWriting: payload01.Coach_Writing__r.Name default  "" as String,
+	Partnership: payload01.Partnership__c default "",
+	SeasonName: payload01.Season__r.Name default "" as String,
+	TotalNoOfPlayers: payload01.Total_Number_of_Players__c default 0,
+	TeamSeasonName: payload01.Name default "",
+	CoachSoccer: payload01.Coach_Soccer__r.Name,
+	TeamSeasonId: payload01.Id default "",
+	TeamName: payload01.Team__r.Name default "" as String,
+	SchoolSite: payload01.School_Site__c default "",
+	SeasonEndDate: payload01.Season_End_Date__c as String default "",
+	ScoresProgramManager: payload01.SCORES_Program_Manager__r.Name default  "" as String,
+	ProgramCoordinator:  payload01.SCORES_Program_Coordinator__r.Name default  "" as String,
+	Region: payload01.Team__r.School_Site__r.Region__c,
+	SeasonId: payload01.Season__r.Id default "" as String
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Log Created Response" doc:id="2e7bca9d-b7ab-46b5-90f2-2a0bfcbb24b8" message="#[payload]"/>
+		<flow-ref doc:name="exit-flow" doc:id="34d7f0e0-6524-4606-9062-d19dd9202eab" name="exit-flow"/>
     </flow>
     <flow name="get:\teams:salesforce-data-api-config">
         <flow-ref doc:name="message-for-not-implemented-endpoints" doc:id="634f6198-82df-4a17-a005-e0593a06262f" name="message-for-not-implemented-endpoints" />

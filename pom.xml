@@ -13,7 +13,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<app.name>salesforce-data-api</app.name>
-		<app.runtime>4.3.0</app.runtime>
+		<app.runtime>4.3.0-20210119</app.runtime>
 		<mule.maven.plugin.version>3.3.5</mule.maven.plugin.version>
 		<munit.version>2.2.5</munit.version>
 	</properties>
@@ -108,12 +108,6 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.mulesoft.connectors</groupId>
-			<artifactId>mule-salesforce-connector</artifactId>
-			<version>10.2.0</version>
-			<classifier>mule-plugin</classifier>
-		</dependency>
-		<dependency>
 			<groupId>com.mulesoft.modules</groupId>
 			<artifactId>mule-secure-configuration-property-module</artifactId>
 			<version>1.2.3</version>
@@ -125,6 +119,12 @@
             <version>3.0.8</version>
             <classifier>raml</classifier>
             <type>zip</type>
+        </dependency>
+    	<dependency>
+            <groupId>com.mulesoft.connectors</groupId>
+            <artifactId>mule-salesforce-connector</artifactId>
+            <version>10.7.0</version>
+            <classifier>mule-plugin</classifier>
         </dependency>
     </dependencies>
 
