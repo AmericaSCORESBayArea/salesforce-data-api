@@ -1247,28 +1247,6 @@ assert_expression_payload::main({payload: payload, attributes: attributes, vars:
 			</munit-tools:assert>
 		</munit:validation>
 	</munit:test>
-	<munit:test name="get:\teamSeasons:salesforce-data-api-config-test" doc:id="73ec9d15-5782-43ca-9d02-1cb5eb1609f8" >
-		<munit:behavior >
-			<munit:set-event doc:name="Set Input" doc:id="f393e66e-b174-4a4d-aeca-b0255253fa75" >
-				<munit:payload value="#[readUrl('classpath://getteamSeasonssalesforcedataapiconfigtest/set-event_payload.dwl')]" encoding="UTF-8" />
-				<munit:attributes value="#[readUrl('classpath://getteamSeasonssalesforcedataapiconfigtest/set-event_attributes.dwl')]" />
-				<munit:variables >
-					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getteamSeasonssalesforcedataapiconfigtest/set-event_variable_.dwl')]" />
-				</munit:variables>
-			</munit:set-event>
-		</munit:behavior>
-		<munit:execution >
-			<flow-ref doc:name="Flow-ref to get:\teamSeasons:salesforce-data-api-config" doc:id="1effb1c7-af70-45ca-b3ac-5ee5ca5ed92b" name="get:\teamSeasons:salesforce-data-api-config"/>
-		</munit:execution>
-		<munit:validation >
-			<munit-tools:assert doc:name="Assert payload" doc:id="cf0dc519-3f60-4574-bdfa-65051f46def7" message="The payload does not match">
-				<munit-tools:that ><![CDATA[#[%dw 2.0
-import getteamSeasonssalesforcedataapiconfigtest::assert_expression_payload
----
-assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
-			</munit-tools:assert>
-		</munit:validation>
-	</munit:test>
 	<munit:test name="get:\teams:salesforce-data-api-config-test" doc:id="00d39136-ba67-4832-a14c-cd62e5b6dafb" >
 		<munit:behavior >
 			<munit:set-event doc:name="Set Input" doc:id="9936e811-b04a-4b1f-9185-511359c6b5cb" >
