@@ -2,5 +2,5 @@
 import * from dw::test::Asserts
 ---
 payload must equalTo({
-  "ContactId": "0032i00000jynM6AAI"
+  "ContactId": "0032i00000rbr97AAA"
 })
