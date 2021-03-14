@@ -1,6 +1,6 @@
 # This workflow will build a MuleSoft project and deploy to CloudHub
 
-name: Java CI with Maven
+name: On Push - Build and Deploy to Sandbox
 
 on:
   push:
