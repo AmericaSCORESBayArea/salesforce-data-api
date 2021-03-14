@@ -14,7 +14,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<app.name>salesforce-data-api</app.name>
 		<app.runtime>4.3.0-20210119</app.runtime>
-		<mule.maven.plugin.version>3.5.1</mule.maven.plugin.version>
+		<mule.maven.plugin.version>3.3.5</mule.maven.plugin.version>
 		<munit.version>2.2.5</munit.version>
 	</properties>
 
@@ -61,12 +61,19 @@
 					</execution>
 				</executions>
 				<configuration>
-					<coverage>
-						<runCoverage>true</runCoverage>
-						<formats>
-							<format>html</format>
-						</formats>
-					</coverage>
+					 <coverage>
+            <runCoverage>true</runCoverage>
+            <failBuild>false</failBuild>
+
+            <requiredApplicationCoverage>75</requiredApplicationCoverage>
+            <requiredResourceCoverage>50</requiredResourceCoverage>
+            <requiredFlowCoverage>50</requiredFlowCoverage>
+
+            <formats>
+                <format>console</format>
+                <format>html</format>
+            </formats>
+        </coverage>
 				</configuration>
 
 			</plugin>
