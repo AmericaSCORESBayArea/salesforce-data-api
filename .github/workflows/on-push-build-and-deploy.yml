@@ -1,6 +1,6 @@
 # This workflow will build a MuleSoft project and deploy to CloudHub
 
-name: On Push - Build and Deploy to Sandbox
+name: Build and Deploy to Sandbox
 
 on:
   push:
@@ -65,10 +65,12 @@ jobs:
     - uses: actions/download-artifact@master
       with:
         name: artifacts
+    - name: Print effective-settings
+      run: mvn help:effective-settings
     - name: Deploy to Sandbox
       env:
         USERNAME: ${{ secrets.anypoint_cicd_username }}
         PASSWORD: ${{ secrets.anypoint_cicd_password }}
       run: |
         artifactName=$(ls *.jar | head -1)
-        mvn mule:deploy -e -X -Dmule.artifact=$artifactName -Danypoint.username="$USERNAME" -Danypoint.password="$PASSWORD" -Denv=Sandbox -DskipTests
+        mvn mule:deploy -e -Dmule.artifact=$artifactName -Danypoint.username="$USERNAME" -Danypoint.password="$PASSWORD" -Denv=Sandbox -DskipTests
