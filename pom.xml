@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.mycompany</groupId>
@@ -14,7 +17,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<app.name>salesforce-data-api</app.name>
 		<app.runtime>4.3.0</app.runtime>
-		<mule.maven.plugin.version>3.5.0</mule.maven.plugin.version>
+		<mule.maven.plugin.version>3.4.2</mule.maven.plugin.version>
 		<munit.version>2.2.5</munit.version>
 	</properties>
 
@@ -61,19 +64,19 @@
 					</execution>
 				</executions>
 				<configuration>
-					 <coverage>
-            <runCoverage>true</runCoverage>
-            <failBuild>false</failBuild>
+					<coverage>
+						<runCoverage>true</runCoverage>
+						<failBuild>false</failBuild>
 
-            <requiredApplicationCoverage>75</requiredApplicationCoverage>
-            <requiredResourceCoverage>50</requiredResourceCoverage>
-            <requiredFlowCoverage>50</requiredFlowCoverage>
+						<requiredApplicationCoverage>75</requiredApplicationCoverage>
+						<requiredResourceCoverage>50</requiredResourceCoverage>
+						<requiredFlowCoverage>50</requiredFlowCoverage>
 
-            <formats>
-                <format>console</format>
-                <format>html</format>
-            </formats>
-        </coverage>
+						<formats>
+							<format>console</format>
+							<format>html</format>
+						</formats>
+					</coverage>
 				</configuration>
 
 			</plugin>
@@ -120,20 +123,20 @@
 			<version>1.2.3</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
-    	<dependency>
-            <groupId>6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd</groupId>
-            <artifactId>salesforce-data-api</artifactId>
-            <version>3.0.8</version>
-            <classifier>raml</classifier>
-            <type>zip</type>
-        </dependency>
-    	<dependency>
-            <groupId>com.mulesoft.connectors</groupId>
-            <artifactId>mule-salesforce-connector</artifactId>
-            <version>10.7.0</version>
-            <classifier>mule-plugin</classifier>
-        </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd</groupId>
+			<artifactId>salesforce-data-api</artifactId>
+			<version>3.0.8</version>
+			<classifier>raml</classifier>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>com.mulesoft.connectors</groupId>
+			<artifactId>mule-salesforce-connector</artifactId>
+			<version>10.7.0</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
+	</dependencies>
 
 	<repositories>
 		<repository>
