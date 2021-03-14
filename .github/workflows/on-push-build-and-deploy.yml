@@ -73,4 +73,4 @@ jobs:
         PASSWORD: ${{ secrets.anypoint_cicd_password }}
       run: |
         artifactName=$(ls *.jar | head -1)
-        mvn mule:deploy -e -Dmule.artifact=$artifactName -Danypoint.username="$USERNAME" -Danypoint.password="$PASSWORD" -Denv=Sandbox -DskipTests
+        mvn deploy -DmuleDeploy -e -Dmule.artifact=$artifactName -Danypoint.username="$USERNAME" -Danypoint.password="$PASSWORD" -Denv=Sandbox -DskipTests
