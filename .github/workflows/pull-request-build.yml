@@ -26,7 +26,7 @@ jobs:
         server-username: USERNAME
         server-password: PASSWORD
     - name: Build with Maven
-      run: mvn -B package --file pom.xml -e
+      run: mvn -B package --file pom.xml -X
       env:
         USERNAME: ${{ secrets.anypoint_cicd_username }}
         PASSWORD: ${{ secrets.anypoint_cicd_password }}
