@@ -1,6 +1,6 @@
 # This workflow will build a MuleSoft project and deploy to CloudHub
 
-name: Java CI with Maven
+name: Build and Deploy to Sandbox
 
 on:
   push:
@@ -21,21 +21,32 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-        server-id: scores-exchange
-        server-username: USERNAME
-        server-password: PASSWORD
+    - name: Add repo credentials
+      uses: s4u/maven-settings-action@v2.4.0
+      with:
+        servers: |
+          [{
+           "id": "mule-enterprise",
+           "username": "${{ secrets.mule_nexus_username }}",
+           "password": "${{ secrets.mule_nexus_password }}"
+          },
+          {
+           "id": "scores-exchange",
+           "username": "${{ secrets.anypoint_cicd_username }}",
+           "password": "${{ secrets.anypoint_cicd_password }}"
+          }]
+    - name: Print effective-settings
+      run: mvn help:effective-settings
     - name: Build with Maven
-      run: mvn -B package --file pom.xml -DskipTests
-      env:
-        USERNAME: ${{ secrets.anypoint_cicd_username }}
-        PASSWORD: ${{ secrets.anypoint_cicd_password }}
+      run: mvn -B package --file pom.xml
     - name: Stamp artifact file name with commit hash
       run: |
         artifactName1=$(ls target/*.jar | head -1)
         commitHash=$(git rev-parse --short "$GITHUB_SHA")
         artifactName2=$(ls target/*.jar | head -1 | sed "s/.jar/-$commitHash.jar/g")
         mv $artifactName1 $artifactName2
-    - uses: actions/upload-artifact@master
+    - name: Upload artifact 
+      uses: actions/upload-artifact@master
       with:
           name: artifacts
           path: target/*.jar
@@ -54,10 +65,12 @@ jobs:
     - uses: actions/download-artifact@master
       with:
         name: artifacts
+    - name: Print effective-settings
+      run: mvn help:effective-settings
     - name: Deploy to Sandbox
       env:
         USERNAME: ${{ secrets.anypoint_cicd_username }}
         PASSWORD: ${{ secrets.anypoint_cicd_password }}
       run: |
         artifactName=$(ls *.jar | head -1)
-        mvn mule:deploy -e -X -Dmule.artifact=$artifactName -Danypoint.username="$USERNAME" -Danypoint.password="$PASSWORD" -Denv=Sandbox -DskipTests
+        mvn deploy -DmuleDeploy -e -Dmule.artifact=$artifactName -Danypoint.username="$USERNAME" -Danypoint.password="$PASSWORD" -Denv=Sandbox -DskipTests
