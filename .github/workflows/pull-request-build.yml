@@ -28,13 +28,13 @@ jobs:
         servers: |
           [{
            "id": "mule-enterprise",
-           "username": "${{ secrets.MULE_NEXUS_USERNAME }}",
-           "password": "${{ secrets.MULE_NEXUS_PASSWORD }}"
+           "username": "${{ secrets.mule_nexus_username }}",
+           "password": "${{ secrets.mule_nexus_password }}"
           },
           {
            "id": "scores-exchange",
-           "username": "${{ secrets.ANYPOINT_CICD_USERNAME }}",
-           "password": "${{ secrets.ANYPOINT_CICD_PASSWORD }}"
+           "username": "${{ secrets.anypoint_cicd_username }}",
+           "password": "${{ secrets.anypoint_cicd_password }}"
           }]
     - name: Print effective-settings
       run: mvn help:effective-settings
