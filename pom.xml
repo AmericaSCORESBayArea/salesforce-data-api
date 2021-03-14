@@ -162,6 +162,18 @@
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
+			<id>mule-enterprise</id>
+			<name>Mule Enterprise Repository</name>
+			<url>https://repository.mulesoft.org/nexus-ee/content/repositories/releases-ee/</url>
+			<layout>default</layout>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
 			<id>mulesoft-releases</id>
 			<name>mulesoft release repository</name>
 			<layout>default</layout>
