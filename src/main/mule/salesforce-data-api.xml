@@ -1314,7 +1314,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 }]]]></salesforce:records>
         </salesforce:upsert>
 				<choice doc:name="Upsert successful?" doc:id="132108bf-cd03-4123-9044-1b3f8c646b68" >
-					<when expression="#[payload.items..*statusCode contains 'UNABLE_TO_LOCK_ROW']">
+					<when expression="#[(payload.items..*statusCode default []) contains 'UNABLE_TO_LOCK_ROW']">
 						<raise-error doc:name="Raise error" doc:id="d329c204-1204-4b44-8c2a-63f539a1d1a1" type="SALESFORCE-CUSTOM:UNABLE_TO_LOCK_ROW"/>
 					</when>
 				</choice>
