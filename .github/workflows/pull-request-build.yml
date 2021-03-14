@@ -22,10 +22,7 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-        server-id: scores-exchange
-        server-username: USERNAME
-        server-password: PASSWORD
-    - name: Add Mule Nexus server
+    - name: Add repo credentials
       uses: s4u/maven-settings-action@v2.4.0
       with:
         servers: |
@@ -33,11 +30,13 @@ jobs:
            "id": "mule-enterprise",
            "username": "${{ secrets.MULE_NEXUS_USERNAME }}",
            "password": "${{ secrets.MULE_NEXUS_PASSWORD }}"
+          },
+          {
+           "id": "scores-exchange",
+           "username": "${{ secrets.ANYPOINT_CICD_USERNAME }}",
+           "password": "${{ secrets.ANYPOINT_CICD_PASSWORD }}"
           }]
     - name: Print effective-settings
       run: mvn help:effective-settings
     - name: Build with Maven
       run: mvn -B package --file pom.xml
-      env:
-        USERNAME: ${{ secrets.anypoint_cicd_username }}
-        PASSWORD: ${{ secrets.anypoint_cicd_password }}
