@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule
+	xmlns:slack="http://www.mulesoft.org/schema/mule/slack"
+	xmlns:xml-module="http://www.mulesoft.org/schema/mule/xml-module"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:json="http://www.mulesoft.org/schema/mule/json"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
+http://www.mulesoft.org/schema/mule/xml-module http://www.mulesoft.org/schema/mule/xml-module/current/mule-xml-module.xsd
+http://www.mulesoft.org/schema/mule/slack http://www.mulesoft.org/schema/mule/slack/current/mule-slack.xsd">
+
+	<flow name="get:\sessions:salesforce-data-api-config">
+		<flow-ref
+			doc:name="entry-flow"
+			doc:id="63a7100a-3835-445f-b219-f21366bd458a"
+			name="entry-flow" />
+		<logger
+			level="INFO"
+			doc:name="Log entry-flow"
+			doc:id="57876b66-7437-4828-a8e5-b7655c0efd3c"
+			message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
+		<ee:transform
+			doc:name="Store Query parameters"
+			doc:id="2af472c3-bf4a-4b57-b152-38d99e5f41a6">
+			<ee:variables>
+				<ee:set-variable variableName="teamSeasonId"><![CDATA[attributes.queryParams.'teamSeasonId']]></ee:set-variable>
+				<ee:set-variable variableName="date"><![CDATA[attributes.queryParams.'date']]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<salesforce:query
+			doc:name="Select Query with TeamSeasonId and Date"
+			doc:id="9597f63f-16b2-4d49-a79c-934f55013aeb"
+			config-ref="Salesforce_Config">
+			<salesforce:salesforce-query><![CDATA[SELECT Id,Name,Session_Date__c,Session_Topic__c,Team_Season__c FROM Session__c WHERE Team_Season__c = ':teamSeasonId' AND Session_Date__c = :date]]></salesforce:salesforce-query>
+			<salesforce:parameters><![CDATA[#[output application/java
+---
+{
+	teamSeasonId : vars.teamSeasonId,
+	date: vars.date as Date {format: 'yyyy-MM-dd'}
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<ee:transform
+			xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
+			doc:name="Create Response">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	TeamSeasonId: payload01.Team_Season__c,
+	SessionId: payload01.Id,
+	SessionName: payload01.Name,
+	SessionDate: payload01.Session_Date__c as String,
+	SessionTopic: payload01.Session_Topic__c
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger
+			level="INFO"
+			doc:name="Log Created Response"
+			doc:id="60de0f5e-211a-4678-a03c-fdaf43169938"
+			message="#[payload]" />
+		<flow-ref
+			doc:name="exit flow"
+			doc:id="fe3121d6-3bcd-4531-957b-afd4514372b6"
+			name="exit-flow" />
+	</flow>
+	<flow name="get:\sessions\(sessionId):salesforce-data-api-config">
+		<flow-ref
+			doc:name="entry-flow"
+			doc:id="681d9e7e-1f58-45b7-a1d4-50129900887d"
+			name="entry-flow" />
+		<logger
+			level="INFO"
+			doc:name="Log entry-flow"
+			doc:id="db4c80b7-b69f-456f-8bbf-88ad7a6dc154"
+			message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
+		<ee:transform
+			doc:name="Store URI parameters"
+			doc:id="d0bbdfa6-da88-4bd5-8dd3-6b34baea125d">
+			<ee:variables>
+				<ee:set-variable variableName="sessionId">attributes.uriParams.'sessionId'
+				</ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<salesforce:query
+			doc:name="Select Query with sessionId"
+			doc:id="529758b0-c423-447d-9377-1a7fdcf494ca"
+			config-ref="Salesforce_Config">
+			<salesforce:salesforce-query><![CDATA[SELECT Id,Name,Session_Date__c,Session_Topic__c,Team_Season__c FROM Session__c WHERE Id = ':sessionId']]></salesforce:salesforce-query>
+			<salesforce:parameters><![CDATA[#[output application/java
+---
+{
+	sessionId : vars.sessionId
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<ee:transform
+			xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
+			doc:name="Create Response"
+			doc:id="5c3ddb31-ba3d-40c9-aea8-cbd6d8b48b33">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+(payload map ( payload01 , indexOfPayload01 ) -> {
+ 	SessionId: payload01.Id,
+	SessionName: payload01.Name,
+	SessionDate: payload01.Session_Date__c as String,
+	SessionTopic: payload01.Session_Topic__c,
+	TeamSeasonId: payload01.Team_Season__c
+}) reduce ($$ ++ $)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger
+			level="INFO"
+			doc:name="Log Created Response"
+			doc:id="aaf8facc-d562-4c79-beab-94a5a294752c"
+			message="#[payload]" />
+		<flow-ref
+			doc:name="exit flow"
+			doc:id="00dfcd8e-7436-496b-9167-d5d5836e4f66"
+			name="exit-flow" />
+	</flow>
+	<flow
+		name="patch:\sessions\(sessionId):application\json:salesforce-data-api-config">
+		<flow-ref
+			doc:name="entry-flow"
+			doc:id="d50e6a52-6e05-493b-9929-40544548e8b8"
+			name="entry-flow" />
+		<logger
+			level="INFO"
+			doc:name="Log entry-flow"
+			doc:id="3be1945e-0a99-4bbf-b20f-92d9363bb670"
+			message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
+		<ee:transform doc:name="Store URI parameters">
+			<ee:variables>
+				<ee:set-variable variableName="sessionId">attributes.uriParams.'sessionId'
+				</ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<ee:transform
+			doc:name="Create Request"
+			doc:id="648e2e25-d4fe-47f9-aa59-846c3cb7e2fd">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+[{
+	Id: vars.sessionId,
+	(Name: payload.SessionName) if payload.SessionName != null,
+	(Session_Date__c: payload.SessionDate as Date {format: 'yyyy-MM-dd'}) if payload.SessionDate != null,
+	(Session_Topic__c: payload.SessionTopic) if payload.SessionTopic != null,
+	(Team_Season__c: payload.TeamSeasonId) if payload.TeamSeasonId != null
+}]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce:update
+			type="Session__c"
+			doc:name="Update"
+			doc:id="8e8b949c-2d83-45a1-b8b2-670c84bec4b7"
+			config-ref="Salesforce_Config" />
+		<choice
+			doc:name="Update successful?"
+			doc:id="cab2b2b5-4638-4d46-8b16-c34e66333d45">
+			<when expression="#[payload.items[0].successful == false]">
+				<ee:transform
+					doc:name="Create Error Response"
+					doc:id="c1844151-e30e-4712-b76d-53d5cd6ee40f">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: payload.items[0].message
+}]]></ee:set-payload>
+					</ee:message>
+					<ee:variables>
+						<ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</when>
+			<otherwise>
+				<ee:transform
+					xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
+					doc:name="Create Response"
+					doc:id="ddf293eb-71f2-4f7e-8aae-85bb551dd63a">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  message: "Session updated"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+		<logger
+			level="INFO"
+			doc:name="Log Created Response"
+			doc:id="6c652734-6036-4601-9338-b7c243535557"
+			message="#[payload]" />
+		<flow-ref
+			doc:name="exit flow"
+			doc:id="51b75b64-cfdd-4317-9ed5-17746383e1f7"
+			name="exit-flow" />
+	</flow>
+	<flow
+		name="post:\sessions:application\json:salesforce-data-api-config">
+		<flow-ref
+			doc:name="entry-flow"
+			doc:id="6c167dad-885c-4f3b-a024-09a946514f40"
+			name="entry-flow" />
+		<logger
+			level="INFO"
+			doc:name="Log entry-flow"
+			doc:id="b93cbf9e-6620-4792-9477-0b49be0dc4f8"
+			message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
+		<ee:transform
+			doc:name="Create Request"
+			doc:id="d48f1453-1e8f-4358-99aa-e87cce52abed">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+[{
+	Session_Date__c: payload.SessionDate as Date {format: 'yyyy-MM-dd'},
+	Session_Topic__c: payload.SessionTopic,
+	Team_Season__c: payload.TeamSeasonId
+}]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce:create
+			type="Session__c"
+			doc:name="Create"
+			doc:id="d65efc08-2fa3-4f83-98bc-eb52f6dd701f"
+			config-ref="Salesforce_Config" />
+		<choice
+			doc:name="Session creation successful?"
+			doc:id="067664b3-7433-4c1a-a856-06ddb96269f2">
+			<when expression="#[payload.items[0].successful == false]">
+				<ee:transform
+					doc:name="Create Error Response"
+					doc:id="97f97f82-1633-4a9b-bc8d-6d9ff5429efe">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: payload.items[0].message
+}]]></ee:set-payload>
+					</ee:message>
+					<ee:variables>
+						<ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</when>
+			<otherwise>
+				<ee:transform
+					xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
+					doc:name="Create Response"
+					doc:id="662ee4ee-97dc-4abe-b9e7-71ecea69616e">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  SessionId: payload.items[0].id
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+		<logger
+			level="INFO"
+			doc:name="Log Created Response"
+			doc:id="4626c69a-dfac-4242-b99f-035d8048b87b"
+			message="#[payload]" />
+		<flow-ref
+			doc:name="exit flow"
+			doc:id="fa598caf-3d99-4a1d-9321-0b6472fc2bcf"
+			name="exit-flow" />
+	</flow>
+</mule>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule
+	xmlns:slack="http://www.mulesoft.org/schema/mule/slack"
+	xmlns:xml-module="http://www.mulesoft.org/schema/mule/xml-module"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:json="http://www.mulesoft.org/schema/mule/json"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
+http://www.mulesoft.org/schema/mule/xml-module http://www.mulesoft.org/schema/mule/xml-module/current/mule-xml-module.xsd
+http://www.mulesoft.org/schema/mule/slack http://www.mulesoft.org/schema/mule/slack/current/mule-slack.xsd">
+	<flow name="get:\teams\(teamId):salesforce-data-api-config">
+		<flow-ref
+			doc:name="entry-flow"
+			doc:id="47620aeb-cbaf-4191-93e4-8d6c368f34c8"
+			name="entry-flow" />
+		<logger
+			level="INFO"
+			doc:name="Log entry-flow"
+			doc:id="6f8b8a50-e0d1-42df-a3d0-7023f649d9a4"
+			message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]." />
+		<ee:transform
+			doc:name="Store URI parameters"
+			doc:id="a8bf376d-f39b-48be-b984-11a5389aa40d">
+			<ee:variables>
+				<ee:set-variable variableName="teamId"><![CDATA[attributes.uriParams.'teamId']]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger
+			level="INFO"
+			doc:name="Log Stored URI Params"
+			doc:id="53af1611-e952-4926-a7c5-49c4c22a887e"
+			message="URI Param - teamId: #[vars.teamId] - stored as vars" />
+		<salesforce:query
+			doc:name="Query"
+			doc:id="41ac7272-6000-4f58-9ed6-9be7d2fcb4b8"
+			config-ref="Salesforce_Config">
+			<salesforce:salesforce-query><![CDATA[SELECT Coach_Soccer__c,Coach_Writing__c,CreatedById,CreatedDate,Id,IsDeleted,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate,Name,OwnerId,School_Site__c,SCORES_Program_Coordinator__c,SCORES_Program_Manager__c,SCORES_Program_Type__c,SystemModstamp,Unique_Teams__c FROM Team__c WHERE Id = ':teamid']]></salesforce:salesforce-query>
+			<salesforce:parameters><![CDATA[#[output application/java
+---
+{
+	teamid : vars.teamId
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<ee:transform
+			xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
+			doc:id="059d709c-e4b0-4f32-bad9-1678304af057">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	TeamName: payload01.Name,
+	TeamId: payload01.Id default ""
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger
+			level="INFO"
+			doc:name="Log Created Response"
+			doc:id="5159028b-b976-45c5-905a-00e2264c05c6"
+			message="#[payload]" />
+		<flow-ref
+			doc:name="exit flow"
+			doc:id="ab5737a9-3e0b-45f1-bf98-3c6b4a19c0fe"
+			name="exit-flow" />
+	</flow>
+	<flow
+		name="patch:\teams\(teamId):application\json:salesforce-data-api-config">
+		<flow-ref
+			doc:name="message-for-not-implemented-endpoints"
+			doc:id="1c4cd5b2-986b-4f32-bfc3-41d930dce8e7"
+			name="message-for-not-implemented-endpoints" />
+	</flow>
+	<flow name="get:\teams:salesforce-data-api-config">
+		<flow-ref
+			doc:name="message-for-not-implemented-endpoints"
+			doc:id="69f4964b-3218-4fbf-8cda-bf4555c25534"
+			name="message-for-not-implemented-endpoints" />
+	</flow>
+
+	<flow
+		name="post:\teams:application\json:salesforce-data-api-config">
+		<flow-ref
+			doc:name="message-for-not-implemented-endpoints"
+			doc:id="3c4990b0-16f1-4e4e-8465-e39b299bd54f"
+			name="message-for-not-implemented-endpoints" />
+	</flow>
+
+</mule>
