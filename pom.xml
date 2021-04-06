@@ -129,7 +129,7 @@
     	<dependency>
             <groupId>6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd</groupId>
             <artifactId>salesforce-data-api</artifactId>
-            <version>3.0.11</version>
+            <version>3.0.13</version>
             <classifier>raml</classifier>
             <type>zip</type>
         </dependency>
