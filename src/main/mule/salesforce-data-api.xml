@@ -567,8 +567,8 @@ import * from modules::GlobalModules
 {
 	externalStudentId : vars.externalStudentId default 'aaa',
 	externalStudentIdSource: vars.externalStudentIdSource default 'NONE',
-	firstName: escapeSpecialSOQLChars(vars.firstName, chars) default '',
-	lastName: escapeSpecialSOQLChars(vars.lastName, chars) default '',
+	firstName: escapeSpecialSOQLChars(vars.firstName default '', chars) default '',
+	lastName: escapeSpecialSOQLChars(vars.lastName default '', chars) default '',
 	birthDate: vars.birthDate as Date {format: 'yyyy-MM-dd'}
 }]]]></salesforce:parameters>
                 </salesforce:query>
@@ -583,8 +583,8 @@ import * from modules::GlobalModules
 {
 	externalStudentId : vars.externalStudentId default 'aaa',
 	externalStudentIdSource: vars.externalStudentIdSource default 'NONE',
-	firstName: escapeSpecialSOQLChars(vars.firstName, chars) default '',
-	lastName: escapeSpecialSOQLChars(vars.lastName, chars) default ''
+	firstName: escapeSpecialSOQLChars(vars.firstName default '', chars) default '',
+	lastName: escapeSpecialSOQLChars(vars.lastName default '', chars) default ''
 }]]]></salesforce:parameters>
                 </salesforce:query>
             </otherwise>
@@ -612,7 +612,9 @@ EducationalAttainment: payload01.Grade_c as String default "",
 SchoolAttending: payload01.School_Attending__c as String default "",
 SchoolEntryDate: payload01.Contact_c as String default "",
 SFUSDEntryDate: payload01.Contact_c as String default "",
-K12GradeLevel: payload01.Level__c as String default ""
+K12GradeLevel: payload01.Level__c as String default "",
+ExternalStudentId: payload01.External_Student_ID__c as String default "",
+ExternalStudentIdSource: payload01.External_Student_DB__c as String default ""
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>
@@ -628,7 +630,7 @@ K12GradeLevel: payload01.Level__c as String default ""
             </ee:variables>
         </ee:transform>
         <salesforce:query doc:name="Query" doc:id="484bbe2a-c7aa-42d5-9463-cd953b4abb1e" config-ref="Salesforce_Config">
-            <salesforce:salesforce-query><![CDATA[SELECT Birthdate,Contact_Type__c,External_Student_ID__c,Ethnicity__c,FirstName,Gender__c,Grade__c,Id,LastName,Level__c,MailingAddress,MailingCity,MailingCountry,MailingPostalCode,MailingState,MailingStreet,MiddleName,Name,Parent_Home_Language__c,RecordTypeId,School_Attending__c,Zip_First_Five_Digits__c FROM Contact WHERE Id = ':id']]></salesforce:salesforce-query>
+            <salesforce:salesforce-query><![CDATA[SELECT Birthdate,Contact_Type__c,External_Student_ID__c,External_Student_DB__c,Ethnicity__c,FirstName,Gender__c,Grade__c,Id,LastName,Level__c,MailingAddress,MailingCity,MailingCountry,MailingPostalCode,MailingState,MailingStreet,MiddleName,Name,Parent_Home_Language__c,RecordTypeId,School_Attending__c,Zip_First_Five_Digits__c FROM Contact WHERE Id = ':id']]></salesforce:salesforce-query>
             <salesforce:parameters><![CDATA[#[output application/java
 ---
 {
@@ -658,7 +660,9 @@ EducationalAttainment: payload01.Grade_c as String default "",
 SchoolAttending: payload01.School_Attending__c as String default "",
 SchoolEntryDate: payload01.Contact_c as String default "",
 SFUSDEntryDate: payload01.Contact_c as String default "",
-K12GradeLevel: payload01.Level__c as String default ""
+K12GradeLevel: payload01.Level__c as String default "",
+ExternalStudentId: payload01.External_Student_ID__c as String default "",
+ExternalStudentIdSource: payload01.External_Student_DB__c as String default ""
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>
