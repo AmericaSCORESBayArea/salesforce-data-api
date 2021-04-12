@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-** Dependency**
+**Dependency**
 What app or project needs this?
 
 **Is your feature request related to a problem? Please describe.**
