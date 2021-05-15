@@ -20,6 +20,8 @@ payload must equalTo([
     "SchoolAttending": "",
     "SchoolEntryDate": "",
     "SFUSDEntryDate": "",
-    "K12GradeLevel": ""
+    "K12GradeLevel": "",
+    "ExternalStudentId": "",
+    "ExternalStudentIdSource": ""
   }
 ])
