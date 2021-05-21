@@ -126,14 +126,20 @@
 			<version>10.7.0</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
-    	<dependency>
-            <groupId>6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd</groupId>
-            <artifactId>salesforce-data-api</artifactId>
-            <version>3.0.14</version>
-            <classifier>raml</classifier>
-            <type>zip</type>
-        </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd</groupId>
+			<artifactId>salesforce-data-api</artifactId>
+			<version>3.0.15</version>
+			<classifier>raml</classifier>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>org.mule.weave</groupId>
+			<artifactId>assertions</artifactId>
+			<version>1.0.2</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 
 	<repositories>
 		<repository>
