@@ -71,8 +71,8 @@ jobs:
       env:
         USERNAME: ${{ secrets.anypoint_cicd_username }}
         PASSWORD: ${{ secrets.anypoint_cicd_password }}
-        SFDC.TOKEN: ${{ secrets.sfdc_sandbox_integrationuser_token }}
-        SFDC.PASSWORD: ${{ secrets.sfdc_sandbox_integrationuser_pwd }}
+        SFDC_TOKEN: ${{ secrets.sfdc_sandbox_integrationuser_token }}
+        SFDC_PASSWORD: ${{ secrets.sfdc_sandbox_integrationuser_pwd }}
       run: |
         artifactName=$(ls *.jar | head -1)
-        mvn deploy -DmuleDeploy -e -Dmule.artifact=$artifactName -Danypoint.username="$USERNAME" -Danypoint.password="$PASSWORD" -Denv=Sandbox -Denv.lowercase=sandbox -Dsfdc.password="$SFDC.PASSWORD" -Dsfdc.token="$SFDC.TOKEN" -DskipTests
+        mvn deploy -DmuleDeploy -e -Dmule.artifact=$artifactName -Danypoint.username="$USERNAME" -Danypoint.password="$PASSWORD" -Denv=Sandbox -Denv.lowercase=sandbox -Dsfdc.password="$SFDC_PASSWORD" -Dsfdc.token="$SFDC_TOKEN" -DskipTests
