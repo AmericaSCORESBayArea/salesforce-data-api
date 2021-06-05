@@ -43,6 +43,12 @@
 						<region>us-east-2</region>
 						<workers>1</workers>
 						<objectStoreV2>true</objectStoreV2>
+						<properties>
+							<env>${env.lowercase}</env>
+							<anypoint.platform.config.analytics.agent.enabled>true</anypoint.platform.config.analytics.agent.enabled>
+							<sfdc.password>${sfdc.password}</sfdc.password>
+							<sfdc.token>${sfdc.token}</sfdc.token>
+						</properties>
 					</cloudHubDeployment>
 				</configuration>
 			</plugin>
@@ -113,12 +119,6 @@
 			<version>2.2.5</version>
 			<classifier>mule-plugin</classifier>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.mulesoft.modules</groupId>
-			<artifactId>mule-secure-configuration-property-module</artifactId>
-			<version>1.2.3</version>
-			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
 			<groupId>com.mulesoft.connectors</groupId>

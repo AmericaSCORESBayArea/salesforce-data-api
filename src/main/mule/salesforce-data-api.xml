@@ -5,12 +5,9 @@
     </http:listener-config>
     <apikit:config name="salesforce-data-api-config" api="resource::6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd:salesforce-data-api:3.0.15:raml:zip:salesforce-data-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="012e809f-72bb-49a5-b21f-28fa4b364ab3">
-        <salesforce:basic-connection username="${sfdc.user}" password="${secure::sfdc.password}" securityToken="${secure::sfdc.token}" url="${sfdc.url}" />
+        <salesforce:basic-connection username="${sfdc.user}" password="${sfdc.password}" securityToken="${sfdc.token}" url="${sfdc.url}" />
     </salesforce:sfdc-config>
     <configuration-properties doc:name="Configuration properties" doc:id="7c250965-7498-46d2-a4cf-47c6cca0411c" file="properties/${env}.properties" />
-    <secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="4ed16836-9f40-444f-b5cd-974fcd24e5bc" file="properties/${env}-secure.properties" key="${runtime.decryptionkey}">
-        <secure-properties:encrypt algorithm="Blowfish" />
-    </secure-properties:config>
     <flow name="salesforce-data-api-main">
         <http:listener config-ref="salesforce-data-api-httpListenerConfig" path="/api-internal/*">
             <http:response statusCode="#[vars.httpStatus default 200]">

@@ -9,7 +9,6 @@
 		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
 	<munit:config name="salesforce-data-api-suite.xml" />
 	<global-property doc:name="Global Property" doc:id="b0c78ee5-eea5-4c2c-a827-4d94f2e878c6" name="env" value="munit" />
-	<global-property doc:name="Global Property" doc:id="d8091116-01e1-4083-9764-eaca8bee6315" name="runtime.decryptionkey" value="dummykey" />
 	<munit:test name="get:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\attendances:salesforce-data-api-config-test" doc:id="a6e6ea7d-ccf9-4f73-b547-5c5c0233ac12" >
 		<munit:behavior >
 			<munit-tools:mock-when doc:name="Mock Query" doc:id="7cd992e1-886a-42ef-a114-0d3f49b47b34" processor="salesforce:query">

@@ -1,5 +1,5 @@
 {
-  "secureProperties": ["runtime.decryptionkey"],
+  "secureProperties": ["sfdc.password", "sfdc.token"],
   "redeploymentEnabled": true,
   "name": "secure-properties",
   "minMuleVersion": "4.3.0",
