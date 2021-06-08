@@ -16,11 +16,16 @@ Interactive API specification can be found [here](https://anypoint.mulesoft.com/
 
 1. Clone git repo and download code to your local machine.
 2. Import project in Anypoint Studio.
-3. Add the following runtime arguments in the Run/Debug configuration.
+3. You'll need a local.properties to run the app locally (this file is added to the .gitignore list so shouldn't be committed/pushed to the remote repo)
+   Copy src/main/resources/sandbox.properties file and paste it as local.properties file in the same folder.
+5. Append the following properties in local.properties file - (Contact one of the devs to get the values)
+  - sfdc.password=<value> 
+  - sfdc.token=<value>
+6. Add the following runtime arguments in the Run/Debug configuration.
   - Right click on project > Run as > Mule application (configure)
   - Switch to "Arguments" tab
-  - Append these to VM arguments "-Denv=sandbox -Druntime.decryptionkey=<placeholder>" (Contact one of the devs to get the runtime.decryptionkey)
+  - Append these to VM arguments "-Denv=local"
   - Apply / Run
-4. Verify that the app has started successfully.
-5. Try out couple of requests from the Postman collection.
+7. Verify that the app has started successfully.
+8. Try out couple of requests from the Postman collection.
   
