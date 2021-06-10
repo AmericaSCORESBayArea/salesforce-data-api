@@ -47,7 +47,7 @@
 							<env>${env.lowercase}</env>
 							<anypoint.platform.config.analytics.agent.enabled>true</anypoint.platform.config.analytics.agent.enabled>
 							<sfdc.password>${sfdc.password}</sfdc.password>
-							<sfdc.token>${sfdc.token}</sfdc.token>
+							<sfdc.tkn>${sfdc.tkn}</sfdc.tkn>
 						</properties>
 					</cloudHubDeployment>
 				</configuration>
@@ -127,17 +127,17 @@
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
-			<groupId>6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd</groupId>
-			<artifactId>salesforce-data-api</artifactId>
-			<version>3.0.15</version>
-			<classifier>raml</classifier>
-			<type>zip</type>
-		</dependency>
-		<dependency>
 			<groupId>org.mule.weave</groupId>
 			<artifactId>assertions</artifactId>
 			<version>1.0.2</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd</groupId>
+			<artifactId>salesforce-data-api</artifactId>
+			<version>3.0.16</version>
+			<classifier>raml</classifier>
+			<type>zip</type>
 		</dependency>
 	</dependencies>
 

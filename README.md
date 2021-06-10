@@ -20,7 +20,7 @@ Interactive API specification can be found [here](https://anypoint.mulesoft.com/
    Copy src/main/resources/sandbox.properties file and paste it as local.properties file in the same folder.
 5. Append the following properties in local.properties file - (Contact one of the devs to get the values)
     - sfdc.password=<value> 
-    - sfdc.token=<value>
+    - sfdc.tkn=<value>
 6. Add the following runtime arguments in the Run/Debug configuration.
     - Right click on project > Run as > Mule application (configure)
     - Switch to "Arguments" tab
