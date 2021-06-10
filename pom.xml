@@ -47,7 +47,7 @@
 							<env>${env.lowercase}</env>
 							<anypoint.platform.config.analytics.agent.enabled>true</anypoint.platform.config.analytics.agent.enabled>
 							<sfdc.password>${sfdc.password}</sfdc.password>
-							<sfdc.token>${sfdc.token}</sfdc.token>
+							<sfdc.tkn>${sfdc.tkn}</sfdc.tkn>
 						</properties>
 					</cloudHubDeployment>
 				</configuration>

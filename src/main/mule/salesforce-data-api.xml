@@ -25,7 +25,7 @@
 		doc:id="012e809f-72bb-49a5-b21f-28fa4b364ab3">
 		<salesforce:basic-connection
 			username="${sfdc.user}" password="${sfdc.password}"
-			securityToken="${sfdc.token}" url="${sfdc.url}" />
+			securityToken="${sfdc.tkn}" url="${sfdc.url}" />
 	</salesforce:sfdc-config>
 	<configuration-properties
 		doc:name="Configuration properties"

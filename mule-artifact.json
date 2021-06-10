@@ -1,5 +1,5 @@
 {
-  "secureProperties": ["sfdc.password", "sfdc.token"],
+  "secureProperties": ["sfdc.password", "sfdc.tkn"],
   "redeploymentEnabled": true,
   "name": "secure-properties",
   "minMuleVersion": "4.3.0",
