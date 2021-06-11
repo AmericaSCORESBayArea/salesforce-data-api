@@ -815,7 +815,7 @@ ExternalStudentIdSource: payload01.External_Student_DB__c as String default ""
 		<salesforce:search doc:name="Search"
 			doc:id="f195a55e-9140-44b5-b60e-1809649ef0a3"
 			config-ref="Salesforce_Config">
-			<salesforce:search-string><![CDATA[FIND { :searchString } IN ALL FIELDS RETURNING Contact(FirstName,LastName,MiddleName,Name,Id)]]></salesforce:search-string>
+			<salesforce:search-string><![CDATA[FIND { :searchString } IN ALL FIELDS RETURNING Contact(FirstName,LastName,MiddleName,Name,Id,Grade__c,Birthdate)]]></salesforce:search-string>
 			<salesforce:parameters><![CDATA[#[output application/java
 ---
 {
@@ -828,7 +828,14 @@ ExternalStudentIdSource: payload01.External_Student_DB__c as String default ""
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-payload]]></ee:set-payload>
+payload.searchRecords map ( payload01 , indexOfPayload01 ) -> {
+	Id: payload01.record.Id as String default"",
+FirstName: payload01.record.FirstName as String default "",
+MiddleName: payload01.record.MiddleName as String default "",
+LastName: payload01.record.LastName as String default "",
+DateOfBirth: payload01.record.Birthdate as String default "",
+Grade: payload01.record.Grade__c as String default ""
+}]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 	</flow>
