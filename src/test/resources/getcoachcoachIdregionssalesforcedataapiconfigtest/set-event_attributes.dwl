@@ -14,18 +14,18 @@
   "queryParams": {
     "date": "2021-04-16"
   },
-  "requestUri": "/api-internal/coach/0031T00004CYY7NQAX/all?date=2021-04-16",
+  "requestUri": "/api-internal/coach/0031T00004CYY7NQAX/regions?date=2021-04-16",
   "queryString": "date=2021-04-16",
   "version": "HTTP/1.1",
-  "maskedRequestPath": "/coach/0031T00004CYY7NQAX/all",
+  "maskedRequestPath": "/coach/0031T00004CYY7NQAX/regions",
   "listenerPath": "/api-internal/*",
-  "relativePath": "/api-internal/coach/0031T00004CYY7NQAX/all",
   "localAddress": "/127.0.0.1:8091",
+  "relativePath": "/api-internal/coach/0031T00004CYY7NQAX/regions",
   "uriParams": {
     "coachId": "0031T00004CYY7NQAX"
   },
-  "rawRequestUri": "/api-internal/coach/0031T00004CYY7NQAX/all?date=2021-04-16",
-  "rawRequestPath": "/api-internal/coach/0031T00004CYY7NQAX/all",
-  "remoteAddress": "/127.0.0.1:1293",
-  "requestPath": "/api-internal/coach/0031T00004CYY7NQAX/all"
+  "rawRequestUri": "/api-internal/coach/0031T00004CYY7NQAX/regions?date=2021-04-16",
+  "rawRequestPath": "/api-internal/coach/0031T00004CYY7NQAX/regions",
+  "remoteAddress": "/127.0.0.1:1273",
+  "requestPath": "/api-internal/coach/0031T00004CYY7NQAX/regions"
 }
