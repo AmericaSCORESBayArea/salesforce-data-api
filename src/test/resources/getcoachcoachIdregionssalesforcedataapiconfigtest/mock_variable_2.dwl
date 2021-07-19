@@ -1,1 +1,1 @@
-"GET"
+"/api-internal/coach/0031T00004GPox0QAD/regions"
