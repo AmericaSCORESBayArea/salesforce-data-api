@@ -135,7 +135,7 @@
 		<dependency>
 			<groupId>6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd</groupId>
 			<artifactId>salesforce-data-api</artifactId>
-			<version>3.0.20</version>
+			<version>3.0.21</version>
 			<classifier>raml</classifier>
 			<type>zip</type>
 		</dependency>
@@ -178,6 +178,18 @@
 			<id>mule-enterprise</id>
 			<name>Mule Enterprise Repository</name>
 			<url>https://repository.mulesoft.org/nexus-ee/content/repositories/releases-ee/</url>
+			<layout>default</layout>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>mule-public</id>
+			<name>Mule Public Repository</name>
+			<url>https://repository.mulesoft.org/nexus/content/repositories/public/</url>
 			<layout>default</layout>
 			<releases>
 				<enabled>true</enabled>
