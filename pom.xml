@@ -198,6 +198,7 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</pluginRepository>
+		
 		<pluginRepository>
 			<id>mulesoft-releases</id>
 			<name>mulesoft release repository</name>
