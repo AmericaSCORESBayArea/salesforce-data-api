@@ -9,54 +9,6 @@
 		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
 	<munit:config name="salesforce-data-api-suite.xml" />
 	<global-property doc:name="Global Property" doc:id="b0c78ee5-eea5-4c2c-a827-4d94f2e878c6" name="env" value="munit" />
-	<munit:test name="get:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\attendances:salesforce-data-api-config-test" doc:id="a6e6ea7d-ccf9-4f73-b547-5c5c0233ac12" >
-		<munit:behavior >
-			<munit-tools:mock-when doc:name="Mock Query" doc:id="7cd992e1-886a-42ef-a114-0d3f49b47b34" processor="salesforce:query">
-				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="2c95dcd3-8d07-446c-883b-98f1ae79ed9c" attributeName="doc:id" />
-				</munit-tools:with-attributes>
-				<munit-tools:then-return >
-					<munit-tools:payload value="#[output application/java --- readUrl('classpath://getcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancessalesforcedataapiconfigtest/mock_payload.dwl')]" mediaType="application/java" encoding="UTF-8" />
-					<munit-tools:variables >
-						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://getcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancessalesforcedataapiconfigtest/mock_variable_.dwl')]" />
-						<munit-tools:variable key="method" value="#[output application/java --- readUrl('classpath://getcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancessalesforcedataapiconfigtest/mock_variable_1.dwl')]" mediaType="application/java" encoding="UTF-8" />
-						<munit-tools:variable key="requestPath" value="#[output application/java --- readUrl('classpath://getcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancessalesforcedataapiconfigtest/mock_variable_2.dwl')]" mediaType="application/java" encoding="UTF-8" />
-						<munit-tools:variable key="sessionId" value="#[output application/java --- readUrl('classpath://getcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancessalesforcedataapiconfigtest/mock_variable_3.dwl')]" mediaType="application/java" encoding="UTF-8" />
-						<munit-tools:variable key="teamSeasonId" value="#[output application/java --- readUrl('classpath://getcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancessalesforcedataapiconfigtest/mock_variable_4.dwl')]" mediaType="application/java" encoding="UTF-8" />
-						<munit-tools:variable key="coachId" value="#[output application/java --- readUrl('classpath://getcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancessalesforcedataapiconfigtest/mock_variable_5.dwl')]" mediaType="application/java" encoding="UTF-8" />
-					</munit-tools:variables>
-				</munit-tools:then-return>
-			</munit-tools:mock-when>
-			<munit:set-event doc:name="Set Input" doc:id="9d85424e-73f2-41af-bf8f-824720e20e6c" >
-				<munit:payload value="#[readUrl('classpath://getcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancessalesforcedataapiconfigtest/set-event_payload.dwl')]" encoding="UTF-8" />
-				<munit:attributes value="#[readUrl('classpath://getcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancessalesforcedataapiconfigtest/set-event_attributes.dwl')]" />
-				<munit:variables >
-					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancessalesforcedataapiconfigtest/set-event_variable_.dwl')]" />
-				</munit:variables>
-			</munit:set-event>
-		</munit:behavior>
-		<munit:execution >
-			<flow-ref doc:name="Flow-ref to get:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\attendances:salesforce-data-api-config" doc:id="43f61e51-d654-4eeb-8b5c-cdfc6ea07150" name="get:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\attendances:salesforce-data-api-config"/>
-		</munit:execution>
-		<munit:validation >
-			<munit-tools:assert doc:name="Assert payload" doc:id="c342fc43-03c1-430d-8819-eb6dc6536773" message="The payload does not match">
-				<munit-tools:that ><![CDATA[#[%dw 2.0
-import getcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancessalesforcedataapiconfigtest::assert_expression_payload
----
-assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
-			</munit-tools:assert>
-			<munit-tools:verify-call doc:name="Verify Store URI parameters" doc:id="66657bbd-d916-4864-9c7b-f14eec128c11" processor="ee:transform" times="1">
-				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="86784c2c-83e8-4a5e-ae64-c5093cbacdbe" attributeName="doc:id" />
-				</munit-tools:with-attributes>
-			</munit-tools:verify-call>
-			<munit-tools:verify-call doc:name="Verify Transform Message" doc:id="f5d239b0-30f5-4113-a6ff-9fe7f4493eba" processor="ee:transform" times="1">
-				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="cc0b30b2-4bb2-4b3c-bfa8-72626dc8dc02" attributeName="doc:id" />
-				</munit-tools:with-attributes>
-			</munit-tools:verify-call>
-		</munit:validation>
-	</munit:test>
 	<munit:test name="post:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\attendances:application\json:salesforce-data-api-config-test1" doc:id="a1df301a-ed0c-4b8d-a3ee-80a5980eb26d" >
 		<munit:behavior >
 			<munit-tools:mock-when doc:name="Mock Upsert" doc:id="2cf14dec-f881-480a-a302-444e30fdca46" processor="salesforce:upsert">
@@ -1639,6 +1591,113 @@ assert_expression_payload::main({payload: payload, attributes: attributes, vars:
 			<munit-tools:verify-call doc:name="Verify entry-flow" doc:id="088f68d9-6b9e-4655-831e-48508eb1e55b" processor="flow-ref" times="1">
 				<munit-tools:with-attributes >
 					<munit-tools:with-attribute whereValue="ff8d3790-5ce7-468b-9d81-d1aa1dc4ba07" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="get:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\attendances:salesforce-data-api-config-test" doc:id="91802bbc-1c07-4df4-ac65-19669c460635" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock Query" doc:id="8d5c474b-ca7b-4b51-a741-c41896353fc8" processor="salesforce:query">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="2c95dcd3-8d07-446c-883b-98f1ae79ed9c" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- readUrl('classpath://getcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancessalesforcedataapiconfigtest\mock_payload.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://getcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancessalesforcedataapiconfigtest\mock_variable_.dwl')]" />
+						<munit-tools:variable key="method" value="#[output application/java --- readUrl('classpath://getcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancessalesforcedataapiconfigtest\mock_variable_1.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="requestPath" value="#[output application/java --- readUrl('classpath://getcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancessalesforcedataapiconfigtest\mock_variable_2.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="sessionId" value="#[output application/java --- readUrl('classpath://getcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancessalesforcedataapiconfigtest\mock_variable_3.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="teamSeasonId" value="#[output application/java --- readUrl('classpath://getcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancessalesforcedataapiconfigtest\mock_variable_4.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="coachId" value="#[output application/java --- readUrl('classpath://getcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancessalesforcedataapiconfigtest\mock_variable_5.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="b148b430-11af-45a4-bb7b-d6b4f57112cd" >
+				<munit:payload value="#[readUrl('classpath://getcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancessalesforcedataapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://getcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancessalesforcedataapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancessalesforcedataapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\attendances:salesforce-data-api-config" doc:id="3d00c625-6cfc-43f8-8059-e5127f31ce85" name="get:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\attendances:salesforce-data-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="cb17a651-7c52-461f-ab1e-f33b8f08dbef" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import getcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancessalesforcedataapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify Log entry-flow" doc:id="44814639-1a26-44fa-92c0-2656ff738296" processor="logger" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="3ea68664-17b8-4854-8e58-7f6d03285b44" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="3ea68664-17b8-4854-8e58-7f6d03285b44" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify Store URI parameters" doc:id="09550de1-16ea-44e8-aaa2-e5913bf172d0" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="86784c2c-83e8-4a5e-ae64-c5093cbacdbe" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify Transform Message" doc:id="b1503b33-1d6f-4006-8dbd-4010613059a1" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="cc0b30b2-4bb2-4b3c-bfa8-72626dc8dc02" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="patch:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\attendances:application\json:salesforce-data-api-config-test" doc:id="6fa2bcd8-8eae-42d9-b0af-93cb6a8eb15f" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock Update" doc:id="dd249b39-083b-4d5c-8986-8d2edd89575b" processor="salesforce:update">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="4f4cb0a3-354a-4613-b2eb-8fc7789b795f" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- readUrl('classpath://patchcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancesapplicationjsonsalesforcedataapiconfigtest\mock_payload.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://patchcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancesapplicationjsonsalesforcedataapiconfigtest\mock_variable_.dwl')]" />
+						<munit-tools:variable key="method" value="#[output application/java --- readUrl('classpath://patchcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancesapplicationjsonsalesforcedataapiconfigtest\mock_variable_1.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="requestPath" value="#[output application/java --- readUrl('classpath://patchcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancesapplicationjsonsalesforcedataapiconfigtest\mock_variable_2.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="sessionId" value="#[output application/java --- readUrl('classpath://patchcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancesapplicationjsonsalesforcedataapiconfigtest\mock_variable_3.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="teamSeasonId" value="#[output application/java --- readUrl('classpath://patchcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancesapplicationjsonsalesforcedataapiconfigtest\mock_variable_4.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="coachId" value="#[output application/java --- readUrl('classpath://patchcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancesapplicationjsonsalesforcedataapiconfigtest\mock_variable_5.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="30c3a3c7-4a13-4155-ad6f-2710bde4819a" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://patchcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancesapplicationjsonsalesforcedataapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://patchcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancesapplicationjsonsalesforcedataapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://patchcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancesapplicationjsonsalesforcedataapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to patch:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\attendances:application\json:salesforce-data-api-config" doc:id="42896c66-c7bf-4ef1-ad6c-da1cce56261d" name="patch:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\attendances:application\json:salesforce-data-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="bfcedeeb-93b4-42eb-ae8e-23b556e7db2b" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import patchcoachcoachIdteamseasonsteamSeasonIdsessionssessionIdattendancesapplicationjsonsalesforcedataapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify Log entry-flow" doc:id="18c4b338-6fae-4667-b874-ffc35eaa4830" processor="logger" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="70cadc02-23f3-4935-ac5a-253f60edd43f" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify Store URI parameters" doc:id="95283cfe-a2bd-4cbb-8307-77dad717d28d" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="cc642196-6c49-49cf-acb8-7fd15a7e0f5c" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify Log Created Response" doc:id="62d18ddd-bdda-4fd3-9b4f-8cdd181558b7" processor="logger" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6277debb-2aa4-4703-97d1-66d20cd0d8e0" attributeName="doc:id" />
 				</munit-tools:with-attributes>
 			</munit-tools:verify-call>
 		</munit:validation>

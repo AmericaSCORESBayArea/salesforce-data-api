@@ -3,7 +3,7 @@
     <http:listener-config name="salesforce-data-api-httpListenerConfig">
         <http:listener-connection host="${http.host}" port="${http.private.port}" />
     </http:listener-config>
-    <apikit:config name="salesforce-data-api-config" api="resource::6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd:salesforce-data-api:3.0.21:raml:zip:salesforce-data-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <apikit:config name="salesforce-data-api-config" api="resource::6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd:salesforce-data-api:3.0.23:raml:zip:salesforce-data-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="012e809f-72bb-49a5-b21f-28fa4b364ab3">
         <salesforce:basic-connection username="${sfdc.user}" password="${sfdc.password}" securityToken="${sfdc.tkn}" url="${sfdc.url}" />
     </salesforce:sfdc-config>
@@ -389,7 +389,7 @@ output application/json
         </ee:transform>
         <logger level="INFO" doc:name="Log Stored URI Params" doc:id="f5fb5455-22c7-4d1f-b316-fa26806f3f1b" message="URI Param - coachId: #[vars.coachId], teamseasonId: #[vars.teamSeasonId], sessionId: #[vars.sessionId] - stored as vars" />
         <salesforce:query doc:name="Query" doc:id="2c95dcd3-8d07-446c-883b-98f1ae79ed9c" config-ref="Salesforce_Config">
-            <salesforce:salesforce-query><![CDATA[SELECT Contact__r.Name,Contact__c,Attended__c FROM Attendance__c WHERE Session__c = ':sessionid' AND Contact__r.Contact_Type__c = "SCORES Student"]]></salesforce:salesforce-query>
+            <salesforce:salesforce-query><![CDATA[SELECT Id,Contact__r.Name,Contact__c,Attended__c FROM Attendance__c WHERE Session__c = ':sessionid' AND Contact__r.Contact_Type__c = 'SCORES Student']]></salesforce:salesforce-query>
             <salesforce:parameters><![CDATA[#[output application/java
 ---
 {
@@ -402,6 +402,7 @@ output application/json
 output application/json
 ---
 payload map ( payload01 , indexOfPayload01 ) -> {
+	AttendanceId: payload01.Id,
 	StudentName: payload01.Contact__r.Name,
 	Attended: payload01.Attended__c default false,
 	StudentId: payload01.Contact__c default ""
@@ -1440,5 +1441,57 @@ payload distinctBy (value) -> { "unique" : value }]]></ee:set-payload>
         </ee:transform>
         <logger level="INFO" doc:name="Log Created Response" doc:id="e19e1f49-7d3c-4cfd-ba87-4f1c8be690b5" message="#[payload]" />
         <flow-ref doc:name="exit flow" doc:id="c51dfc90-a5c0-4537-9846-77b49544764e" name="exit-flow" />
+    </flow>
+    <flow name="patch:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\attendances:application\json:salesforce-data-api-config">
+        <flow-ref doc:name="entry-flow" doc:id="5c8512bc-5f34-4682-9a0e-bf958db2b2d9" name="entry-flow" />
+        <logger level="INFO" doc:name="Log entry-flow" doc:id="70cadc02-23f3-4935-ac5a-253f60edd43f" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
+        <ee:transform doc:name="Store URI parameters" doc:id="cc642196-6c49-49cf-acb8-7fd15a7e0f5c">
+            <ee:variables>
+                <ee:set-variable variableName="teamSeasonId"><![CDATA[attributes.uriParams.'teamSeasonId']]></ee:set-variable>
+                <ee:set-variable variableName="sessionId"><![CDATA[attributes.uriParams.'sessionId']]></ee:set-variable>
+                <ee:set-variable variableName="coachId"><![CDATA[attributes.uriParams.'coachId']]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+		<salesforce:update type="Attendance__c" doc:name="Update" doc:id="4f4cb0a3-354a-4613-b2eb-8fc7789b795f" config-ref="Salesforce_Config">
+            <salesforce:records><![CDATA[#[%dw 2.0
+output application/java
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	Id: payload01.AttendanceId,
+	Contact__c: payload01.StudentId,
+	Attended__c: payload01.Attended,
+}]]]></salesforce:records>
+        </salesforce:update>
+        <choice doc:name="Update successful?" doc:id="3cf4d8b6-1188-40ca-af80-45874cd50d38">
+            <when expression="#[payload.items[0].successful == false]">
+                <ee:transform doc:name="Create Error Response" doc:id="52593c7f-e10a-4e17-89f4-17311b977136">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: payload.items[0].message
+}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </when>
+            <otherwise>
+                <ee:transform doc:name="Create Response" doc:id="fb3860fc-e16f-4661-ac7a-6df2a8cb4053" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  message: "Session updated"
+}]]></ee:set-payload>
+                    </ee:message>
+                </ee:transform>
+            </otherwise>
+        </choice>
+        <logger level="INFO" doc:name="Log Created Response" doc:id="6277debb-2aa4-4703-97d1-66d20cd0d8e0" message="#[payload]" />
+        <flow-ref doc:name="exit flow" doc:id="124c2970-ba8d-4bfa-b9c7-0852a61a1dcc" name="exit-flow" />
     </flow>
 </mule>

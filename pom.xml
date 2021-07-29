@@ -121,21 +121,21 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.mulesoft.connectors</groupId>
-			<artifactId>mule-salesforce-connector</artifactId>
-			<version>10.7.0</version>
-			<classifier>mule-plugin</classifier>
-		</dependency>
-		<dependency>
 			<groupId>org.mule.weave</groupId>
 			<artifactId>assertions</artifactId>
 			<version>1.0.2</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>com.mulesoft.connectors</groupId>
+			<artifactId>mule-salesforce-connector</artifactId>
+			<version>10.12.1</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
+		<dependency>
 			<groupId>6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd</groupId>
 			<artifactId>salesforce-data-api</artifactId>
-			<version>3.0.21</version>
+			<version>3.0.23</version>
 			<classifier>raml</classifier>
 			<type>zip</type>
 		</dependency>
@@ -198,7 +198,6 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</pluginRepository>
-		
 		<pluginRepository>
 			<id>mulesoft-releases</id>
 			<name>mulesoft release repository</name>
