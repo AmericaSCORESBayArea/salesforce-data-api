@@ -496,24 +496,43 @@ import * from modules::GlobalModules
 	Second_Emergency_Phone_03__c: vars.originalPayload.Second_Emergency_Contact_Phone3,
 	Volunteer_for_this_Program_Parent__c: vars.originalPayload.Volunteer
 }]]]]></salesforce:records>
-                </salesforce:create>
-                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="29de979e-5346-4cf1-85d1-5d39079a4735" doc:name="Create response">
-                    <ee:message>
-                        <ee:set-payload><![CDATA[%dw 2.0
+				</salesforce:create>
+				<choice doc:name="Choice" doc:id="7ca5f334-3c6c-4c7c-a6ba-323b1b03ecc9" >
+					<when expression="#[payload.successful == false and payload..errors != null]">
+						<logger level="INFO" doc:name="Logger" doc:id="18e3324c-2e63-459a-87a8-5a04ddfdb610" message="Fuzzy contact match found"/>
+						<ee:transform doc:name="Transform Message" doc:id="8e9989fb-ba44-4031-8b57-5eac1f4367e5" >
+							<ee:message >
+								<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload.items[0].payload]]></ee:set-payload>
+							</ee:message>
+						</ee:transform>
+						<raise-error doc:name="Raise error" doc:id="2870caa8-0d15-4067-8910-2d753a5f0a0c" type="CREATECONTACT:CONFLICT"/>
+					</when>
+					<otherwise >
+						<ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="29de979e-5346-4cf1-85d1-5d39079a4735" doc:name="Create response">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
 	ContactId: payload.items[0].id
 }]]></ee:set-payload>
-                    </ee:message>
-                    <ee:variables />
-                </ee:transform>
-            </when>
-            <otherwise>
-                <logger level="INFO" doc:name="Logger" doc:id="7710ae15-a22f-4abf-8f0c-ce7a7c344977" message="Contact with same name and DOB has been found" />
-                <ee:transform doc:name="Transform Message" doc:id="ac5bb0c5-0ca5-4fe5-abe1-77e446a15104">
-                    <ee:message>
-                        <ee:set-payload><![CDATA[%dw 2.0
+					</ee:message>
+					<ee:variables />
+				</ee:transform>
+					</otherwise>
+				</choice>
+			</when>
+			<otherwise>
+				<logger level="INFO" doc:name="Logger"
+					doc:id="7710ae15-a22f-4abf-8f0c-ce7a7c344977"
+					message="Contact with same name and DOB has been found" />
+				<ee:transform doc:name="Transform Message"
+					doc:id="ac5bb0c5-0ca5-4fe5-abe1-77e446a15104">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
