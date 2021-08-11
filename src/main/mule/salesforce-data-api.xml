@@ -3,7 +3,7 @@
     <http:listener-config name="salesforce-data-api-httpListenerConfig">
         <http:listener-connection host="${http.host}" port="${http.private.port}" />
     </http:listener-config>
-    <apikit:config name="salesforce-data-api-config" api="resource::6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd:salesforce-data-api:3.0.24:raml:zip:salesforce-data-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <apikit:config name="salesforce-data-api-config" api="resource::6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd:salesforce-data-api:3.0.25:raml:zip:salesforce-data-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="012e809f-72bb-49a5-b21f-28fa4b364ab3">
         <salesforce:basic-connection username="${sfdc.user}" password="${sfdc.password}" securityToken="${sfdc.tkn}" url="${sfdc.url}" />
     </salesforce:sfdc-config>
@@ -253,7 +253,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
         </ee:transform>
         <logger level="INFO" doc:name="Log Stored URI Params" doc:id="3d3be5d0-aed9-491c-94ae-1172c08100e3" message="URI Param - coachId: #[vars.coachId] - stored as vars" />
         <choice doc:name="Choice" doc:id="3100b787-33bf-47c4-9eca-fd13cbb727db">
-            <when expression="#[attributes.queryParams.firstDate != null]">
+            <when expression="#[attributes.queryParams.secondDate != null]">
                 <salesforce:query doc:name="Query with ranges" doc:id="f121388e-f35a-4eef-87be-f5bfdcd91479" config-ref="Salesforce_Config">
                     <salesforce:salesforce-query><![CDATA[SELECT Id,Name,Team__r.Name, Season__r.Name, Total_Number_of_Players__c, Team__r.School_Site__r.Region__c, (SELECT Id, Name, Session_Topic__c, Session_Date__c From Sessions__r WHERE Session_Date__c >= :startDate AND Session_Date__c <= :endDate),(SELECT Id,Contact__r.Name,Contact__r.FirstName,Contact__r.LastName,Contact__r.Birthdate,Contact__r.Gender__c,Contact__r.Ethnicity__c,Contact__r.Zip_First_Five_Digits__c,Contact__c From Enrollments__r) FROM Team_Season__c WHERE (Coach_Soccer__c = ':coachid' OR Coach_Writing__c = ':coachid' OR SCORES_Program_Coordinator__c = ':coachid' OR SCORES_Program_Manager__c = ':coachid') AND Season_Start_Date__c < :startDate AND Season_End_Date__c > :startDate]]></salesforce:salesforce-query>
                     <salesforce:parameters><![CDATA[#[output application/java
@@ -440,8 +440,8 @@ payload]]></ee:set-variable>
             </ee:variables>
         </ee:transform>
         <salesforce:query doc:name="Check for matching Contacts" doc:id="61c0f5f7-6cee-4580-a92a-2432384dba3c" config-ref="Salesforce_Config">
-            <salesforce:salesforce-query><![CDATA[SELECT Birthdate,Contact_Type__c,External_Student_ID__c,Ethnicity__c,FirstName,Gender__c,Grade__c,Id,LastName,Level__c,MailingAddress,MailingCity,MailingCountry,MailingPostalCode,MailingState,MailingStreet,MiddleName,Name,Parent_Home_Language__c,RecordTypeId,School_Attending__c,Zip_First_Five_Digits__c FROM Contact WHERE (FirstName = ':firstName' AND LastName = ':lastName' AND BirthDate = :birthDate)]]></salesforce:salesforce-query>
-            <salesforce:parameters><![CDATA[#[output application/java
+                    <salesforce:salesforce-query><![CDATA[SELECT Birthdate,Contact_Type__c,External_Student_ID__c,Ethnicity__c,FirstName,Gender__c,Grade__c,Id,LastName,Level__c,MailingAddress,MailingCity,MailingCountry,MailingPostalCode,MailingState,MailingStreet,MiddleName,Name,Parent_Home_Language__c,RecordTypeId,School_Attending__c,Zip_First_Five_Digits__c FROM Contact WHERE (FirstName = ':firstName' AND LastName = ':lastName' AND BirthDate = :birthDate)]]></salesforce:salesforce-query>
+                    <salesforce:parameters><![CDATA[#[output application/java
 import * from modules::GlobalModules
 ---
 {
@@ -449,19 +449,19 @@ import * from modules::GlobalModules
 	lastName: escapeSpecialSOQLChars(vars.originalPayload.LastName, chars) default '',
 	birthDate: vars.originalPayload.Birthdate as Date {format: 'yyyy-MM-dd'}
 }]]]></salesforce:parameters>
-        </salesforce:query>
-        <logger level="INFO" doc:name="Log query response" doc:id="25b33a82-fc31-44ef-98c8-36ea8aacd912" message="#[payload]" />
-        <choice doc:name="Matching Contact found?" doc:id="cd1069b5-ca55-422d-9a92-739a54104316">
-            <when expression="#[(sizeOf(payload)) == 0]">
-                <logger level="INFO" doc:name="Logger" doc:id="03fa150f-5d4f-406f-80ed-cbddd924ba81" message="No matching Contacts found" />
-                <ee:transform doc:name="Transform Message" doc:id="4b040bb0-7cd2-4008-aba2-12df19735ca8">
-                    <ee:message />
-                    <ee:variables>
-                        <ee:set-variable variableName="ContactRecordType"><![CDATA['01250000000VBbXAAW']]></ee:set-variable>
-                    </ee:variables>
-                </ee:transform>
-                <salesforce:create doc:name="Create" doc:id="45632d40-a2a7-4304-930a-a2fa81d78f0d" config-ref="Salesforce_Config" type="Contact">
-                    <salesforce:records><![CDATA[#[output application/java
+                </salesforce:query>
+		<logger level="INFO" doc:name="Log query response" doc:id="25b33a82-fc31-44ef-98c8-36ea8aacd912" message="#[payload]" />
+		<choice doc:name="Matching Contact found?" doc:id="cd1069b5-ca55-422d-9a92-739a54104316">
+                    <when expression="#[(sizeOf(payload)) == 0]">
+                        <logger level="INFO" doc:name="Logger" doc:id="03fa150f-5d4f-406f-80ed-cbddd924ba81" message="No matching Contacts found" />
+                        <ee:transform doc:name="Transform Message" doc:id="4b040bb0-7cd2-4008-aba2-12df19735ca8">
+                            <ee:message />
+                            <ee:variables>
+                                <ee:set-variable variableName="ContactRecordType"><![CDATA['01250000000VBbXAAW']]></ee:set-variable>
+                            </ee:variables>
+                        </ee:transform>
+                        <salesforce:create doc:name="Create" doc:id="45632d40-a2a7-4304-930a-a2fa81d78f0d" config-ref="Salesforce_Config" type="Contact">
+                            <salesforce:records><![CDATA[#[output application/java
 ---
 [{
 	LastName: vars.originalPayload.LastName,
@@ -510,45 +510,43 @@ import * from modules::GlobalModules
 	Second_Emergency_Phone_01__c: vars.originalPayload.Second_Emergency_Contact_Phone1,
 	Second_Emergency_Phone_02__c: vars.originalPayload.Second_Emergency_Contact_Phone2,
 	Second_Emergency_Phone_03__c: vars.originalPayload.Second_Emergency_Contact_Phone3,
-	Volunteer_for_this_Program_Parent__c: vars.originalPayload.Volunteer
+	Volunteer_for_this_Program_Parent__c: vars.originalPayload.Volunteer,
+	Contact_Type__C: vars.originalPayload.ContactType
 }]]]]></salesforce:records>
-				</salesforce:create>
-				<choice doc:name="Choice" doc:id="7ca5f334-3c6c-4c7c-a6ba-323b1b03ecc9" >
-					<when expression="#[payload.successful == false and payload..errors != null]">
-						<logger level="INFO" doc:name="Logger" doc:id="18e3324c-2e63-459a-87a8-5a04ddfdb610" message="Fuzzy contact match found"/>
-						<ee:transform doc:name="Transform Message" doc:id="8e9989fb-ba44-4031-8b57-5eac1f4367e5" >
-							<ee:message >
-								<ee:set-payload ><![CDATA[%dw 2.0
+                        </salesforce:create>
+                        <choice doc:name="Choice" doc:id="7ca5f334-3c6c-4c7c-a6ba-323b1b03ecc9">
+                            <when expression="#[payload.successful == false and payload..errors != null]">
+                                <logger level="INFO" doc:name="Logger" doc:id="18e3324c-2e63-459a-87a8-5a04ddfdb610" message="Fuzzy contact match found" />
+                                <ee:transform doc:name="Transform Message" doc:id="8e9989fb-ba44-4031-8b57-5eac1f4367e5">
+                                    <ee:message>
+                                        <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 payload.items[0].payload]]></ee:set-payload>
-							</ee:message>
-						</ee:transform>
-						<raise-error doc:name="Raise error" doc:id="2870caa8-0d15-4067-8910-2d753a5f0a0c" type="CREATECONTACT:CONFLICT"/>
-					</when>
-					<otherwise >
-						<ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="29de979e-5346-4cf1-85d1-5d39079a4735" doc:name="Create response">
-					<ee:message>
-						<ee:set-payload><![CDATA[%dw 2.0
+                                    </ee:message>
+                                </ee:transform>
+                                <raise-error doc:name="Raise error" doc:id="2870caa8-0d15-4067-8910-2d753a5f0a0c" type="CREATECONTACT:CONFLICT" />
+                            </when>
+                            <otherwise>
+                                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="29de979e-5346-4cf1-85d1-5d39079a4735" doc:name="Create response">
+                                    <ee:message>
+                                        <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
 	ContactId: payload.items[0].id
 }]]></ee:set-payload>
-					</ee:message>
-					<ee:variables />
-				</ee:transform>
-					</otherwise>
-				</choice>
-			</when>
-			<otherwise>
-				<logger level="INFO" doc:name="Logger"
-					doc:id="7710ae15-a22f-4abf-8f0c-ce7a7c344977"
-					message="Contact with same name and DOB has been found" />
-				<ee:transform doc:name="Transform Message"
-					doc:id="ac5bb0c5-0ca5-4fe5-abe1-77e446a15104">
-					<ee:message>
-						<ee:set-payload><![CDATA[%dw 2.0
+                                    </ee:message>
+                                    <ee:variables />
+                                </ee:transform>
+                            </otherwise>
+                        </choice>
+                    </when>
+                    <otherwise>
+                        <logger level="INFO" doc:name="Logger" doc:id="7710ae15-a22f-4abf-8f0c-ce7a7c344977" message="Contact with same name and DOB has been found" />
+                        <ee:transform doc:name="Transform Message" doc:id="ac5bb0c5-0ca5-4fe5-abe1-77e446a15104">
+                            <ee:message>
+                                <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
@@ -574,12 +572,12 @@ output application/json
 		K12GradeLevel: payload01.Level__c as String default ""
 	})
 }]]></ee:set-payload>
-                    </ee:message>
-                    <ee:variables />
-                </ee:transform>
-                <raise-error doc:name="Raise error" doc:id="1f5aefe5-be75-4cdc-a204-da25a8547b39" type="CREATECONTACT:CONFLICT" />
-            </otherwise>
-        </choice>
+                            </ee:message>
+                            <ee:variables />
+                        </ee:transform>
+                        <raise-error doc:name="Raise error" doc:id="1f5aefe5-be75-4cdc-a204-da25a8547b39" type="CREATECONTACT:CONFLICT" />
+                    </otherwise>
+                </choice>
     </flow>
     <flow name="get:\contacts:salesforce-data-api-config">
         <flow-ref doc:name="entry-flow" doc:id="c9b03396-87ae-4cc7-a322-5a02422f56ec" name="entry-flow" />
