@@ -22,6 +22,7 @@ payload must equalTo([
     "SFUSDEntryDate": "",
     "K12GradeLevel": "",
     "ExternalStudentId": "",
-    "ExternalStudentIdSource": ""
+    "ExternalStudentIdSource": "",
+    "SchoolSiteId": ""
   }
 ])
