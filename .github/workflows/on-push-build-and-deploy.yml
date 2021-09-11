@@ -39,6 +39,8 @@ jobs:
           }]
     - name: Print effective-settings
       run: mvn help:effective-settings
+    - name: Print effective-pom
+      run: mvn help:effective-pom
     - name: Build with Maven
       run: mvn -B package --file pom.xml
     - name: Stamp artifact file name with commit hash
