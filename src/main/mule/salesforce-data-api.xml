@@ -773,7 +773,7 @@ import * from modules::GlobalModules
 					doc:name="Select Query without Birthdate"
 					doc:id="ec730d90-d661-40ce-b9c0-d05dd4fc28a0"
 					config-ref="Salesforce_Config">
-					<salesforce:salesforce-query><![CDATA[SELECT Birthdate,Contact_Type__c,External_Student_ID__c,External_Student_DB__c,Ethnicity__c,FirstName,Gender__c,Grade__c,Id,LastName,Level__c,MailingAddress,MailingCity,MailingCountry,MailingPostalCode,MailingState,MailingStreet,MiddleName,Name,Parent_Home_Language__c,RecordTypeId,School_Attending__c,Zip_First_Five_Digits__c FROM Contact WHERE ((External_Student_ID__c 
+					<salesforce:salesforce-query><![CDATA[SELECT Birthdate,Contact_Type__c,External_Student_ID__c,External_Student_DB__c,Ethnicity__c,FirstName,Gender__c,Grade__c,Id,LastName,Level__c,MailingAddress,MailingCity,MailingCountry,MailingPostalCode,MailingState,MailingStreet,MiddleName,Name,Parent_Home_Language__c,RecordTypeId,School_Attending__c,Zip_First_Five_Digits__c,AccountId FROM Contact WHERE ((External_Student_ID__c 
  = ':externalStudentId' AND External_Student_DB__c = ':externalStudentIdSource') OR (FirstName = ':firstName' AND LastName = ':lastName'))]]></salesforce:salesforce-query>
 					<salesforce:parameters><![CDATA[#[output application/java
 import * from modules::GlobalModules
@@ -878,7 +878,7 @@ Grade: payload01.record.Grade__c as String default ""
 		<salesforce:query doc:name="Query"
 			doc:id="484bbe2a-c7aa-42d5-9463-cd953b4abb1e"
 			config-ref="Salesforce_Config">
-			<salesforce:salesforce-query><![CDATA[SELECT Birthdate,Contact_Type__c,External_Student_ID__c,External_Student_DB__c,Ethnicity__c,FirstName,Gender__c,Grade__c,Id,LastName,Level__c,MailingAddress,MailingCity,MailingCountry,MailingPostalCode,MailingState,MailingStreet,MiddleName,Name,Parent_Home_Language__c,RecordTypeId,School_Attending__c,Zip_First_Five_Digits__c FROM Contact WHERE Id = ':id']]></salesforce:salesforce-query>
+			<salesforce:salesforce-query><![CDATA[SELECT Birthdate,Contact_Type__c,External_Student_ID__c,External_Student_DB__c,Ethnicity__c,FirstName,Gender__c,Grade__c,Id,LastName,Level__c,MailingAddress,MailingCity,MailingCountry,MailingPostalCode,MailingState,MailingStreet,MiddleName,Name,Parent_Home_Language__c,RecordTypeId,School_Attending__c,Zip_First_Five_Digits__c,AccountId FROM Contact WHERE Id = ':id']]></salesforce:salesforce-query>
 			<salesforce:parameters><![CDATA[#[output application/java
 ---
 {
@@ -1968,9 +1968,8 @@ output application/json
 			<!-- Recommended query but not working because of bad schema in Sandbox -->
 			<!-- <salesforce:salesforce-query><![CDATA[SELECT Id, Name, Region__c, 
 				Site_Type__c FROM Account WHERE Site_Type__c != NULL ORDER BY Region__c,Name]]></salesforce:salesforce-query> -->
-			<salesforce:salesforce-query><![CDATA[SELECT Name, Site FROM Account WHERE RecordTypeId = '01250000000J8SPAA0']]></salesforce:salesforce-query>
-			<!-- <salesforce:salesforce-query><![CDATA[SELECT Name, Id FROM Contact 
-				WHERE School_Attending__c != '']]></salesforce:salesforce-query> -->
+<!-- 			<salesforce:salesforce-query><![CDATA[SELECT Name, Site FROM Account WHERE RecordTypeId = '01250000000J8SPAA0']]></salesforce:salesforce-query> -->
+			<salesforce:salesforce-query><![CDATA[SELECT Name, Id, Region__c FROM Account WHERE RecordTypeId = '01250000000J8SPAA0' GROUP By Region__c, Name,Id]]></salesforce:salesforce-query>
 		</salesforce:query>
 		<ee:transform doc:name="Create Response"
 			doc:id="1c0cae60-6942-4e5a-991c-67d86c24253c"
