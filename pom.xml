@@ -109,13 +109,6 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd</groupId>
-			<artifactId>salesforce-data-api</artifactId>
-			<version>3.0.26</version>
-			<classifier>raml</classifier>
-			<type>zip</type>
-		</dependency>
-		<dependency>
 			<groupId>org.mule.modules</groupId>
 			<artifactId>mule-apikit-module</artifactId>
 			<version>1.5.5</version>
@@ -138,6 +131,13 @@
 			<artifactId>mule-sockets-connector</artifactId>
 			<version>1.2.2</version>
 			<classifier>mule-plugin</classifier>
+		</dependency>
+		<dependency>
+			<groupId>6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd</groupId>
+			<artifactId>salesforce-data-api</artifactId>
+			<version>3.0.27</version>
+			<classifier>raml</classifier>
+			<type>zip</type>
 		</dependency>
 	</dependencies>
 
