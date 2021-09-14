@@ -5,7 +5,7 @@ payload must equalTo([
   {
     "Id": "0015000001wJWy4AAG",
     "Name": "Chad's School Site",
-    "Region": null
+    "Region": ""
   },
   {
     "Id": "0015000002HvvWLAAZ",
