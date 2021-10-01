@@ -423,7 +423,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 		<salesforce:query doc:name="Query"
 			doc:id="2938911f-53b8-43a5-a53e-14fca711003d"
 			config-ref="Salesforce_Config">
-			<salesforce:salesforce-query><![CDATA[SELECT Contact__r.Name,Contact__r.FirstName,Contact__r.LastName,Contact__r.Birthdate,Contact__r.Gender__c,Contact__r.Ethnicity__c,Contact__r.Zip_First_Five_Digits__c,Contact__c,CreatedById,CreatedDate,End_Date__c,Id,IsDeleted,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate,Name,Number_of_Enrollments__c,Start_Date__c,SystemModstamp,Team_Season__c FROM Enrollment__c WHERE Team_Season__c = ':teamseasonid' AND (Team_Season__r.Coach_Soccer__c = ':coachid' OR Team_Season__r.Coach_Writing__c = ':coachid' OR Team_Season__r.SCORES_Program_Coordinator__c = ':coachid' OR Team_Season__r.SCORES_Program_Manager__c = ':coachid')]]></salesforce:salesforce-query>
+			<salesforce:salesforce-query><![CDATA[SELECT Contact__r.Name,Contact__r.FirstName,Contact__r.LastName,Contact__r.Allergies__c, Contact__r.Parent_First_Name__c, Contact__r.Parent_Last_Name__c, Contact__r.Parent_Phone_01__c, Contact__r.Parent_Phone_02__c, Contact__r.Parent_Phone_03__c, Contact__r.Emergency_Contact_Name__c, Contact__r.Emergency_Contact_Relationship_to_Child__c, Contact__r.Emergency_Contact_Name_Phone_01__c, Contact__r.Emergency_Contact_Name_Phone_02__c, Contact__r.Emergency_Contact_Name_Phone_03__c, Contact__r.Second_Emergency_Contact_Name__c, Contact__r.Second_Emerg_Contact_Relationship_Child__c, Contact__r.Second_Emergency_Phone_01__c, Contact__r.Second_Emergency_Phone_02__c, Contact__r.Second_Emergency_Phone_03__c, Contact__r.npsp__Current_Address__c, Contact__r.npe01__Home_Address__c, Contact__r.Birthdate,Contact__r.Gender__c,Contact__r.Ethnicity__c,Contact__r.Zip_First_Five_Digits__c,Contact__c,CreatedById,CreatedDate,End_Date__c,Id,IsDeleted,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate,Name,Number_of_Enrollments__c,Start_Date__c,SystemModstamp,Team_Season__c FROM Enrollment__c WHERE Team_Season__c = ':teamseasonid' AND (Team_Season__r.Coach_Soccer__c = ':coachid' OR Team_Season__r.Coach_Writing__c = ':coachid' OR Team_Season__r.SCORES_Program_Coordinator__c = ':coachid' OR Team_Season__r.SCORES_Program_Manager__c = ':coachid')]]></salesforce:salesforce-query>
 			<salesforce:parameters><![CDATA[#[output application/java
 ---
 {
@@ -448,7 +448,31 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	Birthdate: payload01.Contact__r.Birthdate default "",
 	Gender: payload01.Contact__r.Gender__c default "",
 	Ethnicity: payload01.Contact__r.Ethnicity__c default "",
-	ZipCode: payload01.Contact__r.Zip_First_Five_Digits__c default ""
+	ZipCode: payload01.Contact__r.Zip_First_Five_Digits__c default "",
+	Allergies: payload01.Contact__r.Allergies__c default "",
+	CurrentAddress: payload01.Contact__r.npsp__Current_Address__c default "", 
+	HomeAddress: payload01.Contact__r.npe01__Home_Address__c default "",
+	ParentInfoFirstName: {
+		FirstName: payload01.Contact__r.Parent_First_Name__c default "",
+		LastName: payload01.Contact__r.Parent_Last_Name__c default "",
+		FirstPhone: payload01.Contact__r.Parent_Phone_01__c default "",
+		SecondPhone: payload01.Contact__r.Parent_Phone_02__c default "",
+		ThirdPhone: payload01.Contact__r.Parent_Phone_03__c default "",
+	},
+	EmergencyContactInfo: { 
+		Name: payload01.Contact__r.Emergency_Contact_Name__c default "", 
+		RelationshipToChild: payload01.Contact__r.Emergency_Contact_Relationship_to_Child__c default "", 
+		FirstPhone: payload01.Contact__r.Emergency_Contact_Name_Phone_01__c default "", 
+		SecondPhone: payload01.Contact__r.Emergency_Contact_Name_Phone_02__c default "", 
+		ThirdPhone: payload01.Contact__r.Emergency_Contact_Name_Phone_03__c default "",
+	}, 
+	SecondEmergencyContactInfo: {
+		Name: payload01.Contact__r.Second_Emergency_Contact_Name__c default "", 
+		RelationshipToChild: payload01.Contact__r.Second_Emerg_Contact_Relationship_Child__c default "", 
+		FirstPhone: payload01.Contact__r.Second_Emergency_Phone_01__c default "", 
+		SecondPhone: payload01.Contact__r.Second_Emergency_Phone_02__c default "", 
+		ThirdPhone: payload01.Contact__r.Second_Emergency_Phone_03__c default "",
+	}
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
