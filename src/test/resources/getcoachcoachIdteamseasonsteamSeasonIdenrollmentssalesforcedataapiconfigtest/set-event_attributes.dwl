@@ -1,31 +1,33 @@
 {
   "headers": {
-    "client_id": "a647e195e65c4a358563bd950916e28d",
-    "client_secret": "45CDe2241f4C4D238d320fc6A7521C71",
-    "user-agent": "PostmanRuntime/7.26.8",
-    "accept": "*/*",
-    "postman-token": "b4518485-c6f1-4b65-8210-5f093b856c2b",
     "host": "localhost:8091",
-    "accept-encoding": "gzip, deflate, br",
-    "connection": "keep-alive"
+    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0",
+    "accept": "*/*",
+    "accept-language": "es-AR,es;q=0.8,en-US;q=0.5,en;q=0.3",
+    "accept-encoding": "gzip, deflate",
+    "connection": "keep-alive",
+    "referer": "http://localhost:8091/console/",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin"
   },
   "clientCertificate": null,
   "method": "GET",
   "scheme": "http",
   "queryParams": {},
-  "requestUri": "/api-internal/coach/0031T00003OcljGQAR/teamseasons/a0q1T000008Jt3NQAS/enrollments",
+  "requestUri": "/api-internal/coach/0031T00004CYY7NQAX/teamseasons/a0q1T00000AT9yhQAD/enrollments",
   "queryString": "",
   "version": "HTTP/1.1",
-  "maskedRequestPath": "/coach/0031T00003OcljGQAR/teamseasons/a0q1T000008Jt3NQAS/enrollments",
+  "maskedRequestPath": "/coach/0031T00004CYY7NQAX/teamseasons/a0q1T00000AT9yhQAD/enrollments",
   "listenerPath": "/api-internal/*",
-  "relativePath": "/api-internal/coach/0031T00003OcljGQAR/teamseasons/a0q1T000008Jt3NQAS/enrollments",
   "localAddress": "/127.0.0.1:8091",
+  "relativePath": "/api-internal/coach/0031T00004CYY7NQAX/teamseasons/a0q1T00000AT9yhQAD/enrollments",
   "uriParams": {
-    "coachId": "0031T00003OcljGQAR",
-    "teamSeasonId": "a0q1T000008Jt3NQAS"
+    "coachId": "0031T00004CYY7NQAX",
+    "teamSeasonId": "a0q1T00000AT9yhQAD"
   },
-  "rawRequestUri": "/api-internal/coach/0031T00003OcljGQAR/teamseasons/a0q1T000008Jt3NQAS/enrollments",
-  "rawRequestPath": "/api-internal/coach/0031T00003OcljGQAR/teamseasons/a0q1T000008Jt3NQAS/enrollments",
-  "remoteAddress": "/127.0.0.1:49187",
-  "requestPath": "/api-internal/coach/0031T00003OcljGQAR/teamseasons/a0q1T000008Jt3NQAS/enrollments"
+  "rawRequestUri": "/api-internal/coach/0031T00004CYY7NQAX/teamseasons/a0q1T00000AT9yhQAD/enrollments",
+  "rawRequestPath": "/api-internal/coach/0031T00004CYY7NQAX/teamseasons/a0q1T00000AT9yhQAD/enrollments",
+  "remoteAddress": "/127.0.0.1:6039",
+  "requestPath": "/api-internal/coach/0031T00004CYY7NQAX/teamseasons/a0q1T00000AT9yhQAD/enrollments"
 }
