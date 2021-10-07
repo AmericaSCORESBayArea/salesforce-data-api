@@ -445,6 +445,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	StudentName: payload01.Contact__r.Name default "",
 	FirstName: payload01.Contact__r.FirstName,
 	LastName: payload01.Contact__r.LastName,
+	LastModifiedDate: payload01.LastModifiedDate,
 	Birthdate: payload01.Contact__r.Birthdate default "",
 	Gender: payload01.Contact__r.Gender__c default "",
 	Ethnicity: payload01.Contact__r.Ethnicity__c default "",

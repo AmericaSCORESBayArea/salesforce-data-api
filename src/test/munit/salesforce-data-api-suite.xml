@@ -1758,9 +1758,9 @@ assert_expression_payload::main({payload: payload, attributes: attributes, vars:
 			</munit-tools:assert>
 		</munit:validation>
 	</munit:test>
-	<munit:test name="get:\coach\(coachId)\teamseasons\(teamSeasonId)\enrollments:salesforce-data-api-config-test" doc:id="a5e07e9b-1581-4f26-86c5-b08db95a7656" >
+	<munit:test name="get:\coach\(coachId)\teamseasons\(teamSeasonId)\enrollments:salesforce-data-api-config-test" doc:id="debccc1d-4ab6-47d5-9809-9ce63bc25aed" >
 		<munit:behavior >
-			<munit-tools:mock-when doc:name="Mock Query" doc:id="2168aabd-24d6-4e72-94c0-6e9d267be10a" processor="salesforce:query">
+			<munit-tools:mock-when doc:name="Mock Query" doc:id="0e933b20-6a49-492e-91fb-f2fbe3567497" processor="salesforce:query">
 				<munit-tools:with-attributes >
 					<munit-tools:with-attribute whereValue="2938911f-53b8-43a5-a53e-14fca711003d" attributeName="doc:id" />
 				</munit-tools:with-attributes>
@@ -1775,7 +1775,7 @@ assert_expression_payload::main({payload: payload, attributes: attributes, vars:
 					</munit-tools:variables>
 				</munit-tools:then-return>
 			</munit-tools:mock-when>
-			<munit:set-event doc:name="Set Input" doc:id="8a3b2674-272f-406a-b295-be1060344f41" >
+			<munit:set-event doc:name="Set Input" doc:id="c493c095-54d8-4b38-8bb9-924fdd570f4d" >
 				<munit:payload value="#[readUrl('classpath://getcoachcoachIdteamseasonsteamSeasonIdenrollmentssalesforcedataapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" />
 				<munit:attributes value="#[readUrl('classpath://getcoachcoachIdteamseasonsteamSeasonIdenrollmentssalesforcedataapiconfigtest\set-event_attributes.dwl')]" />
 				<munit:variables >
@@ -1784,28 +1784,33 @@ assert_expression_payload::main({payload: payload, attributes: attributes, vars:
 			</munit:set-event>
 		</munit:behavior>
 		<munit:execution >
-			<flow-ref doc:name="Flow-ref to get:\coach\(coachId)\teamseasons\(teamSeasonId)\enrollments:salesforce-data-api-config" doc:id="7c270055-e1a4-45a0-99a7-f694f78e98e3" name="get:\coach\(coachId)\teamseasons\(teamSeasonId)\enrollments:salesforce-data-api-config"/>
+			<flow-ref doc:name="Flow-ref to get:\coach\(coachId)\teamseasons\(teamSeasonId)\enrollments:salesforce-data-api-config" doc:id="86f12009-7e82-469e-b4ab-742505f38a39" name="get:\coach\(coachId)\teamseasons\(teamSeasonId)\enrollments:salesforce-data-api-config"/>
 		</munit:execution>
 		<munit:validation >
-			<munit-tools:assert doc:name="Assert payload" doc:id="9a4e0320-bfb0-44c0-8488-e534e2e6f366" message="The payload does not match">
+			<munit-tools:assert doc:name="Assert payload" doc:id="79be27a1-c2d1-4f2b-9fc7-ea93f31716f5" message="The payload does not match">
 				<munit-tools:that ><![CDATA[#[%dw 2.0
 import getcoachcoachIdteamseasonsteamSeasonIdenrollmentssalesforcedataapiconfigtest::assert_expression_payload
 ---
 assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
 			</munit-tools:assert>
-			<munit-tools:verify-call doc:name="Verify Transform Message" doc:id="298d94a0-08a7-4344-9834-6dbc05c975f9" processor="ee:transform" times="1">
+			<munit-tools:verify-call doc:name="Verify Transform Message" doc:id="3083359e-ecb7-41ae-a4e5-653e9ebd0227" processor="ee:transform" times="1">
 				<munit-tools:with-attributes >
 					<munit-tools:with-attribute whereValue="f83b6a71-b77b-42de-871b-11e4a3508eb1" attributeName="doc:id" />
 				</munit-tools:with-attributes>
 			</munit-tools:verify-call>
-			<munit-tools:verify-call doc:name="Verify Log entry-flow" doc:id="a5116e1c-d609-433c-9443-3e2828de04b9" processor="logger" times="1">
-				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="5f5fe59f-a13b-4ef1-9c1c-2772b5c7643c" attributeName="doc:id" />
-				</munit-tools:with-attributes>
-			</munit-tools:verify-call>
-			<munit-tools:verify-call doc:name="Verify Store URI parameters" doc:id="ab5bc221-0a00-4688-8edb-bf87de8dc1ac" processor="ee:transform" times="1">
+			<munit-tools:verify-call doc:name="Verify Store URI parameters" doc:id="f611d652-e1d8-4123-a9f7-a67f03125d40" processor="ee:transform" times="1">
 				<munit-tools:with-attributes >
 					<munit-tools:with-attribute whereValue="6ad6fba9-9cc0-4bc5-9582-39a1a552e4d3" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify entry-flow" doc:id="d7525cb2-8f2d-436d-972d-aa22c9bfdfe7" processor="flow-ref" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="a0883b26-6773-4d5c-8d61-b8a8361f90e8" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify exit flow" doc:id="c0f3055f-b1a3-4dc4-a272-d0301aa4d9d9" processor="flow-ref" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="fc0d90c2-2581-49e2-aaef-d58ba1013d8e" attributeName="doc:id" />
 				</munit-tools:with-attributes>
 			</munit-tools:verify-call>
 		</munit:validation>
