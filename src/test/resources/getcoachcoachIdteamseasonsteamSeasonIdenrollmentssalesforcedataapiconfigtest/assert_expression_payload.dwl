@@ -9,6 +9,7 @@ payload must equalTo([
     "StudentName": "Test StudentTest Student 0011",
     "FirstName": "Test",
     "LastName": "StudentTest Student 0011",
+    "LastModifiedDate": "2021-08-16T20:17:35.000Z",
     "Birthdate": "2014-06-13",
     "Gender": "",
     "Ethnicity": "",
