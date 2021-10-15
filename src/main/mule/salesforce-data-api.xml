@@ -874,7 +874,7 @@ SchoolSiteId: payload01.AccountId as String default ""
 		<salesforce:search doc:name="Search"
 			doc:id="f195a55e-9140-44b5-b60e-1809649ef0a3"
 			config-ref="Salesforce_Config">
-			<salesforce:search-string><![CDATA[FIND { :searchString } IN ALL FIELDS RETURNING Contact(FirstName,LastName,MiddleName,Name,Id,Grade__c,Birthdate)]]></salesforce:search-string>
+			<salesforce:search-string><![CDATA[FIND { :searchString } IN NAME FIELDS RETURNING Contact(FirstName,LastName,MiddleName,Name,Id,Grade__c,Birthdate WHERE Contact_Type__c = 'SCORES Student') LIMIT 5]]></salesforce:search-string>
 			<salesforce:parameters><![CDATA[#[output application/java
 ---
 {
@@ -892,6 +892,7 @@ payload.searchRecords map ( payload01 , indexOfPayload01 ) -> {
 FirstName: payload01.record.FirstName as String default "",
 MiddleName: payload01.record.MiddleName as String default "",
 LastName: payload01.record.LastName as String default "",
+Name: payload01.record.Name as String default "",
 DateOfBirth: payload01.record.Birthdate as String default "",
 Grade: payload01.record.Grade__c as String default ""
 }]]></ee:set-payload>
