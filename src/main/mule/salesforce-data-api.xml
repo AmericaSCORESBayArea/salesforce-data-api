@@ -680,22 +680,31 @@ ExternalStudentId: payload01.External_Student_ID__c as String default "",
 ExternalStudentIdSource: payload01.External_Student_DB__c as String default "",
 SchoolSiteId: payload01.AccountId as String default ""
 }]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
-        <logger level="INFO" doc:name="Log Created Response" doc:id="b374f207-dfe3-48d7-99a2-b74e757cdb96" message="#[payload]" />
-        <flow-ref doc:name="exit flow" doc:id="17176b6b-a1c0-4851-984e-43b59c0506eb" name="exit-flow" />
-    </flow>
-    <flow name="get:\contacts\search:salesforce-data-api-config">
-        <flow-ref doc:name="entry-flow" doc:id="cf3b6309-0886-4f1e-88e7-a5bf6b29041a" name="entry-flow" />
-        <logger level="INFO" doc:name="Log entry-flow" doc:id="127d162c-eb82-4c68-858e-cba3a849db5c" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
-        <ee:transform doc:name="Store Query parameters" doc:id="06bf0ffb-bedf-4d91-afb9-accd04fb3580">
-            <ee:variables>
-                <ee:set-variable variableName="searchString"><![CDATA[attributes.queryParams.'searchString']]></ee:set-variable>
-            </ee:variables>
-        </ee:transform>
-        <salesforce:search doc:name="Search" doc:id="f195a55e-9140-44b5-b60e-1809649ef0a3" config-ref="Salesforce_Config">
-            <salesforce:search-string><![CDATA[FIND { :searchString } IN NAME FIELDS RETURNING Contact(FirstName,LastName,MiddleName,Name,Id,Grade__c,Birthdate WHERE Contact_Type__c = 'SCORES Student') LIMIT 5]]></salesforce:search-string>
-            <salesforce:parameters><![CDATA[#[output application/java
+
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Log Created Response"
+			doc:id="b374f207-dfe3-48d7-99a2-b74e757cdb96" message="#[payload]" />
+		<flow-ref doc:name="exit flow"
+			doc:id="17176b6b-a1c0-4851-984e-43b59c0506eb" name="exit-flow" />
+	</flow>
+	<flow name="get:\contacts\search:salesforce-data-api-config">
+		<flow-ref doc:name="entry-flow"
+			doc:id="cf3b6309-0886-4f1e-88e7-a5bf6b29041a" name="entry-flow" />
+		<logger level="INFO" doc:name="Log entry-flow"
+			doc:id="127d162c-eb82-4c68-858e-cba3a849db5c"
+			message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
+		<ee:transform doc:name="Store Query parameters"
+			doc:id="06bf0ffb-bedf-4d91-afb9-accd04fb3580">
+			<ee:variables>
+				<ee:set-variable variableName="searchString"><![CDATA[attributes.queryParams.'searchString']]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<salesforce:search doc:name="Search"
+			doc:id="f195a55e-9140-44b5-b60e-1809649ef0a3"
+			config-ref="Salesforce_Config">
+			<salesforce:search-string><![CDATA[FIND { :searchString } IN NAME FIELDS RETURNING Contact(FirstName,LastName,MiddleName,Name,Id,Grade__c,Birthdate WHERE Contact_Type__c = 'SCORES Student') LIMIT 8]]></salesforce:search-string>
+			<salesforce:parameters><![CDATA[#[output application/java
 ---
 {
 	searchString : vars.searchString
