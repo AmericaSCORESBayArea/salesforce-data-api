@@ -1614,7 +1614,7 @@ output application/json
                     output application/java
                     ---
                     [{
-                        Contact__c: payload.StudentId,
+                        Student__c: payload.StudentId,
                         Coach__c: vars.coachId,
                         Session__c: payload.sessionId,
                         AssessmentResponse__c: payload.AssessmentResponse,
