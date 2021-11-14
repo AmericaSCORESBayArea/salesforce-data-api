@@ -1,0 +1,633 @@
+#%RAML 1.0
+title: salesforce-data-api
+uses: 
+  types: datatypes.raml
+
+/teams:
+  post:
+    description: Create a new Team
+    body:
+      application/json:
+        type: types.TeamCreateModel
+  get:
+    description: Get Teams for given query params
+    queryParameters:
+      TBD:
+    responses:
+      200:
+        body:
+          application/json:
+            type: types.Team[]
+  /{teamId}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: types.Team
+        404: 
+          body:
+            application/json:
+              example:
+                message: Team Not Found
+    patch:
+      body:
+        application/json:
+          type: types.TeamUpdateModel
+
+/teamSeasons:
+  post:
+    description: Create a new TeamSeason
+    body:
+      application/json:
+        type: types.TeamSeasonCreateModel
+  get:
+    description: Get TeamSeasons for given query params
+    queryParameters:
+      date:
+        displayName: Date
+        description: TeamSeason date
+        type: date-only
+        required: false
+    responses:
+      200:
+        body:
+          application/json:
+            type: types.TeamSeasonBaseModel[]
+  /{teamSeasonId}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: types.TeamSeasonBaseModel
+        404: 
+          body:
+            application/json:
+              example:
+                message: TeamSeason Not Found
+    patch:
+      displayName: Update TeamSeason
+      description: Update TeamSeason for given id
+      body:
+        application/json:
+          type: types.TeamSeasonUpdateModel
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                message: TeamSeason updated
+        400:
+          body:
+            application/json:
+              example:
+                message: Bad request
+        404:
+          body:
+            application/json:
+              example:
+                message: TeamSeason not found
+     
+/enrollments:
+  post:
+    description: Create a new Enrollment for a TeamSeason
+    body:
+      application/json:
+        type: types.EnrollmentCreateModel
+  get:
+    description: Get Enrollments for given query params
+    queryParameters:
+      teamSeasonId:
+        displayName: teamSeasonId
+        description: Team Season Id
+        type: string
+        required: true
+    responses:
+      200:
+        body:
+          application/json:
+            type: types.Enrollment[]
+  /{enrollmentId}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: types.Enrollment
+        404: 
+          body:
+            application/json:
+              example:
+                message: Enrollment Not Found
+    patch:
+      body:
+        application/json:
+          type: types.EnrollmentUpdateModel
+
+/contacts: 
+  post:
+    displayName: Register Student
+    description: Creates a new student (Contact->recordType=SCORES Student) in the America SCORES Salesforce database
+    body:
+      application/json:
+        description: payload should be new Contact with values filled out from registration form
+        type: types.Contact
+    responses:
+      200:
+        description: Successful Registration
+        body:
+          application/json:
+            example:
+              ContactId: abc123
+      400:
+        body:
+          application/json:
+            example:
+              message: Error in registration
+  get:
+    displayName: Get contacts
+    description: Get contacts matching query params (to be used for Student contacts for now)
+    queryParameters:
+      externalStudentId:
+        displayName: externalStudentId
+        description: External Student Id
+        type: string
+        required: false
+      externalStudentIdSource:
+        displayName: externalStudentIdSource
+        description: External Student Id Source e.g. DCYF
+        type: string
+        required: false
+      firstName:
+        type: string
+        required: false
+      lastName: 
+        type: string
+        required: false
+      birthDate:
+        type: date-only
+        required: false
+    responses:
+      200:
+        body:
+          application/json:
+            type: types.Contact[]
+  /search:
+    get:
+      displayName: Get matching contacts
+      description: Get contacts matching a search string (to be used for Student contacts for now)
+      queryParameters:
+        searchString:
+          displayName: searchString
+          description: Search string
+          type: string
+          required: true
+      responses:
+        200:
+          body:
+            application/json:
+              type: types.Contact[]
+  
+  /{contactId}:
+    get:
+      displayName: Get contact
+      description: Get contact for given id (to be used for Student contacts for now)
+      responses:
+        200:
+          body:
+            application/json:
+              type: types.Contact
+    patch:
+      displayName: Update contact
+      description: Update contact fields for given id
+      body:
+        application/json:
+          type: types.ContactPatchModel
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                message: Contact updated
+        400:
+          body:
+            application/json:
+              example:
+                message: Bad request
+        404:
+          body:
+            application/json:
+              example:
+                message: Contact not found
+
+/sessions:
+  post:
+    displayName: Create a session
+    description: Creates a new session under a Team Season in the America SCORES Salesforce database
+    body:
+      application/json:
+        type: types.SessionCreateModel
+    responses:
+      200:
+        description: Session created
+        body:
+          application/json:
+            example:
+              SessionId: a0p2i000006SLIBAA4
+      400:
+        body:
+          application/json:
+            example:
+              message: Bad data
+  get:
+    displayName: Get sessions
+    description: Get sessions matching query params
+    queryParameters:
+      teamSeasonId:
+        displayName: teamSeasonId
+        description: Team Season Id
+        type: string
+        required: true
+      date:
+        displayName: Date
+        description: Session date
+        type: date-only
+        required: false
+    responses:
+      200:
+        body:
+          application/json:
+            type: types.Session[]
+  /{sessionId}:
+    get:
+      displayName: Get session
+      description: Get session for given id
+      responses:
+        200:
+          body:
+            application/json:
+              type: types.Session
+    patch:
+      displayName: Update session
+      description: Update session fields for given id
+      body:
+        application/json:
+          type: types.SessionUpdateModel
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                message: Session updated
+        400:
+          body:
+            application/json:
+              example:
+                message: Bad request
+        404:
+          body:
+            application/json:
+              example:
+                message: Session not found
+      
+/attendances:
+  post:
+    displayName: Create an attendance record 
+    description: Creates a new attendance/ updates existing under a Session in the America SCORES Salesforce database
+    body:
+      application/json:
+        type: types.AttendanceCreateModel[]
+    responses:
+      200:
+        description: Attendance updated
+        body:
+          application/json:
+            example:
+              AttendanceId: abc123
+      400:
+        body:
+          application/json:
+            example:
+              message: Bad data
+    
+
+/coach/{coachId}:
+  /regions:
+    get:
+      description: Retrieves a list of all the Regions where a Coach has at least one Team Season
+      responses:
+        200:
+          description: Succesfully retrieved all Regions
+          body:
+            application/json:
+              example:
+                [{
+                  "Region": "San Francisco",
+               }]
+        400: 
+          body:
+            application/json:
+              example:
+                message: Error retrieving Regions
+        404: 
+          body:
+            application/json:
+              example:
+                message: Regions Not Found
+  /allSessions:
+    get:
+      description: Retrieves a list of all sessions a Coach has in the lastest Season
+      queryParameters:
+        date:
+          displayName: Date
+          description: Date selected in the mobile app
+          type: date-only
+          required: true
+      responses:
+        200:
+          description: Succesfully retrieved all Sessions
+          body:
+            application/json:
+              type: types.Session[]
+        400: 
+          body:
+            application/json:
+              example:
+                message: Error retrieving Sessions
+        404: 
+          body:
+            application/json:
+              example:
+                message: Sessions Not Found
+          
+  /teamseasonsNotOwnedByCoach:
+    get:
+      description: Retrieves a list of all Team-Seasons that the user(coach) is a not part of
+      queryParameters:
+        date:
+          displayName: Date
+          description: Date selected in the mobile app
+          type: date-only
+          required: false
+        region:
+          displayName: Region
+          description: Region from Coach user
+          type: string
+          required: true
+        season:
+          displayName: Season
+          description: Latest Season SeasonId
+          type: string
+          required: true
+
+      responses:
+        200:
+          description: Successfully retrieved user's Team-Seasons
+          body:
+            application/json:
+              type: types.TeamSeasonBaseModel[]
+
+        400: 
+          body:
+            application/json:
+              example:
+                message: Error retrieving Team-Seasons
+        404: 
+          body:
+            application/json:
+              example:
+                message: Team-Seasons Not Found
+  /teamseasons:
+    get:
+      description: Retrieves a list of all Team-Seasons that the user(coach) is a part of
+      queryParameters:
+        date:
+          displayName: Date
+          description: Date selected in the mobile app
+          type: date-only
+          required: true
+      responses:
+        200:
+          description: Successfully retrieved user's Team-Seasons
+          body:
+            application/json:
+              type: types.TeamSeasonBaseModel[]
+
+        400: 
+          body:
+            application/json:
+              example:
+                message: Error retrieving Team-Seasons
+        404: 
+          body:
+            application/json:
+              example:
+                message: Team-Seasons Not Found
+
+    /{teamSeasonId}/assessments:
+      get:
+        description: Get Assessments for a TeamSeason 
+        responses:
+          200:
+            body:
+              application/json:
+                type: types.Assessment[]   
+          400:
+            body:
+              application/json:
+                example:
+                  message: Error retrieving assessments
+          404:
+            body:
+              application/json:
+                example:
+                  message: No assessments found
+      patch:
+        displayName: Update Assessment
+        description: Update Assessment for given id
+        body:
+          application/json:
+            type: types.AssessmentUpdateModel
+        responses:
+          200:
+            body:
+              application/json:
+                example:
+                  message: Assessment updated
+          400:
+            body:
+              application/json:
+                example:
+                  message: Bad request for updating Assessment!
+          404:
+            body:
+              application/json:
+                example:
+                  message: Assessment not found!
+      post:
+        description: create a new session while using app
+        body:
+          application/json:
+            type: types.AssessmentCreateModel
+        responses:
+          200:
+            description: Success
+            body:
+              application/json:
+                example:
+                  message: assessment created
+          400:
+            description: Unsuccessful
+            body:
+              application/json:
+                example:
+                  message: Error in creating assessment
+      
+    /{teamSeasonId}/sessions:
+      get:
+        description: Get Sessions for a TeamSeason and given date
+        responses:
+          200:
+            body:
+              application/json:
+                type: types.Session[]   
+          400:
+            body:
+              application/json:
+                example:
+                  message: Error retrieving sessions
+          404:
+            body:
+              application/json:
+                example:
+                  message: No sessions for this day
+      
+      # post:
+      #   description: create a new session while using app
+      #   body:
+      #     application/json:
+      #       type: types.Session
+      #   responses:
+      #     200:
+      #       description: Success
+      #       body:
+      #         application/json:
+      #           example:
+      #             message: Session created
+      #     400:
+      #       description: Unsuccessful
+      #       body:
+      #         application/json:
+      #           example:
+      #             message: Error in creating Session
+
+      /{sessionId}/attendances:
+        get:
+          description: Retrives attendance data for a given session id
+          responses:
+           200:
+            body:
+              application/json:
+                type: types.AttendanceBaseModel[]
+           400:
+             body:
+               application/json:
+                 example:
+                   message: Error retrieving attendance    
+        post:
+          displayName: Update/Create Attendance
+          description: Update or Create Attendance List for a given session
+          body:
+            application/json:
+              description: Payload should be an Attendance object 
+              type: types.AttendanceUpdateModel[]    
+          responses:
+            200:
+              description: Success
+              body:
+                application/json:
+                  example:
+                    message: Attendance list updated      
+            400:
+              body:
+                application/json:
+                  example: 
+                    message: Error updating attendance list.     
+        patch:
+          displayName: Update Attendance
+          description: Update Attendance List for a given session
+          body:
+            application/json:
+              description: Payload should be an Attendance object 
+              type: types.AttendanceUpdateModel[]    
+          responses:
+            200:
+              description: Success
+              body:
+                application/json:
+                  example:
+                    message: Attendance list updated      
+            400:
+              body:
+                application/json:
+                  example: 
+                    message: Error updating attendance list.
+
+    /{teamSeasonId}/enrollments:
+      get:
+        description: Get enrollments for a given session
+        responses:
+          200:
+            body:
+              application/json:
+                type: types.Enrollment[]   
+          400:
+            body:
+              application/json:
+                example:
+                  message: Error retrieving enrollments
+          404:
+            body:
+              application/json:
+                example:
+                  message: No enrollments for this session
+  /all:
+    get:
+      description: Get all objects (i.e. team seasons, sessions, enrollments etc) under a coachId for active seasons for a given date  in one call.
+      queryParameters:
+        firstDate:
+          displayName: Date/Start date
+          description: Date selected in the mobile app
+          type: date-only
+          required: true
+        secondDate:
+          displayName: End date
+          description: Date selected in the mobile app if search by ranges is desired.
+          type: date-only
+          required: false
+      responses:
+        200:
+          description: Successfully retrieved user's Team-Seasons
+          body:
+            application/json:
+              type: types.TeamSeason[]
+        400: 
+          body:
+            application/json:
+              example:
+                message: Error retrieving Team-Seasons
+        404: 
+          body:
+            application/json:
+              example:
+                message: Team-Seasons Not Found
+    
+/schoolsites:
+  get:
+    description: Get all valid school sites
+    responses:
+      200:
+        body:
+          application/json:
+            type: types.SchoolSite[]

@@ -1,0 +1,738 @@
+#%RAML 1.0 Library
+
+types:
+  Team:
+    type: object
+    description: Team Salesforce object
+    properties:
+      TeamName:
+        type: string
+      TeamId:
+        type: SalesforceUniqueId
+      AccountName:
+        type: string
+      AccountId:
+        type: SalesforceUniqueId
+  
+  TeamCreateModel:
+    type: object
+    description: Team object for POST endpoint
+    properties:
+      TeamName:
+        type: string
+      ScoresProgramType:
+        type: string
+        required: false
+      ProgramSite:
+        type: string
+        required: false
+      CoachSoccer:
+        type: SalesforceUniqueId
+        required: false
+      CoachWriting:
+        type: SalesforceUniqueId
+        required: false
+      ScoresProgramCoordinator:
+        type: SalesforceUniqueId
+        required: false
+      ScoresProgramManager:
+        type: SalesforceUniqueId
+        required: false
+  
+  TeamUpdateModel:
+    type: object
+    description: Team object for PATCH endpoint
+    properties:
+      TeamName:
+        type: string
+        required: false
+      ScoresProgramType:
+        type: string
+        required: false
+      ProgramSite:
+        type: string
+        required: false
+      CoachSoccer:
+        type: SalesforceUniqueId
+        required: false
+      CoachWriting:
+        type: SalesforceUniqueId
+        required: false
+      ScoresProgramCoordinator:
+        type: SalesforceUniqueId
+        required: false
+      ScoresProgramManager:
+        type: SalesforceUniqueId
+        required: false
+      
+  TeamSeasonBaseModel: 
+    type: object
+    description: Team Season Salesforce object
+    properties:
+      TeamSeasonName:
+        type: string
+      TeamSeasonId:
+        type: SalesforceUniqueId
+      TeamName:
+        type: string
+      SeasonName:
+        type: string
+      SchoolSite:
+        type: string
+      Partnership:
+        type: string
+      TotalNoOfPlayers:
+        type: number
+      TotalNoOfSessions:
+        type: number
+      SeasonStartDate:
+        type: date-only
+      SeasonEndDate:
+        type: date-only
+      CoachSoccer:
+        type: SalesforceUniqueId
+      CoachWriting:
+        type: SalesforceUniqueId
+      ProgramCoordinator:
+        type: SalesforceUniqueId
+      ScoresProgramManager:
+        type: SalesforceUniqueId
+      Region:
+        type: string
+        required: false
+      SessionId:
+        type: SalesforceUniqueId
+        required: false
+    examples: !include teamseason-base-examples.raml
+      
+  TeamSeason:
+    type: TeamSeasonBaseModel
+    properties:
+      Season_Name:
+        type: string
+        required: false
+      Team_Name:
+        type: string
+        required: false
+      Sessions:
+        type: array
+        required: false
+        items:
+          type: Session
+      Enrollments:
+        type: array
+        required: false
+        items:
+          type: Enrollment
+    examples: !include teamseason-full-examples.raml
+  Session:
+    type: object
+    description: Session of a team season
+    properties:
+      SessionId:
+        type: SalesforceUniqueId
+      SessionName:
+        type: string
+      SessionDate:
+        type: date-only
+      SessionTopic:
+        type: string
+        enum: [ "Soccer", "Writing", "Game_Day", "Soccer_and_Writing"]
+      TeamSeasonId:
+        type: SalesforceUniqueId
+      AttendanceList:
+        type: array
+        required: false
+        items:
+          type: AttendanceUpdateModel
+    examples: !include session-examples.raml
+
+  TeamSeasonCreateModel:
+    type: object
+    description: TeamSeason object for POST endpoint
+    properties:
+      TeamSeasonName:
+        type: string
+      TeamId:
+        type: SalesforceUniqueId
+      SeasonId:
+        type: SalesforceUniqueId
+      SchoolSite:
+        type: string
+        required: false
+      Partnership:
+        type: string
+        required: false
+      TotalNoOfPlayers:
+        type: number
+        required: false
+      TotalNoOfSessions:
+        type: number
+        required: false
+      SeasonStartDate:
+        type: date-only
+        required: false
+      SeasonEndDate:
+        type: date-only
+        required: false
+      CoachSoccer:
+        type: SalesforceUniqueId
+        required: false
+      CoachWriting:
+        type: SalesforceUniqueId
+        required: false
+
+  TeamSeasonUpdateModel:
+    type: object
+    description: TeamSeason object for PATCH endpoint
+    properties:
+      TeamSeasonName:
+        type: string
+        required: false
+      TeamId:
+        type: SalesforceUniqueId
+        required: false
+      SeasonId:
+        type: SalesforceUniqueId
+        required: false
+      SchoolSite:
+        type: string
+        required: false
+      Partnership:
+        type: string
+        required: false
+      TotalNoOfPlayers:
+        type: number
+        required: false
+      TotalNoOfSessions:
+        type: number
+        required: false
+      SeasonStartDate:
+        type: date-only
+        required: false
+      SeasonEndDate:
+        type: date-only
+        required: false
+      CoachSoccer:
+        type: SalesforceUniqueId
+        required: false
+      CoachWriting:
+        type: SalesforceUniqueId
+        required: false
+      ProgramCoordinator:
+        type: SalesforceUniqueId
+        required: false
+      ProgramManager:
+        type: SalesforceUniqueId
+        required: false
+
+  SessionCreateModel:
+    type: object
+    description: Session of a team season
+    properties:
+      SessionDate:
+        type: date-only
+      SessionTopic:
+        type: string
+        enum: [ "Soccer", "Writing", "Game_Day", "Soccer_and_Writing"]
+      TeamSeasonId:
+        type: SalesforceUniqueId
+    examples: !include sessioncreatemodel-examples.raml
+
+  SessionUpdateModel:
+    type: object
+    description: Session object for a PATCH endpoint
+    properties:
+      SessionName:
+        type: string
+        required: false
+      SessionDate:
+        type: date-only
+        required: false
+      SessionTopic:
+        type: string
+        enum: [ "Soccer", "Writing","Game_Day", "Soccer_and_Writing"]
+        required: false
+      TeamSeasonId:
+        type: SalesforceUniqueId
+        required: false
+
+  AttendanceCreateModel:
+    type: object
+    properties:
+      SessionId:
+        type: SalesforceUniqueId
+      StudentId:
+        type: SalesforceUniqueId
+      Attended:
+        type: boolean
+  
+  AttendanceUpdateModel:
+    type: AttendanceBaseModel
+    description: Attendance object for updating an attendance for a session
+    properties:
+      AttendanceId:
+        type: SalesforceUniqueId
+        required: false
+      AttendanceName:
+        type: string
+        required: false
+  AttendanceBaseModel:
+    type: object
+    description: Attendance of a session
+    properties:
+      SessionId:
+        type: SalesforceUniqueId
+        required: false
+      SessionName:
+        type: string
+        required: false
+      StudentId:
+        type: SalesforceUniqueId
+        required: false
+      StudentName:
+        type: string
+        required: false
+      RecordType:
+        type: string
+        required: false
+      RecordedDate:
+        type: date-only
+        required: false
+      Attended:
+        type: boolean
+    examples: !include attendance-examples.raml
+  
+  Enrollment:
+    type: object
+    description: Enrollement of a session
+    properties:
+      EnrollmentId:
+        type: SalesforceUniqueId
+      EnrollmentName:
+        type: string
+      SessionId:
+        type: SalesforceUniqueId
+      SessionName:
+        type: string
+      StudentId:
+        type: SalesforceUniqueId
+      FirstName:
+        type: string
+      LastName:
+        type: string
+      Birthdate:
+        type: string
+      Gender:
+        type: string
+      Ethnicity:
+        type: string
+      ZipCode:
+        type: string
+      RecordType:
+        type: string
+      Date:
+        type: date-only
+      Attended:
+        type: boolean
+    examples: !include enrollment-examples.raml
+
+  EnrollmentCreateModel:
+    type: object
+    description: Enrollement object for a POST endpoint
+    properties:
+      TeamSeasonId:
+        type: SalesforceUniqueId
+      StudentId:
+        type: SalesforceUniqueId
+      StartDate:
+        type: date-only
+        required: false
+      EndDate: 
+        type: date-only
+        required: false
+
+  EnrollmentUpdateModel:
+    type: object
+    description: Enrollement object for a PATCH endpoint
+    properties:
+      TeamSeasonId:
+        type: SalesforceUniqueId
+        required: false
+      StudentId:
+        type: SalesforceUniqueId
+        required: false
+      StartDate:
+        type: date-only
+        required: false
+      EndDate: 
+        type: date-only
+        required: false
+
+  SalesforceUniqueId:
+    displayName: SalesforceUniqueId
+    description: Unique Id of an object in Salesforce
+    type: string
+    maxLength: 18
+
+
+  Contact:
+    type: object
+    description: Salesforce Contact Object
+    properties:
+      Id:
+        type: SalesforceUniqueId
+        required: false
+      ContactType:
+        type: string
+        enum: [ "SCORES Student"]
+      ContactRecordType: 
+        type: string
+      FirstName:
+        type: string
+      MiddleName:
+        type: string
+        required: false
+      LastName:
+        type: string
+      SchoolName:
+        type: string
+      SchoolSiteId:
+        type: SalesforceUniqueId 
+      PersonalEmail:
+        type: string
+        required: false
+      HomePhone:
+        type: string
+        required: false
+      Birthdate:
+        type: date-only
+      Gender: 
+        type: string
+        required: false
+      Grade:
+        type: string
+        required: false
+      Ethnicity: 
+        type: string
+        required: false
+      ReducedPriceLunch:
+        type: string
+        required: false
+      Allergies: 
+        type: string
+        required: false
+      PermissiontoCommuteAlone:
+        type: string
+        required: false
+      ExternalStudentId:
+        type: string
+        required: false
+      ExternalStudentIdSource:
+        type: string
+        required: false
+      ParentFName:
+        type: string
+        required: false
+      ParentLName:
+        type: string
+        required: false
+      ParentEmail:
+        type: string
+        required: false
+      Relationship:
+        type: string
+        required: false
+      ParentPhone1:
+        type: string
+        required: false
+      ParentPhone2:
+        type: string
+        required: false
+      ParentPhone3:
+        type: string
+        required: false
+      MailingStreet:
+        type: string
+        required: false
+      MailingCity:
+        type: string
+        required: false
+      MailingState:
+        type: string
+        required: false
+      MailingZip:
+        type: number
+        required: false
+      MailingCountry:
+        type: string
+        required: false
+      ParentEnglishFluency:
+        type: string
+        required: false
+      ParentHomeLang:
+        type: string
+        required: false
+      OtherLang:
+        type: string
+        required: false
+      Volunteer:
+        type: string
+        required: false
+      Emergency_Contact_Name:
+        type: string
+        required: false
+      Emergency_Contact_Relationship:
+        type: string
+        required: false
+      Emergency_Contact_Phone1:
+        type: string
+        required: false
+      Emergency_Contact_Phone2:
+        type: string
+        required: false
+      Emergency_Contact_Phone3:
+        type: string   
+        required: false 
+      Emergency_Contact_Permission_to_Pickup_child:
+        type: string
+        required: false
+      Second_Emergency_Contact_Name:
+        type: string
+        required: false
+      Second_Emergency_Contact_Relationship:
+        type: string
+        required: false
+      Second_Emergency_Contact_Phone1:
+        type: string
+        required: false
+      Second_Emergency_Contact_Phone2:
+        type: string
+        required: false
+      Second_Emergency_Contact_Phone3:
+        type: string
+        required: false 
+      Second_Emergency_Contact_Permission_to_Pickup_child:
+        type: string
+        required: false
+      LiabilityWaiver:
+         type: boolean
+         required: false
+      DataReleaseWaiver:
+       type: boolean
+       required: false
+      MediaReleaseWaiver:
+       type: boolean
+       required: false
+
+  ContactPatchModel:
+    type: object
+    description: Salesforce Contact Object with all fields optional
+    properties:
+      ContactRecordType: 
+        type: string
+        required: false
+      FirstName:
+        type: string
+        required: false
+      MiddleName:
+        type: string
+        required: false
+      LastName:
+        type: string
+        required: false
+      SchoolName:
+        type: string  
+        required: false
+      SchoolSiteId:
+        type: SalesforceUniqueId
+        required: false
+      PersonalEmail:
+        type: string
+        required: false
+      HomePhone:
+        type: string
+        required: false
+      Birthdate:
+        type: date-only
+        required: false
+      Gender: 
+        type: string
+        required: false
+      Grade:
+        type: string
+        required: false
+      Ethnicity: 
+        type: string
+        required: false
+      ReducedPriceLunch:
+        type: string
+        required: false
+      Allergies: 
+        type: string
+        required: false
+      PermissiontoCommuteAlone:
+        type: string
+        required: false
+      DCYFStuID:
+        type: string
+        required: false
+      ParentFName:
+        type: string
+        required: false
+      ParentLName:
+        type: string
+        required: false
+      ParentEmail:
+        type: string
+        required: false
+      Relationship:
+        type: string
+        required: false
+      ParentPhone1:
+        type: string
+        required: false
+      ParentPhone2:
+        type: string
+        required: false
+      ParentPhone3:
+        type: string
+        required: false
+      MailingStreet:
+        type: string
+        required: false
+      MailingCity:
+        type: string
+        required: false
+      MailingState:
+        type: string
+        required: false
+      MailingZip:
+        type: number
+        required: false
+      MailingCountry:
+        type: string
+        required: false
+      ParentEnglishFluency:
+        type: string
+        required: false
+      ParentHomeLang:
+        type: string
+        required: false
+      OtherLang:
+        type: string
+        required: false
+      Volunteer:
+        type: string
+        required: false
+      Emergency_Contact_Name:
+        type: string
+        required: false
+      Emergency_Contact_Relationship:
+        type: string
+        required: false
+      Emergency_Contact_Phone1:
+        type: string
+        required: false
+      Emergency_Contact_Phone2:
+        type: string
+        required: false
+      Emergency_Contact_Phone3:
+        type: string    
+        required: false
+      Emergency_Contact_Permission_to_Pickup_child:
+        type: string
+        required: false
+      Second_Emergency_Contact_Name:
+        type: string
+        required: false
+      Second_Emergency_Contact_Relationship:
+        type: string
+        required: false
+      Second_Emergency_Contact_Phone1:
+        type: string
+        required: false
+      Second_Emergency_Contact_Phone2:
+        type: string
+        required: false
+      Second_Emergency_Contact_Phone3:
+        type: string    
+        required: false
+      Second_Emergency_Contact_Permission_to_Pickup_child:
+        type: string
+        required: false
+      LiabilityWaiver:
+        type: boolean
+        required: false
+      DataReleaseWaiver:
+        type: boolean
+        required: false
+      MediaReleaseWaiver:
+        type: boolean
+        required: false
+
+  SchoolSite:
+    type: object
+    description: Salesforce Account Object of type SchoolSite
+    properties:
+      Id:
+        type: SalesforceUniqueId
+      Name:
+        type: string
+      Region:
+        type: string
+  
+  Assessment:
+    type: object
+    description: Assessment abstract type, metrics, feedback
+    properties:
+      Id:
+        type: SalesforceUniqueId
+      FirstName:
+        type: string
+      LastName:
+        type: string
+      AssessmentJSON:
+        type: string
+      LastModified:
+        type: date-only
+      AssessmentType:
+        type: string
+
+  AssessmentCreateModel:
+    type: object
+    description: create new assessment record
+    properties:
+      StudentId:
+        type: SalesforceUniqueId
+      CoachId:
+        type: SalesforceUniqueId
+      SessionId:
+        type: SalesforceUniqueId
+      TeamSeasonId:
+        type: SalesforceUniqueId
+      AssessmentJSON:
+        type: string
+      AssessmentType:
+        type: string
+      CreatedDate:
+        type: date-only
+
+  AssessmentUpdateModel:
+    type: object
+    description: update existing assessment record
+    properties:
+      AssessmentJSON:
+        type: string
+      LastModified:
+        type: date-only
+      # Student:
+      #   type: string
+      # Coach:
+      #   type: SalesforceUniqueId
+      # SessionId:
+      #   type: SalesforceUniqueId
+      # TeamSeasonId:
+      #   type: SalesforceUniqueId
+      # AssessmentType:
+      #   type: string

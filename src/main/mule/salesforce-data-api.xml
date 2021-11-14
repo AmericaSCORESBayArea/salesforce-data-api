@@ -1625,9 +1625,6 @@ output application/json
                     }]]]>
                 </ee:set-payload>
             </ee:message>
-                    <ee:variables>
-                        <ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
-                    </ee:variables>
                 </ee:transform>
             <salesforce:create type="Assessment__c" doc:name="Create" doc:id="b126f117-35b4-46a1-b69d-df1514f0915c" config-ref="Salesforce_Config" />
         <choice doc:name="Assessment creation successful?" doc:id="1c1e9ccb-357f-4ef7-8c80-10ce38ec8913">
