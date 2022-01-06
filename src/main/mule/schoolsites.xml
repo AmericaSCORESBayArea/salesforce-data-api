@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+	
+		<flow name="get:\schoolsites:salesforce-data-api-config">
+		<flow-ref
+			doc:name="entry-flow"
+			doc:id="993723d9-9cb8-49f9-8017-e7badb845905"
+			name="entry-flow" />
+		<logger
+			level="INFO"
+			doc:name="Log entry-flow"
+			doc:id="e90e1031-06b7-40e9-b2d7-5617c1b0e773"
+			message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. Also for this request we have queryParam: date=#[attributes.queryParams[0]]" />
+		<salesforce:query
+			doc:name="Query"
+			doc:id="f5d39225-b931-4405-95f8-9c16edd1a0bb"
+			config-ref="Salesforce_Config">
+			<!-- Recommended query but not working because of bad schema in Sandbox -->
+			<!-- <salesforce:salesforce-query><![CDATA[
+					SELECT 
+						Id,
+						Name,
+						Region__c,
+ 						Site_Type__c 
+ 					FROM 
+ 						Account 
+ 					WHERE 
+ 						Site_Type__c != NULL 
+ 					ORDER BY 
+ 						Region__c,
+ 						Name
+ 					]]></salesforce:salesforce-query> -->
+			<!-- <salesforce:salesforce-query><![CDATA[
+					SELECT 
+						Name,
+ 						Site 
+ 					FROM 
+ 						Account 
+					WHERE 
+						RecordTypeId = '01250000000J8SPAA0'
+				]]></salesforce:salesforce-query> -->
+			<salesforce:salesforce-query><![CDATA[
+			SELECT 
+				Name,
+				Id,
+				Region__c 
+			FROM 
+				Account 
+			WHERE 
+				RecordTypeId = '01250000000J8SPAA0' 
+			GROUP BY 
+				Region__c,
+				Name,
+				Id
+			]]></salesforce:salesforce-query>
+		</salesforce:query>
+		<ee:transform
+			doc:name="Create Response"
+			doc:id="be93fb9d-1ed5-4f30-8140-82b5c80e6f92"
+			xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+    output application/json
+    ---
+    payload map ( payload01 , indexOfPayload01 ) -> {
+	Id: payload01.Id default "",
+	Name: payload01.Name default "",
+	Region: payload01.Region__c default ""
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger
+			level="INFO"
+			doc:name="Log Created Response"
+			doc:id="9938dc95-a0d5-4545-b3a6-84940440fb19"
+			message="#[payload]" />
+		<flow-ref
+			doc:name="exit flow"
+			doc:id="75b12b20-1e65-4ed2-a1f4-395722810a76"
+			name="exit-flow" />
+	</flow>
+</mule>

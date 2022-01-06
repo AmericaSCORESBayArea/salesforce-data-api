@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+	
+	<flow
+		name="post:\attendances:application\json:salesforce-data-api-config">
+		<flow-ref
+			doc:name="entry-flow"
+			doc:id="b9d898d3-12c3-45d6-a8c8-6fe66a2d8f44"
+			name="entry-flow" />
+		<logger
+			level="INFO"
+			doc:name="Log entry-flow"
+			doc:id="6a1508cc-3671-44cf-a37a-968738396a22"
+			message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]." />
+		<until-successful
+			maxRetries="2"
+			doc:name="Until Successful"
+			doc:id="440291e7-5b30-43c2-926c-9a405d7f205e"
+			millisBetweenRetries="2000">
+			<try
+				doc:name="Try"
+				doc:id="5ccf5926-d891-4f1f-bc3b-d36bf60e3e12">
+				<salesforce:upsert
+					doc:name="Upsert"
+					doc:id="be2ff311-106e-4093-9e29-2b1bb3850161"
+					config-ref="Salesforce_Config"
+					objectType="Attendance__c"
+					externalIdFieldName="ExternalId__c">
+					<salesforce:records><![CDATA[#[%dw 2.0
+output application/java
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	Contact__c: payload01.StudentId,
+	Session__c: payload01.SessionId,
+	Attended__c: payload01.Attended,
+	ExternalId__c: payload01.StudentId ++ '-' ++ payload01.SessionId
+}]]]></salesforce:records>
+				</salesforce:upsert>
+				<choice
+					doc:name="Upsert successful?"
+					doc:id="033792a0-3de2-43bc-8b8e-e792264fa3eb">
+					<when
+						expression="#[(payload.items..*statusCode default []) contains 'UNABLE_TO_LOCK_ROW']">
+						<raise-error
+							doc:name="Raise error"
+							doc:id="31566e63-753c-4bae-9492-05a5ac7da221"
+							type="SALESFORCE-CUSTOM:UNABLE_TO_LOCK_ROW" />
+					</when>
+				</choice>
+			</try>
+		</until-successful>
+		<ee:transform
+			xsi:schemaLocation=" http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
+			doc:id="238ab716-c648-4986-a081-336f96add8ba"
+			doc:name="Create response">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload.items.*payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref
+			doc:name="exit flow"
+			doc:id="042e3e1d-e8f7-46e4-a8e3-ea7563f61b68"
+			name="exit-flow" />
+	</flow>
+	</mule>
