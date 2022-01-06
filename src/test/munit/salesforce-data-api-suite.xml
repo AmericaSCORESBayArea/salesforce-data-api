@@ -303,7 +303,7 @@ assert_expression_payload::main({payload: payload, attributes: attributes, vars:
 		<munit:behavior >
 			<munit-tools:mock-when doc:name="Mock Query" doc:id="52ee6ce4-1162-4eb9-8441-79625ed95886" processor="salesforce:query">
 				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="f01262b6-4556-4307-add7-d706c71ce2e7" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="1a7e6fb4-ede4-42d0-8c21-f555a500e309" attributeName="doc:id" />
 				</munit-tools:with-attributes>
 				<munit-tools:then-return >
 					<munit-tools:payload value="#[output application/java --- readUrl('classpath://getteamsteamIdsalesforcedataapiconfigtest/mock_payload.dwl')]" mediaType="application/java" encoding="UTF-8" />
