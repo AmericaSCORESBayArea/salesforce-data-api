@@ -17,7 +17,7 @@ http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mu
 			port="${http.private.port}" />
 	</http:listener-config>
 	<apikit:config name="salesforce-data-api-config"
-		api="resource::6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd:salesforce-data-api:3.0.33:raml:zip:salesforce-data-api.raml"
+		api="resource::6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd:salesforce-data-api:3.0.37:raml:zip:salesforce-data-api.raml"
 		outboundHeadersMapName="outboundHeaders"
 		httpStatusVarName="httpStatus" />
 	<salesforce:sfdc-config name="Salesforce_Config"

@@ -11,11 +11,11 @@
         </ee:transform>
         <logger level="INFO" doc:name="Log Stored URI Params" doc:id="8027a799-c637-4b02-8cd4-2ca51dd5a969" message="URI Param - coachId: #[vars.coachId] - stored as var " />
         <salesforce:query doc:name="Query" doc:id="c4a7d532-abc4-4dab-abe9-60d8bfaaa69c" config-ref="Salesforce_Config">
-            <salesforce:salesforce-query><![CDATA[SELECT Anticipated_Players_Enrollment__c,Coach_Soccer__c,Coach_Writing__c,Season__r.Id,CreatedById,CreatedDate,Date_Last_Session_Attended__c,Id,IsDeleted,LastActivityDate,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate,Name,Number_of_Attendance_Completed__c,Number_of_Attendance_Incomplete__c,Number_of_Students_Absent__c,Number_of_Students_Present__c,Number_of_Team_Seasons__c,Partnership__c,Percent_of_Attendance_Completed__c,Percent_of_Students_Present__c,Schedule__c,School_Site__c,SCORES_Program_Coordinator__r.Name,SCORES_Program_Manager__r.Name,Season_End_Date__c,Season_Start_Date__c,Season__c,SystemModstamp,Team__c,Total_Number_of_Players__c,Total_Number_of_Sessions__c,Coach_Soccer__r.Name,Coach_Writing__r.Name,Team__r.Name,Season__r.Name,Team__r.School_Site__r.Region__c FROM Team_Season__c WHERE (Coach_Soccer__c = ':coachId' OR Coach_Writing__c = ':coachId' OR SCORES_Program_Coordinator__c = ':coachId' OR SCORES_Program_Manager__c = ':coachId')  AND (Season_Start_Date__c <= :date AND Season_End_Date__c >= :date ) ORDER BY Season_End_Date__c DESC]]></salesforce:salesforce-query>
+            <salesforce:salesforce-query><![CDATA[SELECT Anticipated_Players_Enrollment__c,Coach_Soccer__c,Coach_Writing__c,Season__r.Id,CreatedById,CreatedDate,Date_Last_Session_Attended__c,Id,IsDeleted,LastActivityDate,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate,Name,Number_of_Attendance_Completed__c,Number_of_Attendance_Incomplete__c,Number_of_Students_Absent__c,Number_of_Students_Present__c,Number_of_Team_Seasons__c,Partnership__c,Percent_of_Attendance_Completed__c,Percent_of_Students_Present__c,Schedule__c,School_Site__c,SCORES_Program_Coordinator__r.Name,SCORES_Program_Manager__r.Name,Season_End_Date__c,Season_Start_Date__c,Season__c,SystemModstamp,Team__c,Total_Number_of_Players__c,Total_Number_of_Sessions__c,Coach_Soccer__r.Name,Coach_Writing__r.Name,Team__r.Name,Season__r.Name,Team__r.School_Site__r.Region__c FROM Team_Season__c WHERE (Coach_Soccer__c = ':coachId' OR Coach_Writing__c = ':coachId' OR SCORES_Program_Coordinator__c = ':coachId' OR SCORES_Program_Manager__c = ':coachId')  AND Season__r.Id = ':season' ORDER BY Season_End_Date__c DESC]]></salesforce:salesforce-query>
             <salesforce:parameters><![CDATA[#[output application/java
 ---
 {
-	date : attributes.queryParams.date,
+	season : attributes.queryParams.season,
 	coachId : vars.coachId
 }]]]></salesforce:parameters>
         </salesforce:query>
@@ -540,5 +540,24 @@ output application/json
         <flow-ref doc:name="exit flow" doc:id="269bc0e8-d6c5-4492-8a26-f42d12df5ee4" name="exit-flow" />
     </flow>
     
+       <flow name="patch:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\assessments:application\json:salesforce-data-api-config">
+        <ee:transform>
+            <ee:variables>
+                <ee:set-variable variableName="coachId">attributes.uriParams.'coachId'</ee:set-variable>
+                <ee:set-variable variableName="teamSeasonId">attributes.uriParams.'teamSeasonId'</ee:set-variable>
+                <ee:set-variable variableName="sessionId">attributes.uriParams.'sessionId'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  message: "Assessment updated"
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
    
  </mule>
