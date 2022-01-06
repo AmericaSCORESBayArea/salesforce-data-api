@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+	
+	   <flow name="get:\enrollments:salesforce-data-api-config">
+        <flow-ref doc:name="entry-flow" doc:id="b83659c2-6793-4349-9d31-54a52cb56550" name="entry-flow" />
+        <logger level="INFO" doc:name="Log entry-flow" doc:id="a8d6722e-a64a-4d68-ac47-3718fb9ee749" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
+        <ee:transform doc:name="Store Query parameters" doc:id="f5867837-c4a9-437c-aeb9-1c5ca0bce923">
+            <ee:variables>
+                <ee:set-variable variableName="teamSeasonId"><![CDATA[attributes.queryParams.'teamSeasonId']]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <salesforce:query doc:name="Select Query with TeamSeasonId" doc:id="9f6ac8f1-ada4-456d-904c-03c83492a719" config-ref="Salesforce_Config">
+            <salesforce:salesforce-query><![CDATA[SELECT Contact__r.Name,Contact__r.FirstName,Contact__r.LastName,Contact__r.Birthdate,Contact__r.Gender__c,Contact__r.Ethnicity__c,Contact__r.Zip_First_Five_Digits__c,Contact__c,End_Date__c,Id,Name,Number_of_Enrollments__c,Start_Date__c,Team_Season__c FROM Enrollment__c WHERE Team_Season__c = ':teamSeasonId']]></salesforce:salesforce-query>
+            <salesforce:parameters><![CDATA[#[output application/java
+---
+{
+	teamSeasonId : vars.teamSeasonId
+}]]]></salesforce:parameters>
+        </salesforce:query>
+        <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response" doc:id="351e5ffc-51e1-480a-bf8f-93be4f4c035a">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	EnrollmentId: payload01.Id default "",
+	EnrollmentName: payload01.Name default "",
+	TeamSeasonId: payload01.Team_Season__c default "",
+	StudentId: payload01.Contact__c default "",
+	StudentName: payload01.Contact__r.Name default "",
+	FirstName: payload01.Contact__r.FirstName,
+	LastName: payload01.Contact__r.LastName,
+	Birthdate: payload01.Contact__r.Birthdate default "",
+	Gender: payload01.Contact__r.Gender__c default "",
+	Ethnicity: payload01.Contact__r.Ethnicity__c default "",
+	ZipCode: payload01.Contact__r.Zip_First_Five_Digits__c default ""
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+        <logger level="INFO" doc:name="Log Created Response" doc:id="23d190d2-b7d1-4e34-ac23-2b48a62d2b98" message="#[payload]" />
+        <flow-ref doc:name="exit flow" doc:id="3735c26e-7cc4-4e60-b4ab-d67b006e4289" name="exit-flow" />
+    </flow>
+    <flow name="get:\enrollments\(enrollmentId):salesforce-data-api-config">
+        <flow-ref doc:name="entry-flow" doc:id="9fecce71-cfad-4f2d-835f-52433ee250dc" name="entry-flow" />
+        <logger level="INFO" doc:name="Log entry-flow" doc:id="55e77cd2-a3a4-4a37-9688-baa2c04a5337" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
+        <ee:transform>
+            <ee:variables>
+                <ee:set-variable variableName="enrollmentId">attributes.uriParams.'enrollmentId'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <salesforce:query doc:name="Select Query with EnrollmentId" doc:id="f260dbdf-78c5-466a-aa34-d2d71296302a" config-ref="Salesforce_Config">
+            <salesforce:salesforce-query><![CDATA[SELECT Contact__r.Name,Contact__r.FirstName,Contact__r.LastName,Contact__r.Birthdate,Contact__r.Gender__c,Contact__r.Ethnicity__c,Contact__r.Zip_First_Five_Digits__c,Contact__c,End_Date__c,Id,Name,Number_of_Enrollments__c,Start_Date__c,Team_Season__c FROM Enrollment__c WHERE Id = ':enrollmentId']]></salesforce:salesforce-query>
+            <salesforce:parameters><![CDATA[#[output application/java
+---
+{
+	enrollmentId : vars.enrollmentId
+}]]]></salesforce:parameters>
+        </salesforce:query>
+        <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response" doc:id="5194d465-d73d-4f19-a5c9-252f50062a57">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+(payload map ( payload01 , indexOfPayload01 ) -> {
+	EnrollmentId: payload01.Id default "",
+	EnrollmentName: payload01.Name default "",
+	TeamSeasonId: payload01.Team_Season__c default "",
+	StudentId: payload01.Contact__c default "",
+	StudentName: payload01.Contact__r.Name default "",
+	FirstName: payload01.Contact__r.FirstName,
+	LastName: payload01.Contact__r.LastName,
+	Birthdate: payload01.Contact__r.Birthdate default "",
+	Gender: payload01.Contact__r.Gender__c default "",
+	Ethnicity: payload01.Contact__r.Ethnicity__c default "",
+	ZipCode: payload01.Contact__r.Zip_First_Five_Digits__c default ""
+}) reduce ($$ ++ $)]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+        <logger level="INFO" doc:name="Log Created Response" doc:id="9c4812bf-ca0b-4363-9dd9-3cb37d96529c" message="#[payload]" />
+        <flow-ref doc:name="exit flow" doc:id="58405e41-0baf-4121-ac6b-f0b16bff945b" name="exit-flow" />
+    </flow>
+	<flow name="patch:\enrollments\(enrollmentId):application\json:salesforce-data-api-config">
+        <flow-ref doc:name="entry-flow" doc:id="8a9ce895-22fa-4763-8601-a740b69ccef2" name="entry-flow" />
+        <logger level="INFO" doc:name="Log entry-flow" doc:id="b1121d43-0492-48f0-b532-08e6d4f4271e" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
+        <ee:transform doc:name="Store URI parameters">
+            <ee:variables>
+                <ee:set-variable variableName="enrollmentId">attributes.uriParams.'enrollmentId'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform doc:name="Create Request" doc:id="a20684c0-fe26-41d8-84b5-2d2c46be497a">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+[{
+	Id: vars.enrollmentId,
+	(Contact__c: payload.StudentId) if payload.StudentId != null,
+	(Start_Date__c: payload.StartDate as Date {format: 'yyyy-MM-dd'}) if payload.StartDate != null,
+	(End_Date__c: payload.EndDate as Date {format: 'yyyy-MM-dd'}) if payload.EndDate != null,
+	(Team_Season__c: payload.TeamSeasonId) if payload.TeamSeasonId != null
+}]]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+        <salesforce:update type="Enrollment__c" doc:name="Update" doc:id="db1b614e-3b4c-4db6-8195-a6e9617257e4" config-ref="Salesforce_Config" />
+        <choice doc:name="Update successful?" doc:id="eb93d985-08a5-4d18-8f5b-9597673b2a24">
+            <when expression="#[payload.items[0].successful == false]">
+                <ee:transform doc:name="Create Error Response" doc:id="36abc3b2-f428-48ee-b518-a1353e6f235a">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: payload.items[0].message
+}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </when>
+            <otherwise>
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response" doc:id="5cd8fa6a-e3d1-44de-9625-aff048e5fc8f">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  message: "Enrollment updated"
+}]]></ee:set-payload>
+                    </ee:message>
+                </ee:transform>
+            </otherwise>
+        </choice>
+        <logger level="INFO" doc:name="Log Created Response" doc:id="50386ceb-cbfa-4696-9f94-075d5988da4e" message="#[payload]" />
+        <flow-ref doc:name="exit flow" doc:id="b8ba3115-6241-4702-a85d-ec76550633c4" name="exit-flow" />
+    </flow>
+    <flow name="post:\enrollments:application\json:salesforce-data-api-config">
+        <flow-ref doc:name="entry-flow" doc:id="503c68b8-e6f7-429a-a09e-d09e34f96c29" name="entry-flow" />
+        <logger level="INFO" doc:name="Log entry-flow" doc:id="25577e3c-d4c3-4199-87c9-3fec4a57d452" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
+        <ee:transform doc:name="Create Request" doc:id="1f1221b0-bd99-4433-be65-5159dd3955a6">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+[{
+	Contact__c: payload.StudentId,
+	Team_Season__c: payload.TeamSeasonId,
+	(Start_Date__c: payload.StartDate as Date {format: 'yyyy-MM-dd'}) if payload.StartDate != null,
+	(End_Date__c: payload.EndDate as Date {format: 'yyyy-MM-dd'}) if payload.EndDate != null
+}]]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+        <salesforce:create type="Enrollment__c" doc:name="Create" doc:id="c3404357-77e8-49ee-80c6-499595b2b643" config-ref="Salesforce_Config" />
+        <choice doc:name="Enrollment creation successful?" doc:id="ee82b0c8-2c09-4456-a51a-80fba2c1e448">
+            <when expression="#[payload.items[0].successful == false]">
+                <ee:transform doc:name="Create Error Response" doc:id="aab7a4b8-dfff-4674-bf3e-acdbb63ea782">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: payload.items[0].message
+}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </when>
+            <otherwise>
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response" doc:id="291c1936-dfea-4dd5-aaba-c30a5a5b4311">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  EnrollmentId: payload.items[0].id
+}]]></ee:set-payload>
+                    </ee:message>
+                </ee:transform>
+            </otherwise>
+        </choice>
+        <logger level="INFO" doc:name="Log Created Response" doc:id="c5b7c4fb-80e0-4c5c-8188-96caf7a2754b" message="#[payload]" />
+        <flow-ref doc:name="exit flow" doc:id="def4e728-8bf5-45ff-85ac-c213895d9de4" name="exit-flow" />
+    </flow>
+  
+	</mule>
