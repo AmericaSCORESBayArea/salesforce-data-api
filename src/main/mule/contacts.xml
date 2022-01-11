@@ -517,10 +517,12 @@ Grade: payload01.record.Grade__c as String default ""
 				<ee:set-variable
 					variableName="phoneNumberLast4Digits"><![CDATA[%dw 2.0
 import substring from dw::core::Strings
-var stringSize = sizeOf(attributes.queryParams.'phoneNumber')
+
+var cleanedPhoneNumber = replace(attributes.queryParams.'phoneNumber', /(\D+)/) with("")
+var stringSize = sizeOf(cleanedPhoneNumber)
 ---
-substring(attributes.queryParams.'phoneNumber', stringSize - 4, stringSize)]]></ee:set-variable>
-				<ee:set-variable variableName="phoneNumber"><![CDATA[attributes.queryParams.'phoneNumber']]></ee:set-variable>
+substring(cleanedPhoneNumber, stringSize - 4, stringSize)]]></ee:set-variable>
+				<ee:set-variable variableName="phoneNumber"><![CDATA[replace(attributes.queryParams.'phoneNumber', /(\D+)/) with("")]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
 		<salesforce:search
