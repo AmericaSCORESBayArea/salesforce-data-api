@@ -13,7 +13,6 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd http://www.mulesoft.org/schema/mule/xml-module http://www.mulesoft.org/schema/mule/xml-module/current/mule-xml-module.xsd http://www.mulesoft.org/schema/mule/slack http://www.mulesoft.org/schema/mule/slack/current/mule-slack.xsd
 	http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-	
 	<flow
 		name="post:\contacts:application\json:salesforce-data-api-config">
 		<flow-ref
@@ -496,6 +495,81 @@ LastName: payload01.record.LastName as String default "",
 Name: payload01.record.Name as String default "",
 DateOfBirth: payload01.record.Birthdate as String default "",
 Grade: payload01.record.Grade__c as String default ""
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow
+		name="get:\contacts\searchByPhoneNumber:salesforce-data-api-config">
+		<flow-ref
+			doc:name="entry-flow"
+			doc:id="5c1ff047-a87d-44e0-9afc-34d4a790129e"
+			name="entry-flow" />
+		<logger
+			level="INFO"
+			doc:name="Log entry-flow"
+			doc:id="5702e8bf-921c-4af0-a9f0-9bc9091adf34"
+			message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
+		<ee:transform
+			doc:name="Store Query parameters"
+			doc:id="7e56aada-f163-47f0-8ffc-213f7acd09a8">
+			<ee:variables>
+				<ee:set-variable
+					variableName="phoneNumberLast4Digits"><![CDATA[%dw 2.0
+import substring from dw::core::Strings
+var stringSize = sizeOf(attributes.queryParams.'phoneNumber')
+---
+substring(attributes.queryParams.'phoneNumber', stringSize - 4, stringSize)]]></ee:set-variable>
+				<ee:set-variable variableName="phoneNumber"><![CDATA[attributes.queryParams.'phoneNumber']]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<salesforce:search
+			doc:name="Search By Phone Number"
+			doc:id="1d085a1a-e15b-412b-a836-4014557a9abd"
+			config-ref="Salesforce_Config">
+			<salesforce:search-string><![CDATA[
+			FIND
+			 { :phoneNumber } 
+			 IN PHONE FIELDS RETURNING 
+			 Contact
+			 (
+			 	FirstName,
+				LastName,
+				MiddleName,
+				Name,
+				Id,
+				Grade__c,
+				Birthdate,
+				Parent_Phone_01__c 
+			WHERE 
+				Contact_Type__c = 'SCORES Student'
+				AND Parent_Phone_01__c LIKE '%:phoneNumberLast4Digits'
+			) 
+			LIMIT 8
+			]]></salesforce:search-string>
+			<salesforce:parameters><![CDATA[#[output application/java
+---
+{
+	phoneNumber : vars.phoneNumber,
+	phoneNumberLast4Digits : vars.phoneNumberLast4Digits
+}]]]></salesforce:parameters>
+		</salesforce:search>
+		<ee:transform
+			doc:name="Transform Message"
+			doc:id="cca12834-e1ee-4cc9-90ef-91c9be555af9">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload.searchRecords map ( payload01 , indexOfPayload01 ) -> {
+Id: payload01.record.Id as String default"",
+FirstName: payload01.record.FirstName as String default "",
+MiddleName: payload01.record.MiddleName as String default "",
+LastName: payload01.record.LastName as String default "",
+Name: payload01.record.Name as String default "",
+DateOfBirth: payload01.record.Birthdate as String default "",
+Grade: payload01.record.Grade__c as String default "",
+ParentPhone01: payload01.record.Parent_Phone_01__c as String default ""
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
