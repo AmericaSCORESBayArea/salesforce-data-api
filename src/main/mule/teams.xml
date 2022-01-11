@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+
+	<flow name="get:\teams\(teamId):salesforce-data-api-config">
+		<flow-ref
+			doc:name="entry-flow"
+			doc:id="0b6099c6-c65f-4669-9702-304d9d64c5d9"
+			name="entry-flow" />
+		<logger
+			level="INFO"
+			doc:name="Log entry-flow"
+			doc:id="9f80e8b6-ef8e-481e-bb41-c9287ae92278"
+			message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]." />
+		<ee:transform
+			doc:name="Store URI parameters"
+			doc:id="e1eb9f83-5201-4295-895f-aa48633286c7">
+			<ee:variables>
+				<ee:set-variable variableName="teamId"><![CDATA[attributes.uriParams.'teamId']]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger
+			level="INFO"
+			doc:name="Log Stored URI Params"
+			doc:id="c327fc6b-000e-437d-877f-51d969325aa6"
+			message="URI Param - teamId: #[vars.teamId] - stored as vars" />
+		<salesforce:query
+			doc:name="Query"
+			doc:id="1a7e6fb4-ede4-42d0-8c21-f555a500e309"
+			config-ref="Salesforce_Config">
+			<salesforce:salesforce-query><![CDATA[
+			SELECT 
+				Coach_Soccer__c,
+				Coach_Writing__c,
+				CreatedById,
+				CreatedDate,
+				Id,
+				IsDeleted,
+				LastModifiedById,
+				LastModifiedDate,
+				LastReferencedDate,
+				LastViewedDate,
+				Name,
+				OwnerId,
+				School_Site__c,
+				SCORES_Program_Coordinator__c,
+				SCORES_Program_Manager__c,
+				SCORES_Program_Type__c,
+				SystemModstamp,
+				Unique_Teams__c 
+			FROM 
+				Team__c 
+			WHERE 
+				Id = ':teamid'
+			]]></salesforce:salesforce-query>
+			<salesforce:parameters><![CDATA[#[output application/java
+---
+{
+	teamid : vars.teamId
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<ee:transform
+			xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
+			doc:id="6c6dd450-2076-4474-a8ad-bb9eac2a4c5d">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	TeamName: payload01.Name,
+	TeamId: payload01.Id default ""
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger
+			level="INFO"
+			doc:name="Log Created Response"
+			doc:id="cf14b433-ac8c-47ea-93c5-e3162f52d4cc"
+			message="#[payload]" />
+		<flow-ref
+			doc:name="exit flow"
+			doc:id="212021ec-4d7a-48da-8a2d-30446d4723cd"
+			name="exit-flow" />
+	</flow>
+	<flow
+		name="patch:\teams\(teamId):application\json:salesforce-data-api-config">
+		<flow-ref
+			doc:name="message-for-not-implemented-endpoints"
+			doc:id="d0fe0788-b7f3-4889-baf9-21f8a4ffb6a7"
+			name="message-for-not-implemented-endpoints" />
+	</flow>
+
+	
+	<flow name="get:\teams:salesforce-data-api-config">
+		<flow-ref
+			doc:name="message-for-not-implemented-endpoints"
+			doc:id="61868463-90b2-404f-bdf0-79e302f6b563"
+			name="message-for-not-implemented-endpoints" />
+	</flow>
+	
+	<flow
+		name="post:\teams:application\json:salesforce-data-api-config">
+		<flow-ref
+			doc:name="message-for-not-implemented-endpoints"
+			doc:id="106931f3-5d20-4f11-91c6-eb852ea45ecf"
+			name="message-for-not-implemented-endpoints" />
+	</flow>
+	
+
+	
+</mule>
