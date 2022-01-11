@@ -2,7 +2,7 @@
   "secureProperties": ["sfdc.password", "sfdc.tkn"],
   "redeploymentEnabled": true,
   "name": "secure-properties",
-  "minMuleVersion": "4.3.0",
+  "minMuleVersion": "4.4.0",
   "requiredProduct": "MULE_EE",
   "classLoaderModelLoaderDescriptor": {
     "id": "mule",
