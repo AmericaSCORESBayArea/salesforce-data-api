@@ -80,11 +80,6 @@ import * from modules::GlobalModules
 	birthDate: vars.originalPayload.Birthdate as Date {format: 'yyyy-MM-dd'}
 }]]]></salesforce:parameters>
 		</salesforce:query>
-		<logger
-			level="INFO"
-			doc:name="Log query response"
-			doc:id="25b33a82-fc31-44ef-98c8-36ea8aacd912"
-			message="#[payload]" />
 		<choice
 			doc:name="Matching Contact found?"
 			doc:id="cd1069b5-ca55-422d-9a92-739a54104316">
@@ -542,7 +537,22 @@ substring(cleanedPhoneNumber, stringSize - 4, stringSize)]]></ee:set-variable>
 				Id,
 				Grade__c,
 				Birthdate,
-				Parent_Phone_01__c 
+				Parent_Phone_01__c,
+				Contact_Type__c,
+				External_Student_ID__c,
+				Ethnicity__c,
+				Gender__c,
+				Level__c,
+				MailingAddress,
+				MailingCity,
+				MailingCountry,
+				MailingPostalCode,
+				MailingState,
+				MailingStreet,
+				Parent_Home_Language__c,
+				RecordTypeId,
+				School_Attending__c,
+				Zip_First_Five_Digits__c 
 			WHERE 
 				Contact_Type__c = 'SCORES Student'
 				AND Parent_Phone_01__c LIKE '%:phoneNumberLast4Digits'
@@ -571,7 +581,22 @@ LastName: payload01.record.LastName as String default "",
 Name: payload01.record.Name as String default "",
 DateOfBirth: payload01.record.Birthdate as String default "",
 Grade: payload01.record.Grade__c as String default "",
-ParentPhone01: payload01.record.Parent_Phone_01__c as String default ""
+ParentPhone01: payload01.record.Parent_Phone_01__c as String default "",
+Status: payload01.record.Status as String default "",
+HousingStatus: payload01.record.Contact_c as String default "",
+StreetAddress: payload01.record.MailingStreet as String default "",
+City: payload01.record.MailingCity as String default "",
+State: payload01.record.MailingState as String default "",
+Zip: payload01.record.MailingPostalCode as String default "",
+HomeLanguage: payload01.record.Parent_Home_Language__c as String default "",
+Ethnicity: payload01.record.Ethnicity__c as String default "",
+Gender: payload01.record.Gender__c as String default "",
+EducationalAttainment: payload01.record.Grade_c as String default "",
+SchoolAttending: payload01.record.School_Attending__c as String default "",
+SchoolEntryDate: payload01.record.Contact_c as String default "",
+SFUSDEntryDate: payload01.record.Contact_c as String default "",
+K12GradeLevel: payload01.record.Level__c as String default "",
+SchoolSiteId: payload01.record.AccountId as String default ""
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>

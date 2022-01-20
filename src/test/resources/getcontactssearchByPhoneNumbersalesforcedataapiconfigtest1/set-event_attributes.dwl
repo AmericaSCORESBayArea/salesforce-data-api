@@ -4,7 +4,7 @@
     "client_secret": "415d5220915f4c81814978896a4AEcC3",
     "user-agent": "PostmanRuntime/7.28.4",
     "accept": "*/*",
-    "postman-token": "12e982ce-f2db-453a-8500-87cd7182a904",
+    "postman-token": "1d4e0d22-c87e-4f83-9ad8-d3b890f0e985",
     "host": "localhost:8091",
     "accept-encoding": "gzip, deflate, br",
     "connection": "keep-alive"
@@ -13,18 +13,18 @@
   "method": "GET",
   "scheme": "http",
   "queryParams": {
-    "phoneNumber": "(415) 964- 6867"
+    "phoneNumber": "4159646867"
   },
-  "requestUri": "/api-internal/contacts/searchByPhoneNumber?phoneNumber=(415) 964- 6867",
-  "queryString": "phoneNumber=(415) 964- 6867",
+  "requestUri": "/api-internal/contacts/searchByPhoneNumber?phoneNumber=4159646867",
+  "queryString": "phoneNumber=4159646867",
   "version": "HTTP/1.1",
   "maskedRequestPath": "/contacts/searchByPhoneNumber",
   "listenerPath": "/api-internal/*",
   "localAddress": "/127.0.0.1:8091",
   "relativePath": "/api-internal/contacts/searchByPhoneNumber",
   "uriParams": {},
-  "rawRequestUri": "/api-internal/contacts/searchByPhoneNumber?phoneNumber=(415)%20964-%206867",
+  "rawRequestUri": "/api-internal/contacts/searchByPhoneNumber?phoneNumber=4159646867",
   "rawRequestPath": "/api-internal/contacts/searchByPhoneNumber",
-  "remoteAddress": "/127.0.0.1:64120",
+  "remoteAddress": "/127.0.0.1:60215",
   "requestPath": "/api-internal/contacts/searchByPhoneNumber"
 }
