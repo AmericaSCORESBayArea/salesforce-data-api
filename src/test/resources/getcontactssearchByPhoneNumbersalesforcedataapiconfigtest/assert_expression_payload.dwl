@@ -1,0 +1,45 @@
+%dw 2.0
+import * from dw::test::Asserts
+---
+payload must equalTo([
+  {
+    "Id": "0031T00003d3qWfQAI",
+    "FirstName": "A. Giovany",
+    "MiddleName": "",
+    "LastName": "Uc",
+    "Name": "A. Giovany Uc",
+    "DateOfBirth": "2009-01-01",
+    "Grade": "6th",
+    "StreetAddress": "1029 Geary St",
+    "City": "San Francisco",
+    "State": "California",
+    "Zip": "94109",
+    "Country": "",
+    "HomePhone": "",
+    "Email": "",
+    "HomeLanguage": "Spanish",
+    "Ethnicity": "Hispanic/Latino",
+    "Gender": "Male",
+    "Allergies": "",
+    "SchoolAttending": "",
+    "K12GradeLevel": "",
+    "SchoolSiteId": "0015000002HvvVlAAJ",
+    "DataReleaseWaiver": "true",
+    "ParentFName": "Neldy",
+    "ParentLName": "Perez",
+    "ParentEmail": "",
+    "Relationship": "Parent",
+    "ParentPhone1": "(415)964- 6867",
+    "ParentPhone2": "(415)350- 6662",
+    "ParentPhone3": "",
+    "ReducedPriceLunch": "Yes",
+    "PermissiontoCommuteAlone": "",
+    "Volunteer": "",
+    "Emergency_Contact_Name": "Randy Perez",
+    "Emergency_Contact_Relationship": "Uncle",
+    "Emergency_Contact_Phone1": "(415)533- 6852",
+    "Emergency_Contact_Phone2": "",
+    "Second_Emergency_Contact_Name": "",
+    "Second_Emergency_Contact_Relationship": ""
+  }
+])

@@ -1784,84 +1784,84 @@ assert_expression_payload::main({payload: payload, attributes: attributes, vars:
 			</munit-tools:verify-call>
 		</munit:validation>
 	</munit:test>
-	<munit:test name="get:\contacts\searchByPhoneNumber:salesforce-data-api-config-test1" doc:id="dfd9551c-fe9c-4ba8-a509-335624bfe1d4" >
+	<munit:test name="get:\contacts\searchByPhoneNumber:salesforce-data-api-config-test3" doc:id="356f8b86-1b22-4ed0-8df4-82b3cc62537f" >
 		<munit:behavior >
-			<munit-tools:mock-when doc:name="Mock Search By Phone Number" doc:id="3d174f0e-0593-4b5e-a3ff-f1579f119c31" processor="salesforce:search">
+			<munit-tools:mock-when doc:name="Mock Search By Phone Number" doc:id="df5a2811-7475-4df0-851d-441c02ed7451" processor="salesforce:search">
 				<munit-tools:with-attributes >
 					<munit-tools:with-attribute whereValue="1d085a1a-e15b-412b-a836-4014557a9abd" attributeName="doc:id" />
 				</munit-tools:with-attributes>
 				<munit-tools:then-return >
-					<munit-tools:payload value="#[output application/java --- readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest1/mock_payload.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					<munit-tools:payload value="#[output application/java --- readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest3/mock_payload.dwl')]" mediaType="application/java" encoding="UTF-8" />
 					<munit-tools:variables >
-						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest1/mock_variable_.dwl')]" />
-						<munit-tools:variable key="phoneNumber" value="#[output application/java --- readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest1/mock_variable_1.dwl')]" mediaType="application/java" encoding="UTF-8" />
-						<munit-tools:variable key="method" value="#[output application/java --- readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest1/mock_variable_2.dwl')]" mediaType="application/java" encoding="UTF-8" />
-						<munit-tools:variable key="requestPath" value="#[output application/java --- readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest1/mock_variable_3.dwl')]" mediaType="application/java" encoding="UTF-8" />
-						<munit-tools:variable key="phoneNumberLast4Digits" value="#[output application/java --- readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest1/mock_variable_4.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest3/mock_variable_.dwl')]" />
+						<munit-tools:variable key="phoneNumber" value="#[output application/java --- readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest3/mock_variable_1.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="method" value="#[output application/java --- readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest3/mock_variable_2.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="requestPath" value="#[output application/java --- readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest3/mock_variable_3.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="phoneNumberLast4Digits" value="#[output application/java --- readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest3/mock_variable_4.dwl')]" mediaType="application/java" encoding="UTF-8" />
 					</munit-tools:variables>
 				</munit-tools:then-return>
 			</munit-tools:mock-when>
-			<munit:set-event doc:name="Set Input" doc:id="d40208af-01c7-4691-968e-3e8e0726d549" >
-				<munit:payload value="#[readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest1/set-event_payload.dwl')]" encoding="UTF-8" />
-				<munit:attributes value="#[readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest1/set-event_attributes.dwl')]" />
+			<munit:set-event doc:name="Set Input" doc:id="272c77bb-268e-4b95-ac0c-5e15acedec2d" >
+				<munit:payload value="#[readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest3/set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest3/set-event_attributes.dwl')]" />
 				<munit:variables >
-					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest1/set-event_variable_.dwl')]" />
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest3/set-event_variable_.dwl')]" />
 				</munit:variables>
 			</munit:set-event>
 		</munit:behavior>
 		<munit:execution >
-			<flow-ref doc:name="Flow-ref to get:\contacts\searchByPhoneNumber:salesforce-data-api-config" doc:id="45179d31-0510-40f2-bd63-5749dc74f2d2" name="get:\contacts\searchByPhoneNumber:salesforce-data-api-config"/>
+			<flow-ref doc:name="Flow-ref to get:\contacts\searchByPhoneNumber:salesforce-data-api-config" doc:id="78e650e0-0ae8-482a-8e4e-753410c910ab" name="get:\contacts\searchByPhoneNumber:salesforce-data-api-config"/>
 		</munit:execution>
 		<munit:validation >
-			<munit-tools:assert doc:name="Assert payload" doc:id="f7f2e3db-fd38-451d-9b34-c4616c71680b" message="The payload does not match">
+			<munit-tools:assert doc:name="Assert payload" doc:id="45df52fb-a831-4219-9728-f2c33c279a9c" message="The payload does not match">
 				<munit-tools:that ><![CDATA[#[%dw 2.0
-import getcontactssearchByPhoneNumbersalesforcedataapiconfigtest1::assert_expression_payload
+import getcontactssearchByPhoneNumbersalesforcedataapiconfigtest3::assert_expression_payload
 ---
 assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
 			</munit-tools:assert>
-			<munit-tools:verify-call doc:name="Verify Transform Message" doc:id="33a7b0ba-ce11-44b5-bb5e-157217d19365" processor="ee:transform" times="1">
+			<munit-tools:verify-call doc:name="Verify Transform Message" doc:id="a70704ba-aa03-4680-910b-b33239527f46" processor="ee:transform" times="1">
 				<munit-tools:with-attributes >
 					<munit-tools:with-attribute whereValue="cca12834-e1ee-4cc9-90ef-91c9be555af9" attributeName="doc:id" />
 				</munit-tools:with-attributes>
 			</munit-tools:verify-call>
 		</munit:validation>
 	</munit:test>
-	<munit:test name="get:\contacts\searchByPhoneNumber:salesforce-data-api-config-test2" doc:id="bfb7f543-d29c-461b-b073-f1b93cf4657c" >
+	<munit:test name="get:\contacts\searchByPhoneNumber:salesforce-data-api-config-test" doc:id="828941e6-f7f8-4287-a233-94bc227ee8dc" >
 		<munit:behavior >
-			<munit-tools:mock-when doc:name="Mock Search By Phone Number" doc:id="8e321c89-e080-4178-90fa-26b21f8f33ab" processor="salesforce:search">
+			<munit-tools:mock-when doc:name="Mock Search By Phone Number" doc:id="7f28b2a0-a5a9-4863-a33c-5c2c63b71584" processor="salesforce:search">
 				<munit-tools:with-attributes >
 					<munit-tools:with-attribute whereValue="1d085a1a-e15b-412b-a836-4014557a9abd" attributeName="doc:id" />
 				</munit-tools:with-attributes>
 				<munit-tools:then-return >
-					<munit-tools:payload value="#[output application/java --- readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest2/mock_payload1.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					<munit-tools:payload value="#[output application/java --- readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest/mock_payload.dwl')]" mediaType="application/java" encoding="UTF-8" />
 					<munit-tools:variables >
-						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest2/mock_variable_5.dwl')]" />
-						<munit-tools:variable key="phoneNumber" value="#[output application/java --- readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest2/mock_variable_6.dwl')]" mediaType="application/java" encoding="UTF-8" />
-						<munit-tools:variable key="method" value="#[output application/java --- readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest2/mock_variable_7.dwl')]" mediaType="application/java" encoding="UTF-8" />
-						<munit-tools:variable key="requestPath" value="#[output application/java --- readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest2/mock_variable_8.dwl')]" mediaType="application/java" encoding="UTF-8" />
-						<munit-tools:variable key="phoneNumberLast4Digits" value="#[output application/java --- readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest2/mock_variable_9.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest/mock_variable_.dwl')]" />
+						<munit-tools:variable key="phoneNumber" value="#[output application/java --- readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest/mock_variable_1.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="method" value="#[output application/java --- readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest/mock_variable_2.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="requestPath" value="#[output application/java --- readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest/mock_variable_3.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="phoneNumberLast4Digits" value="#[output application/java --- readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest/mock_variable_4.dwl')]" mediaType="application/java" encoding="UTF-8" />
 					</munit-tools:variables>
 				</munit-tools:then-return>
 			</munit-tools:mock-when>
-			<munit:set-event doc:name="Set Input" doc:id="651641e2-d297-4e06-b925-2fc3d4ffc2e1" >
-				<munit:payload value="#[readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest2/set-event_payload1.dwl')]" encoding="UTF-8" />
-				<munit:attributes value="#[readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest2/set-event_attributes1.dwl')]" />
+			<munit:set-event doc:name="Set Input" doc:id="cea91320-06ae-4a2d-b39c-8a79fa1e8bf5" >
+				<munit:payload value="#[readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest/set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest/set-event_attributes.dwl')]" />
 				<munit:variables >
-					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest2/set-event_variable_1.dwl')]" />
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getcontactssearchByPhoneNumbersalesforcedataapiconfigtest/set-event_variable_.dwl')]" />
 				</munit:variables>
 			</munit:set-event>
 		</munit:behavior>
 		<munit:execution >
-			<flow-ref doc:name="Flow-ref to get:\contacts\searchByPhoneNumber:salesforce-data-api-config" doc:id="e34fb61c-9032-47cc-bc37-db54fc04c767" name="get:\contacts\searchByPhoneNumber:salesforce-data-api-config"/>
+			<flow-ref doc:name="Flow-ref to get:\contacts\searchByPhoneNumber:salesforce-data-api-config" doc:id="d5e4ccb5-3dde-45cd-ae74-4c8dc4f6a668" name="get:\contacts\searchByPhoneNumber:salesforce-data-api-config"/>
 		</munit:execution>
 		<munit:validation >
-			<munit-tools:assert doc:name="Assert payload" doc:id="60977872-5ca2-4ef4-b59d-3c977a7d9de1" message="The payload does not match">
+			<munit-tools:assert doc:name="Assert payload" doc:id="3fafc6c8-19b1-4317-be77-41afd1032ddf" message="The payload does not match">
 				<munit-tools:that ><![CDATA[#[%dw 2.0
-import getcontactssearchByPhoneNumbersalesforcedataapiconfigtest2::assert_expression_payload1
+import getcontactssearchByPhoneNumbersalesforcedataapiconfigtest::assert_expression_payload
 ---
-assert_expression_payload1::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
 			</munit-tools:assert>
-			<munit-tools:verify-call doc:name="Verify Transform Message" doc:id="77506213-182f-41a5-9bfa-5fcb5c362453" processor="ee:transform" times="1">
+			<munit-tools:verify-call doc:name="Verify Transform Message" doc:id="d47079b3-9a68-412e-ba64-f546c4948ed7" processor="ee:transform" times="1">
 				<munit-tools:with-attributes >
 					<munit-tools:with-attribute whereValue="cca12834-e1ee-4cc9-90ef-91c9be555af9" attributeName="doc:id" />
 				</munit-tools:with-attributes>
