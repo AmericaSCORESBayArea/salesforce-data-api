@@ -639,20 +639,90 @@ output application/json
 			doc:id="32b947ab-3abc-4f72-b6a5-79c51e3e786f"
 			name="exit-flow" />
 	</flow>
-	<flow
-		name="get:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\attendances:salesforce-data-api-config">
+	
+	
+	<flow name="get:\sessions\(sessionId)\assessments:salesforce-data-api-config">
+	
+		<logger
+			level="INFO"
+			message="get:\sessions\(sessionId)\assessments" />
 		<flow-ref
 			doc:name="entry-flow"
-			doc:id="fdc4bec9-fecd-4335-980a-0908eaeb9a17"
+			doc:id="39ae8f9c-d4f3-4dfb-852e-2ab397529108"
 			name="entry-flow" />
 		<logger
 			level="INFO"
 			doc:name="Log entry-flow"
-			doc:id="3ea68664-17b8-4854-8e58-7f6d03285b44"
+			doc:id="aa2b9f5e-0131-4849-8939-8985fa2ae22a"
+			message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
+		<ee:transform
+			doc:name="Store URI parameters"
+			doc:id="d3ef7ca7-3909-4971-abff-095643b7ed60">
+			<ee:variables>
+				<ee:set-variable variableName="sessionId">attributes.uriParams.'sessionId'
+				</ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		
+		<salesforce:query
+			doc:name="Select Query with sessionId"
+			doc:id="2c2c72a2-6d29-469b-ac08-f2ef01c1352b"
+			config-ref="Salesforce_Config">
+			<salesforce:salesforce-query><![CDATA[SELECT Id, Student__r.LastName, Student__r.FirstName, AssessmentType__c, Student__r.Id, AssessmentResponse__c, LastModified__c, Session__c FROM Assessment__c WHERE Session__c = ':sessionId'
+			]]></salesforce:salesforce-query>
+						<salesforce:parameters>
+			<![CDATA[#[output application/java
+---
+{
+	sessionId : vars.sessionId}]]]></salesforce:parameters>
+			
+		</salesforce:query>
+		<ee:transform
+			xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
+			doc:name="Create Response">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	Id: payload01.Id,
+	FirstName: payload01.Student__r.FirstName,
+	LastName: payload01.Student__r.LastName,
+	AssessmentResponse: payload01.AssessmentResponse__c,
+	AssessmentType: payload01.AssessmentType__c,
+	StudentId: payload01.Student__r.Id,
+	SessionId: payload01.Session__c,
+	LastModified: payload01.LastModified__c
+	
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+<!-- 		<logger
+			level="INFO"
+			doc:name="Log Created Response"
+			doc:id="7255592e-dc2d-4c78-8c9d-c18b1503b2ef"
+			message="#[payload]" /> -->
+		<flow-ref
+			doc:name="exit flow"
+			doc:id="84d2004a-9ba6-4b15-b54d-5032c3dcf6d4"
+			name="exit-flow" />
+	</flow>
+	
+	<flow
+		name="get:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\attendances:salesforce-data-api-config">
+		<flow-ref
+			doc:name="entry-flow"
+			doc:id="546115f8-baf2-4bdf-8b96-36ee38f5c283"
+			name="entry-flow" />
+		<logger
+			level="INFO"
+			doc:name="Log entry-flow"
+			doc:id="d174c595-f017-4a7f-873f-8290f581e6e1"
 			message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]." />
 		<ee:transform
 			doc:name="Store URI parameters"
-			doc:id="86784c2c-83e8-4a5e-ae64-c5093cbacdbe">
+			doc:id="d5176371-126a-4616-8686-36bf536e48af">
 			<ee:variables>
 				<ee:set-variable variableName="coachId"><![CDATA[attributes.uriParams.'coachId']]></ee:set-variable>
 				<ee:set-variable variableName="teamSeasonId"><![CDATA[attributes.uriParams.'teamSeasonId']]></ee:set-variable>
@@ -662,11 +732,25 @@ output application/json
 		<logger
 			level="INFO"
 			doc:name="Log Stored URI Params"
-			doc:id="f5fb5455-22c7-4d1f-b316-fa26806f3f1b"
+			doc:id="5776800c-73ac-4089-a7f5-963b32492dbc"
 			message="URI Param - coachId: #[vars.coachId], teamseasonId: #[vars.teamSeasonId], sessionId: #[vars.sessionId] - stored as vars" />
+  
+
+
+  <flow-ref doc:name="secondaryFlow" name="get:\sessions\(sessionId)\assessments:salesforce-data-api-config" target="sessionAssessments"/>
+  
+  
+  <logger level="INFO" doc:name="Log fetch sessionAssessments" message='#[vars.sessionAssessments]'/>
+<!--   
+  
+  <logger level="INFO" doc:name="Log myVar" message='#["myVar = " ++ vars.myVar]'/>
+  <logger level="INFO" doc:name="Log flowReferenceVar" message='#["flowReferenceVar = " ++ vars.flowReferenceVar]'/>
+   -->
+  
+  
 		<salesforce:query
 			doc:name="Query"
-			doc:id="2c95dcd3-8d07-446c-883b-98f1ae79ed9c"
+			doc:id="3511b574-71ec-4d71-ac9e-4e00fdc01991"
 			config-ref="Salesforce_Config">
 			<salesforce:salesforce-query><![CDATA[
 			SELECT 
@@ -688,29 +772,42 @@ output application/json
 		</salesforce:query>
 		<ee:transform
 			xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
-			doc:id="cc0b30b2-4bb2-4b3c-bfa8-72626dc8dc02">
+			doc:id="0dde7cd9-52cf-43dd-a6fb-325c79259384">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-payload map ( payload01 , indexOfPayload01 ) -> {
-	AttendanceId: payload01.Id,
+
+payload map (payload01) ->
+  {
+    AttendanceId: payload01.Id,
 	StudentName: payload01.Contact__r.Name,
 	Attended: payload01.Attended__c default false,
-	StudentId: payload01.Contact__c default ""
-}]]></ee:set-payload>
+	StudentId: payload01.Contact__c,
+    (vars.sessionAssessments filter ($.*StudentId contains payload01.Contact__c)  map (assessmentValue) -> {
+      AssessmentId: assessmentValue.Id,
+      AssessmentType: assessmentValue.AssessmentType,
+	  AssessmentResponse: assessmentValue.AssessmentResponse
+    })
+  }
+
+]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger
+<!-- 		<logger
 			level="INFO"
 			doc:name="Log Created Response"
-			doc:id="30a1023d-5242-40d6-9a42-a3f0668043c7"
-			message="#[payload]" />
+			doc:id="892dfef6-ff02-4ead-a378-71807ee3a024"
+			message="#[payload]" /> -->
 		<flow-ref
 			doc:name="exit flow"
-			doc:id="e74de323-770f-4f76-a146-ee79831b8028"
+			doc:id="28ef1a56-fc0c-421d-9943-93d10057e53a"
 			name="exit-flow" />
 	</flow>
+	
+	
+
+	
 	<flow
 		name="get:\coach\(coachId)\teamseasonsNotOwnedByCoach:salesforce-data-api-config">
 		<flow-ref
