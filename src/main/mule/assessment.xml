@@ -9,50 +9,43 @@
 http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 
-	<flow name="patch:\assessment\(assessmentId):application\json:salesforce-data-api-config">
-        <flow-ref
-			doc:name="entry-flow"
-			doc:id="92bb350b-bfc4-4da8-a4e3-a451db839df8"
-			name="entry-flow" />
-		<logger
-			level="INFO"
-			doc:name="Log entry-flow"
+	<flow name="patch:\assessments\(studentId)\(assessmentId):application\json:salesforce-data-api-config">
+		<flow-ref doc:name="entry-flow"
+			doc:id="92bb350b-bfc4-4da8-a4e3-a451db839df8" name="entry-flow" />
+		<logger level="INFO" doc:name="Log entry-flow"
 			doc:id="85da497f-6a68-490f-a83f-d80e5f771247"
 			message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
-		<ee:transform
-			doc:name="Store URI parameters"
+		<ee:transform doc:name="Store URI parameters"
 			doc:id="14507f32-f970-4aaa-a198-ca21df521e74">
 			<ee:variables>
-				<ee:set-variable variableName="assessmentId">attributes.uriParams.'assessmentId'
-				</ee:set-variable>
+				<ee:set-variable variableName="assessmentId">attributes.uriParams.'assessmentId'</ee:set-variable>
+				<ee:set-variable variableName="studentId">attributes.uriParams.'studentId'</ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		
-		<ee:transform
-			doc:name="Create Request"
+		<ee:transform doc:name="Create Request"
 			doc:id="a6d429a8-d6ff-4c55-99e0-2ffd5077e7e6">
 			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
+				<ee:set-payload>
+
+<![CDATA[%dw 2.0
 output application/java
 ---
 [{
 	Id: vars.assessmentId,
-	(AssessmentResponse__c: payload.AssessmentResponse) if payload.AssessmentResponse != null,
-	(AssessmentType__c: payload.AssessmentType) if payload.AssessmentType != null
-}]]]> </ee:set-payload>
+	(AssessmentResponse__c: payload.AssessmentResponse) if payload.AssessmentResponse != null
+	}]
+]]>	
+
+				</ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<salesforce:update
-			type="Assessment__c"
-			doc:name="Update"
-			doc:id="f01a3f43-2f99-4ae7-8f28-f4cb937823d8"
+		<salesforce:update type="Assessment__c"
+			doc:name="Update" doc:id="f01a3f43-2f99-4ae7-8f28-f4cb937823d8"
 			config-ref="Salesforce_Config" />
-		<choice
-			doc:name="Update successful?"
+		<choice doc:name="Update successful?"
 			doc:id="73f29ac7-05c8-4832-8c3f-47d227e93b7b">
 			<when expression="#[payload.items[0].successful == false]">
-				<ee:transform
-					doc:name="Create Error Response"
+				<ee:transform doc:name="Create Error Response"
 					doc:id="8de2395c-4425-47e2-842c-42df9c402410">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
@@ -77,45 +70,40 @@ output application/json
 output application/json
 ---
 {
-  message: "Assessment updated"
+  message: "update Assessment Success"
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
 			</otherwise>
 		</choice>
-		<logger
-			level="INFO"
-			doc:name="Log Created Response"
-			doc:id="20582f37-d0b9-4127-8fd0-364c6eb2abb6"
-			message="#[payload]" />
-		<flow-ref
-			doc:name="exit flow"
-			doc:id="d8ffbde3-11dd-4097-aaf6-a30aab0fc505"
-			name="exit-flow" />
-    </flow>
-    
-    <flow name="get:\assessments\(studentId):salesforce-data-api-config">
-        <ee:transform
-			doc:name="Store URI parameters"
+		<logger level="INFO" doc:name="Log Created Response"
+			doc:id="20582f37-d0b9-4127-8fd0-364c6eb2abb6" message="#[payload]" />
+		<flow-ref doc:name="exit flow"
+			doc:id="d8ffbde3-11dd-4097-aaf6-a30aab0fc505" name="exit-flow" />
+	</flow>
+
+	<flow
+		name="get:\assessments\(studentId):salesforce-data-api-config">
+		<ee:transform doc:name="Store URI parameters"
 			doc:id="834030cd-1793-4485-956f-7087555f0951">
 			<ee:variables>
 				<ee:set-variable variableName="studentId">attributes.uriParams.'studentId'
 				</ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		
+
 		<salesforce:query
 			doc:name="Select Query with studentId"
 			doc:id="83bb70a3-489b-4326-89e9-b5b2c5769bc6"
 			config-ref="Salesforce_Config">
 			<salesforce:salesforce-query><![CDATA[SELECT Id, Student__r.LastName, Student__r.FirstName, AssessmentType__c, Student__r.Id, AssessmentResponse__c, LastModified__c, Session__c FROM Assessment__c WHERE Student__r.Id = ':studentId'
 			]]></salesforce:salesforce-query>
-						<salesforce:parameters>
+			<salesforce:parameters>
 			<![CDATA[#[output application/java
 ---
 {
 	studentId : vars.studentId}]]]></salesforce:parameters>
-			
+
 		</salesforce:query>
 		<ee:transform
 			xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
@@ -138,15 +126,10 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-<!-- 		<logger
-			level="INFO"
-			doc:name="Log Created Response"
-			doc:id="6527f861-3414-42aa-a0f2-3d3fb4ebbf5f"
+		<!-- <logger level="INFO" doc:name="Log Created Response" doc:id="6527f861-3414-42aa-a0f2-3d3fb4ebbf5f" 
 			message="#[payload]" /> -->
-		<flow-ref
-			doc:name="exit flow"
-			doc:id="62e6c7d7-886c-4466-baa9-7ce6491abeb4"
-			name="exit-flow" />
-    </flow>
-    
-	</mule>
+		<flow-ref doc:name="exit flow"
+			doc:id="62e6c7d7-886c-4466-baa9-7ce6491abeb4" name="exit-flow" />
+	</flow>
+
+</mule>
