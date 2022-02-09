@@ -784,8 +784,8 @@ payload map (payload01) ->
 	StudentName: payload01.Contact__r.Name,
 	Attended: payload01.Attended__c default false,
 	StudentId: payload01.Contact__c,
-    (vars.sessionAssessments filter ($.*StudentId contains payload01.Contact__c)  map (assessmentValue, index) -> {
-      (index) : assessmentValue
+    Assessments: (vars.sessionAssessments filter ($.*StudentId contains payload01.Contact__c)  map (assessmentValue) -> {
+		(assessmentValue)
     })
   }
 
