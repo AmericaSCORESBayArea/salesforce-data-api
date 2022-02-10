@@ -13,18 +13,20 @@
   "method": "POST",
   "scheme": "http",
   "queryParams": {},
-  "requestUri": "/api-internal/coach/0031T00003OcljGQAR/teamseasons/a0q1T000008Jt3NQAS/sessions/a0p1T00000IGus3QAD/assessments",
+  "requestUri": "/api-internal/coach/0031T00003OcljGQAR/teamseasons/a0q1T000008Jt3NQAS/sessions/a0p1T00000IGus3QAD/assessment",
   "queryString": "",
   "version": "HTTP/1.1",
-  "maskedRequestPath":  "/api-internal/coach/0031T00003OcljGQAR/teamseasons/a0q1T000008Jt3NQAS/sessions/a0p1T00000IGus3QAD/assessments",
+  "maskedRequestPath":  "/api-internal/coach/0031T00003OcljGQAR/teamseasons/a0q1T000008Jt3NQAS/sessions/a0p1T00000IGus3QAD/assessment",
   "listenerPath": "/api-internal/*",
   "localAddress": "/127.0.0.1:8091",
-  "relativePath":  "/api-internal/coach/0031T00003OcljGQAR/teamseasons/a0q1T000008Jt3NQAS/sessions/a0p1T00000IGus3QAD/assessments",
-  "uriParams": {},
-  "rawRequestUri":  "/api-internal/coach/0031T00003OcljGQAR/teamseasons/a0q1T000008Jt3NQAS/sessions/a0p1T00000IGus3QAD/assessments",
-  "rawRequestPath":  "/api-internal/coach/0031T00003OcljGQAR/teamseasons/a0q1T000008Jt3NQAS/sessions/a0p1T00000IGus3QAD/assessments",
+  "relativePath":  "/api-internal/coach/0031T00003OcljGQAR/teamseasons/a0q1T000008Jt3NQAS/sessions/a0p1T00000IGus3QAD/assessment",
+  "uriParams": {
+    "coachId": "0031T00003OcljGQAR",
+    "teamSeasonId": "a0q1T000008Jt3NQAS",
+    "sessionId": "a0p1T00000IGus3QAD"
+  },
+  "rawRequestUri":  "/api-internal/coach/0031T00003OcljGQAR/teamseasons/a0q1T000008Jt3NQAS/sessions/a0p1T00000IGus3QAD/assessment",
+  "rawRequestPath":  "/api-internal/coach/0031T00003OcljGQAR/teamseasons/a0q1T000008Jt3NQAS/sessions/a0p1T00000IGus3QAD/assessment",
   "remoteAddress": "/127.0.0.1:58192",
-  "requestPath": "/api-internal/coach/0031T00003OcljGQAR/teamseasons/a0q1T000008Jt3NQAS/sessions/a0p1T00000IGus3QAD/assessments"
+  "requestPath": "/api-internal/coach/0031T00003OcljGQAR/teamseasons/a0q1T000008Jt3NQAS/sessions/a0p1T00000IGus3QAD/assessment"
 }
-
-
