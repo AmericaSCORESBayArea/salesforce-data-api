@@ -792,11 +792,11 @@ payload map (payload01) ->
 ]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-<!-- 		<logger
+		<logger
 			level="INFO"
 			doc:name="Log Created Response"
 			doc:id="892dfef6-ff02-4ead-a378-71807ee3a024"
-			message="#[payload]" /> -->
+			message="#[payload]" />
 		<flow-ref
 			doc:name="exit flow"
 			doc:id="28ef1a56-fc0c-421d-9943-93d10057e53a"
