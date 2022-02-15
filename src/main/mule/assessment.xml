@@ -95,7 +95,7 @@ output application/json
 			doc:name="Select Query with studentId"
 			doc:id="83bb70a3-489b-4326-89e9-b5b2c5769bc6"
 			config-ref="Salesforce_Config">
-			<salesforce:salesforce-query><![CDATA[SELECT Id, Student__r.LastName, Student__r.FirstName, AssessmentType__c, Student__r.Id, AssessmentResponse__c, LastModified__c, Session__c FROM Assessment__c WHERE Student__r.Id = ':studentId'
+			<salesforce:salesforce-query><![CDATA[SELECT Id, AssessmentType__c, Student__r.Id, AssessmentResponse__c, LastModified__c, Session__c FROM Assessment__c WHERE Student__r.Id = ':studentId'
 			]]></salesforce:salesforce-query>
 			<salesforce:parameters>
 			<![CDATA[#[output application/java
@@ -114,19 +114,16 @@ output application/json
 ---
 payload map ( payload01 , indexOfPayload01 ) -> {
 	Id: payload01.Id,
-	FirstName: payload01.Student__r.FirstName,
-	LastName: payload01.Student__r.LastName,
 	AssessmentResponse: payload01.AssessmentResponse__c,
 	AssessmentType: payload01.AssessmentType__c,
-	StudentId: payload01.Student__r.Id,
 	SessionId: payload01.Session__c,
 	LastModified: payload01.LastModified__c
 	
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<!-- <logger level="INFO" doc:name="Log Created Response" doc:id="6527f861-3414-42aa-a0f2-3d3fb4ebbf5f" 
-			message="#[payload]" /> -->
+		<logger level="INFO" doc:name="Log Created Response" doc:id="6527f861-3414-42aa-a0f2-3d3fb4ebbf5f" 
+			message="#[payload]" />
 		<flow-ref doc:name="exit flow"
 			doc:id="62e6c7d7-886c-4466-baa9-7ce6491abeb4" name="exit-flow" />
 	</flow>

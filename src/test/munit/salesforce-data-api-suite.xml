@@ -1907,7 +1907,12 @@ assert_expression_payload::main({payload: payload, attributes: attributes, vars:
 			<flow-ref doc:name="Flow Ref - get:\assessments\(studentId):salesforce-data-api-config" doc:id="a314cfec-3447-40cf-b976-8bce2dd8e12e" name="get:\assessments\(studentId):salesforce-data-api-config"/>
 		</munit:execution>
 		<munit:validation >
-			<munit-tools:assert doc:name="Assert expression" doc:id="ec60a2ca-8c9a-46d7-96a9-5bd5dee91f88" />
+			<munit-tools:assert doc:name="Assert expression" doc:id="ec60a2ca-8c9a-46d7-96a9-5bd5dee91f88" >
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import getAssessmentsForStudentIdsalesforcedataapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
 		</munit:validation>
 	</munit:test>
 	
@@ -1937,7 +1942,8 @@ assert_expression_payload::main({payload: payload, attributes: attributes, vars:
 			<flow-ref doc:name="Flow Ref - get:\sessions\(sessionId)\assessments:salesforce-data-api-config" doc:id="d2c1d52c-94a7-41fc-ba45-8e19f9fc9137" name="get:\sessions\(sessionId)\assessments:salesforce-data-api-config"/>
 		</munit:execution>
 		<munit:validation >
-			<munit-tools:assert doc:name="Assert expression" doc:id="36e9a1ff-c6d2-4a90-89e0-f97a1eb23e4c" />
+			<munit-tools:assert doc:name="Assert expression" doc:id="36e9a1ff-c6d2-4a90-89e0-f97a1eb23e4c" >
+			</munit-tools:assert>
 		</munit:validation>
 	</munit:test>
 	
@@ -1971,7 +1977,12 @@ assert_expression_payload::main({payload: payload, attributes: attributes, vars:
 			<flow-ref doc:name="Flow-ref to post:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\attendances:application\json:salesforce-data-api-config" doc:id="6924dc13-6699-4d46-a3f8-dc88db307bda" name="post:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\assessment:application\json:salesforce-data-api-config"/>
 		</munit:execution>
 		<munit:validation >
-			<munit-tools:assert doc:name="Assert expression" doc:id="bce540b9-30d3-4b4e-bf04-4507f7e61a14" />
+			<munit-tools:assert doc:name="Assert expression" doc:id="bce540b9-30d3-4b4e-bf04-4507f7e61a14" >
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import postcoachIdTeamSeasonIdSessionIdPostAssessmentapplicationjsonsalesforcedataapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
 		</munit:validation>
 		
 	</munit:test>
@@ -2006,7 +2017,12 @@ assert_expression_payload::main({payload: payload, attributes: attributes, vars:
 			<flow-ref doc:name="Flow-ref to patch:\assessments\(studentId)\(assessmentId)" doc:id="2688382c-3b25-49fc-aea6-0fb2c8821961" name="patch:\assessments\(studentId)\(assessmentId):application\json:salesforce-data-api-config"/>
 		</munit:execution>
 		<munit:validation >
-			<munit-tools:assert doc:name="Assert expression" doc:id="c938d200-0ffb-4cf8-b598-a94c43d15cf5" />
+			<munit-tools:assert doc:name="Assert expression" doc:id="c938d200-0ffb-4cf8-b598-a94c43d15cf5" >
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import patchAssessmentapplicationjsonsalesforcedataapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
 		</munit:validation>
 	</munit:test>
 

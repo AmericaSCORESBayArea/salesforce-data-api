@@ -2,5 +2,5 @@
 import * from dw::test::Asserts
 ---
 payload must equalTo({
-  "message": "Assessment updated"
+  "message": "update Assessment Success"
 })

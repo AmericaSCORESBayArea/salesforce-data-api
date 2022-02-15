@@ -105,7 +105,18 @@ payload must equalTo([
     "StudentName": "Test StudentTest Student 0024",
     "Attended": "false",
     "StudentId": "0031T00004EjgCLQAZ",
-    "Assessments":[]
+    "Assessments":[
+    {
+        Id: "a0k53000000IMInAAO",
+        FirstName: null,
+        LastName: null,
+        AssessmentResponse: "8",
+        AssessmentType: "PACER",
+        StudentId: "0031T00004EjgCLQAZ",
+        SessionId: "a0p530000000B18AAE",
+        LastModified: "2020-02-04"
+      }
+    ]
   },
   {
     "AttendanceId": "a0l1T000008rneXQAQ",
@@ -147,6 +158,25 @@ payload must equalTo([
     "StudentName": "Test StudentTest Student 0011",
     "Attended": "true",
     "StudentId": "0031T00004EjgC8QAJ",
-    "Assessments":[]
+    "Assessments":[{
+        Id: "a0k53000000IMIiAAO",
+        FirstName: null,
+        LastName: null,
+        AssessmentResponse: "2",
+        AssessmentType: "PACER",
+        StudentId: "0031T00004EjgC8QAJ",
+        SessionId: "a0p530000000B18AAE",
+        LastModified: "2020-02-01"
+      }, 
+      {
+        Id: "a0k53000000IUDgAAO",
+        FirstName: null,
+        LastName: null,
+        AssessmentResponse: "happy",
+        AssessmentType: "Activity_Feedback",
+        StudentId: "0031T00004EjgC8QAJ",
+        SessionId: "a0p530000000B18AAE",
+        LastModified: "2020-02-02"
+      }]
   }
 ])

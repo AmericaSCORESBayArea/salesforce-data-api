@@ -2,43 +2,34 @@
 import * from dw::test::Asserts
 ---
 payload must equalTo([
-  {
-    "EnrollmentId": "a0m1T00000A2cr7QAB",
-    "EnrollmentName": "A-006798",
-    "TeamSeasonId": "a0q1T000009q9iSQAQ",
-    "StudentId": "0031T00003UDuq4QAD",
-    "StudentName": "Evelyn Diaz Aleman",
-    "FirstName": "Evelyn",
-    "LastName": "Diaz Aleman",
-    "Birthdate": "2010-10-04",
-    "Gender": "Female",
-    "Ethnicity": "Hispanic/Latino",
-    "ZipCode": "94124"
-  },
-  {
-    "EnrollmentId": "a0m1T00000A2cr9QAB",
-    "EnrollmentName": "A-006800",
-    "TeamSeasonId": "a0q1T000009q9iSQAQ",
-    "StudentId": "0031T00003UDuq3QAD",
-    "StudentName": "Yaky Rodriguez",
-    "FirstName": "Yaky",
-    "LastName": "Rodriguez",
-    "Birthdate": "2011-08-05",
-    "Gender": "Female",
-    "Ethnicity": "Hispanic/Latino",
-    "ZipCode": "94112"
-  },
-  {
-    "EnrollmentId": "a0m1T00000A2crCQAR",
-    "EnrollmentName": "A-006803",
-    "TeamSeasonId": "a0q1T000009q9iSQAQ",
-    "StudentId": "0031T00003UDuq2QAD",
-    "StudentName": "Dolly Chiguila",
-    "FirstName": "Dolly",
-    "LastName": "Chiguila",
-    "Birthdate": "2009-03-21",
-    "Gender": "Female",
-    "Ethnicity": "Hispanic/Latino",
-    "ZipCode": "94112"
-  }
+    {
+        "Id": "a0k53000000IMInAAO",
+        "FirstName": "Test",
+        "LastName": "StudentTest Student 0024",
+        "AssessmentResponse": "8",
+        "AssessmentType": "PACER",
+        "StudentId": "0031T00004EjgCLQAZ",
+        "SessionId": "a0p530000000B18AAE",
+        "LastModified": "2020-02-04"
+    },
+    {
+        "Id": "a0k53000000IMIiAAO",
+        "FirstName": "Test",
+        "LastName": "StudentTest Student 0011",
+        "AssessmentResponse": "2",
+        "AssessmentType": "PACER",
+        "StudentId": "0031T00004EjgC8QAJ",
+        "SessionId": "a0p530000000B18AAE",
+        "LastModified": "2020-02-01"
+    },
+    {
+        "Id": "a0k53000000IUDgAAO",
+        "FirstName": "Test",
+        "LastName": "StudentTest Student 0011",
+        "AssessmentResponse": "happy",
+        "AssessmentType": "Activity_Feedback",
+        "StudentId": "0031T00004EjgC8QAJ",
+        "SessionId": "a0p530000000B18AAE",
+        "LastModified": "2020-02-02"
+    }
 ])
