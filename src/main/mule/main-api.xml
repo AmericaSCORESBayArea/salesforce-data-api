@@ -99,7 +99,7 @@ output application/json
 payload]]></ee:set-payload>
                     </ee:message>
                     <ee:variables>
-                        <ee:set-variable variableName="httpStatus"><![CDATA[501]]></ee:set-variable>
+                        <ee:set-variable variableName="httpStatus">409</ee:set-variable>
                     </ee:variables>
                 </ee:transform>
             </on-error-propagate>
