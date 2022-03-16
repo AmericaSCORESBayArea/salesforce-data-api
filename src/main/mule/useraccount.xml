@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+		<flow name="get:\useraccount:salesforce-data-api-config">
+		<flow-ref
+			doc:name="entry-flow"
+			doc:id="67296369-59aa-4694-aef3-0ad86ed0bada"
+			name="entry-flow" />
+		<logger
+			level="INFO"
+			doc:name="Log entry-flow"
+			doc:id="8d51866b-afab-4f08-bcb4-e69c9fa1ed73"
+			message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
+		<ee:transform
+			doc:name="Store Query parameters"
+			doc:id="ab539827-5cb7-4cba-9451-084a3f44af34">
+				<ee:variables>
+				<ee:set-variable
+					variableName="phoneNumberLast4Digits"><![CDATA[%dw 2.0
+import substring from dw::core::Strings
+
+var cleanedPhoneNumber = replace(attributes.queryParams.'phoneNumber', /(\D+)/) with("")
+var stringSize = sizeOf(cleanedPhoneNumber)
+---
+substring(cleanedPhoneNumber, stringSize - 4, stringSize)]]></ee:set-variable>
+				<ee:set-variable variableName="phoneNumber"><![CDATA[replace(attributes.queryParams.'phoneNumber', /(\D+)/) with("")]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+				<salesforce:search doc:name="Search" doc:id="2d776f76-5d7d-4f4f-baee-e80085c169ef" config-ref="Salesforce_Config">
+			<salesforce:search-string ><![CDATA[
+			FIND
+			 { :phoneNumber } 
+			 IN PHONE FIELDS RETURNING 
+			 Contact
+			 (
+			 	Id,
+				Contact_Type__c,
+				RecordTypeId,
+				FirstName,
+				MiddleName,
+				LastName,
+				HomePhone,
+				MobilePhone	
+			WHERE 
+				recordtype.developername = ':recordType'
+				AND MobilePhone LIKE '%:phoneNumberLast4Digits'
+			) 
+			LIMIT 8
+			]]></salesforce:search-string>
+			<salesforce:parameters ><![CDATA[#[output application/java
+---
+{
+	phoneNumber : vars.phoneNumber,
+	phoneNumberLast4Digits : vars.phoneNumberLast4Digits,
+	recordType: 'SCORES_Staff'
+}]]]></salesforce:parameters>
+		</salesforce:search>
+		<choice doc:name="Choice" doc:id="6f22eb9a-ae29-490c-a382-c8223fc6446f" >
+			<when expression="#[payload.searchRecords != null]">
+				<ee:transform doc:name="Create Response">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload.searchRecords map ( payload01 , indexOfPayload01 ) -> {
+	Id: payload01.record.Id as String default "",
+	ContactType: payload01.record.Contact_Type__c as String default "" ,
+	ContactRecordType: payload01.record.RecordTypeId as String default "" ,
+	FirstName: payload01.record.FirstName as String default "" ,
+	LastName: payload01.record.LastName as String default "" 
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<salesforce:search doc:name="Search" doc:id="cf6a4678-cbad-4dec-86bc-d6b5c2b1d0ed" config-ref="Salesforce_Config">
+				<salesforce:search-string ><![CDATA[
+			FIND
+			 { :phoneNumber } 
+			 IN PHONE FIELDS RETURNING 
+			 Contact
+			 (
+			 	Id,
+				Contact_Type__c,
+				RecordTypeId,
+				Parent_First_Name__c,
+				Parent_Last_Name__c,
+				Parent_Phone_01__c,
+				HomePhone,
+				MobilePhone
+			WHERE 
+				Contact_Type__c =  ':contactType'
+				AND Parent_Phone_01__c LIKE '%:phoneNumberLast4Digits'
+			) 
+			LIMIT 8
+			]]></salesforce:search-string>
+			<salesforce:parameters ><![CDATA[#[output application/java
+---
+{
+	phoneNumber : vars.phoneNumber,
+	phoneNumberLast4Digits : vars.phoneNumberLast4Digits,
+	contactType: 'SCORES Student'
+}]]]></salesforce:parameters>
+				</salesforce:search>
+			</otherwise>
+		</choice>
+		<logger
+			level="INFO"
+			doc:name="Log Created Response"
+			doc:id="a8cc0705-f09b-4e76-8577-f19605ba2eb7"
+			message="#[payload]" />
+		<flow-ref
+			doc:name="exit flow"
+			doc:id="8577f63d-0173-4452-8903-6c12b67cb2f2"
+			name="exit-flow" />
+	</flow>
+	
+	</mule>
