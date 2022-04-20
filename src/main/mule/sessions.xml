@@ -304,4 +304,60 @@ output application/json
 			doc:id="ffed222e-011b-42f6-a9a1-f3cb065c6e44"
 			name="exit-flow" />
 	</flow>
+	<flow name="delete:\sessions\(sessionId):salesforce-data-api-config" doc:id="d97b31a5-0ea7-46d3-a346-cbca136228e3" >
+		<flow-ref doc:name="entry-flow" doc:id="9c8a442e-a7cd-46a2-ad34-ff5e764ddc81" name="entry-flow" />
+		<logger level="INFO" doc:name="Log entry-flow" doc:id="9ae3dcc8-74f5-4189-b3c1-bd9656a059ec" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
+		<ee:transform doc:name="Store URI parameters" doc:id="ae0066ba-0a60-42b4-9665-2269c6fb5564" >
+			<ee:variables >
+				<ee:set-variable variableName="sessionId" ><![CDATA[attributes.uriParams.'sessionId'
+				]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<salesforce:query doc:name="Select Query with sessionId from Assessment and Attendence object" doc:id="1e288924-44bc-4e3c-b544-5b51936d7367" config-ref="Salesforce_Config" >
+			<salesforce:salesforce-query ><![CDATA[
+			SELECT 
+				Id
+			FROM 
+				Assessment 
+			WHERE 
+				Id = ':sessionId'
+			]]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[output application/java
+---
+{
+	sessionId : vars.sessionId
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<salesforce:query doc:name="Select Query with sessionId from Attendence object" doc:id="cfe08f1a-cc1a-4102-bf59-a6aaeb021ec5" config-ref="Salesforce_Config" >
+			<salesforce:salesforce-query ><![CDATA[
+			SELECT 
+				Id
+			FROM 
+				Attendence 
+			WHERE 
+				Id = ':sessionId'
+			]]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[output application/java
+---
+{
+	sessionId : vars.sessionId
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<choice doc:name="Choice" doc:id="92f74e31-c84b-4d92-96a8-a54282a8f912" >
+			<when expression="#[vars.sessionFlag == true]">
+				<salesforce:delete doc:name="Delete" doc:id="c7bc252f-1798-4fe9-b20e-9830c48dcce6" config-ref="Salesforce_Config"/>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Session is active" doc:id="cb95577e-30b3-42c4-9320-2d4238060952" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+	</flow>
 </mule>
