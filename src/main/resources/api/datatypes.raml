@@ -140,6 +140,12 @@ types:
         enum: [ "Soccer", "Writing", "Game_Day", "Soccer_and_Writing"]
       TeamSeasonId:
         type: SalesforceUniqueId
+      Headcount:
+        type: number
+        required: false
+      FemaleHeadcount:
+        type: number
+        required: false
       AttendanceList:
         type: array
         required: false
@@ -237,6 +243,12 @@ types:
         enum: [ "Soccer", "Writing", "Game_Day", "Soccer_and_Writing"]
       TeamSeasonId:
         type: SalesforceUniqueId
+      Headcount:
+        type: number
+        required: false
+      FemaleHeadcount:
+        type: number
+        required: false
     examples: !include sessioncreatemodel-examples.raml
 
   SessionUpdateModel:
@@ -255,6 +267,12 @@ types:
         required: false
       TeamSeasonId:
         type: SalesforceUniqueId
+        required: false
+      Headcount:
+        type: number
+        required: false
+      FemaleHeadcount:
+        type: number
         required: false
 
   AttendanceCreateModel:

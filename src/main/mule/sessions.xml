@@ -37,7 +37,9 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 				Name,
 				Session_Date__c,
 				Session_Topic__c,
-				Team_Season__c 
+				Team_Season__c,
+				Headcount__c,
+				Headcount_Female__c 
 			FROM 
 				Session__c 
 			WHERE 
@@ -105,7 +107,9 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 				Name,
 				Session_Date__c,
 				Session_Topic__c,
-				Team_Season__c 
+				Team_Season__c,
+				Headcount__c,
+				Headcount_Female__c 
 			FROM 
 				Session__c 
 			WHERE 
@@ -173,7 +177,9 @@ output application/java
 	(Name: payload.SessionName) if payload.SessionName != null,
 	(Session_Date__c: payload.SessionDate as Date {format: 'yyyy-MM-dd'}) if payload.SessionDate != null,
 	(Session_Topic__c: payload.SessionTopic) if payload.SessionTopic != null,
-	(Team_Season__c: payload.TeamSeasonId) if payload.TeamSeasonId != null
+	(Team_Season__c: payload.TeamSeasonId) if payload.TeamSeasonId != null,
+	(Headcount__c: payload.Headcount) if payload.Headcount != null,
+	(Headcount_Female__c : payload.FemaleHeadcount) if payload.FemaleHeadcount != null
 }]]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
@@ -249,7 +255,9 @@ output application/java
 [{
 	Session_Date__c: payload.SessionDate as Date {format: 'yyyy-MM-dd'},
 	Session_Topic__c: payload.SessionTopic,
-	Team_Season__c: payload.TeamSeasonId
+	Team_Season__c: payload.TeamSeasonId,
+	(Headcount__c: payload.Headcount) if payload.Headcount != null,
+	(Headcount_Female__c: payload.FemaleHeadcount) if payload.FemaleHeadcount != null
 }]]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
