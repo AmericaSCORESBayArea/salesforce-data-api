@@ -304,4 +304,98 @@ output application/json
 			doc:id="ffed222e-011b-42f6-a9a1-f3cb065c6e44"
 			name="exit-flow" />
 	</flow>
+	
+	<flow
+		name="post:\sessions\(sessionId)\assessment:application\json:salesforce-data-api-config" doc:id="b81489b8-5978-487f-b9c5-7993b817812f">
+		<flow-ref
+			doc:name="entry-flow"
+			doc:id="dd7183e7-f2e3-428a-9bc5-270496e62877"
+			name="entry-flow" />
+		<ee:transform>
+			<ee:variables>
+				<ee:set-variable variableName="coachId">attributes.uriParams.'coachId'
+				</ee:set-variable>
+				<ee:set-variable variableName="teamSeasonId">attributes.uriParams.'teamSeasonId'
+				</ee:set-variable>
+				<ee:set-variable variableName="sessionId">attributes.uriParams.'sessionId'
+				</ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger
+			level="INFO"
+			doc:name="Log entry-flow"
+			doc:id="e3929c26-1273-4deb-ab95-4ed47e57afd7"
+			message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
+		<ee:transform
+			doc:name="Create Request"
+			doc:id="49290ee4-5eb9-40be-bd43-472d7c638175">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+                    output application/java
+                    ---
+                    [{
+                        Student__c: payload.StudentId,
+                        Coach__c: vars.coachId,
+                        Session__c: payload.sessionId,
+                        AssessmentResponse__c: payload.AssessmentResponse,
+                        AssessmentType__c: payload.AssessmentType,
+                        Team_Season__c: vars.teamSeasonId,
+                        Session__c: vars.sessionId,
+                        ExternalId__c: payload.StudentId ++ '-' ++ vars.sessionId ++ '-' ++ payload.AssessmentType
+                    }]]]>
+				</ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce:create
+			type="Assessment__c"
+			doc:name="Create"
+			doc:id="e9c665b8-4da5-4856-b300-b60750f353dd"
+			config-ref="Salesforce_Config" />
+		<choice
+			doc:name="Assessment creation successful?"
+			doc:id="57f2ec32-a001-4ee0-a99e-8468dc8ffbf4">
+			<when expression="#[payload.items[0].successful == false]">
+				<ee:transform
+					doc:name="Create Error Response"
+					doc:id="d734ddb9-b9ed-4a72-8530-f17575c42c82">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    message: payload.items[0].message
+}]]></ee:set-payload>
+					</ee:message>
+					<ee:variables>
+						<ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</when>
+			<otherwise>
+				<ee:transform
+					xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
+					doc:name="Create Response"
+					doc:id="ac650f6c-e163-4769-92a4-2150a0fb825b">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  AssessmentId: payload.items[0].id
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+		<logger
+			level="INFO"
+			doc:name="Log Created Response"
+			doc:id="d48bb0fe-3570-46d0-819f-c8fc9b082a5e"
+			message="#[payload]" />
+		<flow-ref
+			doc:name="exit flow"
+			doc:id="469a90fb-c19e-47ba-acb1-ce71273e565d"
+			name="exit-flow" />
+	</flow>
+	
 </mule>
