@@ -371,56 +371,6 @@ assert_expression_payload::main({payload: payload, attributes: attributes, vars:
 			</munit-tools:verify-call>
 		</munit:validation>
 	</munit:test>
-	<munit:test name="get:\sessions\(sessionId):salesforce-data-api-config-test" doc:id="16e1a650-af89-4611-b832-7e5f41d434b0" >
-		<munit:behavior >
-			<munit-tools:mock-when doc:name="Mock Select Query with sessionId" doc:id="c9bc3205-27c5-4ef7-91f5-5fc6a98f3e42" processor="salesforce:query">
-				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="43214918-bb1a-4522-94b8-c930ad7b5160" attributeName="doc:id" />
-				</munit-tools:with-attributes>
-				<munit-tools:then-return >
-					<munit-tools:payload value="#[output application/java --- readUrl('classpath://getsessionssessionIdsalesforcedataapiconfigtest/mock_payload.dwl')]" mediaType="application/java" encoding="UTF-8" />
-					<munit-tools:variables >
-						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://getsessionssessionIdsalesforcedataapiconfigtest/mock_variable_.dwl')]" />
-						<munit-tools:variable key="method" value="#[output application/java --- readUrl('classpath://getsessionssessionIdsalesforcedataapiconfigtest/mock_variable_1.dwl')]" mediaType="application/java" encoding="UTF-8" />
-						<munit-tools:variable key="requestPath" value="#[output application/java --- readUrl('classpath://getsessionssessionIdsalesforcedataapiconfigtest/mock_variable_2.dwl')]" mediaType="application/java" encoding="UTF-8" />
-						<munit-tools:variable key="sessionId" value="#[output application/java --- readUrl('classpath://getsessionssessionIdsalesforcedataapiconfigtest/mock_variable_3.dwl')]" mediaType="application/java" encoding="UTF-8" />
-					</munit-tools:variables>
-				</munit-tools:then-return>
-			</munit-tools:mock-when>
-			<munit:set-event doc:name="Set Input" doc:id="1cc1d77d-34ce-4009-8b59-834da2228ec7" >
-				<munit:attributes value="#[readUrl('classpath://getsessionssessionIdsalesforcedataapiconfigtest/set-event_attributes.dwl')]" />
-				<munit:variables >
-					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getsessionssessionIdsalesforcedataapiconfigtest/set-event_variable_.dwl')]" />
-				</munit:variables>
-			</munit:set-event>
-		</munit:behavior>
-		<munit:execution >
-			<flow-ref doc:name="Flow-ref to get:\sessions\(sessionId):salesforce-data-api-config" doc:id="0e7db715-11e5-48d0-83bc-d2c6681871d5" name="get:\sessions\(sessionId):salesforce-data-api-config"/>
-		</munit:execution>
-		<munit:validation >
-			<munit-tools:assert doc:name="Assert payload" doc:id="8ec8bc39-6f33-41ad-8fba-9b9ca94a331c" message="The payload does not match">
-				<munit-tools:that ><![CDATA[#[%dw 2.0
-import getsessionssessionIdsalesforcedataapiconfigtest::assert_expression_payload
----
-assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
-			</munit-tools:assert>
-			<munit-tools:verify-call doc:name="Verify Create Response" doc:id="6195138b-f8d9-4b3a-a450-49bcccacbccf" processor="ee:transform" times="1">
-				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="e68940e6-eac3-49e9-a3b5-930d15f2ae6c" attributeName="doc:id" />
-				</munit-tools:with-attributes>
-			</munit-tools:verify-call>
-			<munit-tools:verify-call doc:name="Verify Log Created Response" doc:id="70e26ed5-f9db-44a3-86f4-9934dffed7be" processor="logger" times="1">
-				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="acf707a7-c898-4973-9def-d8bb2b45577c" attributeName="doc:id" />
-				</munit-tools:with-attributes>
-			</munit-tools:verify-call>
-			<munit-tools:verify-call doc:name="Verify exit flow" doc:id="82978ddb-263a-4ed4-acba-649467623db8" processor="flow-ref" times="1">
-				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="a17ba558-9672-4d27-a4e4-da7527faedc7" attributeName="doc:id" />
-				</munit-tools:with-attributes>
-			</munit-tools:verify-call>
-		</munit:validation>
-	</munit:test>
 	<munit:test name="patch:\sessions\(sessionId):application\json:salesforce-data-api-config-test" doc:id="626e7e87-5a44-44a3-b5f2-33ca15f274b4" >
 		<munit:behavior >
 			<munit-tools:mock-when doc:name="Mock Update" doc:id="673f183a-1ad2-4d60-aef9-0626fffd5684" processor="salesforce:update">
