@@ -9,7 +9,7 @@
 		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
 	<munit:config name="salesforce-data-api-suite.xml" />
 	<global-property doc:name="Global Property" doc:id="b0c78ee5-eea5-4c2c-a827-4d94f2e878c6" name="env" value="munit" />
-	<munit:test name="post:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\attendances:application\json:salesforce-data-api-config-test1" doc:id="a1df301a-ed0c-4b8d-a3ee-80a5980eb26d" >
+	<munit:test name="post:\sessions\(sessionId)\attendances:application\json:salesforce-data-api-config-test1" doc:id="a1df301a-ed0c-4b8d-a3ee-80a5980eb26d" >
 		<munit:behavior >
 			<munit-tools:mock-when doc:name="Mock Upsert" doc:id="2cf14dec-f881-480a-a302-444e30fdca46" processor="salesforce:upsert">
 				<munit-tools:with-attributes >
@@ -1497,7 +1497,7 @@ assert_expression_payload::main({payload: payload, attributes: attributes, vars:
 			</munit-tools:verify-call>
 		</munit:validation>
 	</munit:test>
-	<munit:test name="get:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\attendances:salesforce-data-api-config-test" doc:id="91802bbc-1c07-4df4-ac65-19669c460635" >
+	<munit:test name="get:\sessions\(sessionId)\attendances:salesforce-data-api-config-test" doc:id="91802bbc-1c07-4df4-ac65-19669c460635" >
 		<munit:behavior >
 			<munit-tools:mock-when doc:name="Mock Query" doc:id="8d5c474b-ca7b-4b51-a741-c41896353fc8" processor="salesforce:query">
 				<munit-tools:with-attributes >
@@ -1947,7 +1947,7 @@ assert_expression_payload::main({payload: payload, attributes: attributes, vars:
 		</munit:validation>
 	</munit:test>
 	
-	<munit:test name="post:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\assessment" doc:id="2a46f265-ba3d-4b18-8e00-0c36911809a9" >
+	<munit:test name="post:\sessions\(sessionId)\assessment" doc:id="2a46f265-ba3d-4b18-8e00-0c36911809a9" >
 		<munit:behavior >
 			<munit-tools:mock-when doc:name="Mock Create" doc:id="a2ff13e8-00c4-499e-bfce-ed9b0765cb8f" processor="salesforce:create">
 				<munit-tools:with-attributes >
@@ -1974,7 +1974,7 @@ assert_expression_payload::main({payload: payload, attributes: attributes, vars:
 			</munit:set-event>
 		</munit:behavior>
 		<munit:execution >
-			<flow-ref doc:name="Flow-ref to post:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\attendances:application\json:salesforce-data-api-config" doc:id="6924dc13-6699-4d46-a3f8-dc88db307bda" name="post:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\assessment:application\json:salesforce-data-api-config"/>
+			<flow-ref doc:name="Flow-ref to post:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\attendances:application\json:salesforce-data-api-config" doc:id="6924dc13-6699-4d46-a3f8-dc88db307bda" name="post:\sessions\(sessionId)\assessment:application\json:salesforce-data-api-config"/>
 		</munit:execution>
 		<munit:validation >
 			<munit-tools:assert doc:name="Assert expression" doc:id="bce540b9-30d3-4b4e-bf04-4507f7e61a14" >
