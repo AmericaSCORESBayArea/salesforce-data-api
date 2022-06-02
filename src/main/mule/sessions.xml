@@ -106,6 +106,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 				Session_Date__c,
 				Session_Topic__c,
 				Team_Season__c,
+				Team_Season__r.Team__r.Uses_Headcount__c,
 				Headcount__c,
 				Headcount_Female__c 
 			FROM 
@@ -134,7 +135,8 @@ output application/json
 	SessionTopic: payload01.Session_Topic__c,
 	TeamSeasonId: payload01.Team_Season__c,
 	Headcount: payload01.Headcount__c,
-	FemaleHeadcount: payload01.Headcount_Female__c
+	FemaleHeadcount: payload01.Headcount_Female__c,
+	UsesHeadcount: payload01.Team_Season__r.Team__r.Uses_Headcount__c
 }) reduce ($$ ++ $)]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
