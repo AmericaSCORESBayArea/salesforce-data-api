@@ -107,7 +107,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 				Session_Topic__c,
 				Team_Season__c,
 				Team_Season__r.Team__r.Uses_Headcount__c,
-				Team_Season__r.Team__r.SCORES_Program_Type__c
+				Team_Season__r.Team__r.SCORES_Program_Type__c,
 				Headcount__c,
 				Headcount_Female__c 
 			FROM 
