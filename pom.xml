@@ -14,7 +14,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<app.name>salesforce-data-api</app.name>
 		<app.runtime>4.4.0</app.runtime>
-		<mule.maven.plugin.version>3.5.2</mule.maven.plugin.version>
+		<mule.maven.plugin.version>3.5.4</mule.maven.plugin.version>
 		<munit.version>2.3.6</munit.version>
 	</properties>
 
@@ -101,35 +101,21 @@
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
-			<groupId>com.mulesoft.munit</groupId>
-			<artifactId>munit-tools</artifactId>
-			<version>2.3.6</version>
-			<classifier>mule-plugin</classifier>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mule.connectors</groupId>
-			<artifactId>mule-http-connector</artifactId>
+			<groupId>org.mule.modules</groupId>
+			<artifactId>mule-apikit-module</artifactId>
 			<version>1.6.0</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
-			<groupId>com.mulesoft.munit</groupId>
-			<artifactId>munit-runner</artifactId>
-			<version>2.3.6</version>
-			<classifier>mule-plugin</classifier>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mule.modules</groupId>
-			<artifactId>mule-apikit-module</artifactId>
-			<version>1.5.8</version>
+			<groupId>org.mule.connectors</groupId>
+			<artifactId>mule-http-connector</artifactId>
+			<version>1.7.1</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
 			<groupId>com.mulesoft.connectors</groupId>
 			<artifactId>mule-salesforce-connector</artifactId>
-			<version>10.13.2</version>
+			<version>10.14.5</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
@@ -138,6 +124,20 @@
 			<version>3.0.46</version>
 			<classifier>raml</classifier>
 			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>com.mulesoft.munit</groupId>
+			<artifactId>munit-tools</artifactId>
+			<version>2.3.9</version>
+			<classifier>mule-plugin</classifier>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.mulesoft.munit</groupId>
+			<artifactId>munit-runner</artifactId>
+			<version>2.3.9</version>
+			<classifier>mule-plugin</classifier>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
@@ -152,6 +152,12 @@
 			<id>scores-exchange</id>
 			<name>SCORES Exchange</name>
 			<url>https://maven.anypoint.mulesoft.com/api/v2/organizations/6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd/maven</url>
+			<layout>default</layout>
+		</repository>
+		<repository>
+			<id>anypoint-exchange-v3</id>
+			<name>Anypoint Exchange V3</name>
+			<url>https://maven.anypoint.mulesoft.com/api/v3/maven</url>
 			<layout>default</layout>
 		</repository>
 		<repository>

@@ -105,7 +105,11 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 				Name,
 				Session_Date__c,
 				Session_Topic__c,
-				Team_Season__c 
+				Team_Season__c,
+				Team_Season__r.Team__r.Uses_Headcount__c,
+				Team_Season__r.Team__r.SCORES_Program_Type__c,
+				Headcount__c,
+				Headcount_Female__c 
 			FROM 
 				Session__c 
 			WHERE 
@@ -130,7 +134,10 @@ output application/json
 	SessionName: payload01.Name,
 	SessionDate: payload01.Session_Date__c as String,
 	SessionTopic: payload01.Session_Topic__c,
-	TeamSeasonId: payload01.Team_Season__c
+	TeamSeasonId: payload01.Team_Season__c,
+	Headcount: payload01.Headcount__c,
+	FemaleHeadcount: payload01.Headcount_Female__c,
+	UsesHeadcount: payload01.Team_Season__r.Team__r.Uses_Headcount__c
 }) reduce ($$ ++ $)]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
@@ -173,7 +180,9 @@ output application/java
 	(Name: payload.SessionName) if payload.SessionName != null,
 	(Session_Date__c: payload.SessionDate as Date {format: 'yyyy-MM-dd'}) if payload.SessionDate != null,
 	(Session_Topic__c: payload.SessionTopic) if payload.SessionTopic != null,
-	(Team_Season__c: payload.TeamSeasonId) if payload.TeamSeasonId != null
+	(Team_Season__c: payload.TeamSeasonId) if payload.TeamSeasonId != null,
+	(Headcount__c: payload.Headcount) if payload.Headcount != null,
+	(Headcount_Female__c: payload.FemaleHeadcount) if payload.FemaleHeadcount != null 
 }]]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
