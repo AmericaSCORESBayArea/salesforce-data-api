@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mule
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
 	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
 	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
 	xmlns="http://www.mulesoft.org/schema/mule/core"
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
 	<flow name="get:\sessions:salesforce-data-api-config">
 		<flow-ref
 			doc:name="entry-flow"
@@ -312,5 +312,102 @@ output application/json
 			doc:name="exit flow"
 			doc:id="ffed222e-011b-42f6-a9a1-f3cb065c6e44"
 			name="exit-flow" />
+	</flow>
+	<flow name="delete:\sessions\(sessionId):salesforce-data-api-config" doc:id="d97b31a5-0ea7-46d3-a346-cbca136228e3" >
+		<flow-ref doc:name="entry-flow" doc:id="9c8a442e-a7cd-46a2-ad34-ff5e764ddc81" name="entry-flow" />
+		<logger level="INFO" doc:name="Log entry-flow" doc:id="9ae3dcc8-74f5-4189-b3c1-bd9656a059ec" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
+		<ee:transform doc:name="Store URI parameters" doc:id="ae0066ba-0a60-42b4-9665-2269c6fb5564" >
+			<ee:variables >
+				<ee:set-variable variableName="sessionId" ><![CDATA[attributes.uriParams.'sessionId'
+				]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<salesforce:query doc:name="Select Query with sessionId from Assessment object" doc:id="1e288924-44bc-4e3c-b544-5b51936d7367" config-ref="Salesforce_Config" target="assesmentResponse" targetValue="#[output application/json &#10;---&#10;payload]">
+			<salesforce:salesforce-query ><![CDATA[SELECT Id FROM Assessment__c WHERE Session__c = ':sessionId'
+			]]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[output application/java
+---
+{
+	sessionId : vars.sessionId
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<salesforce:query doc:name="Select Query with sessionId from Attendence object" doc:id="cfe08f1a-cc1a-4102-bf59-a6aaeb021ec5" config-ref="Salesforce_Config" target="attendanceResponse" targetValue="#[output application/json &#10;---&#10;payload]">
+			<salesforce:salesforce-query ><![CDATA[SELECT Id FROM Attendance__c WHERE  Session__c = ':sessionId' 
+			]]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[output application/java
+---
+{
+	sessionId : vars.sessionId
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<set-variable value='#["true"]' doc:name="Set Variable" doc:id="6ed36b25-91dd-4429-bf78-2f5cb16190a2" variableName="sessionFlag"/>
+		<choice doc:name="Choice" doc:id="92f74e31-c84b-4d92-96a8-a54282a8f912" >
+			<when expression='#[isEmpty(vars.assesmentResponse) and isEmpty(vars.attendanceResponse)]'>
+				<ee:transform doc:name="sessionIds" doc:id="0fbc4a8b-63a7-4921-a442-cb27583294c7">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+[vars.sessionId]]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<salesforce:delete doc:name="Delete" doc:id="b57d6d95-dcd0-48de-a55e-f5bb0f1186d5" config-ref="Salesforce_Config" >
+				</salesforce:delete>
+				<ee:transform doc:name="Transform Message" doc:id="903290a7-d881-491c-801e-80979a824387">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<choice doc:name="Choice" doc:id="100917c1-dab8-4514-a8f8-9f37f8ab0948">
+					<when expression="#[payload.successful == true]">
+						<ee:transform doc:name="success response" doc:id="6f9995d5-7f26-43e0-84b5-37947225a965" >
+							<ee:message >
+								<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message" : "session is deleted successfully",
+	"sessionId": vars.sessionId,
+	"success": true
+}]]></ee:set-payload>
+							</ee:message>
+						</ee:transform>
+					</when>
+					<otherwise >
+						<ee:transform doc:name="Error response" doc:id="d4dc91ae-9b28-418d-9dfe-93075831d489" >
+							<ee:message >
+								<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message" : "Error while deleting session",
+	"sessionId": vars.sessionId,
+	"success": false
+}]]></ee:set-payload>
+							</ee:message>
+						</ee:transform>
+					</otherwise>
+				</choice>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Session is active" doc:id="cb95577e-30b3-42c4-9320-2d4238060952" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message" : "Session is active",
+	"assessmentIds": vars.assesmentResponse,
+	"attendenceIds": vars.attendanceResponse,
+	"success": false
+		
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
 	</flow>
 </mule>
