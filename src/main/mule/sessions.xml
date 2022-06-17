@@ -99,8 +99,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			doc:name="Select Query with sessionId"
 			doc:id="43214918-bb1a-4522-94b8-c930ad7b5160"
 			config-ref="Salesforce_Config">
-			<salesforce:salesforce-query><![CDATA[
-			SELECT 
+			<salesforce:salesforce-query><![CDATA[	SELECT 
 				Id,
 				Name,
 				Session_Date__c,
@@ -108,8 +107,9 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 				Team_Season__c,
 				Team_Season__r.Team__r.Uses_Headcount__c,
 				Team_Season__r.Team__r.SCORES_Program_Type__c,
-				Headcount__c,
-				Headcount_Female__c 
+				Boys_Present__c,
+				Girls_Present__c,
+ 				Nonbinary_Present__c
 			FROM 
 				Session__c 
 			WHERE 
@@ -135,8 +135,9 @@ output application/json
 	SessionDate: payload01.Session_Date__c as String,
 	SessionTopic: payload01.Session_Topic__c,
 	TeamSeasonId: payload01.Team_Season__c,
-	Headcount: payload01.Headcount__c,
-	FemaleHeadcount: payload01.Headcount_Female__c,
+	BoysPresent: payload01.Boys_Present__c,
+	GirlsPresent: payload01.Girls_Present__c,
+	NonbinaryPresent: payload01.Nonbinary_Present__c,
 	UsesHeadcount: payload01.Team_Season__r.Team__r.Uses_Headcount__c
 }) reduce ($$ ++ $)]]></ee:set-payload>
 			</ee:message>
@@ -181,8 +182,9 @@ output application/java
 	(Session_Date__c: payload.SessionDate as Date {format: 'yyyy-MM-dd'}) if payload.SessionDate != null,
 	(Session_Topic__c: payload.SessionTopic) if payload.SessionTopic != null,
 	(Team_Season__c: payload.TeamSeasonId) if payload.TeamSeasonId != null,
-	(Headcount__c: payload.Headcount) if payload.Headcount != null,
-	(Headcount_Female__c: payload.FemaleHeadcount) if payload.FemaleHeadcount != null 
+	(Boys_Present__c: payload.BoysPresent) if payload.BoysPresent != null,
+	(Girls_Present__c: payload.GirlsPresent) if payload.GirlsPresent != null,
+	(Nonbinary_Present__c: payload.NonbinaryPresent) if payload.NonbinaryPresent != null 
 }]]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
