@@ -138,7 +138,8 @@ output application/json
 	BoysPresent: payload01.Boys_Present__c,
 	GirlsPresent: payload01.Girls_Present__c,
 	NonbinaryPresent: payload01.Nonbinary_Present__c,
-	UsesHeadcount: payload01.Team_Season__r.Team__r.Uses_Headcount__c
+	UsesHeadcount: payload01.Team_Season__r.Team__r.Uses_Headcount__c,
+	ProgramType: payload01.Team_Season__r.Team__r.SCORES_Program_Type__c
 }) reduce ($$ ++ $)]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
