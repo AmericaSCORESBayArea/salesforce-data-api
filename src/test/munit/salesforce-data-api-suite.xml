@@ -1830,7 +1830,7 @@ assert_expression_payload::main({payload: payload, attributes: attributes, vars:
 		</munit:validation>
 	</munit:test>
 	
-	<munit:test name="post:\sessions\(sessionId)\assessment" doc:id="2a46f265-ba3d-4b18-8e00-0c36911809a9" >
+	<munit:test name="post:\sessions\(sessionId)\assessment" doc:id="2a46f265-ba3d-4b18-8e00-0c36911809a9" ignore="true">
 		<munit:behavior >
 			<munit-tools:mock-when doc:name="Mock Create" doc:id="a2ff13e8-00c4-499e-bfce-ed9b0765cb8f" processor="salesforce:create">
 				<munit-tools:with-attributes >
