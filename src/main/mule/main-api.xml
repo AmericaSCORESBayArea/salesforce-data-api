@@ -167,23 +167,7 @@ output application/json
             </ee:variables>
         </ee:transform>
     </sub-flow>
-    <flow name="patch:\assessment\(assessmentId):application\json:salesforce-data-api-config">
-        <ee:transform>
-            <ee:variables>
-                <ee:set-variable variableName="assessmentId">attributes.uriParams.'assessmentId'</ee:set-variable>
-            </ee:variables>
-        </ee:transform>
-        <ee:transform>
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  message: "Assessment updated"
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
-    </flow>
+    
     <flow name="get:\sessions\(sessionId)\assessments:salesforce-data-api-config">
         <ee:transform>
             <ee:variables>
@@ -201,23 +185,7 @@ output application/json
             </ee:message>
         </ee:transform>
     </flow>
-    <flow name="get:\assessment\(studentId):salesforce-data-api-config">
-        <ee:transform>
-            <ee:variables>
-                <ee:set-variable variableName="studentId">attributes.uriParams.'studentId'</ee:set-variable>
-            </ee:variables>
-        </ee:transform>
-        <ee:transform>
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  message: "Error retrieving enrollments"
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
-    </flow>
+    
     
     <flow name="get:\useraccount:salesforce-data-api-config">
         <logger level="INFO" message="get:\useraccount:salesforce-data-api-config" />
