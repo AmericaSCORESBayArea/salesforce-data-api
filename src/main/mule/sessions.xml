@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mule
-	xmlns:http="http://www.mulesoft.org/schema/mule/http"
 	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
 	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
 	xmlns="http://www.mulesoft.org/schema/mule/core"
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
-http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+
 	<flow name="get:\sessions:salesforce-data-api-config">
 		<flow-ref
 			doc:name="entry-flow"
@@ -99,17 +99,13 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			doc:name="Select Query with sessionId"
 			doc:id="43214918-bb1a-4522-94b8-c930ad7b5160"
 			config-ref="Salesforce_Config">
-			<salesforce:salesforce-query><![CDATA[	SELECT 
+			<salesforce:salesforce-query><![CDATA[
+			SELECT 
 				Id,
 				Name,
 				Session_Date__c,
 				Session_Topic__c,
-				Team_Season__c,
-				Team_Season__r.Team__r.Uses_Headcount__c,
-				Team_Season__r.Team__r.SCORES_Program_Type__c,
-				Boys_Present__c,
-				Girls_Present__c,
- 				Nonbinary_Present__c
+				Team_Season__c 
 			FROM 
 				Session__c 
 			WHERE 
@@ -134,12 +130,7 @@ output application/json
 	SessionName: payload01.Name,
 	SessionDate: payload01.Session_Date__c as String,
 	SessionTopic: payload01.Session_Topic__c,
-	TeamSeasonId: payload01.Team_Season__c,
-	BoysPresent: payload01.Boys_Present__c,
-	GirlsPresent: payload01.Girls_Present__c,
-	NonbinaryPresent: payload01.Nonbinary_Present__c,
-	UsesHeadcount: payload01.Team_Season__r.Team__r.Uses_Headcount__c,
-	ProgramType: payload01.Team_Season__r.Team__r.SCORES_Program_Type__c
+	TeamSeasonId: payload01.Team_Season__c
 }) reduce ($$ ++ $)]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
@@ -182,10 +173,7 @@ output application/java
 	(Name: payload.SessionName) if payload.SessionName != null,
 	(Session_Date__c: payload.SessionDate as Date {format: 'yyyy-MM-dd'}) if payload.SessionDate != null,
 	(Session_Topic__c: payload.SessionTopic) if payload.SessionTopic != null,
-	(Team_Season__c: payload.TeamSeasonId) if payload.TeamSeasonId != null,
-	(Boys_Present__c: payload.BoysPresent) if payload.BoysPresent != null,
-	(Girls_Present__c: payload.GirlsPresent) if payload.GirlsPresent != null,
-	(Nonbinary_Present__c: payload.NonbinaryPresent) if payload.NonbinaryPresent != null 
+	(Team_Season__c: payload.TeamSeasonId) if payload.TeamSeasonId != null
 }]]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
@@ -316,16 +304,106 @@ output application/json
 			doc:id="ffed222e-011b-42f6-a9a1-f3cb065c6e44"
 			name="exit-flow" />
 	</flow>
-	<flow name="delete:\sessions\(sessionId):salesforce-data-api-config" doc:id="d97b31a5-0ea7-46d3-a346-cbca136228e3" >
-		<flow-ref doc:name="entry-flow" doc:id="9c8a442e-a7cd-46a2-ad34-ff5e764ddc81" name="entry-flow" />
-		<logger level="INFO" doc:name="Log entry-flow" doc:id="9ae3dcc8-74f5-4189-b3c1-bd9656a059ec" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
-		<ee:transform doc:name="Store URI parameters" doc:id="ae0066ba-0a60-42b4-9665-2269c6fb5564" >
+	
+	<flow
+		name="post:\sessions\(sessionId)\assessment:application\json:salesforce-data-api-config" doc:id="b81489b8-5978-487f-b9c5-7993b817812f">
+		<flow-ref
+			doc:name="entry-flow"
+			doc:id="dd7183e7-f2e3-428a-9bc5-270496e62877"
+			name="entry-flow" />
+		<ee:transform>
+			<ee:variables>
+				<ee:set-variable variableName="sessionId">attributes.uriParams.'sessionId'
+				</ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger
+			level="INFO"
+			doc:name="Log entry-flow"
+			doc:id="e3929c26-1273-4deb-ab95-4ed47e57afd7"
+			message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
+		<ee:transform
+			doc:name="Create Request"
+			doc:id="49290ee4-5eb9-40be-bd43-472d7c638175">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+                    output application/java
+                    ---
+                    [{
+                        Student__c: payload.StudentId,
+                        Coach__c: payload.coachId,
+                        Session__c: payload.sessionId,
+                        AssessmentResponse__c: payload.AssessmentResponse,
+                        AssessmentType__c: payload.AssessmentType,
+                        Team_Season__c: payload.teamSeasonId,
+                        Session__c: vars.sessionId,
+                        ExternalId__c: payload.StudentId ++ '-' ++ vars.sessionId ++ '-' ++ payload.AssessmentType
+                    }]]]>
+				</ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce:create
+			type="Assessment__c"
+			doc:name="Create"
+			doc:id="e9c665b8-4da5-4856-b300-b60750f353dd"
+			config-ref="Salesforce_Config" />
+		<choice
+			doc:name="Assessment creation successful?"
+			doc:id="57f2ec32-a001-4ee0-a99e-8468dc8ffbf4">
+			<when expression="#[payload.items[0].successful == false]">
+				<ee:transform
+					doc:name="Create Error Response"
+					doc:id="d734ddb9-b9ed-4a72-8530-f17575c42c82">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    message: payload.items[0].message
+}]]></ee:set-payload>
+					</ee:message>
+					<ee:variables>
+						<ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</when>
+			<otherwise>
+				<ee:transform
+					xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
+					doc:name="Create Response"
+					doc:id="ac650f6c-e163-4769-92a4-2150a0fb825b">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  AssessmentId: payload.items[0].id
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+		<logger
+			level="INFO"
+			doc:name="Log Created Response"
+			doc:id="d48bb0fe-3570-46d0-819f-c8fc9b082a5e"
+			message="#[payload]" />
+		<flow-ref
+			doc:name="exit flow"
+			doc:id="469a90fb-c19e-47ba-acb1-ce71273e565d"
+			name="exit-flow" />
+	</flow>
+	
+		<flow name="delete:\sessions\(sessionId):salesforce-data-api-config" doc:id="cfcb4174-930e-413e-856b-d790bb25bcf7" >
+		<flow-ref doc:name="entry-flow" doc:id="5f1acc1c-22b3-4a2b-af64-3971687e3691" name="entry-flow" />
+		<logger level="INFO" doc:name="Log entry-flow" doc:id="73c967e5-5300-40d3-bc65-925d5a3be038" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
+		<ee:transform doc:name="Store URI parameters" doc:id="da573ede-7b6e-4dd7-a049-8f9786532a07" >
 			<ee:variables >
 				<ee:set-variable variableName="sessionId" ><![CDATA[attributes.uriParams.'sessionId'
 				]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<salesforce:query doc:name="Select Query with sessionId from Assessment object" doc:id="1e288924-44bc-4e3c-b544-5b51936d7367" config-ref="Salesforce_Config" target="assesmentResponse" targetValue="#[output application/json &#10;---&#10;payload]">
+		<salesforce:query doc:name="Select Query with sessionId from Assessment object" doc:id="9f67f428-5f13-40d9-9aab-a56f87ef3021" config-ref="Salesforce_Config" target="assesmentResponse" targetValue="#[output application/json &#10;---&#10;payload]">
 			<salesforce:salesforce-query ><![CDATA[SELECT Id FROM Assessment__c WHERE Session__c = ':sessionId'
 			]]></salesforce:salesforce-query>
 			<salesforce:parameters ><![CDATA[#[output application/java
@@ -334,7 +412,7 @@ output application/json
 	sessionId : vars.sessionId
 }]]]></salesforce:parameters>
 		</salesforce:query>
-		<salesforce:query doc:name="Select Query with sessionId from Attendence object" doc:id="cfe08f1a-cc1a-4102-bf59-a6aaeb021ec5" config-ref="Salesforce_Config" target="attendanceResponse" targetValue="#[output application/json &#10;---&#10;payload]">
+		<salesforce:query doc:name="Select Query with sessionId from Attendence object" doc:id="26e53dbd-096a-4895-b74d-6320285cc975" config-ref="Salesforce_Config" target="attendanceResponse" targetValue="#[output application/json &#10;---&#10;payload]">
 			<salesforce:salesforce-query ><![CDATA[SELECT Id FROM Attendance__c WHERE  Session__c = ':sessionId' 
 			]]></salesforce:salesforce-query>
 			<salesforce:parameters ><![CDATA[#[output application/java
@@ -343,10 +421,10 @@ output application/json
 	sessionId : vars.sessionId
 }]]]></salesforce:parameters>
 		</salesforce:query>
-		<set-variable value='#["true"]' doc:name="Set Variable" doc:id="6ed36b25-91dd-4429-bf78-2f5cb16190a2" variableName="sessionFlag"/>
-		<choice doc:name="Choice" doc:id="92f74e31-c84b-4d92-96a8-a54282a8f912" >
+		<set-variable value='#["true"]' doc:name="Set Variable" doc:id="bd397942-1a23-4521-b522-fdf0547f639d" variableName="sessionFlag"/>
+		<choice doc:name="Choice" doc:id="aee98a94-0d86-4940-95a4-dd5f8dcc9320" >
 			<when expression='#[isEmpty(vars.assesmentResponse) and isEmpty(vars.attendanceResponse)]'>
-				<ee:transform doc:name="sessionIds" doc:id="0fbc4a8b-63a7-4921-a442-cb27583294c7">
+				<ee:transform doc:name="sessionIds" doc:id="4e388ede-e88f-46ea-b80f-9a1d96de4847">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
 output application/java
@@ -354,9 +432,9 @@ output application/java
 [vars.sessionId]]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-				<salesforce:delete doc:name="Delete" doc:id="b57d6d95-dcd0-48de-a55e-f5bb0f1186d5" config-ref="Salesforce_Config" >
+				<salesforce:delete doc:name="Delete" doc:id="4b17c8a8-7a12-4c2d-b6e8-aa93f0493833" config-ref="Salesforce_Config" >
 				</salesforce:delete>
-				<ee:transform doc:name="Transform Message" doc:id="903290a7-d881-491c-801e-80979a824387">
+				<ee:transform doc:name="Transform Message" doc:id="c4905b3f-b41f-439c-973c-9ae78fde27d1">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -364,9 +442,9 @@ output application/json
 payload]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-				<choice doc:name="Choice" doc:id="100917c1-dab8-4514-a8f8-9f37f8ab0948">
+				<choice doc:name="Choice" doc:id="96b64c59-5538-45db-9d4f-81c0c3664b01">
 					<when expression="#[payload.successful == true]">
-						<ee:transform doc:name="success response" doc:id="6f9995d5-7f26-43e0-84b5-37947225a965" >
+						<ee:transform doc:name="success response" doc:id="b757cee7-86b0-482e-a510-fc4f1154c604" >
 							<ee:message >
 								<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
@@ -380,7 +458,7 @@ output application/json
 						</ee:transform>
 					</when>
 					<otherwise >
-						<ee:transform doc:name="Error response" doc:id="d4dc91ae-9b28-418d-9dfe-93075831d489" >
+						<ee:transform doc:name="Error response" doc:id="7109e8ef-d95f-4269-93f8-24f1b25b226a" >
 							<ee:message >
 								<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
@@ -396,7 +474,7 @@ output application/json
 				</choice>
 			</when>
 			<otherwise >
-				<ee:transform doc:name="Session is active" doc:id="cb95577e-30b3-42c4-9320-2d4238060952" >
+				<ee:transform doc:name="Session is active" doc:id="c776d9a2-0f7c-4eb5-a8d5-f8d0e7f039e9" >
 					<ee:message >
 						<ee:set-payload ><![CDATA[%dw 2.0
 output application/json

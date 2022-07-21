@@ -1,0 +1,27 @@
+%dw 2.0
+
+type auto_42bc7266_d1db_464b_a439_712ce9138573_Input_Attributes = {|
+  clientCertificate?: {|
+    publicKey?: {|  |}, 
+    "type"?: String, 
+    encoded?: Binary
+  |}, 
+  headers: {|  |}, 
+  listenerPath: String, 
+  method: String, 
+  queryParams: {|  |}, 
+  queryString: String, 
+  relativePath: String, 
+  remoteAddress: String, 
+  requestPath: String, 
+  requestUri: String, 
+  scheme: String, 
+  uriParams: {|
+    coachId: String, 
+    teamSeasonId: String, 
+    sessionId: String
+  |}, 
+  version: String, 
+  localAddress: String
+|}
+
