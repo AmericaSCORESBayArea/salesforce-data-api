@@ -290,6 +290,26 @@ uses:
             application/json:
               example:
                 message: Session not found
+              
+    delete:
+      displayName: Delete session
+      description: Delete session for given session id
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                message: Session deleted
+        400:
+          body:
+            application/json:
+              example:
+                message: Bad request
+        404:
+          body:
+            application/json:
+              example:
+                message: Session not found    
       
 /attendances:
   post:

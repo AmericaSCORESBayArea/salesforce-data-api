@@ -80,7 +80,8 @@
 				Coach_Writing__r.Name,
 				Team__r.Name,
 				Season__r.Name,
-				Team__r.School_Site__r.Region__c 
+				Team__r.School_Site__r.Region__c,
+				Team__r.SCORES_Program_Type__c 
 			FROM 
 				Team_Season__c 
 			WHERE (
@@ -125,7 +126,8 @@ payload map ( payload01 ,
 	ScoresProgramManager: payload01.SCORES_Program_Manager__r.Name default  "" as String,
 	ProgramCoordinator:  payload01.SCORES_Program_Coordinator__r.Name default  "" as String,
 	Region: payload01.Team__r.School_Site__r.Region__c,
-	SeasonId: payload01.Season__r.Id default "" as String
+	SeasonId: payload01.Season__r.Id default "" as String,
+	ProgramType: payload01.Team__r.SCORES_Program_Type__c
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
@@ -269,12 +271,14 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 						Season__r.Name,
 						Total_Number_of_Players__c,
 						Team__r.School_Site__r.Region__c,
+						Team__r.SCORES_Program_Type__c,
 						(
 							SELECT 
 								Id,
 						 		Name,
 						 		Session_Topic__c,
-						 		Session_Date__c
+						 		Session_Date__c,
+						 		Number_of_Students_Present__c
 						 	From 
 						 		Sessions__r 
 						 	WHERE 
@@ -331,12 +335,14 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 						Season_End_Date__c,
 						Total_Number_of_Players__c,
 						Team__r.School_Site__r.Region__c,
+						Team__r.SCORES_Program_Type__c,
 						(
 							SELECT 
 								Id,
 								 Name,
 								 Session_Topic__c,
-								 Session_Date__c 
+								 Session_Date__c,
+								 Number_of_Students_Present__c 
 							FROM 
 								Sessions__r 
 							WHERE 
@@ -406,7 +412,8 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 		SessionId: sessionsr.Id,
 		SessionName: sessionsr.Name,
 		SessionDate: sessionsr.Session_Date__c as String,
-		SessionTopic: sessionsr.Session_Topic__c
+		SessionTopic: sessionsr.Session_Topic__c,
+		TotalStudentsPresent: sessionsr.Number_of_Students_Present__c
 	},
 	CoachSoccer: vars.coachId,
 	CoachWriting: vars.coachId,
@@ -415,7 +422,8 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	TeamSeasonId: payload01.Id default "",
 	Team_Name: payload01.Team__r.Name default "",
 	Season_Name: payload01.Season__r.Name default "",
-	Region: payload01.Team__r.School_Site__r.Region__c
+	Region: payload01.Team__r.School_Site__r.Region__c,
+	ProgramType: payload01.Team__r.SCORES_Program_Type__c
 
 }]]></ee:set-payload>
 			</ee:message>
