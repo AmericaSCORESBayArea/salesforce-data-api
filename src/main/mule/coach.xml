@@ -81,7 +81,8 @@
 				Team__r.Name,
 				Season__r.Name,
 				Team__r.School_Site__r.Region__c,
-				Team__r.SCORES_Program_Type__c 
+				Team__r.SCORES_Program_Type__c,
+				Team__r.Uses_Headcount__c
 			FROM 
 				Team_Season__c 
 			WHERE (
@@ -127,7 +128,8 @@ payload map ( payload01 ,
 	ProgramCoordinator:  payload01.SCORES_Program_Coordinator__r.Name default  "" as String,
 	Region: payload01.Team__r.School_Site__r.Region__c,
 	SeasonId: payload01.Season__r.Id default "" as String,
-	ProgramType: payload01.Team__r.SCORES_Program_Type__c
+	ProgramType: payload01.Team__r.SCORES_Program_Type__c,
+	UsesHeadcount: payload01.Team__r.Uses_Headcount__c 
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
@@ -272,6 +274,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 						Total_Number_of_Players__c,
 						Team__r.School_Site__r.Region__c,
 						Team__r.SCORES_Program_Type__c,
+						Team__r.Uses_Headcount__c,
 						(
 							SELECT 
 								Id,
@@ -336,6 +339,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 						Total_Number_of_Players__c,
 						Team__r.School_Site__r.Region__c,
 						Team__r.SCORES_Program_Type__c,
+						Team__r.Uses_Headcount__c,
 						(
 							SELECT 
 								Id,
