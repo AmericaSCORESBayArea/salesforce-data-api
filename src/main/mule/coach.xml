@@ -427,7 +427,8 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	Team_Name: payload01.Team__r.Name default "",
 	Season_Name: payload01.Season__r.Name default "",
 	Region: payload01.Team__r.School_Site__r.Region__c,
-	ProgramType: payload01.Team__r.SCORES_Program_Type__c
+	ProgramType: payload01.Team__r.SCORES_Program_Type__c,
+	UseHeadcount: payload01.Team__r.Uses_Headcount__c
 
 }]]></ee:set-payload>
 			</ee:message>

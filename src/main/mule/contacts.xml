@@ -134,7 +134,7 @@ import * from modules::GlobalModules
 					<salesforce:records><![CDATA[#[output application/java
 ---
 [{
-	Contact_Type__C: vars.originalPayload.ContactType,
+	Contact_Type__C: "SCORES Student",
 	RecordTypeId: vars.ContactRecordType,
 	FirstName: vars.originalPayload.FirstName,
 	MiddleName: vars.originalPayload.MiddleName,
