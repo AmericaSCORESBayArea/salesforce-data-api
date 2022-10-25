@@ -1068,9 +1068,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 				<ee:set-variable variableName="contactId"><![CDATA[attributes.uriParams.'contactId']]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<ee:transform
-			doc:name="Transform Message"
-			doc:id="592cfbca-f5bb-4ed0-842a-8e72b8d5c977">
+		<ee:transform doc:name="Transform Message" doc:id="592cfbca-f5bb-4ed0-842a-8e72b8d5c977">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/java
@@ -1121,22 +1119,16 @@ output application/java
 	(Second_Emergency_Permission_to_Pick_Up__c: payload.Second_Emergency_Contact_Permission_to_Pickup_child) if(payload.Second_Emergency_Contact_Permission_to_Pickup_child?) ,
 	(Liability__c: payload.LiabilityWaiver) if(payload.LiabilityWaiver?) ,
 	(Media_Release__c: payload.MediaReleaseWaiver) if(payload.MediaReleaseWaiver?) ,
-	(Data_Release__c: payload.DataReleaseWaiver) if(payload.DataReleaseWaiver?)
+	(Data_Release__c: payload.DataReleaseWaiver) if(payload.DataReleaseWaiver?),
+	(School_Attending__c: payload.SchoolName) if(payload.SchoolName?),
+	(AccountId: payload.AccountId) if(payload.AccountId?)
 }]]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<salesforce:update
-			type="Contact"
-			doc:name="Update"
-			doc:id="22d1f2d0-03bc-4987-82e8-200abcd9b67a"
-			config-ref="Salesforce_Config" />
-		<choice
-			doc:name="Update successful?"
-			doc:id="61a478f2-2c8f-430b-a6ad-a5435c432f7a">
+		<salesforce:update type="Contact" doc:name="Update" doc:id="22d1f2d0-03bc-4987-82e8-200abcd9b67a" config-ref="Salesforce_Config" />
+		<choice doc:name="Update successful?" doc:id="61a478f2-2c8f-430b-a6ad-a5435c432f7a">
 			<when expression="#[payload.items[0].successful == false]">
-				<ee:transform
-					doc:name="Transform Message"
-					doc:id="7c3a7df0-eb2b-4a4d-9182-1fcfd74a48fb">
+				<ee:transform doc:name="Transform Message" doc:id="7c3a7df0-eb2b-4a4d-9182-1fcfd74a48fb">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -1151,9 +1143,7 @@ output application/json
 				</ee:transform>
 			</when>
 			<otherwise>
-				<ee:transform
-					xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
-					doc:name="Create Response">
+				<ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
 output application/json
