@@ -1,31 +1,36 @@
 {
   "headers": {
     "host": "localhost:8091",
-    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0",
+    "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/109.0",
     "accept": "*/*",
-    "accept-language": "es-AR,es;q=0.8,en-US;q=0.5,en;q=0.3",
-    "accept-encoding": "gzip, deflate",
+    "accept-language": "en-GB,en;q=0.5",
+    "accept-encoding": "gzip, deflate, br",
     "connection": "keep-alive",
-    "referer": "http://localhost:8091/console/"
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin"
   },
   "clientCertificate": null,
   "method": "GET",
   "scheme": "http",
   "queryParams": {
-    "date": "2021-04-15"
+    "startDate": "2022-01-01",
+    "endDate": "2022-10-01",
+    "limit": "10",
+    "offset": "10"
   },
-  "requestUri": "/api-internal/coach/0031T00004CYY7NQAX/allSessions?date=2021-04-15",
-  "queryString": "date=2021-04-15",
+  "requestUri": "/api-internal/coach/0031T00003M2XNwQAN/allSessions?startDate=2022-01-01&endDate=2022-10-01&limit=10&offset=10",
+  "queryString": "startDate=2022-01-01&endDate=2022-10-01&limit=10&offset=10",
   "version": "HTTP/1.1",
-  "maskedRequestPath": "/coach/0031T00004CYY7NQAX/allSessions",
+  "maskedRequestPath": "/coach/0031T00003M2XNwQAN/allSessions",
   "listenerPath": "/api-internal/*",
   "localAddress": "/127.0.0.1:8091",
-  "relativePath": "/api-internal/coach/0031T00004CYY7NQAX/allSessions",
+  "relativePath": "/api-internal/coach/0031T00003M2XNwQAN/allSessions",
   "uriParams": {
-    "coachId": "0031T00004CYY7NQAX"
+    "coachId": "0031T00003M2XNwQAN"
   },
-  "rawRequestUri": "/api-internal/coach/0031T00004CYY7NQAX/allSessions?date=2021-04-15",
-  "rawRequestPath": "/api-internal/coach/0031T00004CYY7NQAX/allSessions",
-  "remoteAddress": "/127.0.0.1:1335",
-  "requestPath": "/api-internal/coach/0031T00004CYY7NQAX/allSessions"
+  "rawRequestUri": "/api-internal/coach/0031T00003M2XNwQAN/allSessions?startDate=2022-01-01&endDate=2022-10-01&limit=10&offset=10",
+  "rawRequestPath": "/api-internal/coach/0031T00003M2XNwQAN/allSessions",
+  "remoteAddress": "/127.0.0.1:53472",
+  "requestPath": "/api-internal/coach/0031T00003M2XNwQAN/allSessions"
 }
