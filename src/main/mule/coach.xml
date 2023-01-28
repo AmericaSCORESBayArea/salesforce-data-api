@@ -289,19 +289,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 						 	AND Session_Date__c <= :endDate 
 						 	ORDER BY 
 						 		Session_Date__c DESC
-						 ),
-						(
-							SELECT 
-								Id,
-								Contact__r.Name,
-								Contact__r.FirstName,
-								Contact__r.LastName,
-								Contact__r.Birthdate,
-								Contact__r.Gender__c,
-								Contact__r.Ethnicity__c,
-								Contact__r.Zip_First_Five_Digits__c,
-								Contact__c From Enrollments__r
-						) 
+						 )
 					FROM 
 						Team_Season__c 
 					WHERE (
@@ -318,7 +306,9 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 					<salesforce:parameters><![CDATA[#[output application/java
 ---
 {
+	offset : attributes.queryParams.offset,
 	endDate : attributes.queryParams.secondDate,
+	limit : attributes.queryParams.limit,
 	coachid : vars.coachId,
 	startDate : attributes.queryParams.firstDate
 }]]]></salesforce:parameters>
@@ -353,19 +343,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 								Session_Date__c = :date 
 							ORDER BY 
 								Session_Date__c DESC
-						),
-						(
-							SELECT 
-							Id,
-							Contact__r.Name,
-							Contact__r.FirstName,
-							Contact__r.LastName,
-							Contact__r.Birthdate,
-							Contact__r.Gender__c,
-							Contact__r.Ethnicity__c,
-							Contact__r.Zip_First_Five_Digits__c,
-							Contact__c From Enrollments__r
-						) 
+						)
 					FROM 
 						Team_Season__c 
 					WHERE 
@@ -875,24 +853,14 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			<ee:message />
 			<ee:variables>
 				<ee:set-variable variableName="coachId"><![CDATA[attributes.uriParams.'coachId']]></ee:set-variable>
-				<ee:set-variable variableName="date"><![CDATA[attributes.queryParams.'date']]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<salesforce:query
-			doc:name="Query"
-			doc:id="24aaebf4-25af-45bd-9b18-f9672f23598c"
-			config-ref="Salesforce_Config">
-			<salesforce:salesforce-query><![CDATA[
-			SELECT 
-				CreatedById,
-				CreatedDate,
+		<choice doc:name="Choice" doc:id="64954967-58fa-4695-b812-6d707edcf0d2" >
+			<when expression="#[attributes.queryParams.endDate != null]">
+				<salesforce:query doc:name="Query" doc:id="fc538db1-ecb3-4e50-b07e-6e831fdfa28d" config-ref="Salesforce_Config">
+					<salesforce:salesforce-query ><![CDATA[			SELECT 
 				Id,
 				IsDeleted,
-				LastActivityDate,
-				LastModifiedById,
-				LastModifiedDate,
-				LastReferencedDate,
-				LastViewedDate,
 				Name,
 				Number_of_Students_Absent__c,
 				Number_of_Students_Present__c,
@@ -900,32 +868,88 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 				Session_Date__c,
 				Session_Topic__c,
 				Team_Season__c,
+				Team_Season__r.Name,
+				Team_Season__r.Team__r.Name,
+				Team_Season__r.Season__r.Name,
+				Team_Season__r.Team__r.School_Site__r.Region__c,
+				Team_Season__r.Team__r.SCORES_Program_Type__c,
+				Team_Season__r.Team__r.Uses_Headcount__c,
 				Session_Weekday__c 
 			FROM 
 				Session__c 
 			WHERE 
 			(
-				Team_Season__r.Coach_Writing__c = ':coachId' 
-				OR Team_Season__r.Coach_Soccer__c = ':coachId' 
-				OR Team_Season__r.SCORES_Program_Coordinator__c = ':coachId' 
-				OR Team_Season__r.SCORES_Program_Manager__c = ':coachId'
+				Team_Season__r.Coach_Writing__c = ':coachid' 
+				OR Team_Season__r.Coach_Soccer__c = ':coachid' 
+				OR Team_Season__r.SCORES_Program_Coordinator__c = ':coachid' 
+				OR Team_Season__r.SCORES_Program_Manager__c = ':coachid'
 			) 
 			AND 
 			(
-			Team_Season__r.Season__r.Start_Date__c < :date
+			Session_Date__c >= :firstDate
 			) 
 			AND 
 			(
-			Team_Season__r.Season__r.End_Date__c > :date
+			Session_Date__c <= :secondDate
 			)
-			]]></salesforce:salesforce-query>
+			LIMIT :limit
+					OFFSET :offset]]></salesforce:salesforce-query>
+					<salesforce:parameters ><![CDATA[#[output application/java
+---
+{
+	offset : attributes.queryParams.offset,
+	firstDate : attributes.queryParams.startDate,
+	limit : attributes.queryParams.limit,
+	coachid : vars.coachId,
+	secondDate : attributes.queryParams.endDate
+}]]]></salesforce:parameters>
+				</salesforce:query>
+			</when>
+			<otherwise >
+				<salesforce:query doc:name="Query" doc:id="24aaebf4-25af-45bd-9b18-f9672f23598c" config-ref="Salesforce_Config">
+			<salesforce:salesforce-query><![CDATA[			SELECT 
+				Id,
+				IsDeleted,
+				Name,
+				Number_of_Students_Absent__c,
+				Number_of_Students_Present__c,
+				Percent_of_Students_Present__c,
+				Session_Date__c,
+				Session_Topic__c,
+				Team_Season__c,
+				Team_Season__r.Name,
+				Team_Season__r.Team__r.Name,
+				Team_Season__r.Season__r.Name,
+				Team_Season__r.Team__r.School_Site__r.Region__c,
+				Team_Season__r.Team__r.SCORES_Program_Type__c,
+				Team_Season__r.Team__r.Uses_Headcount__c,
+				Session_Weekday__c 
+			FROM 
+				Session__c 
+			WHERE 
+			(
+				Team_Season__r.Coach_Writing__c = ':coachid' 
+				OR Team_Season__r.Coach_Soccer__c = ':coachid' 
+				OR Team_Season__r.SCORES_Program_Coordinator__c = ':coachid' 
+				OR Team_Season__r.SCORES_Program_Manager__c = ':coachid'
+			) 
+			AND 
+			(
+			Session_Date__c = :startDate
+			) 
+			LIMIT :limit
+					OFFSET :offset]]></salesforce:salesforce-query>
 			<salesforce:parameters><![CDATA[#[output application/java
 ---
 {
 	date : vars.date,
+	offset : attributes.queryParams.offset,
+	limit : attributes.queryParams.limit,
 	coachId : vars.coachId
 }]]]></salesforce:parameters>
 		</salesforce:query>
+			</otherwise>
+		</choice>
 		<ee:transform
 			doc:name="Create Response"
 			doc:id="e829cd3e-8fa5-45c3-a9bc-79ffebb63c7c"
@@ -939,7 +963,19 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	SessionId: payload01.Id default "",
 	SessionName: payload01.Name default "",
 	SessionDate: payload01.Session_Date__c as String default "",
-	SessionTopic: payload01.Session_Topic__c default ""
+	Weekday: payload01.Session_Weekday__c default "",
+	SessionTopic: payload01.Session_Topic__c default "",
+	IsDeleted: payload01.IsDeleted,
+	SessionName: payload01.Name default "",
+	StudentsAbsent: payload01.Number_of_Students_Absent__c,
+	StudentsPresent: payload01.Number_of_Students_Present__c,
+	AttendancePercentage: payload01.Percent_of_Students_Present__c,
+	TeamSeasonName: payload01.Team_Season__r.Name default "",
+	TeamName: payload01.Team_Season__r.Team__r.Name default "",
+	SeasonName: payload01.Team_Season__r.Season__r.Name default "",
+	Region: payload01.Team_Season__r.Team__r.School_Site__r.Region__c default "",
+	ProgramType: payload01.Team_Season__r.Team__r.SCORES_Program_Type__c,
+	UsesHeadcount: payload01.Team_Season__r.Team__r.Uses_Headcount__c
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
