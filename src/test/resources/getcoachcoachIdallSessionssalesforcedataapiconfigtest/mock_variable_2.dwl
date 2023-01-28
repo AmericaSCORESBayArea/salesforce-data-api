@@ -1,1 +1,1 @@
-"GET"
+"/api-internal/coach/0031T00003M2XNwQAN/allSessions"
