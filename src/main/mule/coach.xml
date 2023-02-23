@@ -896,11 +896,16 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			(
 			Team_Season__r.Team__r.School_Site__r.Region__c IN (:region)
 			) 
+			AND 
+			(
+			Team_Season__r.Id != null AND (Team_Season__r.Id = ':teamseasonId')
+			) 
 			LIMIT :limit
 					OFFSET :offset]]></salesforce:salesforce-query>
 					<salesforce:parameters ><![CDATA[#[output application/java
 ---
 {
+	teamseasonId : attributes.queryParams.teamseasonId,
 	offset : attributes.queryParams.offset,
 	firstDate : attributes.queryParams.startDate,
 	limit : attributes.queryParams.limit,
@@ -944,7 +949,11 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			) 
 			AND 
 			(
-			Team_Season__r.Team__r.School_Site__r.Region__c = ':region'
+			Team_Season__r.Team__r.School_Site__r.Region__c IN (:region)
+			) 
+			AND 
+			(
+			Team_Season__r.Id != null AND (Team_Season__r.Id = ':teamseasonId')
 			) 
 			LIMIT :limit
 					OFFSET :offset]]></salesforce:salesforce-query>
