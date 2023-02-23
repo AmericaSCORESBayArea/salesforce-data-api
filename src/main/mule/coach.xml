@@ -891,7 +891,11 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			AND 
 			(
 			Session_Date__c <= :secondDate
-			)
+			) 
+			AND 
+			(
+			Team_Season__r.Team__r.School_Site__r.Region__c = ':region'
+			) 
 			LIMIT :limit
 					OFFSET :offset]]></salesforce:salesforce-query>
 					<salesforce:parameters ><![CDATA[#[output application/java
@@ -900,6 +904,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	offset : attributes.queryParams.offset,
 	firstDate : attributes.queryParams.startDate,
 	limit : attributes.queryParams.limit,
+	region : attributes.queryParams.region,
 	coachid : vars.coachId,
 	secondDate : attributes.queryParams.endDate
 }]]]></salesforce:parameters>
@@ -937,6 +942,10 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			(
 			Session_Date__c = :startDate
 			) 
+			AND 
+			(
+			Team_Season__r.Team__r.School_Site__r.Region__c = ':region'
+			) 
 			LIMIT :limit
 					OFFSET :offset]]></salesforce:salesforce-query>
 			<salesforce:parameters><![CDATA[#[output application/java
@@ -945,6 +954,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	date : vars.date,
 	offset : attributes.queryParams.offset,
 	limit : attributes.queryParams.limit,
+	region : attributes.queryParams.region,
 	coachId : vars.coachId
 }]]]></salesforce:parameters>
 		</salesforce:query>
