@@ -894,7 +894,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			) 
 			AND 
 			(
-			Team_Season__r.Team__r.School_Site__r.Region__c = ':region'
+			Team_Season__r.Team__r.School_Site__r.Region__c IN (:region)
 			) 
 			LIMIT :limit
 					OFFSET :offset]]></salesforce:salesforce-query>
@@ -904,7 +904,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	offset : attributes.queryParams.offset,
 	firstDate : attributes.queryParams.startDate,
 	limit : attributes.queryParams.limit,
-	region : attributes.queryParams.region,
+	region : attributes.headers.regions,
 	coachid : vars.coachId,
 	secondDate : attributes.queryParams.endDate
 }]]]></salesforce:parameters>
