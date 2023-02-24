@@ -961,6 +961,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 ---
 {
 	date : vars.date,
+	teamseasonId : attributes.queryParams.teamseasonId,
 	offset : attributes.queryParams.offset,
 	limit : attributes.queryParams.limit,
 	region : attributes.queryParams.region,
