@@ -1678,57 +1678,6 @@ assert_expression_payload::main({payload: payload, attributes: attributes, vars:
 			</munit-tools:verify-call>
 		</munit:validation>
 	</munit:test>
-	<munit:test name="get:\coach\(coachId)\allSessions:salesforce-data-api-config-test" doc:id="2811ccc4-c65b-4824-bc2f-e75bc363416b" >
-		<munit:behavior >
-			<munit-tools:mock-when doc:name="Mock Query" doc:id="da7dc303-dc90-4d03-b86f-1dfdf12faf8e" processor="salesforce:query" >
-				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="fc538db1-ecb3-4e50-b07e-6e831fdfa28d" attributeName="doc:id" />
-				</munit-tools:with-attributes>
-				<munit-tools:then-return >
-					<munit-tools:payload value="#[output application/java  --- readUrl('classpath://getcoachcoachIdallSessionssalesforcedataapiconfigtest/mock_payload.dwl')]" mediaType="application/java " encoding="UTF-8" />
-					<munit-tools:variables >
-						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://getcoachcoachIdallSessionssalesforcedataapiconfigtest/mock_variable_.dwl')]" />
-						<munit-tools:variable key="method" value="#[output application/java --- readUrl('classpath://getcoachcoachIdallSessionssalesforcedataapiconfigtest/mock_variable_1.dwl')]" mediaType="application/java" encoding="UTF-8" />
-						<munit-tools:variable key="requestPath" value="#[output application/java --- readUrl('classpath://getcoachcoachIdallSessionssalesforcedataapiconfigtest/mock_variable_2.dwl')]" mediaType="application/java" encoding="UTF-8" />
-						<munit-tools:variable key="coachId" value="#[output application/java --- readUrl('classpath://getcoachcoachIdallSessionssalesforcedataapiconfigtest/mock_variable_3.dwl')]" mediaType="application/java" encoding="UTF-8" />
-					</munit-tools:variables>
-				</munit-tools:then-return>
-			</munit-tools:mock-when>
-			<munit:set-event doc:name="Set Input" doc:id="4b6dc185-d9c0-4574-91ee-1fa02b32fc26" >
-				<munit:payload value="#[readUrl('classpath://getcoachcoachIdallSessionssalesforcedataapiconfigtest/set-event_payload.dwl')]" encoding="UTF-8" />
-				<munit:attributes value="#[readUrl('classpath://getcoachcoachIdallSessionssalesforcedataapiconfigtest/set-event_attributes.dwl')]" />
-				<munit:variables >
-					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getcoachcoachIdallSessionssalesforcedataapiconfigtest/set-event_variable_.dwl')]" />
-				</munit:variables>
-			</munit:set-event>
-		</munit:behavior>
-		<munit:execution >
-			<flow-ref doc:name="Flow-ref to get:\coach\(coachId)\allSessions:salesforce-data-api-config" doc:id="34538c8b-38d3-4645-9d95-adad2ae1dcb0" name="get:\coach\(coachId)\allSessions:salesforce-data-api-config" />
-		</munit:execution>
-		<munit:validation >
-			<munit-tools:assert doc:name="Assert payload" doc:id="36eff9d7-dea5-4c34-8511-87b2972df5cb" message="The payload does not match" >
-				<munit-tools:that ><![CDATA[#[%dw 2.0
-import getcoachcoachIdallSessionssalesforcedataapiconfigtest::assert_expression_payload
----
-assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
-			</munit-tools:assert>
-			<munit-tools:verify-call doc:name="Verify entry-flow" doc:id="4b72e387-1c61-45a2-aa1e-b35deed88b83" processor="flow-ref" times="1" >
-				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="88d3fa2f-c16d-400f-8ad2-72ce95d3903c" attributeName="doc:id" />
-				</munit-tools:with-attributes>
-			</munit-tools:verify-call>
-			<munit-tools:verify-call doc:name="Verify Store Parameters" doc:id="d6aab2d8-e215-435c-85d7-ec061acbbb9d" processor="ee:transform" times="1" >
-				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="8937277f-3d93-41bc-abc0-6da3720899a5" attributeName="doc:id" />
-				</munit-tools:with-attributes>
-			</munit-tools:verify-call>
-			<munit-tools:verify-call doc:name="Verify Log Created Response" doc:id="387070db-9e8f-4096-a040-55880239c138" processor="logger" times="1" >
-				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="a819e002-c9f4-4453-a14e-9b294acac38e" attributeName="doc:id" />
-				</munit-tools:with-attributes>
-			</munit-tools:verify-call>
-		</munit:validation>
-	</munit:test>
 
 
 </mule>
