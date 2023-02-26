@@ -853,6 +853,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			<ee:message />
 			<ee:variables>
 				<ee:set-variable variableName="coachId"><![CDATA[attributes.uriParams.'coachId']]></ee:set-variable>
+				<ee:set-variable variableName="regions" ><![CDATA[attributes.headers.regions]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
 		<choice doc:name="Choice" doc:id="64954967-58fa-4695-b812-6d707edcf0d2" >
@@ -909,7 +910,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	offset : attributes.queryParams.offset,
 	firstDate : attributes.queryParams.startDate,
 	limit : attributes.queryParams.limit,
-	region : attributes.headers.regions,
+	region : vars.regions,
 	coachid : vars.coachId,
 	secondDate : attributes.queryParams.endDate
 }]]]></salesforce:parameters>
@@ -964,7 +965,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	teamseasonId : attributes.queryParams.teamseasonId,
 	offset : attributes.queryParams.offset,
 	limit : attributes.queryParams.limit,
-	region : attributes.queryParams.region,
+	region : vars.regions,
 	coachId : vars.coachId
 }]]]></salesforce:parameters>
 		</salesforce:query>
