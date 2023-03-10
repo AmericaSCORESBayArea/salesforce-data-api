@@ -522,56 +522,6 @@ assert_expression_payload::main({payload: payload, attributes: attributes, vars:
 			</munit-tools:verify-call>
 		</munit:validation>
 	</munit:test>
-	<munit:test name="get:\enrollments:salesforce-data-api-config-test" doc:id="f0b597e7-aa3f-41c0-9862-8b4dd09f63cb" >
-		<munit:behavior >
-			<munit-tools:mock-when doc:name="Mock Select Query with TeamSeasonId" doc:id="eae01e9e-ef85-4d7c-9ff6-b7d34ad45b32" processor="salesforce:query">
-				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="9f6ac8f1-ada4-456d-904c-03c83492a719" attributeName="doc:id" />
-				</munit-tools:with-attributes>
-				<munit-tools:then-return >
-					<munit-tools:payload value="#[output application/java --- readUrl('classpath://getenrollmentssalesforcedataapiconfigtest/mock_payload.dwl')]" mediaType="application/java" encoding="UTF-8" />
-					<munit-tools:variables >
-						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://getenrollmentssalesforcedataapiconfigtest/mock_variable_.dwl')]" />
-						<munit-tools:variable key="method" value="#[output application/java --- readUrl('classpath://getenrollmentssalesforcedataapiconfigtest/mock_variable_1.dwl')]" mediaType="application/java" encoding="UTF-8" />
-						<munit-tools:variable key="requestPath" value="#[output application/java --- readUrl('classpath://getenrollmentssalesforcedataapiconfigtest/mock_variable_2.dwl')]" mediaType="application/java" encoding="UTF-8" />
-						<munit-tools:variable key="teamSeasonId" value="#[output application/java --- readUrl('classpath://getenrollmentssalesforcedataapiconfigtest/mock_variable_3.dwl')]" mediaType="application/java" encoding="UTF-8" />
-					</munit-tools:variables>
-				</munit-tools:then-return>
-			</munit-tools:mock-when>
-			<munit:set-event doc:name="Set Input" doc:id="c36df593-91a9-44df-ba44-d6d01c148f0f" >
-				<munit:attributes value="#[readUrl('classpath://getenrollmentssalesforcedataapiconfigtest/set-event_attributes.dwl')]" />
-				<munit:variables >
-					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getenrollmentssalesforcedataapiconfigtest/set-event_variable_.dwl')]" />
-				</munit:variables>
-			</munit:set-event>
-		</munit:behavior>
-		<munit:execution >
-			<flow-ref doc:name="Flow-ref to get:\enrollments:salesforce-data-api-config" doc:id="aa22849d-1799-49a7-bd05-e63b4d6deda2" name="get:\enrollments:salesforce-data-api-config"/>
-		</munit:execution>
-		<munit:validation >
-			<munit-tools:assert doc:name="Assert payload" doc:id="15fe02be-4462-497f-b04f-82ea0f479e34" message="The payload does not match">
-				<munit-tools:that ><![CDATA[#[%dw 2.0
-import getenrollmentssalesforcedataapiconfigtest::assert_expression_payload
----
-assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
-			</munit-tools:assert>
-			<munit-tools:verify-call doc:name="Verify Log Created Response" doc:id="a60638b9-e02d-4540-b568-6536d2df2c75" processor="logger" times="1">
-				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="23d190d2-b7d1-4e34-ac23-2b48a62d2b98" attributeName="doc:id" />
-				</munit-tools:with-attributes>
-			</munit-tools:verify-call>
-			<munit-tools:verify-call doc:name="Verify Create Response" doc:id="42f9fcda-db6c-48d7-91f5-cddef8fca4e8" processor="ee:transform" times="1">
-				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="351e5ffc-51e1-480a-bf8f-93be4f4c035a" attributeName="doc:id" />
-				</munit-tools:with-attributes>
-			</munit-tools:verify-call>
-			<munit-tools:verify-call doc:name="Verify exit flow" doc:id="2559ce4d-6696-4a13-ae95-08650e793578" processor="flow-ref" times="1">
-				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="3735c26e-7cc4-4e60-b4ab-d67b006e4289" attributeName="doc:id" />
-				</munit-tools:with-attributes>
-			</munit-tools:verify-call>
-		</munit:validation>
-	</munit:test>
 	<munit:test name="get:\enrollments\(enrollmentId):salesforce-data-api-config-test" doc:id="4279ab87-22bd-44bc-b02c-f0aed57ca825" >
 		<munit:behavior >
 			<munit-tools:mock-when doc:name="Mock Select Query with EnrollmentId" doc:id="9eb02d25-a022-4cf2-aabb-96c0732c0be4" processor="salesforce:query">

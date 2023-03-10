@@ -335,7 +335,7 @@ output application/json
 }]]]></salesforce:parameters>
 		</salesforce:query>
 		<salesforce:query doc:name="Select Query with sessionId from Attendence object" doc:id="cfe08f1a-cc1a-4102-bf59-a6aaeb021ec5" config-ref="Salesforce_Config" target="attendanceResponse" targetValue="#[output application/json &#10;---&#10;payload]">
-			<salesforce:salesforce-query ><![CDATA[SELECT Id FROM Attendance__c WHERE  Session__c = ':sessionId' 
+			<salesforce:salesforce-query ><![CDATA[SELECT Id FROM Attendance__c WHERE  Session__c = ':sessionId' AND Attended__c = true
 			]]></salesforce:salesforce-query>
 			<salesforce:parameters ><![CDATA[#[output application/java
 ---
