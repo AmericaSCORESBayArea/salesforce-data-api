@@ -457,6 +457,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 				Contact__r.Allergies__c,
 				Contact__r.Parent_First_Name__c,
 				Contact__r.Parent_Last_Name__c,
+				Contact__r.Parent_Email_Address__c,
 				Contact__r.Parent_Phone_01__c,
 				Contact__r.Parent_Phone_02__c,
 				Contact__r.Parent_Phone_03__c,
@@ -532,9 +533,10 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	Allergies: payload01.Contact__r.Allergies__c default "",
 	CurrentAddress: payload01.Contact__r.npsp__Current_Address__c default "", 
 	HomeAddress: payload01.Contact__r.npe01__Home_Address__c default "",
-	ParentInfoFirstName: {
+	ParentInfo: {
 		FirstName: payload01.Contact__r.Parent_First_Name__c default "",
 		LastName: payload01.Contact__r.Parent_Last_Name__c default "",
+		Email: payload01.Contact__r.Parent_Email_Address__c default "",
 		FirstPhone: payload01.Contact__r.Parent_Phone_01__c default "",
 		SecondPhone: payload01.Contact__r.Parent_Phone_02__c default "",
 		ThirdPhone: payload01.Contact__r.Parent_Phone_03__c default "",
