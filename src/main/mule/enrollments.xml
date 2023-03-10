@@ -38,6 +38,9 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 				Contact__r.Gender__c,
 				Contact__r.Ethnicity__c,
 				Contact__r.Zip_First_Five_Digits__c,
+				Contact__r.Parent_Email_Address__c,
+				Contact__r.Parent_First_Name__c,
+				Contact__r.Parent_Last_Name__c,
 				Contact__c,
 				End_Date__c,
 				Id,
@@ -75,7 +78,10 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	Birthdate: payload01.Contact__r.Birthdate default "",
 	Gender: payload01.Contact__r.Gender__c default "",
 	Ethnicity: payload01.Contact__r.Ethnicity__c default "",
-	ZipCode: payload01.Contact__r.Zip_First_Five_Digits__c default ""
+	ZipCode: payload01.Contact__r.Zip_First_Five_Digits__c default "",
+	ParentEmail: payload01.Contact__r.Parent_Email_Address__c default "",
+	ParentFirstName: payload01.Contact__r.Parent_First_Name__c default "",
+	ParentLastName: payload01.Contact__r.Parent_Last_Name__c default ""
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
