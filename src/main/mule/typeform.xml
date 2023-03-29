@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<flow name="get:\typeform\responses:salesforce-data-api-config" doc:id="93de368d-e2ec-4c5c-b61e-930e4b1c77f5" >
+		<flow-ref doc:name="entry-flow" doc:id="34182ed2-c306-42d2-8d5d-167409dc966d" name="entry-flow" />
+		<logger level="INFO" doc:name="Log entry-flow" doc:id="54a58465-9152-4c42-9837-c6904d4f0b9c" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]." />
+		<ee:transform doc:name="Store URI parameters" doc:id="caaf72cf-eba8-41d3-903a-e0943afc0620" >
+			<ee:variables >
+				<ee:set-variable variableName="formId" ><![CDATA[attributes.queryParams.'formId']]></ee:set-variable>
+				<ee:set-variable variableName="responseId" ><![CDATA[attributes.queryParams.'responseId']]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<http:request method="GET" doc:name="Request" doc:id="7f48ee54-2082-46a4-8b0e-4144fb3947c2" url="https://api.typeform.com/forms/{formId}/responses">
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	Authorization : "${typeform.tkn}",
+	client_secret : "${typeform.clientsecret}",
+	client_id : "${typeform.clientid}"
+}]]]></http:headers>
+			<http:uri-params ><![CDATA[#[output application/java
+---
+{
+	formId : vars.formId
+}]]]></http:uri-params>
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	included_response_ids : vars.responseId
+}]]]></http:query-params>
+		</http:request>
+		<ee:transform doc:name="Transform Message" doc:id="ad674da3-e4c7-454d-8038-7de5873b6d01" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload.items map ( payload01 , indexOfPayload01 ) -> {
+	Answers: payload01.answers map ( answer , indexOfanswer ) -> {
+	fieldName: answer.field.ref default "",
+	content: answer.text default "",
+	email: answer.email default ""
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="log response" doc:id="9142c8bd-8edb-4dce-bd81-addb9041225e" message="#[payload]"/>
+		<flow-ref doc:name="exit-flow" doc:id="148f8f93-4d5d-4231-9558-fb0caad6a73a" name="exit-flow"/>
+	</flow>
+</mule>
