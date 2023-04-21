@@ -36,14 +36,46 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 		<ee:transform doc:name="Transform Message" doc:id="ad674da3-e4c7-454d-8038-7de5873b6d01" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
+output application/json  skipNullOn="everywhere"
 ---
 payload.items map ( payload01 , indexOfPayload01 ) -> {
 	Answers: payload01.answers map ( answer , indexOfanswer ) -> {
-	fieldName: answer.field.ref default "",
-	content: answer.text default "",
-	email: answer.email default ""
-	}
+	firstname: if (answer.field.ref == "first_name") (
+		answer.text
+	) else null,
+	lastname: if (answer.field.ref == "last_name") (
+		answer.text
+	) else null,
+	gender: if (answer.field.ref == "gender") (
+		answer.text
+	) else null,
+	ethnicity: if (answer.field.ref == "ethnicity") (
+		answer.text
+	) else null,
+	email: if (answer.field.ref == "email") (
+		answer.email
+	) else null,
+	emailType: if (answer.field.ref == "email_type") (
+		answer.text
+	) else null,
+	phoneNumber: if (answer.field.ref == "phone_number") (
+		answer.text
+	) else null,
+	scoresProgramSite: if (answer.field.ref == "scores_program_site") (
+		answer.text
+	) else null,
+	school: if (answer.field.ref == "school_hayward") (
+		answer.text
+	) else if (answer.field.ref == "school_san_rafael") (
+		answer.text
+	) else if (answer.field.ref == "school_san_francisco_crocker") (
+		answer.text
+	) else if (answer.field.ref == "school_san_francisco_civic_center") (
+		answer.text
+	) else if (answer.field.ref == "school_oakland") (
+		answer.text
+	) else null
+	} 
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
