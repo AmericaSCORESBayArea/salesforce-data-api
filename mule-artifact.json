@@ -1,5 +1,5 @@
 {
-  "secureProperties": ["sfdc.password", "sfdc.tkn"],
+  "secureProperties": ["sfdc.password", "sfdc.tkn", "typeform.tkn", "typeform.clientid", "typeform.clientsecret"],
   "redeploymentEnabled": true,
   "name": "secure-properties",
   "minMuleVersion": "4.4.0",
