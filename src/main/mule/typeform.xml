@@ -63,7 +63,7 @@ payload.items map ( payload01 , indexOfPayload01 ) -> {
 		answer.text
 	) else null,
 	PhoneNumber: if (answer.field.ref == "phone_number") (
-		answer.text
+		answer.phone_number
 	) else null,
 	scoresProgramSite: if (answer.field.ref == "scores_program_site") (
 		answer.text
@@ -113,17 +113,18 @@ payload.Answers[0].school[0]]]></ee:set-variable>
 		<ee:transform doc:name="Transform Message" doc:id="98fcbd87-cf5a-4f72-9a42-4fad47174c37" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
+import remove from dw::core::Strings
 output application/json
 ---
 {
 	FirstName: vars.originalPayload.Answers[0].FirstName[0] default "",
 	LastName: vars.originalPayload.Answers[0].LastName[0] default "",
-	Birthdate: vars.originalPayload.Answers[0].Birthdate[0] as Date {format: 'yyyy-MM-dd'},
+	Birthdate: vars.originalPayload.Answers[0].Birthdate[0] remove "T00:00:00.000Z",
 	Gender: vars.originalPayload.Answers[0].Gender[0] default "",
 	Ethnicity: vars.originalPayload.Answers[0].Ethnicity[0] default "",
 	Email: vars.originalPayload.Answers[0].Email[0] default "",
 	EmailType: vars.originalPayload.Answers[0].EmailType[0] default "",
-	PhoneNumber: vars.originalPayload.Answers[0].PhoneNumber[0] default "",
+	PhoneNumber: vars.originalPayload.Answers[0].PhoneNumber[0] remove "+1" default "",
 	AccountId: payload.Id[0],
 	IsCoach: true,
 }]]></ee:set-payload>
