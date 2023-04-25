@@ -8,7 +8,6 @@ type: string]]></types:shape>
   </types:catalog>
   <types:enrichment select="#ba85bd36-9eef-4b6a-8e4c-c013e46e8271"/>
   <types:enrichment select="#29de979e-5346-4cf1-85d1-5d39079a4735"/>
-  <types:enrichment select="#4b040bb0-7cd2-4008-aba2-12df19735ca8"/>
   <types:enrichment select="#ac5bb0c5-0ca5-4fe5-abe1-77e446a15104">
     <types:processor-declaration>
       <types:input-event>
@@ -25,4 +24,5 @@ type: string]]></types:shape>
   <types:enrichment select="#732ca3e0-9f8e-4608-86c0-e6fe6b8d4538"/>
   <types:enrichment select="#16374a77-ca21-4661-a15f-b4d0f23e368b"/>
   <types:enrichment select="#6784dd16-d76e-4fa4-a526-ab370875d02b"/>
+  <types:enrichment select="#7f00b811-a7b4-49ad-b20d-25caaf667571"/>
 </types:mule>

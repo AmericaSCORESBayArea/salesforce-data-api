@@ -14,7 +14,7 @@
 	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd http://www.mulesoft.org/schema/mule/xml-module http://www.mulesoft.org/schema/mule/xml-module/current/mule-xml-module.xsd http://www.mulesoft.org/schema/mule/slack http://www.mulesoft.org/schema/mule/slack/current/mule-slack.xsd
 	http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<flow
-		name="post:\contacts:application\json:salesforce-data-api-config">
+		name="post:\contacts:application\json:salesforce-data-api-config" doc:id="60b5d6bf-7df6-4701-aa81-af52357dd258">
 		<flow-ref
 			doc:name="entry-flow"
 			doc:id="7d35fac9-4eff-4904-9840-1c046ef8a84a"
@@ -113,25 +113,70 @@ import * from modules::GlobalModules
 			doc:name="Matching Contact found?"
 			doc:id="cd1069b5-ca55-422d-9a92-739a54104316">
 			<when expression="#[(sizeOf(payload)) == 0]">
-				<logger
-					level="INFO"
-					doc:name="Logger"
-					doc:id="03fa150f-5d4f-406f-80ed-cbddd924ba81"
-					message="No matching Contacts found" />
-				<ee:transform
-					doc:name="Transform Message"
-					doc:id="4b040bb0-7cd2-4008-aba2-12df19735ca8">
-					<ee:message />
-					<ee:variables>
-						<ee:set-variable variableName="ContactRecordType"><![CDATA['01250000000VBbXAAW']]></ee:set-variable>
-					</ee:variables>
-				</ee:transform>
-				<salesforce:create
-					doc:name="Create"
-					doc:id="45632d40-a2a7-4304-930a-a2fa81d78f0d"
-					config-ref="Salesforce_Config"
-					type="Contact">
-					<salesforce:records><![CDATA[#[output application/java
+				<choice doc:name="Choice" doc:id="4ebe7cc5-cdea-40dd-ad03-c336e80593f4">
+					<when expression="vars.originalPayload.IsCoach == true">
+						<ee:transform doc:name="Transform Message" doc:id="75aaae73-16f5-47d8-b711-36836005ac55" >
+							<ee:message />
+							<ee:variables >
+								<ee:set-variable variableName="ContactRecordType" ><![CDATA['01250000000VBbWAAW']]></ee:set-variable>
+							</ee:variables>
+						</ee:transform>
+						<salesforce:create type="Contact" doc:name="Create" doc:id="dd33ee5c-1b02-4cc9-a47b-733ddccb4800" config-ref="Salesforce_Config" >
+							<salesforce:records ><![CDATA[#[output application/java
+---
+[{
+	RecordTypeId: vars.ContactRecordType,
+	FirstName: vars.originalPayload.FirstName,
+	LastName: vars.originalPayload.LastName,
+	AccountId: vars.originalPayload.AccountId,
+	Role__c: "Coach",
+	npe01__Preferred_Email__c: vars.originalPayload.EmailType,
+	npe01__HomeEmail__c: vars.originalPayload.Email,
+	MobilePhone: vars.originalPayload.PhoneNumber,
+	npe01__PreferredPhone__c: "Mobile",
+	Birthdate: vars.originalPayload.Birthdate as Date,
+	Gender__c: vars.originalPayload.Gender,
+	Ethnicity__c: vars.originalPayload.Ethnicity,
+}]]]]></salesforce:records>
+						</salesforce:create>
+						<choice doc:name="Choice" doc:id="f4cd0f1b-881f-43ff-9b0d-5f376b8d1c95" >
+							<when expression="#[payload.successful == false and payload..errors != null]" >
+								<logger level="INFO" doc:name="Logger" doc:id="e9c02dd8-02dd-495d-8e01-b26db3d73ec2" message="Fuzzy contact match found" />
+								<ee:transform doc:name="Transform Message" doc:id="25161c62-97b1-46bb-b132-14cfffd013e3" >
+									<ee:message >
+										<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload.items[0].payload]]></ee:set-payload>
+									</ee:message>
+								</ee:transform>
+								<raise-error doc:name="Raise error" doc:id="ce9837bc-7e7b-40a4-a132-7f35e82f12bc" type="CREATECONTACT:CONFLICT" />
+							</when>
+							<otherwise >
+								<ee:transform doc:name="Create response" doc:id="18206104-36d4-441a-aed7-42d906b5b2a2" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+									<ee:message >
+										<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	ContactId: payload.items[0].id
+}]]></ee:set-payload>
+									</ee:message>
+									<ee:variables />
+								</ee:transform>
+							</otherwise>
+						</choice>
+					</when>
+					<otherwise >
+						<logger level="INFO" doc:name="Logger" doc:id="5030f3ba-0088-463f-a7f8-81faa70922e8" message="No matching Contacts found" />
+						<ee:transform doc:name="Transform Message" doc:id="e9bfbd37-177e-4b81-a3b8-8b5002dd479e" >
+							<ee:message />
+							<ee:variables >
+								<ee:set-variable variableName="ContactRecordType" ><![CDATA['01250000000VBbXAAW']]></ee:set-variable>
+							</ee:variables>
+						</ee:transform>
+						<salesforce:create type="Contact" doc:name="Create" doc:id="83b3d0bc-e34e-4734-9a47-7d8892564f82" config-ref="Salesforce_Config" >
+							<salesforce:records ><![CDATA[#[output application/java
 ---
 [{
 	Contact_Type__C: "SCORES Student",
@@ -186,47 +231,34 @@ import * from modules::GlobalModules
 	Data_Release__c: vars.originalPayload.DataReleaseWaiver
 	
 }]]]]></salesforce:records>
-				</salesforce:create>
-				<choice
-					doc:name="Choice"
-					doc:id="7ca5f334-3c6c-4c7c-a6ba-323b1b03ecc9">
-					<when
-						expression="#[payload.successful == false and payload..errors != null]">
-						<logger
-							level="INFO"
-							doc:name="Logger"
-							doc:id="18e3324c-2e63-459a-87a8-5a04ddfdb610"
-							message="Fuzzy contact match found" />
-						<ee:transform
-							doc:name="Transform Message"
-							doc:id="8e9989fb-ba44-4031-8b57-5eac1f4367e5">
-							<ee:message>
-								<ee:set-payload><![CDATA[%dw 2.0
+						</salesforce:create>
+						<choice doc:name="Choice" doc:id="991c54f0-e8dc-4917-b914-9d0f787614c1" >
+							<when expression="#[payload.successful == false and payload..errors != null]" >
+								<logger level="INFO" doc:name="Logger" doc:id="7179ab2b-5642-4f83-a3d6-ff4161272ef3" message="Fuzzy contact match found" />
+								<ee:transform doc:name="Transform Message" doc:id="959dfdf6-d25f-47c4-a78e-ecc16c362c9b" >
+									<ee:message >
+										<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
 payload.items[0].payload]]></ee:set-payload>
-							</ee:message>
-						</ee:transform>
-						<raise-error
-							doc:name="Raise error"
-							doc:id="2870caa8-0d15-4067-8910-2d753a5f0a0c"
-							type="CREATECONTACT:CONFLICT" />
-					</when>
-					<otherwise>
-						<ee:transform
-							xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
-							doc:id="29de979e-5346-4cf1-85d1-5d39079a4735"
-							doc:name="Create response">
-							<ee:message>
-								<ee:set-payload><![CDATA[%dw 2.0
+									</ee:message>
+								</ee:transform>
+								<raise-error doc:name="Raise error" doc:id="e2b03e01-fe96-4b23-86e0-5db2d933c816" type="CREATECONTACT:CONFLICT" />
+							</when>
+							<otherwise >
+								<ee:transform doc:name="Create response" doc:id="bc80392c-09c1-43c1-ac5b-ebf8dd509785" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+									<ee:message >
+										<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
 {
 	ContactId: payload.items[0].id
 }]]></ee:set-payload>
-							</ee:message>
-							<ee:variables />
-						</ee:transform>
+									</ee:message>
+									<ee:variables />
+								</ee:transform>
+							</otherwise>
+						</choice>
 					</otherwise>
 				</choice>
 			</when>

@@ -109,7 +109,8 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 				Team_Season__r.Team__r.SCORES_Program_Type__c,
 				Boys_Present__c,
 				Girls_Present__c,
- 				Nonbinary_Present__c
+ 				Nonbinary_Present__c,
+ 				Unknown_Present__c
 			FROM 
 				Session__c 
 			WHERE 
@@ -138,6 +139,7 @@ output application/json
 	BoysPresent: payload01.Boys_Present__c,
 	GirlsPresent: payload01.Girls_Present__c,
 	NonbinaryPresent: payload01.Nonbinary_Present__c,
+	UnknownPresent: payload01.Unknown_Present__c,
 	UsesHeadcount: payload01.Team_Season__r.Team__r.Uses_Headcount__c,
 	ProgramType: payload01.Team_Season__r.Team__r.SCORES_Program_Type__c
 }) reduce ($$ ++ $)]]></ee:set-payload>
@@ -185,7 +187,8 @@ output application/java
 	(Team_Season__c: payload.TeamSeasonId) if payload.TeamSeasonId != null,
 	(Boys_Present__c: payload.BoysPresent) if payload.BoysPresent != null,
 	(Girls_Present__c: payload.GirlsPresent) if payload.GirlsPresent != null,
-	(Nonbinary_Present__c: payload.NonbinaryPresent) if payload.NonbinaryPresent != null 
+	(Nonbinary_Present__c: payload.NonbinaryPresent) if payload.NonbinaryPresent != null,
+	(Unknown_Present__c: payload.UnknownPresent) if payload.UnknownPresent != null 
 }]]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
