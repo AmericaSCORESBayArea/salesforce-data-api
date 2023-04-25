@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
-	xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
-http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
 	<flow name="get:\typeform\responses:salesforce-data-api-config" doc:id="93de368d-e2ec-4c5c-b61e-930e4b1c77f5" >
 		<flow-ref doc:name="entry-flow" doc:id="34182ed2-c306-42d2-8d5d-167409dc966d" name="entry-flow" />
 		<logger level="INFO" doc:name="Log entry-flow" doc:id="54a58465-9152-4c42-9837-c6904d4f0b9c" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]." />
@@ -40,25 +41,28 @@ output application/json  skipNullOn="everywhere"
 ---
 payload.items map ( payload01 , indexOfPayload01 ) -> {
 	Answers: payload01.answers map ( answer , indexOfanswer ) -> {
-	firstname: if (answer.field.ref == "first_name") (
+	FirstName: if (answer.field.ref == "first_name") (
 		answer.text
 	) else null,
-	lastname: if (answer.field.ref == "last_name") (
+	LastName: if (answer.field.ref == "last_name") (
 		answer.text
 	) else null,
-	gender: if (answer.field.ref == "gender") (
+	Birthdate: if (answer.field.ref == "birthdate") (
+		answer.date
+	) else null,
+	Gender: if (answer.field.ref == "gender") (
 		answer.text
 	) else null,
-	ethnicity: if (answer.field.ref == "ethnicity") (
+	Ethnicity: if (answer.field.ref == "ethnicity") (
 		answer.text
 	) else null,
-	email: if (answer.field.ref == "email") (
+	Email: if (answer.field.ref == "email") (
 		answer.email
 	) else null,
-	emailType: if (answer.field.ref == "email_type") (
+	EmailType: if (answer.field.ref == "email_type") (
 		answer.text
 	) else null,
-	phoneNumber: if (answer.field.ref == "phone_number") (
+	PhoneNumber: if (answer.field.ref == "phone_number") (
 		answer.text
 	) else null,
 	scoresProgramSite: if (answer.field.ref == "scores_program_site") (
@@ -74,12 +78,58 @@ payload.items map ( payload01 , indexOfPayload01 ) -> {
 		answer.text
 	) else if (answer.field.ref == "school_oakland") (
 		answer.text
-	) else null
+	) else null,
 	} 
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="isCoach" ><![CDATA[%dw 2.0
+output application/java
+---
+true]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<ee:transform doc:name="Transform Message" doc:id="7f00b811-a7b4-49ad-b20d-25caaf667571" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="originalPayload" ><![CDATA[output application/json
+---
+payload]]></ee:set-variable>
+				<ee:set-variable variableName="accountName" ><![CDATA[%dw 2.0
+output application/json
+---
+payload.Answers[0].school[0]]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<salesforce:query doc:name="Query" doc:id="961a8b32-3395-4633-b288-67e2d80b9ca9" config-ref="Salesforce_Config">
+			<salesforce:salesforce-query ><![CDATA[SELECT Id,Name FROM Account WHERE Name = ':name']]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[output application/java
+---
+{
+	name : vars.accountName
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<ee:transform doc:name="Transform Message" doc:id="98fcbd87-cf5a-4f72-9a42-4fad47174c37" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	FirstName: vars.originalPayload.Answers[0].FirstName[0] default "",
+	LastName: vars.originalPayload.Answers[0].LastName[0] default "",
+	Birthdate: vars.originalPayload.Answers[0].Birthdate[0] as Date {format: 'yyyy-MM-dd'},
+	Gender: vars.originalPayload.Answers[0].Gender[0] default "",
+	Ethnicity: vars.originalPayload.Answers[0].Ethnicity[0] default "",
+	Email: vars.originalPayload.Answers[0].Email[0] default "",
+	EmailType: vars.originalPayload.Answers[0].EmailType[0] default "",
+	PhoneNumber: vars.originalPayload.Answers[0].PhoneNumber[0] default "",
+	AccountId: payload.Id[0],
+	IsCoach: true,
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 		<logger level="INFO" doc:name="log response" doc:id="9142c8bd-8edb-4dce-bd81-addb9041225e" message="#[payload]"/>
-		<flow-ref doc:name="exit-flow" doc:id="148f8f93-4d5d-4231-9558-fb0caad6a73a" name="exit-flow"/>
+		<flow-ref doc:name="create Coach" doc:id="148f8f93-4d5d-4231-9558-fb0caad6a73a" name="post:\contacts:application\json:salesforce-data-api-config"/>
 	</flow>
 </mule>
