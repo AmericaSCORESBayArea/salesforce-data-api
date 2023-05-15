@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+	<flow name="get:\waiver:salesforce-data-api-config" doc:id="dd4a0323-53eb-475f-8d22-1e47cef4fe56" >
+		<flow-ref doc:name="entry-flow" doc:id="b1e71f84-e7aa-432a-96ce-1a44bc65e41c" name="entry-flow"/>
+		<ee:transform doc:name="Transform Message" doc:id="0955be0d-6f6d-43f2-93d8-db11c0e90793" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="region" ><![CDATA[attributes.queryParams.'region']]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<salesforce:query doc:name="Query" doc:id="f7eea34a-c7f6-4ff7-ba4b-e76c55c9d153" config-ref="Salesforce_Config">
+			<salesforce:salesforce-query ><![CDATA[SELECT Id,Name,WaiverRegion__c,WaiverSource_email__c,WaiverSource__c,WaiverText__c,Waiver_Active_End__c,Waiver_Active_Start__c FROM Waiver__c WHERE WaiverRegion__c = ':region']]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[output application/java
+---
+{
+	region : vars.region
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<ee:transform doc:name="Transform Message" doc:id="07e0a122-9cec-42b7-8487-a2be14f422b2">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 ,indexOfPayload01 ) -> {
+	WaiverId: payload01.Id as String default "",
+	Name: payload01.Name as String default "",
+	Region: payload01.WaiverRegion__c as String default "",
+	SourceEmail: payload01.WaiverSource_email__c as String default "",
+	Source: payload01.WaiverSource__c as String default "",
+	Content: payload01.WaiverText__c as String default "",
+	ValidFrom: payload01.Waiver_Active_End__c as String default "",
+	ValidUntil: payload01.Waiver_Active_Start__c as String default ""
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="exit-flow" doc:id="00c2dda1-3348-4a07-90c8-7840a86d048d" name="exit-flow"/>
+	</flow>
+	<flow name="post:\waiver\(waiverId):application\json:salesforce-data-api-config" doc:id="8b1473c4-3931-4408-9c18-5d77ac8fc694" >
+		<flow-ref doc:name="entry-flow" doc:id="4e9a74ac-9da5-4a28-ab4c-1f74f9c952cd" name="entry-flow" />
+		<ee:transform doc:name="Transform Message" doc:id="72ce180c-ba71-4658-ad7a-4162acfea0a9" >
+			<ee:variables >
+				<ee:set-variable variableName="waiverId" ><![CDATA[attributes.uriParams.'waiverId']]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<ee:transform doc:name="Transform Message1" doc:id="394a4469-b6b6-4067-88fe-668ed195239a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  message: "Saved waiver history"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="exit-flow" doc:id="cdc1b93d-3bb4-4900-ab33-5541f5a41196" name="exit-flow" />
+	</flow>
+</mule>
