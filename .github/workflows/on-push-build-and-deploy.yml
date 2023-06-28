@@ -77,6 +77,9 @@ jobs:
         PASSWORD: ${{ secrets.anypoint_cicd_password }}
         SFDC_TKN: ${{ secrets.sfdc_tkn }}
         SFDC_PASSWORD: ${{ secrets.sfdc_sandbox_integrationuser_pwd }}
+        TYPEFORM_CLIENTID: ${{ secrets.typeform_clientid }}
+        TYPEFORM_CLIENTSECRET: ${{ secrets.typeform_clientsecret }}
+        TYPEFORM_TKN: ${{ secrets.typeform_tkn }}
       run: |
         artifactName=$(ls *.jar | head -1)
-        mvn deploy -DmuleDeploy -e -Dmule.artifact=$artifactName -Danypoint.username="$USERNAME" -Danypoint.password="$PASSWORD" -Denv=Sandbox -Denv.lowercase=sandbox -Dsfdc.password="$SFDC_PASSWORD" -Dsfdc.tkn="$SFDC_TKN" -DskipTests
+        mvn deploy -DmuleDeploy -e -Dmule.artifact=$artifactName -Danypoint.username="$USERNAME" -Danypoint.password="$PASSWORD" -Denv=Sandbox -Denv.lowercase=sandbox -Dsfdc.password="$SFDC_PASSWORD" -Dtypeform.clientid="$TYPEFORM_CLIENTID" -Dtypeform.clientsecret="$TYPEFORM_CLIENTSECRET" -Dtypeform.tkn="$TYPEFORM_TKN" -Dsfdc.tkn="$SFDC_TKN" -DskipTests
