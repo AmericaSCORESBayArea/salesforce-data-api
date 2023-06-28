@@ -55,20 +55,20 @@ payload map ( payload01 ,indexOfPayload01 ) -> {
 	Name: payload.name,
 	Waiver__c: vars.waiverId,
 	WaiverEvent__c: payload.waiverResponse,
-	WaiverEvent_DateTime__c: (payload.date ++ payload.time) as DateTime,
+	WaiverEvent_DateTime__c: (payload.date ++ payload.time) as DateTime {format: "yyyy-MM-dd'T'HH:mm:ssz"},
 	Waiver_Contact__c: payload.contactId,
 	WaiverSignature_email__c: payload.contactEmail
 }]]]]></salesforce:records>
 		</salesforce:create>
 		<choice doc:name="Choice" doc:id="b35bd46b-d29e-4976-8e2b-b74f74afa199">
 			<when expression="#[payload.successful == false and payload..errors != null]">
-				<logger level="INFO" doc:name="Logger" doc:id="2b354024-fa67-4edf-9d72-97886e5b084e" message="Fuzzy contact match found" />
+				<logger level="INFO" doc:name="Logger" doc:id="2b354024-fa67-4edf-9d72-97886e5b084e" message="#[payload.items[0].message]" />
 				<ee:transform doc:name="Transform Message" doc:id="bce41c8d-176f-45bd-b28f-8e1fb95f3744">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-payload.items[0].payload]]></ee:set-payload>
+message: "Waiver History creation failed"]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
 				<raise-error doc:name="Raise error" doc:id="d316eae0-0b40-413b-8346-38a855763a8f" type="CREATECONTACT:CONFLICT" />
