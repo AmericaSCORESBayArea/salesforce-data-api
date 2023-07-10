@@ -68,15 +68,7 @@ payload.items map ( payload01 , indexOfPayload01 ) -> {
 	scoresProgramSite: if (answer.field.ref == "scores_program_site") (
 		answer.text
 	) else null,
-	school: if (answer.field.ref == "school_hayward") (
-		answer.text
-	) else if (answer.field.ref == "school_san_rafael") (
-		answer.text
-	) else if (answer.field.ref == "school_san_francisco_crocker") (
-		answer.text
-	) else if (answer.field.ref == "school_san_francisco_civic_center") (
-		answer.text
-	) else if (answer.field.ref == "school_oakland") (
+	school: if (answer.field.ref contains("school_")) (
 		answer.text
 	) else null,
 	} 
@@ -131,6 +123,6 @@ output application/json
 			</ee:message>
 		</ee:transform>
 		<logger level="INFO" doc:name="log response" doc:id="9142c8bd-8edb-4dce-bd81-addb9041225e" message="#[payload]"/>
-		<flow-ref doc:name="create Coach" doc:id="148f8f93-4d5d-4231-9558-fb0caad6a73a" name="post:\contacts:application\json:salesforce-data-api-config"/>
+		<flow-ref doc:name="create Coach" doc:id="148f8f93-4d5d-4231-9558-fb0caad6a73a" name="post:\contacts:application\json:salesforce-data-api-config" />
 	</flow>
 </mule>
