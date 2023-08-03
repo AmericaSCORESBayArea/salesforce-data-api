@@ -37,14 +37,193 @@ http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mu
 		</http:request>
 		<choice doc:name="Choice" doc:id="30269e4f-c591-4312-a9c2-bb45b3bb50a7" >
 			<when expression="#[vars.student]">
-				<ee:transform doc:name="Transform Message" doc:id="16443e8e-2ef2-4817-b4c9-aac70518a3f4" >
-					<ee:message >
-						<ee:set-payload ><![CDATA[%dw 2.0
+				<ee:transform doc:name="Transform Message1" doc:id="80a61d9d-9059-46fd-be97-6e9430ff8b02">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json  skipNullOn="everywhere"
+---
+payload.items map ( payload01 , indexOfPayload01 ) -> {
+	Answers: payload01.answers map ( answer , indexOfanswer ) -> {
+	FirstName: if (answer.field.ref == "first_name") (
+		answer.text
+	) else null,
+	MiddleName: if (answer.field.ref == "middle_name") (
+		answer.text
+	) else null,
+	LastName: if (answer.field.ref == "last_name") (
+		answer.text
+	) else null,
+	Birthdate: if (answer.field.ref == "birthdate") (
+		answer.date
+	) else null,
+	Grade: if (answer.field.ref == "grade") (
+		answer.text
+	) else null,
+	Gender: if (answer.field.ref == "gender") (
+		answer.text
+	) else null,
+	Ethnicity: if (answer.field.ref == "ethnicity") (
+		answer.text
+	) else null,
+	StudentEmail: if (answer.field.ref == "email") (
+		answer.email
+	) else null,
+	StudentPhoneNumber: if (answer.field.ref == "phone_number") (
+		answer.phone_number
+	) else null,
+	scoresProgramSite: if (answer.field.ref == "scores_program_site") (
+		answer.text
+	) else null,
+	school: if (answer.field.ref contains("school_")) (
+		answer.text
+	) else null,
+	SchoolAttending: if(answer.field.ref == "attending_schl") (
+		answer.text
+	) else null,
+	LunchDiscount: if (answer.field.ref == "lunch_price") (
+		answer.boolean
+	) else null,
+	Allergies: if(answer.field.ref == "allergies") (
+		answer.text
+	) else null,
+	ParentGuardianFName: if(answer.field.ref == "parent_first_name") (
+		answer.text
+	) else null,
+	ParentGuardianLName: if(answer.field.ref == "parent_last_name") (
+		answer.text
+	) else null,
+	ParentGuardianEmail: if(answer.field.ref == "parent_email") (
+		answer.email
+	) else null,
+	ParentGuardianRelation: if(answer.field.ref == "relation_to_child") (
+		answer.text
+	) else null,
+	ParentGuardianPhone1: if(answer.field.ref == "parent_phone1") (
+		answer.phone_number
+	) else null,
+	ParentGuardianPhone2: if(answer.field.ref == "parent_phone2") (
+		answer.phone_number
+	) else null,
+	MailingStreet: if(answer.field.ref == "mailing_street") (
+		answer.text
+	) else null,
+	MailingCity: if(answer.field.ref == "mailing_city") (
+		answer.text
+	) else null,
+	MailingState: if(answer.field.ref == "mailing_state") (
+		answer.text
+	) else null,
+	MailingZip: if(answer.field.ref == "mailing_zip") (
+		answer.text
+	) else null,
+	MailingCountry: "US",
+	ParentGuardianLanguage: if(answer.field.ref == "parent_language") (
+		answer.text
+	) else null,
+	Volunteer: if(answer.field.ref == "volunteer") (
+		answer.boolean
+	) else null,
+	EmergencyCName: if(answer.field.ref == "emergency_contact_name") (
+		answer.text
+	) else null,
+	EmergencyCRelation: if(answer.field.ref == "emergency_contact_relationship") (
+		answer.text
+	) else null,
+	EmergencyCPhone1: if(answer.field.ref == "emergency_contact_phone1") (
+		answer.phone_number
+	) else null,
+	EmergencyCPhone2: if(answer.field.ref == "emergency_contact_phone2") (
+		answer.phone_number
+	) else null,
+	SecondEmergencyCName: if(answer.field.ref == "second_emergency_contact_name") (
+		answer.text
+	) else null,
+	SecondEmergencyCRelation: if(answer.field.ref == "second_emergency_contact_relationship") (
+		answer.text
+	) else null,
+	SecondEmergencyCPhone1: if(answer.field.ref == "second_emergency_contact_phone1") (
+		answer.text
+	) else null,
+	SecondEmergencyCPhone2: if(answer.field.ref == "second_emergency_contact_phone2") (
+		answer.text
+	) else null,
+	} 
+}]]></ee:set-payload>
+					</ee:message>
+					<ee:variables>
+						<ee:set-variable variableName="isCoach"><![CDATA[%dw 2.0
+output application/java
+---
+true]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+				<ee:transform doc:name="Transform Message2" doc:id="5af0c6c9-c2db-4046-8931-059c16ca2f62" >
+					<ee:message />
+					<ee:variables >
+						<ee:set-variable variableName="originalPayload" ><![CDATA[output application/json
+---
+payload]]></ee:set-variable>
+						<ee:set-variable variableName="accountName" ><![CDATA[%dw 2.0
 output application/json
 ---
-payload]]></ee:set-payload>
+payload.Answers[0].school[0]]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+				<salesforce:query doc:name="Query" doc:id="2fafe176-6a16-4140-a345-ae177df93b89" config-ref="Salesforce_Config" >
+					<salesforce:salesforce-query ><![CDATA[SELECT Id,Name FROM Account WHERE Name = ':name']]></salesforce:salesforce-query>
+					<salesforce:parameters ><![CDATA[#[output application/java
+---
+{
+	name : vars.accountName
+}]]]></salesforce:parameters>
+				</salesforce:query>
+				<ee:transform doc:name="Transform Message3" doc:id="fc2bc2bb-91fe-4575-b5fd-3fca5c65ef9b" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+import remove from dw::core::Strings
+output application/json
+---
+{
+	FirstName: vars.originalPayload.Answers[0].FirstName[0] default "",
+	LastName: vars.originalPayload.Answers[0].LastName[0] default "",
+    MiddleName: vars.originalPayload.Answers[0].MiddleName[0] default "",
+	Birthdate: vars.originalPayload.Answers[0].Birthdate[0] remove "T00:00:00.000Z",
+	Gender: vars.originalPayload.Answers[0].Gender[0] default "",
+	Ethnicity: vars.originalPayload.Answers[0].Ethnicity[0] default "",
+	StudentEmail: vars.originalPayload.Answers[0].StudentEmail[0] default "",
+	StudentPhoneNumber: vars.originalPayload.Answers[0].StudentPhoneNumber[0] remove "+1" default "",
+	AccountId: payload.Id[0],
+	Grade: vars.originalPayload.Answers[0].Grade[0] default "",
+	SchoolAttending: vars.originalPayload.Answers[0].SchoolAttending[0] default "",
+	ReducedPricedLunch: vars.originalPayload.Answers[0].LunchDiscount[0] default "No",
+	Allergies: vars.originalPayload.Answers[0].Allergies[0] default "",
+	ParentFirstName: vars.originalPayload.Answers[0].ParentGuardianFName[0] default "",
+	ParentLastName: vars.originalPayload.Answers[0].ParentGuardianLName[0] default "",
+	ParentEmail: vars.originalPayload.Answers[0].ParentGuardianEmail[0] default "",
+	ParentRelation: vars.originalPayload.Answers[0].ParentGuardianRelation[0] default "",
+	ParentPhone1: vars.originalPayload.Answers[0].ParentGuardianPhone1[0] remove "+1" default "",
+	ParentPhone2: vars.originalPayload.Answers[0].ParentGuardianPhone2[0] remove "+1" default "",
+	MailingStreet: vars.originalPayload.Answers[0].MailingStreet[0] default "",
+	MailingCity: vars.originalPayload.Answers[0].MailingCity[0] default "",
+	MailingState: vars.originalPayload.Answers[0].MailingState[0] default "",
+	MailingZip: vars.originalPayload.Answers[0].MailingZip[0] default "",
+	MailingCountry: vars.originalPayload.Answers[0].MailingCountry[0] default "",
+	ParentLanguage: vars.originalPayload.Answers[0].ParentGuardianLanguage[0] default "",
+	Volunteer: vars.originalPayload.Answers[0].Volunteer[0] default "No",
+	EmergencyCName: vars.originalPayload.Answers[0].EmergencyCName[0] default "",
+	EmergencyCRelation: vars.originalPayload.Answers[0].EmergencyCRelation[0] default "",
+	EmergencyCPhone1: vars.originalPayload.Answers[0].EmergencyCPhone1[0] remove "+1" default "",
+	EmergencyCPhone2: vars.originalPayload.Answers[0].EmergencyCPhone2[0] remove "+1" default "",
+	SecondEmergencyCName: vars.originalPayload.Answers[0].SecondEmergencyCName[0] default "",
+	SecondEmergencyCRelation: vars.originalPayload.Answers[0].SecondEmergencyCRelation[0] default "",
+	SecondEmergencyCPhone1: vars.originalPayload.Answers[0].SecondEmergencyCPhone1[0] remove "+1" default "",
+	SecondEmergencyCPhone2: vars.originalPayload.Answers[0].SecondEmergencyCPhone2[0] remove "+1" default "",
+	IsStudent: true,
+}]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
+				<logger level="INFO" doc:name="log response" doc:id="c7de800f-79f7-4314-a620-729fd970e41f" message="#[payload]" />
+				<flow-ref doc:name="create Coach" doc:id="00964484-6902-4d15-9ded-d38eaf9dc4c0" name="post:\contacts:application\json:salesforce-data-api-config" />
 			</when>
 			<otherwise >
 				<ee:transform doc:name="Transform Message" doc:id="ad674da3-e4c7-454d-8038-7de5873b6d01">
