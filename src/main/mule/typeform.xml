@@ -13,6 +13,7 @@ http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mu
 			<ee:variables >
 				<ee:set-variable variableName="formId" ><![CDATA[attributes.queryParams.'formId']]></ee:set-variable>
 				<ee:set-variable variableName="responseId" ><![CDATA[attributes.queryParams.'responseId']]></ee:set-variable>
+				<ee:set-variable variableName="student" ><![CDATA[attributes.queryParams.'student']]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
 		<http:request method="GET" doc:name="Request" doc:id="7f48ee54-2082-46a4-8b0e-4144fb3947c2" url="https://api.typeform.com/forms/{formId}/responses">
@@ -34,9 +35,21 @@ http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mu
 	included_response_ids : vars.responseId
 }]]]></http:query-params>
 		</http:request>
-		<ee:transform doc:name="Transform Message" doc:id="ad674da3-e4c7-454d-8038-7de5873b6d01" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+		<choice doc:name="Choice" doc:id="30269e4f-c591-4312-a9c2-bb45b3bb50a7" >
+			<when expression="#[vars.student]">
+				<ee:transform doc:name="Transform Message" doc:id="16443e8e-2ef2-4817-b4c9-aac70518a3f4" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Transform Message" doc:id="ad674da3-e4c7-454d-8038-7de5873b6d01">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
 output application/json  skipNullOn="everywhere"
 ---
 payload.items map ( payload01 , indexOfPayload01 ) -> {
@@ -74,37 +87,37 @@ payload.items map ( payload01 , indexOfPayload01 ) -> {
 	} 
 }]]></ee:set-payload>
 			</ee:message>
-			<ee:variables >
-				<ee:set-variable variableName="isCoach" ><![CDATA[%dw 2.0
+			<ee:variables>
+				<ee:set-variable variableName="isCoach"><![CDATA[%dw 2.0
 output application/java
 ---
 true]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<ee:transform doc:name="Transform Message" doc:id="7f00b811-a7b4-49ad-b20d-25caaf667571" >
-			<ee:message >
+				<ee:transform doc:name="Transform Message" doc:id="7f00b811-a7b4-49ad-b20d-25caaf667571">
+			<ee:message>
 			</ee:message>
-			<ee:variables >
-				<ee:set-variable variableName="originalPayload" ><![CDATA[output application/json
+			<ee:variables>
+				<ee:set-variable variableName="originalPayload"><![CDATA[output application/json
 ---
 payload]]></ee:set-variable>
-				<ee:set-variable variableName="accountName" ><![CDATA[%dw 2.0
+				<ee:set-variable variableName="accountName"><![CDATA[%dw 2.0
 output application/json
 ---
 payload.Answers[0].school[0]]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<salesforce:query doc:name="Query" doc:id="961a8b32-3395-4633-b288-67e2d80b9ca9" config-ref="Salesforce_Config">
-			<salesforce:salesforce-query ><![CDATA[SELECT Id,Name FROM Account WHERE Name = ':name']]></salesforce:salesforce-query>
-			<salesforce:parameters ><![CDATA[#[output application/java
+				<salesforce:query doc:name="Query" doc:id="961a8b32-3395-4633-b288-67e2d80b9ca9" config-ref="Salesforce_Config">
+			<salesforce:salesforce-query><![CDATA[SELECT Id,Name FROM Account WHERE Name = ':name']]></salesforce:salesforce-query>
+			<salesforce:parameters><![CDATA[#[output application/java
 ---
 {
 	name : vars.accountName
 }]]]></salesforce:parameters>
 		</salesforce:query>
-		<ee:transform doc:name="Transform Message" doc:id="98fcbd87-cf5a-4f72-9a42-4fad47174c37" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+				<ee:transform doc:name="Transform Message" doc:id="98fcbd87-cf5a-4f72-9a42-4fad47174c37">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
 import remove from dw::core::Strings
 output application/json
 ---
@@ -122,7 +135,9 @@ output application/json
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="log response" doc:id="9142c8bd-8edb-4dce-bd81-addb9041225e" message="#[payload]"/>
-		<flow-ref doc:name="create Coach" doc:id="148f8f93-4d5d-4231-9558-fb0caad6a73a" name="post:\contacts:application\json:salesforce-data-api-config" />
+				<logger level="INFO" doc:name="log response" doc:id="9142c8bd-8edb-4dce-bd81-addb9041225e" message="#[payload]" />
+				<flow-ref doc:name="create Coach" doc:id="148f8f93-4d5d-4231-9558-fb0caad6a73a" name="post:\contacts:application\json:salesforce-data-api-config" />
+			</otherwise>
+		</choice>
 	</flow>
 </mule>
