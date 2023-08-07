@@ -81,7 +81,7 @@ payload.items map ( payload01 , indexOfPayload01 ) -> {
 		answer.text
 	) else null,
 	LunchDiscount: if (answer.field.ref == "lunch_price") (
-		answer.boolean
+		if(answer.boolean == true)("Yes") else "No"
 	) else null,
 	Allergies: if(answer.field.ref == "allergies") (
 		answer.text
@@ -121,7 +121,7 @@ payload.items map ( payload01 , indexOfPayload01 ) -> {
 		answer.text
 	) else null,
 	Volunteer: if(answer.field.ref == "volunteer") (
-		answer.boolean
+		if(answer.boolean == true)("Yes") else "No"
 	) else null,
 	EmergencyCName: if(answer.field.ref == "emergency_contact_name") (
 		answer.text
@@ -190,17 +190,17 @@ output application/json
 	Birthdate: vars.originalPayload.Answers[0].Birthdate[0] remove "T00:00:00.000Z",
 	Gender: vars.originalPayload.Answers[0].Gender[0] default "",
 	Ethnicity: vars.originalPayload.Answers[0].Ethnicity[0] default "",
-	StudentEmail: vars.originalPayload.Answers[0].StudentEmail[0] default "",
-	StudentPhoneNumber: vars.originalPayload.Answers[0].StudentPhoneNumber[0] remove "+1" default "",
-	AccountId: payload.Id[0],
+	PersonalEmail: vars.originalPayload.Answers[0].StudentEmail[0] default "",
+	HomePhone: vars.originalPayload.Answers[0].StudentPhoneNumber[0] remove "+1" default "",
+	SchoolSiteId: payload.Id[0],
 	Grade: vars.originalPayload.Answers[0].Grade[0] default "",
-	SchoolAttending: vars.originalPayload.Answers[0].SchoolAttending[0] default "",
-	ReducedPricedLunch: vars.originalPayload.Answers[0].LunchDiscount[0] default "No",
+	SchoolName: vars.originalPayload.Answers[0].SchoolAttending[0] default "",
+	ReducedPriceLunch: vars.originalPayload.Answers[0].LunchDiscount[0] default "No",
 	Allergies: vars.originalPayload.Answers[0].Allergies[0] default "",
-	ParentFirstName: vars.originalPayload.Answers[0].ParentGuardianFName[0] default "",
-	ParentLastName: vars.originalPayload.Answers[0].ParentGuardianLName[0] default "",
+	ParentFName: vars.originalPayload.Answers[0].ParentGuardianFName[0] default "",
+	ParentLName: vars.originalPayload.Answers[0].ParentGuardianLName[0] default "",
 	ParentEmail: vars.originalPayload.Answers[0].ParentGuardianEmail[0] default "",
-	ParentRelation: vars.originalPayload.Answers[0].ParentGuardianRelation[0] default "",
+	Relationship: vars.originalPayload.Answers[0].ParentGuardianRelation[0] default "",
 	ParentPhone1: vars.originalPayload.Answers[0].ParentGuardianPhone1[0] remove "+1" default "",
 	ParentPhone2: vars.originalPayload.Answers[0].ParentGuardianPhone2[0] remove "+1" default "",
 	MailingStreet: vars.originalPayload.Answers[0].MailingStreet[0] default "",
@@ -208,22 +208,21 @@ output application/json
 	MailingState: vars.originalPayload.Answers[0].MailingState[0] default "",
 	MailingZip: vars.originalPayload.Answers[0].MailingZip[0] default "",
 	MailingCountry: vars.originalPayload.Answers[0].MailingCountry[0] default "",
-	ParentLanguage: vars.originalPayload.Answers[0].ParentGuardianLanguage[0] default "",
+	ParentHomeLang: vars.originalPayload.Answers[0].ParentGuardianLanguage[0] default "",
 	Volunteer: vars.originalPayload.Answers[0].Volunteer[0] default "No",
-	EmergencyCName: vars.originalPayload.Answers[0].EmergencyCName[0] default "",
-	EmergencyCRelation: vars.originalPayload.Answers[0].EmergencyCRelation[0] default "",
-	EmergencyCPhone1: vars.originalPayload.Answers[0].EmergencyCPhone1[0] remove "+1" default "",
-	EmergencyCPhone2: vars.originalPayload.Answers[0].EmergencyCPhone2[0] remove "+1" default "",
-	SecondEmergencyCName: vars.originalPayload.Answers[0].SecondEmergencyCName[0] default "",
-	SecondEmergencyCRelation: vars.originalPayload.Answers[0].SecondEmergencyCRelation[0] default "",
-	SecondEmergencyCPhone1: vars.originalPayload.Answers[0].SecondEmergencyCPhone1[0] remove "+1" default "",
-	SecondEmergencyCPhone2: vars.originalPayload.Answers[0].SecondEmergencyCPhone2[0] remove "+1" default "",
-	IsStudent: true,
+	Emergency_Contact_Name: vars.originalPayload.Answers[0].EmergencyCName[0] default "",
+	Emergency_Contact_Relationship: vars.originalPayload.Answers[0].EmergencyCRelation[0] default "",
+	Emergency_Contact_Phone1: vars.originalPayload.Answers[0].EmergencyCPhone1[0] remove "+1" default "",
+	Emergency_Contact_Phone2: vars.originalPayload.Answers[0].EmergencyCPhone2[0] remove "+1" default "",
+	Second_Emergency_Contact_Name: vars.originalPayload.Answers[0].SecondEmergencyCName[0] default "",
+	Second_Emergency_Contact_Relationship: vars.originalPayload.Answers[0].SecondEmergencyCRelation[0] default "",
+	Second_Emergency_Contact_Phone1: vars.originalPayload.Answers[0].SecondEmergencyCPhone1[0] remove "+1" default "",
+	Second_Emergency_Contact_Phone2: vars.originalPayload.Answers[0].SecondEmergencyCPhone2[0] remove "+1" default "",
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
 				<logger level="INFO" doc:name="log response" doc:id="c7de800f-79f7-4314-a620-729fd970e41f" message="#[payload]" />
-				<flow-ref doc:name="create Coach" doc:id="00964484-6902-4d15-9ded-d38eaf9dc4c0" name="post:\contacts:application\json:salesforce-data-api-config" />
+				<flow-ref doc:name="create Student" doc:id="00964484-6902-4d15-9ded-d38eaf9dc4c0" name="post:\contacts:application\json:salesforce-data-api-config" />
 			</when>
 			<otherwise >
 				<ee:transform doc:name="Transform Message" doc:id="ad674da3-e4c7-454d-8038-7de5873b6d01">

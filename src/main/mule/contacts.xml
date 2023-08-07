@@ -97,7 +97,7 @@ payload]]></ee:set-variable>
 			(
 				FirstName = ':firstName' 
 				AND LastName = ':lastName' 
-				AND BirthDate = :birthDate
+				AND Birthdate = :birthDate
 			)
 			]]></salesforce:salesforce-query>
 			<salesforce:parameters><![CDATA[#[output application/java
