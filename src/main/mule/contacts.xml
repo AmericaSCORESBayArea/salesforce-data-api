@@ -1203,4 +1203,38 @@ output application/json
 			doc:id="db9d32e6-d89b-4614-8b62-e0a9368b687d"
 			name="exit-flow" />
 	</flow>
+	<flow name="get:\contacts\(contactId)\waiver\(waiverId):salesforce-data-api-config" doc:id="912d6ddf-b2bf-4f75-837a-21b1feccf869" >
+		<flow-ref doc:name="entry-flow" doc:id="c48c3a65-855f-4f71-a29b-392591232b12" name="entry-flow" />
+		<logger level="INFO" doc:name="Log entry-flow" doc:id="c42d1dd4-9901-45ee-927f-9d59626fafc0" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
+		<ee:transform doc:name="Store uri Params" doc:id="8d327553-1d7b-4e62-a011-fa77e027aa13">
+			<ee:variables>
+				<ee:set-variable variableName="contactId"><![CDATA[attributes.uriParams.'contactId']]></ee:set-variable>
+				<ee:set-variable variableName="waiverId" ><![CDATA[attributes.uriParams.'waiverId']]></ee:set-variable>
+				<ee:set-variable variableName="region" ><![CDATA[attributes.queryParams.'region']]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<salesforce:query doc:name="Query" doc:id="56572ed9-228d-4c40-adec-754af5eec846" config-ref="Salesforce_Config">
+			<salesforce:salesforce-query><![CDATA[SELECT Name, WaiverEvent__c FROM Waiver_History__c WHERE Waiver_Contact__c = ':contactId' AND Waiver__c = ':waiverId' AND Waiver__r.WaiverRegion__c = ':region' AND Waiver__r.Waiver_Active_End__c > TODAY]]></salesforce:salesforce-query>
+			<salesforce:parameters><![CDATA[#[output application/java
+---
+{
+	contactId : vars.contactId,
+	region : vars.region,
+	waiverId : vars.waiverId
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<ee:transform doc:name="Create Response" doc:id="81c2c65f-050c-4403-9b9f-8cd8135c6f9d" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	"WaiverHistoryId": payload01.Name as String default null,
+	"Response": payload01.WaiverEvent__c as String default null
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Log Created Response" doc:id="201d5855-01eb-4c6e-aca8-b5bebe871ada" message="#[payload]" />
+		<flow-ref doc:name="exit flow" doc:id="04e2abf5-b5e3-44e4-ac09-278008e8dac2" name="exit-flow" />
+	</flow>
 </mule>
