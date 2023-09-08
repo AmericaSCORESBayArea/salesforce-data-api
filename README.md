@@ -19,8 +19,17 @@ Interactive API specification can be found [here](https://anypoint.mulesoft.com/
 3. You'll need a local.properties to run the app locally (this file is added to the .gitignore list so shouldn't be committed/pushed to the remote repo)
    Copy src/main/resources/sandbox.properties file and paste it as local.properties file in the same folder.
 5. Append the following properties in local.properties file - (Contact one of the devs to get the values)
+    
     - sfdc.password=<value> 
     - sfdc.tkn=<value>
+      sfdc.user=<value>
+      typeform.clientid=<value>
+      typeform.clientsecret=<value>
+      typeform.tkn=<value>
+      sfdc.url=<value>
+      http.host=<value>
+      http.private.port=<value>
+      
 6. Add the following runtime arguments in the Run/Debug configuration.
     - Right click on project > Run as > Mule application (configure)
     - Switch to "Arguments" tab
