@@ -48,3 +48,4 @@ target/
 velocity.log
 src/main/resources/deploy.json
 .tooling-project/*
+.vscode/*
