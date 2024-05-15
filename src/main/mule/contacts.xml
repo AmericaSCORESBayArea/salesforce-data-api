@@ -34,6 +34,42 @@
 payload]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
+
+		<ee:transform doc:name="Check Required Fields" doc:id="check-required-fields">
+    		<ee:message >
+        		<ee:set-payload ><![CDATA[%dw 2.0
+					output application/java
+					---
+					{
+						missingFields: [
+							if (isEmpty(vars.originalPayload.FirstName) or vars.originalPayload.FirstName == null) "FirstName" else "",
+							if (isEmpty(vars.originalPayload.LastName) or vars.originalPayload.LastName == null) "LastName" else "",
+							if (isEmpty(vars.originalPayload.Birthdate) or vars.originalPayload.Birthdate == null) "Birthdate" else "",
+							if (isEmpty(vars.originalPayload.ContactType) or vars.originalPayload.LastName == null) "ContactType" else "",
+							if (isEmpty(vars.originalPayload.SchoolSiteId) or vars.originalPayload.Birthdate == null) "SchoolSiteId" else ""
+						] filter ((field) -> field != "")
+						}]]>
+				</ee:set-payload>
+    		</ee:message>
+		</ee:transform>
+
+		<choice doc:name="Check for Missing Fields" doc:id="check-for-missing-fields">
+			<when expression="#[sizeOf(payload.missingFields) > 0]">
+				<ee:transform doc:name="Raise Missing Fields Error" doc:id="raise-missing-fields-error">
+					<ee:message >
+						<ee:set-payload><![CDATA[%dw 2.0
+							output application/json
+							---
+							{
+    							"error": "Missing values for " ++ (payload.missingFields joinBy ", ")
+							}]]>
+						</ee:set-payload>
+            		</ee:message>
+        		</ee:transform>
+        <raise-error doc:name="Raise error" doc:id="missing-fields-error" type="CREATECONTACT:MISSINGFIELDS" />
+    </when>
+    <otherwise>
+
 		<salesforce:query
 			doc:name="Check for matching Contacts"
 			doc:id="61c0f5f7-6cee-4580-a92a-2432384dba3c"
@@ -340,6 +376,8 @@ output application/json
 					type="CREATECONTACT:CONFLICT" />
 			</otherwise>
 		</choice>
+		   </otherwise>
+</choice>
 	</flow>
 	<flow name="get:\contacts:salesforce-data-api-config">
 		<flow-ref
