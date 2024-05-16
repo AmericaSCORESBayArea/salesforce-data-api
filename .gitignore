@@ -46,3 +46,7 @@ target/
 .mule/**/*
 .DS_Store
 velocity.log
+.tooling-project/*
+.tooling-project
+pom.xml
+.vscode/settings.json
