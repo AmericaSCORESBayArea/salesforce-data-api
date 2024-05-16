@@ -45,7 +45,7 @@ payload]]></ee:set-variable>
 							if (isEmpty(vars.originalPayload.FirstName) or vars.originalPayload.FirstName == null) "FirstName" else "",
 							if (isEmpty(vars.originalPayload.LastName) or vars.originalPayload.LastName == null) "LastName" else "",
 							if (isEmpty(vars.originalPayload.Birthdate) or vars.originalPayload.Birthdate == null) "Birthdate" else "",
-							if (isEmpty(vars.originalPayload.ContactType) or vars.originalPayload.ContactType == null) "ContactType" else "",
+							// if (isEmpty(vars.originalPayload.ContactType) or vars.originalPayload.ContactType == null) "ContactType" else "",
 							if (isEmpty(vars.originalPayload.SchoolSiteId) or vars.originalPayload.SchoolSiteId == null) "SchoolSiteId" else ""
 						] filter ((field) -> field != "")
 						}]]>
@@ -70,7 +70,90 @@ payload]]></ee:set-variable>
         <raise-error doc:name="Raise error" doc:id="missing-fields-error" type="CREATECONTACT:MISSINGFIELDS" />
     </when>
     <otherwise>
-        <set-variable variableName="DuplicateId" value="#[(vars.originalPayload.LastName default 'Unknown') ++ '-' ++ (now() as String {format: 'x'})]" doc:name="Set DuplicateId"/>
+	
+				<salesforce:query
+			doc:name="Check for matching Contacts"
+			doc:id="61c0f5f7-6cee-4580-a92a-2432384dba3c"
+			config-ref="Salesforce_Config">
+			<salesforce:salesforce-query><![CDATA[
+			SELECT 
+				Id,
+				Contact_Type__c,
+				RecordTypeId,
+				FirstName,
+				MiddleName,
+				LastName,
+				AccountId,
+				School_Attending__c,
+				Email,
+				HomePhone,
+				Birthdate,
+				Gender__c,
+				Grade__c,
+				Level__c,
+				Ethnicity__c,
+				Permission_to_Commute_Alone__c,
+				Reduced_Price_Lunch__c,
+				Allergies__c,
+				External_Student_ID__c,
+				External_Student_DB__c,
+				Parent_First_Name__c,
+				Parent_Last_Name__c,
+				Parent_Email_Address__c,
+				Parent_Relationship_to_Child__c,
+				Parent_Phone_01__c,
+				Parent_Phone_02__c,
+				Parent_Phone_03__c,
+				MailingStreet,
+				MailingCity,
+				MailingState,
+				MailingPostalCode,
+				MailingCountry,
+				Parent_English_Fluency__c,
+				Parent_Home_Language__c,
+				Parent_Other_Language__c,
+				Volunteer_for_this_Program_Parent__c,
+				Emergency_Contact_Name__c,
+				Emergency_Contact_Relationship_to_Child__c,
+				Emergency_Contact_Name_Phone_01__c,
+				Emergency_Contact_Name_Phone_02__c,
+				Emergency_Contact_Name_Phone_03__c,
+				Emergency_Contact_Permission_to_Pick_Up__c,
+				Second_Emergency_Contact_Name__c,
+				Second_Emerg_Contact_Relationship_Child__c	,
+				Second_Emergency_Phone_01__c,
+				Second_Emergency_Phone_02__c,
+				Second_Emergency_Phone_03__c,
+				Second_Emergency_Permission_to_Pick_Up__c,
+				Liability__c,
+				Media_Release__c,
+				Data_Release__c
+			FROM 
+				Contact 
+			WHERE 
+			(
+				FirstName = ':firstName' 
+				AND LastName = ':lastName' 
+				AND Birthdate = :birthDate
+			)
+			]]></salesforce:salesforce-query>
+			<salesforce:parameters><![CDATA[#[output application/java
+import * from modules::GlobalModules
+---
+{
+	firstName: escapeSpecialSOQLChars(vars.originalPayload.FirstName, chars) default '',
+	lastName: escapeSpecialSOQLChars(vars.originalPayload.LastName, chars) default '',
+	birthDate: vars.originalPayload.Birthdate as Date {format: 'yyyy-MM-dd'}
+}]]]></salesforce:parameters>
+		</salesforce:query>
+                <choice doc:name="Choice" doc:id="lkfxwp" >
+        			<when expression="#[(sizeOf(payload)) == 0]">
+        				<set-variable value="Contact Created" doc:name="Set Response Message" variableName="responseMessage"/>
+					</when>
+					<otherwise doc:name="Otherwise" >
+						<set-variable value="Matching Record Found, but New Contact Created" doc:name="Set Response Message" variableName="responseMessage"/>
+					</otherwise>
+                </choice>
 		<choice doc:name="Choice" doc:id="4ebe7cc5-cdea-40dd-ad03-c336e80593f4">
 					<when expression="vars.originalPayload.IsCoach == true">
 						<ee:transform doc:name="Transform Message" doc:id="75aaae73-16f5-47d8-b711-36836005ac55" >
@@ -117,7 +200,7 @@ payload.items[0].payload]]></ee:set-payload>
 output application/json
 ---
 {
-	message: vars.duplicateDetected,
+	message: vars.responseMessage,
 	ContactId: payload.items[0].id
 }]]></ee:set-payload>
 									</ee:message>
@@ -208,13 +291,13 @@ payload.items[0].payload]]></ee:set-payload>
 								<ee:transform doc:name="Create response" doc:id="bc80392c-09c1-43c1-ac5b-ebf8dd509785" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
 									<ee:message >
 										<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
----
-{	
-	message: vars.duplicateDetected,
-	ContactId: payload.items[0].id
-}]]></ee:set-payload>
-									</ee:message>
+											output application/json
+											---
+											{	
+												message: vars.responseMessage,
+												ContactId: payload.items[0].id
+											}]]></ee:set-payload>
+										</ee:message>
 									<ee:variables />
 								</ee:transform>
 							</otherwise>

@@ -49,3 +49,4 @@ velocity.log
 .tooling-project/*
 .tooling-project
 pom.xml
+.vscode/settings.json
