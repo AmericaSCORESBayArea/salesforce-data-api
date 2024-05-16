@@ -36,7 +36,7 @@ payload map ( payload01 ,indexOfPayload01 ) -> {
 	Content: payload01.WaiverText__c as String default "",
 	ValidFrom: payload01.Waiver_Active_End__c as String default "",
 	ValidUntil: payload01.Waiver_Active_Start__c as String default "",
-	PaperReceived: payload01.Paper_Form_Received__c as Boolean default FALSE
+	PaperReceived: payload01.Paper_Form_Received__c as Boolean default false
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
