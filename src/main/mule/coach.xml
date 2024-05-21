@@ -487,6 +487,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 				Contact__r.Gender__c,
 				Contact__r.Ethnicity__c,
 				Contact__r.Zip_First_Five_Digits__c,
+				Contact__r.Incomplete_Record__c,
 				Contact__c,
 				CreatedById,
 				CreatedDate,
@@ -540,7 +541,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	Gender: payload01.Contact__r.Gender__c default "",
 	Ethnicity: payload01.Contact__r.Ethnicity__c default "",
 	ZipCode: payload01.Contact__r.Zip_First_Five_Digits__c default "",
-	Allergies: payload01.Contact__r.Allergies__c default "",
+    StudentIncompleteRecord: (payload01.Contact__r.Incomplete_Record__c as String) as Boolean default true,
 	CurrentAddress: payload01.Contact__r.npsp__Current_Address__c default "", 
 	HomeAddress: payload01.Contact__r.npe01__Home_Address__c default "",
 	ParentInfo: {
