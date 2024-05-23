@@ -402,7 +402,16 @@ payload.items[0].payload]]></ee:set-payload>
 				<ee:set-variable variableName="birthDate"><![CDATA[attributes.queryParams.'birthDate']]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<choice
+        <choice doc:name="Choice" doc:id="kkvqoo" >
+			<when
+				 expression="#[(vars.firstName != null and vars.firstName != '' 
+				 				and vars.lastName != null and vars.lastName != '')
+								or 
+								(vars.externalStudentId != null and vars.externalStudentId != '' 
+								and 
+								vars.externalStudentIdSource != null and vars.externalStudentIdSource != '' )
+								]">
+			<choice
 			doc:name="Choice"
 			doc:id="d8bc290a-d74d-4841-828e-6faa4b57e36b">
 			<when
@@ -648,6 +657,23 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			doc:name="exit flow"
 			doc:id="17176b6b-a1c0-4851-984e-43b59c0506eb"
 			name="exit-flow" />
+			</when>
+            <otherwise>
+					<set-variable
+					variableName="httpStatus"
+					value="400"
+					doc:name="400 HTTP Status" />
+					<set-payload 
+					value="#[output application/json --- 
+					{
+						'error': 'Field Error',
+						'message': 'Either (externalStudentId and externalStudentIdSource) or (firstName and lastName) must be provided'
+					}]"
+					doc:name="Set Error Response" />
+					<raise-error type="GETCONTACT:BADREQUEST" doc:name="Raise Error" />
+			</otherwise>
+        </choice>
+		
 	</flow>
 	<flow name="get:\contacts\search:salesforce-data-api-config">
 		<flow-ref
