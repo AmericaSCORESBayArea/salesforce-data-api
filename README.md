@@ -33,8 +33,8 @@ In this document, we will focus more throughly on the **local** setup as it is f
 
 - [Visual Studio Code](https://code.visualstudio.com/download)
 - [Anypoint Extension Pack](https://marketplace.visualstudio.com/items?itemName=salesforce.mule-dx-extension-pack)
-- [Extension Pack for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack)
-- Java Development Kit (JDK) - instructions below
+- ~~[Extension Pack for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack)~~
+- ~~Java Development Kit (JDK) - instructions below~~
 
 ### Steps to run the app locally
 
@@ -70,14 +70,14 @@ Please note:
     3. Find "Mule: Runtime Arguments" and add `-M-Denv=local` to the list of arguments:
     
     
-    `-M-Dmule.forceConsoleLog -M-Dmule.testingMode -M-XX:-UseBiasedLocking -M-Dfile.encoding=UTF-8 -M-XX:+UseG1GC -M-XX:+UseStringDeduplication -M-Dcom.ning.http.client.AsyncHttpClientConfig.useProxyProperties=true -M-Dmule.debugger.test.port=8000 -M-Dmule.debug.enable=true console0M -M-Denv=local`
+    `-M-Dmule.forceConsoleLog -M-Dmule.testingMode -M-XX:-UseBiasedLocking -M-Dfile.encoding=UTF-8 -M-XX:+UseG1GC -M-XX:+UseStringDeduplication -M-Dcom.ning.http.client.AsyncHttpClientConfig.useProxyProperties=true -M-Dmule.debugger.test.port=8000 -M-Dmule.debug.enable=true console0 -M-Denv=local`
 
-5. **Install Java Development Kit (JDK)**
-    1. Make sure you pre-installed Extenstion Pack for Java.
-    2. Open the Command Palette (Cmd+Shift+P or Ctrl+Shift+P) and type `Java: Install New JDK`.
-    3. Choose any version of JDK (tested on 21 and 8).
-    4. Follow the instructions to install Java.
-    5. Restart Visual Studio Code.
+5. ~~**Install Java Development Kit (JDK)**~~~~
+    ~~1. Make sure you pre-installed Extenstion Pack for Java.~~
+    ~~2. Open the Command Palette (Cmd+Shift+P or Ctrl+Shift+P) and type `Java: Install New JDK`.~~
+    ~~3. Choose any version of JDK (tested on 21 and 8).~~
+    ~~4. Follow the instructions to install Java.~~
+    ~~5. Restart Visual Studio Code.~~
 
     
 6. **Config Run and Debug settings**
@@ -86,10 +86,6 @@ Please note:
     2. Click on "create a launch.json file" link (below the "Run and Debug" button).
     3. In the "Select debugger", choose "Mule Xml Debugger".
     4. Click "Run" button.
-    
-    `-M-Denv=local`
-    
-    5. Click "Apply" and "Run".
 
 7. Verify that the app has started successfully.
 8. Try the following request:
