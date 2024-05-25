@@ -25,8 +25,6 @@ Below we outline how to use the **cloud-based** version. If you want to setup th
 
 ## Cloud-based setup
 
-To access the **cloud-based** version, [login into account ](https://anypoint.mulesoft.com/login/) and click `Launch` button. It will connect you to a virtual environment where you can build and deploy your MuleSoft applications, similar to the local one.
-
 ### I. Get your virtual instance
 
 1. Create [Anypoint Platform Account](https://anypoint.mulesoft.com/login/).
@@ -102,6 +100,6 @@ Ta-da! You are now running the Mule app in the cloud-based environment. 🚀
 - The API code is located in `src/main/mule/api` folder.
 - When changing the code, you need to restart the app. Use stop button, then run button. Restart button doesn't work.
 - If anything stops working as expected, you need to reboot the virtual instance:
-    1. Click on [the Anypoint Code Builder dashboard](https://anypoint.mulesoft.com/codebuilder/)
+    1. Go to [the Anypoint Code Builder dashboard](https://anypoint.mulesoft.com/codebuilder/)
     2. Select `Manage your IDE` option.
     3. Click on the `Reboot` button.
