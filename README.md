@@ -19,30 +19,33 @@ Our MuleSoft app is built to interact with Scores data in Salesforce database. I
 
 For development and testing purposes, we can run the app using MuleSoft Code Builder.
 
-**MuleSoft Code Builder** is a modern development environment designed to simplify and streamline the process of building and deploying integrations and APIs. It offers both *local* and *cloud-based* versions.
+**MuleSoft Code Builder** is a modern development environment designed to simplify and streamline the process of building and deploying integrations and APIs. It offers both *local* and *cloud-based* versions. 
+
+Below we outline how to use the **cloud-based** version. If you want to setup the environment locally, you can check instructions [here](./docs/local_setup.md) (succesfully tested only on macOS).
 
 ## Cloud-based setup
 
 To access the **cloud-based** version, [login into account ](https://anypoint.mulesoft.com/login/) and click `Launch` button. It will connect you to a virtual environment where you can build and deploy your MuleSoft applications, similar to the local one.
 
-## Local setup
+### I. Get your virtual instance
 
-In this document, we will focus more throughly on the **local** setup as it is faster and more stable. It takes more time to set up, but it is worth it in the long run.
+1. Create [Anypoint Platform Account](https://anypoint.mulesoft.com/login/).
+2. Go to [the main dashboard](https://anypoint.mulesoft.com/).
+3. Under "Anypoint Code Builder", click `Get Started` button.
+4. Accept the terms and conditions (if you agree).
+5. Click `Launch` button (if it's greyed out, refresh the page and wait).
+6. Wait for the environment to get allocated and load. The first time it might take a while.
 
-### Prerequisites
+### II. Get the environment ready
 
-- [Visual Studio Code](https://code.visualstudio.com/download)
-- [Anypoint Extension Pack](https://marketplace.visualstudio.com/items?itemName=salesforce.mule-dx-extension-pack)
-- ~~[Extension Pack for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack)~~
-- ~~Java Development Kit (JDK) - instructions below~~
-
-### Steps to run the app locally
-
-Once you have installed the prerequisites, follow the steps below to run the app locally:
-
-1. **Clone the git repository to your local machine.**
-2. **Open the project in Visual Studio Code.**
-3. **Create `local.properties` file in the `src/main/resources folder`.**
+1. **Clone the repository:**
+    1. Click on the `Source Control` icon on the left sidebar.
+    2. Click on the `Clone Repository` button.
+    3. Select `Clone from GitHub` option (you will need you GitHub account later, so it's a preferred option).
+    4. Choose the repository `AmericaSCORESBayArea/salesforce-data-api`.
+    5. Click `Clone` button.
+2. **Open the project.**
+3. **Create `local.properties` file in the `src/main/resources/properties` folder.**
 
 ```properties
 http.host=0.0.0.0
@@ -63,40 +66,42 @@ Please note:
 - The `sfdc.tkn` and `sfdc.password` fields are sensitive. Please **contact the developers** to get the values.
 - Production and Sandbox Salesforce URLs are different. The URL above is for the Sandbox environment.
 - The `typeform.clientid`, `typeform.clientsecret`, and `typeform.tkn` fields are not used as we are moving away from Typeform. You can leave them as is.
-4. **Add `-M-Denv=local` to Mule Runtime arguments to specify what environment you are running the app in.**
 
+3. **Add `-M-Denv=local` to Mule Runtime arguments:**
     1. Right-click on "Mule" extension (letter M) at the left sidebar.
     2. Click on the "Settings" icon (gear icon) at the top right corner of the extension window.
     3. Find "Mule: Runtime Arguments" and add `-M-Denv=local` to the list of arguments:
     
-    
     `-M-Dmule.forceConsoleLog -M-Dmule.testingMode -M-XX:-UseBiasedLocking -M-Dfile.encoding=UTF-8 -M-XX:+UseG1GC -M-XX:+UseStringDeduplication -M-Dcom.ning.http.client.AsyncHttpClientConfig.useProxyProperties=true -M-Dmule.debugger.test.port=8000 -M-Dmule.debug.enable=true console0 -M-Denv=local`
 
-5. ~~**Install Java Development Kit (JDK)**~~~~
-    ~~1. Make sure you pre-installed Extenstion Pack for Java.~~
-    ~~2. Open the Command Palette (Cmd+Shift+P or Ctrl+Shift+P) and type `Java: Install New JDK`.~~
-    ~~3. Choose any version of JDK (tested on 21 and 8).~~
-    ~~4. Follow the instructions to install Java.~~
-    ~~5. Restart Visual Studio Code.~~
-
-    
-6. **Config Run and Debug settings**
+4. **Config Run and Debug settings.**
 
     1. Click on the "Run and Debug" icon on the left sidebar.
-    2. Click on "create a launch.json file" link (below the "Run and Debug" button).
+    2. Click on `create a launch.json file` link (below the "Run and Debug" button).
     3. In the "Select debugger", choose "Mule Xml Debugger".
-    4. Click "Run" button.
 
-7. Verify that the app has started successfully.
-8. Try the following request:
+5. **Install [Thunder Client extension](https://marketplace.visualstudio.com/items?itemName=rangav.vscode-thunder-client).**
+
+    1. Click on the `Extensions` icon on the left sidebar.
+    2. Search for `Thunder Client` and install it.
+
+### III. Run the app
+
+1. Click on the "Run" button.
+2. Verify that the app has started successfully.
+3. Try the following request using Thunder Client:
     
     ```http
     GET http://localhost:8091/api-internal/contacts?firstName=John&lastName=Doe
     ```
 
+Ta-da! You are now running the Mule app in the cloud-based environment. 🚀
 
 ## Tips
 
 - The API code is located in `src/main/mule/api` folder.
-- Whenever anything freezes, just restart VS Code.
 - When changing the code, you need to restart the app. Use stop button, then run button. Restart button doesn't work.
+- If anything stops working as expected, you need to reboot the virtual instance:
+    1. Click on [the Anypoint Code Builder dashboard](https://anypoint.mulesoft.com/codebuilder/)
+    2. Select `Manage your IDE` option.
+    3. Click on the `Reboot` button.
