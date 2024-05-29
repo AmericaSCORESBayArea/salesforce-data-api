@@ -68,7 +68,7 @@ Please note:
 3. **Add `-M-Denv=local` to Mule Runtime arguments:**
     1. Right-click on "Mule" extension (letter M) at the left sidebar.
     2. Click on the "Settings" icon (gear icon) at the top right corner of the extension window.
-    3. Find "Mule: Runtime Arguments" and add `-M-Denv=local` to the list of arguments:
+    3. Find "Mule › Runtime: Default Arguments" and add `-M-Denv=local` to the list of arguments:
     
     `-M-Dmule.forceConsoleLog -M-Dmule.testingMode -M-XX:-UseBiasedLocking -M-Dfile.encoding=UTF-8 -M-XX:+UseG1GC -M-XX:+UseStringDeduplication -M-Dcom.ning.http.client.AsyncHttpClientConfig.useProxyProperties=true -M-Dmule.debugger.test.port=8000 -M-Dmule.debug.enable=true console0 -M-Denv=local`
 
