@@ -1,0 +1,1325 @@
+{
+	"info": {
+		"_postman_id": "6c9f54a0-c4bc-48a5-adbc-0cc165ebf853",
+		"name": "Scores - Salesforce Data API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34720049"
+	},
+	"item": [
+		{
+			"name": "teams",
+			"item": [
+				{
+					"name": "/teams (not implemented)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"TeamName\": \"Good Name\",\n  \"ScoresProgramType\": \"\",\n  \"ProgramSite\": \"\",\n  \"CoachSoccer\": \"\",\n  \"CoachWriting\": \"\",\n  \"ScoresProgramCoordinator\": \"\",\n  \"ScoresProgramManager\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/teams",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"teams"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/teams (not implemented)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/teams",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"teams"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/teams/{teamId}",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/teams/{teamId}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"teams",
+								"{teamId}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/teams/{teamId} (not implemented)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/teams/{teamId}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"teams",
+								"{teamId}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "teamSeasons",
+			"item": [
+				{
+					"name": "/teamSeasons (not implemented)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"TeamSeasonName\": \"\",\n  \"TeamId\": \"\",\n  \"SeasonId\": \"\",\n  \"SchoolSite\": \"\",\n  \"Partnership\": \"\",\n  \"TotalNoOfPlayers\": 0,\n  \"TotalNoOfSessions\": 0,\n  \"SeasonStartDate\": \"\",\n  \"SeasonEndDate\": \"\",\n  \"CoachSoccer\": \"\",\n  \"CoachWriting\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/teamSeasons",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"teamSeasons"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/teamSeasons",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							},
+							{
+								"key": "",
+								"value": "",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/teamSeasons?date=2019-01-04",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"teamSeasons"
+							],
+							"query": [
+								{
+									"key": "date",
+									"value": "2019-01-04"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/teamSeasons (not implemented)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/teamSeasons/a0q1T000008JoB4QAK",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"teamSeasons",
+								"a0q1T000008JoB4QAK"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/teamSeasons",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"TeamSeasonName\": \"ER Taylor Juniors-2019 Spring 2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/teamSeasons/a0q1T000008JoB4QAK",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"teamSeasons",
+								"a0q1T000008JoB4QAK"
+							]
+						},
+						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "seasons",
+			"item": [
+				{
+					"name": "/seasons",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/seasons",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"seasons"
+							]
+						},
+						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "enrollments",
+			"item": [
+				{
+					"name": "/enrollments",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"TeamSeasonId\": \"\",\n  \"StudentId\": \"\",\n  \"StartDate\": \"\",\n  \"EndDate\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/enrollments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"enrollments"
+							]
+						},
+						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
+					},
+					"response": []
+				},
+				{
+					"name": "/enrollments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/enrollments?teamSeasonId=a0q1T000008JoB4QAK",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"enrollments"
+							],
+							"query": [
+								{
+									"key": "teamSeasonId",
+									"value": "a0q1T000008JoB4QAK"
+								}
+							]
+						},
+						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
+					},
+					"response": []
+				},
+				{
+					"name": "/enrollments",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"EnrollmentId\": \"\"\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/enrollments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"enrollments"
+							]
+						},
+						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
+					},
+					"response": []
+				},
+				{
+					"name": "/enrollments/{enrollmentId}",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/enrollments/a0m1T000008KwXkQAK",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"enrollments",
+								"a0m1T000008KwXkQAK"
+							]
+						},
+						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
+					},
+					"response": []
+				},
+				{
+					"name": "/enrollments/{enrollmentId}",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"EnrollmentName\": \"A-0000333\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/enrollments/a0m1T000008KwXkQAK",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"enrollments",
+								"a0m1T000008KwXkQAK"
+							]
+						},
+						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "contacts",
+			"item": [
+				{
+					"name": "/contacts",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"FirstName\": \"\",\n  \"LastName\": \"\",\n  \"Birthdate\": \"2002-03-06\",\n  \"SchoolSiteId\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/contacts",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"contacts"
+							]
+						},
+						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
+					},
+					"response": []
+				},
+				{
+					"name": "/contacts",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/contacts",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"contacts"
+							]
+						},
+						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
+					},
+					"response": []
+				},
+				{
+					"name": "/contacts/search",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/contacts/search?searchString=John",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"contacts",
+								"search"
+							],
+							"query": [
+								{
+									"key": "searchString",
+									"value": "John"
+								}
+							]
+						},
+						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
+					},
+					"response": []
+				},
+				{
+					"name": "/contacts/searchByPhoneNumber",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/contacts/searchByPhoneNumber?phoneNumber=269",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"contacts",
+								"searchByPhoneNumber"
+							],
+							"query": [
+								{
+									"key": "phoneNumber",
+									"value": "269"
+								}
+							]
+						},
+						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
+					},
+					"response": []
+				},
+				{
+					"name": "/contacts/{contactId}",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/contacts/003U8000008Mz3RIAS",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"contacts",
+								"003U8000008Mz3RIAS"
+							]
+						},
+						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
+					},
+					"response": []
+				},
+				{
+					"name": "/contacts/{contactId}",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"FirstName\": \"John10\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/contacts/003U8000008Mz3RIAS",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"contacts",
+								"003U8000008Mz3RIAS"
+							],
+							"query": [
+								{
+									"key": "phoneNumber",
+									"value": "2",
+									"disabled": true
+								}
+							]
+						},
+						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
+					},
+					"response": []
+				},
+				{
+					"name": "/contacts/{contactId}/waiver/{waiverId}",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/contacts/003U8000008Mz3RIAS",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"contacts",
+								"003U8000008Mz3RIAS"
+							]
+						},
+						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
+					},
+					"response": []
+				},
+				{
+					"name": "/contacts/{contactId}/enrollments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/contacts/003U8000008Mz3RIAS/enrollments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"contacts",
+								"003U8000008Mz3RIAS",
+								"enrollments"
+							]
+						},
+						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "regions",
+			"item": [
+				{
+					"name": "/regions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/regions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"regions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/regions/{regionName}/schoolsites",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/regions/Santa Cruz/schoolsites",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"regions",
+								"Santa Cruz",
+								"schoolsites"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "waiver",
+			"item": [
+				{
+					"name": "/waiver",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/waiver?region=San Francisco Crocker",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"waiver"
+							],
+							"query": [
+								{
+									"key": "region",
+									"value": "San Francisco Crocker"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/waiver/{waiverId} (not implemented)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "sessions",
+			"item": [
+				{
+					"name": "/sessions",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/sessions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sessions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/sessions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/sessions?teamSeasonId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sessions"
+							],
+							"query": [
+								{
+									"key": "teamSeasonId",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/sessions/{sessionId}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/sessions/a0p1T00000FcFfGQAV",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sessions",
+								"a0p1T00000FcFfGQAV"
+							],
+							"query": [
+								{
+									"key": "date",
+									"value": "2019-09-12",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/sessions/{sessionId}",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"SessionDate\": \"2022-10-04\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/sessions/a0p1T00000FcFfGQAV",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sessions",
+								"a0p1T00000FcFfGQAV"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/sessions/{sessionId}",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"SessionDate\": \"2022-10-04\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/sessions/a0p1T00000FcFfGQAV",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sessions",
+								"a0p1T00000FcFfGQAV"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/sessions/{sessionId}/assessments (not implemented)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/sessions/a0p1T00000FcFfGQAV/assessments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sessions",
+								"a0p1T00000FcFfGQAV",
+								"assessments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/sessions/{sessionId}/assessment (not implemented)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/sessions/a0p1T00000FcFfGQAV/assessment",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"sessions",
+								"a0p1T00000FcFfGQAV",
+								"assessment"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "attendances",
+			"item": [
+				{
+					"name": "/attendances",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"StudentId\": \"\",\n        \"SessionId\": \"\"\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/attendances",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"attendances"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "coach",
+			"item": [
+				{
+					"name": "/coach/{coachId}/regions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/coach/003U8000008dKdNIAU/regions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"coach",
+								"003U8000008dKdNIAU",
+								"regions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/coach/{coachId}/allSessions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/coach/003U8000008dKdNIAU/allSessions?date=2022-02-02",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"coach",
+								"003U8000008dKdNIAU",
+								"allSessions"
+							],
+							"query": [
+								{
+									"key": "date",
+									"value": "2022-02-02"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/coach/{coachId}/teamseasonsNotOwnedByCoach",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/coach/{coachId}/teamseasons",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/coach/003U8000008dKdNIAU/teamseasons?season=",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"coach",
+								"003U8000008dKdNIAU",
+								"teamseasons"
+							],
+							"query": [
+								{
+									"key": "season",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/coach/{coachId}/teamseasons/{teamSeasonId}/sessions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/coach/003U8000008dKdNIAU/teamseasons/{teamSeasonId}/sessions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"coach",
+								"003U8000008dKdNIAU",
+								"teamseasons",
+								"{teamSeasonId}",
+								"sessions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/coach/{coachId}/teamseasons/{teamSeasonId}/sessions/{sessionId}/attendances",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/coach/003U8000008dKdNIAU/teamseasons/{teamSeasonId}/sessions/{sessionId}/attendances",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"coach",
+								"003U8000008dKdNIAU",
+								"teamseasons",
+								"{teamSeasonId}",
+								"sessions",
+								"{sessionId}",
+								"attendances"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/coach/{coachId}/teamseasons/{teamSeasonId}/sessions/{sessionId}/attendances",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/coach/003U8000008dKdNIAU/teamseasons/{teamSeasonId}/sessions/{sessionId}/attendances",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"coach",
+								"003U8000008dKdNIAU",
+								"teamseasons",
+								"{teamSeasonId}",
+								"sessions",
+								"{sessionId}",
+								"attendances"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/coach/{coachId}/teamseasons/{teamSeasonId}/sessions/{sessionId}/attendances",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/coach/003U8000008dKdNIAU/teamseasons/{teamSeasonId}/sessions/{sessionId}/attendances",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"coach",
+								"003U8000008dKdNIAU",
+								"teamseasons",
+								"{teamSeasonId}",
+								"sessions",
+								"{sessionId}",
+								"attendances"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/coach/{coachId}/all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/coach/003U8000008dKdNIAU/all",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"coach",
+								"003U8000008dKdNIAU",
+								"all"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "assessments",
+			"item": [
+				{
+					"name": "/assessments/{studentId} (not implemented)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/assessments/{studentId}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"assessments",
+								"{studentId}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/assessments/{studentId}/{assessmentId} (not implemented)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/assessments/{studentId}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"assessments",
+								"{studentId}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "useraccount",
+			"item": [
+				{
+					"name": "/useraccount",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/useraccount?phoneNumber=269",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"useraccount"
+							],
+							"query": [
+								{
+									"key": "phoneNumber",
+									"value": "269"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8091/api-internal"
+		}
+	]
+}
