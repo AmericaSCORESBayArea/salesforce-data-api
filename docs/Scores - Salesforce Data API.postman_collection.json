@@ -1096,31 +1096,6 @@
 					"response": []
 				},
 				{
-					"name": "/coach/{coachId}/teamseasons{teamSeasonId}/enrollments",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/coach/003U8000008dKdNIAU/teamseasons?season=",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"coach",
-								"003U8000008dKdNIAU",
-								"teamseasons"
-							],
-							"query": [
-								{
-									"key": "season",
-									"value": ""
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "/coach/{coachId}/teamseasons/{teamSeasonId}/sessions",
 					"request": {
 						"method": "GET",
@@ -1147,7 +1122,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/coach/003U8000008dKdNIAU/teamseasons/{teamSeasonId}/sessions/{sessionId}/attendances",
+							"raw": "{{base_url}}/coach/003U8000008dKdNIAU/teamseasons/a0qHs00000BvrIUIAZ/sessions/a0pHs00000TqrmUIAR/assessments",
 							"host": [
 								"{{base_url}}"
 							],
@@ -1155,10 +1130,10 @@
 								"coach",
 								"003U8000008dKdNIAU",
 								"teamseasons",
-								"{teamSeasonId}",
+								"a0qHs00000BvrIUIAZ",
 								"sessions",
-								"{sessionId}",
-								"attendances"
+								"a0pHs00000TqrmUIAR",
+								"assessments"
 							]
 						}
 					},
@@ -1166,6 +1141,52 @@
 				},
 				{
 					"name": "/coach/{coachId}/teamseasons/{teamSeasonId}/sessions/{sessionId}/attendances",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/coach/003U8000008dKdNIAU/teamseasons/a0qHs00000BvrIUIAZ/sessions/a0pHs00000TqrmUIAR/assessments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"coach",
+								"003U8000008dKdNIAU",
+								"teamseasons",
+								"a0qHs00000BvrIUIAZ",
+								"sessions",
+								"a0pHs00000TqrmUIAR",
+								"assessments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/coach/{coachId}/teamseasons/{teamSeasonId}/sessions/{sessionId}/attendances",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/coach/003U8000008dKdNIAU/teamseasons/a0qHs00000BvrIUIAZ/sessions/a0pHs00000TqrmUIAR/assessments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"coach",
+								"003U8000008dKdNIAU",
+								"teamseasons",
+								"a0qHs00000BvrIUIAZ",
+								"sessions",
+								"a0pHs00000TqrmUIAR",
+								"assessments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/coach/{coachId}/teamseasons/{teamSeasonId}/sessions/{sessionId}/assessments",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -1179,7 +1200,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/coach/003U8000008dKdNIAU/teamseasons/{teamSeasonId}/sessions/{sessionId}/attendances",
+							"raw": "{{base_url}}/coach/003U8000008dKdNIAU/teamseasons/{teamSeasonId}/sessions/{sessionId}/assessments",
 							"host": [
 								"{{base_url}}"
 							],
@@ -1190,39 +1211,32 @@
 								"{teamSeasonId}",
 								"sessions",
 								"{sessionId}",
-								"attendances"
+								"assessments"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "/coach/{coachId}/teamseasons/{teamSeasonId}/sessions/{sessionId}/attendances",
+					"name": "/coach/{coachId}/teamseasons{teamSeasonId}/enrollments",
 					"request": {
-						"method": "PATCH",
+						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "[\n    {\n        \n    }\n]",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "{{base_url}}/coach/003U8000008dKdNIAU/teamseasons/{teamSeasonId}/sessions/{sessionId}/attendances",
+							"raw": "{{base_url}}/coach/003U8000008dKdNIAU/teamseasons?season=",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"coach",
 								"003U8000008dKdNIAU",
-								"teamseasons",
-								"{teamSeasonId}",
-								"sessions",
-								"{sessionId}",
-								"attendances"
+								"teamseasons"
+							],
+							"query": [
+								{
+									"key": "season",
+									"value": ""
+								}
 							]
 						}
 					},
