@@ -16,9 +16,13 @@
                 <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{message: "Bad request"}]]></ee:set-payload>
+                            output application/json
+                            ---
+                            {
+                                message: "Bad request",
+                                details: error.detailedDescription
+                            }]]>
+                        </ee:set-payload>
                     </ee:message>
                     <ee:variables>
                         <ee:set-variable variableName="httpStatus">400</ee:set-variable>
@@ -29,9 +33,10 @@ output application/json
                 <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{message: "Resource not found"}]]></ee:set-payload>
+                            output application/json
+                            ---
+                            {message: "Resource not found"}]]>
+                        </ee:set-payload>
                     </ee:message>
                     <ee:variables>
                         <ee:set-variable variableName="httpStatus">404</ee:set-variable>
@@ -42,9 +47,10 @@ output application/json
                 <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{message: "Method not allowed"}]]></ee:set-payload>
+                            output application/json
+                            ---
+                            {message: "Method not allowed"}]]>
+                        </ee:set-payload>
                     </ee:message>
                     <ee:variables>
                         <ee:set-variable variableName="httpStatus">405</ee:set-variable>
@@ -55,9 +61,10 @@ output application/json
                 <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{message: "Not acceptable"}]]></ee:set-payload>
+                            output application/json
+                            ---
+                            {message: "Not acceptable"}]]>
+                        </ee:set-payload>
                     </ee:message>
                     <ee:variables>
                         <ee:set-variable variableName="httpStatus">406</ee:set-variable>
@@ -68,9 +75,12 @@ output application/json
                 <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{message: "Unsupported media type"}]]></ee:set-payload>
+                            output application/json
+                            ---
+                            {
+                                    message: "Unsupported media type",
+                            }]]>
+                        </ee:set-payload>
                     </ee:message>
                     <ee:variables>
                         <ee:set-variable variableName="httpStatus">415</ee:set-variable>
@@ -81,9 +91,10 @@ output application/json
                 <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{message: "Not Implemented"}]]></ee:set-payload>
+                            output application/json
+                            ---
+                            {message: "Not Implemented"}]]>
+                        </ee:set-payload>
                     </ee:message>
                     <ee:variables>
                         <ee:set-variable variableName="httpStatus">501</ee:set-variable>
@@ -94,9 +105,10 @@ output application/json
                 <ee:transform doc:name="Transform Message" doc:id="9bc7953f-4cbc-411c-9635-dc532f6bfdf5" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-payload]]></ee:set-payload>
+                            output application/json
+                            ---
+                            payload]]>
+                        </ee:set-payload>
                     </ee:message>
                     <ee:variables>
                         <ee:set-variable variableName="httpStatus">409</ee:set-variable>
@@ -107,9 +119,10 @@ payload]]></ee:set-payload>
                 <ee:transform doc:name="Transform Message" doc:id="b39ada89-27d0-4d94-89cf-4560a5f8158a">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-payload.items.*payload]]></ee:set-payload>
+                            output application/json
+                            ---
+                            payload.items.*payload]]>
+                        </ee:set-payload>
                     </ee:message>
                 </ee:transform>
             </on-error-propagate>
@@ -131,9 +144,10 @@ payload.items.*payload]]></ee:set-payload>
                 <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{message: "Resource not found"}]]></ee:set-payload>
+                            output application/json
+                            ---
+                            {message: "Resource not found"}]]>
+                        </ee:set-payload>
                     </ee:message>
                     <ee:variables>
                         <ee:set-variable variableName="httpStatus">404</ee:set-variable>
@@ -158,9 +172,10 @@ output application/json
         <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{message: "Not implemented yet"}]]></ee:set-payload>
+                    output application/json
+                    ---
+                    {message: "Not implemented yet"}]]>
+                </ee:set-payload>
             </ee:message>
             <ee:variables>
                 <ee:set-variable variableName="httpStatus">501</ee:set-variable>
@@ -176,11 +191,10 @@ output application/json
         <ee:transform>
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  message: "Assessment updated"
-}]]></ee:set-payload>
+                        output application/json
+                        ---
+                        {message: "Assessment updated"}]]>
+                </ee:set-payload>
             </ee:message>
         </ee:transform>
     </flow>
@@ -193,11 +207,10 @@ output application/json
         <ee:transform>
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  message: "bad request"
-}]]></ee:set-payload>
+                    output application/json
+                    ---
+                    { message: "bad request" }]]>
+                </ee:set-payload>
             </ee:message>
         </ee:transform>
     </flow>
@@ -210,11 +223,10 @@ output application/json
         <ee:transform>
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  message: "Error retrieving enrollments"
-}]]></ee:set-payload>
+                    output application/json
+                    ---
+                    { message: "Error retrieving enrollments"
+                    }]]></ee:set-payload>
             </ee:message>
         </ee:transform>
     </flow>
@@ -228,11 +240,12 @@ output application/json
         <ee:transform>
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  message: "Assessment updated"
-}]]></ee:set-payload>
+                    output application/json
+                    ---
+                    {
+                    message: "Assessment updated"
+                    }]]>
+                </ee:set-payload>
             </ee:message>
         </ee:transform>
     </flow>
@@ -245,11 +258,12 @@ output application/json
         <ee:transform>
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  message: "Error retrieving enrollments"
-}]]></ee:set-payload>
+                    output application/json
+                    ---
+                    {
+                    message: "Error retrieving enrollments"
+                    }]]>
+                </ee:set-payload>
             </ee:message>
         </ee:transform>
     </flow>
@@ -265,11 +279,12 @@ output application/json
         <ee:transform>
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  message: "assessment created"
-}]]></ee:set-payload>
+                    output application/json
+                    ---
+                    {
+                    message: "assessment created"
+                    }]]>
+                </ee:set-payload>
             </ee:message>
         </ee:transform>
     </flow>
