@@ -1096,6 +1096,31 @@
 					"response": []
 				},
 				{
+					"name": "/coach/{coachId}/teamseasons{teamSeasonId}/enrollments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/coach/003U8000008dKdNIAU/teamseasons?season=",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"coach",
+								"003U8000008dKdNIAU",
+								"teamseasons"
+							],
+							"query": [
+								{
+									"key": "season",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "/coach/{coachId}/teamseasons/{teamSeasonId}/sessions",
 					"request": {
 						"method": "GET",
