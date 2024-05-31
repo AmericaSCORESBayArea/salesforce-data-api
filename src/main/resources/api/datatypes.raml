@@ -1,6 +1,18 @@
 #%RAML 1.0 Library
 
 types:
+  Season:
+    type: object
+    description: Season Salesforce object
+    properties:
+      Id: 
+        type: SalesforceUniqueId
+      Name:
+        type: string
+      StartDate:
+        type: date-only
+      EndDate:
+        type: date-only  
   Team:
     type: object
     description: Team Salesforce object
@@ -256,6 +268,12 @@ types:
       TeamSeasonId:
         type: SalesforceUniqueId
         required: false
+      Headcount:
+        type: number
+        required: false
+      FemaleHeadcount:
+        type: number
+        required: false
 
   AttendanceCreateModel:
     type: object
@@ -329,6 +347,8 @@ types:
         type: string
       ZipCode:
         type: string
+      StudentIncompleteRecord:
+        type: boolean
       RecordType:
         type: string
       Date:
@@ -336,6 +356,21 @@ types:
       Attended:
         type: boolean
     examples: !include enrollment-examples.raml
+
+  EnrollmentByContactID:
+    type: object
+    description: Enrollment data structure
+    properties:
+      Id: string
+      TeamSeasonId: string
+      TeamSeasonName: string
+      StartDate: date-only
+      EndDate: date-only
+      SeasonName: string
+      TeamID: string
+      TeamName: string
+      SchoolSiteId: string
+      SchoolSiteName: string
 
   EnrollmentCreateModel:
     type: object
@@ -386,8 +421,10 @@ types:
       ContactType:
         type: string
         enum: [ "SCORES Student"]
+        required: false
       ContactRecordType: 
         type: string
+        required: false
       FirstName:
         type: string
       MiddleName:
@@ -397,8 +434,10 @@ types:
         type: string
       SchoolName:
         type: string
+        required: false
       SchoolSiteId:
-        type: SalesforceUniqueId 
+        type: SalesforceUniqueId
+        required: false 
       PersonalEmail:
         type: string
         required: false
@@ -411,6 +450,9 @@ types:
         type: string
         required: false
       Grade:
+        type: string
+        required: false
+      K12GradeLevel:
         type: string
         required: false
       Ethnicity: 
@@ -529,9 +571,6 @@ types:
     type: object
     description: Salesforce Contact Object with all fields optional
     properties:
-      ContactRecordType: 
-        type: string
-        required: false
       FirstName:
         type: string
         required: false
@@ -540,12 +579,6 @@ types:
         required: false
       LastName:
         type: string
-        required: false
-      SchoolName:
-        type: string  
-        required: false
-      SchoolSiteId:
-        type: SalesforceUniqueId
         required: false
       PersonalEmail:
         type: string
@@ -574,7 +607,10 @@ types:
       PermissiontoCommuteAlone:
         type: string
         required: false
-      DCYFStuID:
+      ExternalStudentId:
+        type: string
+        required: false
+      ExternalStudentIdSource:
         type: string
         required: false
       ParentFName:
@@ -679,8 +715,6 @@ types:
         type: SalesforceUniqueId
       Name:
         type: string
-      Region:
-        type: string
   
   Assessment:
     type: object
@@ -692,12 +726,17 @@ types:
         type: string
       LastName:
         type: string
-      AssessmentJSON:
+      AssessmentResponse:
         type: string
       LastModified:
         type: date-only
       AssessmentType:
         type: string
+      SessionId:
+        type: SalesforceUniqueId
+      StudentId:
+        type: SalesforceUniqueId
+    examples: !include assessment-get-examples.raml
 
   AssessmentCreateModel:
     type: object
@@ -705,34 +744,45 @@ types:
     properties:
       StudentId:
         type: SalesforceUniqueId
-      CoachId:
-        type: SalesforceUniqueId
-      SessionId:
-        type: SalesforceUniqueId
-      TeamSeasonId:
-        type: SalesforceUniqueId
-      AssessmentJSON:
+        required: true
+      AssessmentResponse:
         type: string
+        required: true
       AssessmentType:
         type: string
-      CreatedDate:
-        type: date-only
+        required: true
+        enum: [ "PACER","Activity_Feedback"]
+    examples: !include assessment-post-example.raml
 
   AssessmentUpdateModel:
     type: object
-    description: update existing assessment record
+    description: Assessment object for updating an attendance for a session
     properties:
-      AssessmentJSON:
+      AssessmentId:
+        type: SalesforceUniqueId
+        required: true
+      AssessmentResponse:
         type: string
-      LastModified:
-        type: date-only
-      # Student:
-      #   type: string
-      # Coach:
-      #   type: SalesforceUniqueId
-      # SessionId:
-      #   type: SalesforceUniqueId
-      # TeamSeasonId:
-      #   type: SalesforceUniqueId
-      # AssessmentType:
-      #   type: string
+        required: true
+    examples: !include assessments-patch-example.raml
+  
+  UserAccount:
+    type: object
+    properties:
+      MatchFound:
+        type: boolean
+      UserType:
+        type: string
+        enum: ["Coach", "Parent", "Other"]
+      CoachId:
+        type: SalesforceUniqueId
+        required: false
+      ParentFName:
+        type: string
+        required: false
+      ParentLName:
+        type: string
+        required: false
+        
+
+    

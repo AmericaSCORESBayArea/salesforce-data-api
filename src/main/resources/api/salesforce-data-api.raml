@@ -5,14 +5,12 @@ uses:
 
 /teams:
   post:
-    description: Create a new Team
+    description: (NOT IMPLEMENTED) Create a new team
     body:
       application/json:
         type: types.TeamCreateModel
   get:
-    description: Get Teams for given query params
-    queryParameters:
-      TBD:
+    description: (NOT IMPLEMENTED) Get Teams for given query params
     responses:
       200:
         body:
@@ -31,6 +29,7 @@ uses:
               example:
                 message: Team Not Found
     patch:
+      description: (NOT IMPLEMENTED)
       body:
         application/json:
           type: types.TeamUpdateModel
@@ -46,9 +45,9 @@ uses:
     queryParameters:
       date:
         displayName: Date
-        description: TeamSeason date
+        description: TeamSeason Start Date
         type: date-only
-        required: false
+        required: true
     responses:
       200:
         body:
@@ -56,6 +55,7 @@ uses:
             type: types.TeamSeasonBaseModel[]
   /{teamSeasonId}:
     get:
+      description: (NOT IMPLEMENTED)
       responses:
         200:
           body:
@@ -88,7 +88,32 @@ uses:
             application/json:
               example:
                 message: TeamSeason not found
-     
+
+/typeform:
+  /responses:
+    get:
+      responses:
+        200:
+
+
+/seasons:
+  get:
+    description: Get Latest Seasons
+    responses:
+      200:
+        body:
+          application/json:
+            type: types.Season[]
+      400:
+          body:
+            application/json:
+              example:
+                message: Bad request      
+      404:
+          body:
+            application/json:
+              example:
+                message: Seasons not found    
 /enrollments:
   post:
     description: Create a new Enrollment for a TeamSeason
@@ -108,6 +133,21 @@ uses:
         body:
           application/json:
             type: types.Enrollment[]
+  delete:
+    description: Delete one or more Enrollment records
+    body:
+      application/json:
+        type: array
+        items:
+          type: object
+          properties:
+            EnrollmentId: types.SalesforceUniqueId
+    responses:
+      200: 
+        body:
+          application/json:
+            example:
+              message: Enrollment/s deleted successfully 
   /{enrollmentId}:
     get:
       responses:
@@ -115,11 +155,6 @@ uses:
           body:
             application/json:
               type: types.Enrollment
-        404: 
-          body:
-            application/json:
-              example:
-                message: Enrollment Not Found
     patch:
       body:
         application/json:
@@ -189,6 +224,22 @@ uses:
             application/json:
               type: types.Contact[]
   
+  /searchByPhoneNumber:
+    get:
+      displayName: Get matching contacts for a given phone number
+      description: Get contacts matching a search string with a phone number (to be used for Student contacts for now)
+      queryParameters:
+        phoneNumber:
+          displayName: phoneNumber
+          description: Phone number
+          type: string
+          required: true
+      responses:
+        200:
+          body:
+            application/json:
+              type: types.Contact[]
+
   /{contactId}:
     get:
       displayName: Get contact
@@ -220,7 +271,171 @@ uses:
             application/json:
               example:
                 message: Contact not found
-
+    /waiver/{waiverId}:
+      get:
+        displayName: Get Waiver History by contact id and waiver id
+        responses:
+          200:
+            body:
+              application/json:
+          400: 
+            body:
+              application/json:
+                example:
+                  message: Bad Request
+          404:
+            body:
+              application/json:
+                example:
+                  message: Waiver not found
+  /{contactId}/enrollments:
+    get:
+      description: Retrieve enrollment data for a specific contact.
+      queryParameters:
+        schoolSiteName:
+          type: string
+          required: false
+        seasonName:
+          type: string
+          required: false
+        teamSeasonName:
+          type: string
+          required: false
+        startDate:
+          type: string
+          required: false
+        endDate:
+          type: string
+          required: false
+      responses:
+        200:
+          body:
+            application/json:
+              type: types.EnrollmentByContactID[]
+              example: |
+                [
+                  {
+                    "Id": "a0m1T000009RSFgQAO",
+                    "TeamSeasonId": "a0q1T000008JxqSQAS",
+                    "TeamSeasonName": "Cleveland Juniors-2019 Fall",
+                    "StartDate": "2019-08-12",
+                    "EndDate": "2019-12-20",
+                    "SeasonName": "2019 Fall",
+                    "TeamID": "a1N1T000005wLYEUA2",
+                    "TeamName": "Cleveland Juniors",
+                    "SchoolSiteId": "0015000002HvvW0AAJ",
+                    "SchoolSiteName": "Cleveland Elementary School"
+                  },
+                  {
+                    "Id": "a0m1T000009f2p5QAA",
+                    "TeamSeasonId": "a0q1T000009ouh3QAA",
+                    "TeamSeasonName": "Cleveland Juniors-2020 Spring",
+                    "StartDate": "2020-01-01",
+                    "EndDate": "2020-05-31",
+                    "SeasonName": "2020 Spring",
+                    "TeamID": "a1N1T000005wLYEUA2",
+                    "TeamName": "Cleveland Juniors",
+                    "SchoolSiteId": "0015000002HvvW0AAJ",
+                    "SchoolSiteName": "Cleveland Elementary School"
+                  },
+                  {
+                    "Id": "a0mHs00000Cc7tAIAR",
+                    "TeamSeasonId": "a0qHs00000CHAisIAH",
+                    "TeamSeasonName": "Guadalupe SELECTA-2023-2024",
+                    "StartDate": "2023-08-14",
+                    "EndDate": "2024-06-07",
+                    "SeasonName": "2023-2024",
+                    "TeamID": "a1NHs00000Ahf2zMAB",
+                    "TeamName": "Guadalupe SELECTA",
+                    "SchoolSiteId": "0015000002HvvVwAAJ",
+                    "SchoolSiteName": "Guadalupe Elementary School"
+                  }
+                ] 
+/regions:
+  get:
+    displayName: Retrieve regions
+    description: Retrieves regions that contain school sites
+    responses:
+      200:
+        body:
+          application/json:
+      400: 
+        body:
+          application/json:
+            example:
+              message: Bad Request
+      404:
+        body:
+          application/json:
+            example:
+              message: regions not found 
+              
+  /{regionName}/schoolsites:
+    get:
+      displayName: Retrieve schoolsites
+      description: Retrieves school sites filtered by region
+      responses:
+        200:
+          body:
+            application/json:
+              type: types.SchoolSite[]
+        400: 
+          body:
+            application/json:
+              example:
+                message: Bad Request
+        404:
+          body:
+            application/json:
+              example:
+                message: schoolsites not found                          
+/waiver:
+  get:
+    displayName: Retrieve waiver
+    description: Retrieves waiver content filtered by region
+    queryParameters:
+      region:
+        displayName: region
+        description: Region Name
+        type: string
+        required: true
+    responses:
+      200:
+        body:
+          application/json:
+      400: 
+        body:
+          application/json:
+            example:
+              message: Bad Request
+      404:
+        body:
+          application/json:
+            example:
+              message: Waiver not found
+  /{waiverId}:
+    post:
+      displayName: Save waiver response
+      description: Save waiver response with contact info
+      body: 
+        application/json:                       
+      responses:
+        200: 
+          description: Waiver History saved
+          body:
+            application/json:
+              example:
+                message: Saved waiver history
+        400:
+          body:
+            application/json:
+              example:
+                message: Bad request
+        404: 
+          body:
+            application/json:
+              example:
+                message: Waiver not found                                  
 /sessions:
   post:
     displayName: Create a session
@@ -253,7 +468,7 @@ uses:
         displayName: Date
         description: Session date
         type: date-only
-        required: false
+        required: true
     responses:
       200:
         body:
@@ -290,7 +505,7 @@ uses:
             application/json:
               example:
                 message: Session not found
-              
+    
     delete:
       displayName: Delete session
       description: Delete session for given session id
@@ -309,8 +524,45 @@ uses:
           body:
             application/json:
               example:
-                message: Session not found    
-      
+                message: Session not found   
+
+    /assessments:
+      get:
+        description: get assessment records for SessionId
+        responses:
+          200:
+            body:
+              application/json:
+                type: types.Assessment[]
+          400:
+            body:
+              application/json:
+                example:
+                  message: bad request
+          404:
+            body:
+              application/json:
+                example:
+                  message: assessments not found for sessionId
+    /assessment:
+        post:
+          description: create a new assessment 
+          body:
+            application/json:
+              type: types.AssessmentCreateModel
+          responses:
+            200:
+              description: Success
+              body:
+                application/json:
+                  example:
+                    message: assessment created
+            400:
+              description: Unsuccessful
+              body:
+                application/json:
+                  example:
+                    message: Error in creating assessment!  
 /attendances:
   post:
     displayName: Create an attendance record 
@@ -420,12 +672,12 @@ uses:
                 message: Team-Seasons Not Found
   /teamseasons:
     get:
-      description: Retrieves a list of all Team-Seasons that the user(coach) is a part of
+      description: Retrieves a list of all Team-Seasons that the user(coach) is a part of for a given Season
       queryParameters:
-        date:
-          displayName: Date
-          description: Date selected in the mobile app
-          type: date-only
+        season:
+          displayName: Season
+          description: Season selected in the mobile app
+          type: string
           required: true
       responses:
         200:
@@ -445,65 +697,6 @@ uses:
               example:
                 message: Team-Seasons Not Found
 
-    /{teamSeasonId}/assessments:
-      get:
-        description: Get Assessments for a TeamSeason 
-        responses:
-          200:
-            body:
-              application/json:
-                type: types.Assessment[]   
-          400:
-            body:
-              application/json:
-                example:
-                  message: Error retrieving assessments
-          404:
-            body:
-              application/json:
-                example:
-                  message: No assessments found
-      patch:
-        displayName: Update Assessment
-        description: Update Assessment for given id
-        body:
-          application/json:
-            type: types.AssessmentUpdateModel
-        responses:
-          200:
-            body:
-              application/json:
-                example:
-                  message: Assessment updated
-          400:
-            body:
-              application/json:
-                example:
-                  message: Bad request for updating Assessment!
-          404:
-            body:
-              application/json:
-                example:
-                  message: Assessment not found!
-      post:
-        description: create a new session while using app
-        body:
-          application/json:
-            type: types.AssessmentCreateModel
-        responses:
-          200:
-            description: Success
-            body:
-              application/json:
-                example:
-                  message: assessment created
-          400:
-            description: Unsuccessful
-            body:
-              application/json:
-                example:
-                  message: Error in creating assessment
-      
     /{teamSeasonId}/sessions:
       get:
         description: Get Sessions for a TeamSeason and given date
@@ -593,7 +786,25 @@ uses:
                 application/json:
                   example: 
                     message: Error updating attendance list.
-
+      /{sessionId}/assessments:
+        post:
+          description: create a new assessment 
+          body:
+            application/json:
+              type: types.AssessmentCreateModel
+          responses:
+            200:
+              description: Success
+              body:
+                application/json:
+                  example:
+                    message: assessment created
+            400:
+              description: Unsuccessful
+              body:
+                application/json:
+                  example:
+                    message: Error in creating assessment!
     /{teamSeasonId}/enrollments:
       get:
         description: Get enrollments for a given session
@@ -642,12 +853,64 @@ uses:
             application/json:
               example:
                 message: Team-Seasons Not Found
-    
-/schoolsites:
+
+
+
+
+/assessments/{studentId}:
   get:
-    description: Get all valid school sites
+    description: Get assessments for a given student
     responses:
       200:
         body:
           application/json:
-            type: types.SchoolSite[]
+            type: types.Assessment[]   
+      400:
+        body:
+          application/json:
+            example:
+              message: Error retrieving enrollments
+      404:
+        body:
+          application/json:
+            example:
+              message: Student has no assessments
+
+  /{assessmentId}:
+    patch:
+      displayName: Update Assessment
+      description: update assessment record
+      body:
+        application/json:
+          description: Payload should be an Assessment object 
+          type: types.AssessmentUpdateModel 
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                message: Assessment updated
+        400: 
+          body:
+            application/json:
+                example:
+                  message: Error updating Assessment
+        404: 
+          body:
+            application/json:
+              example:
+                  message: Assessment Not Found 
+
+/useraccount:
+  get:
+    description: Get user account details for given query params
+    queryParameters:
+      phoneNumber:
+        displayName: phoneNumber
+        description: User phone number
+        type: string
+    responses:
+      200:
+        body:
+          application/json:
+            type: types.UserAccount
