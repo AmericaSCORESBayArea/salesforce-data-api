@@ -44,10 +44,20 @@ uses:
     description: Get TeamSeasons for given query params
     queryParameters:
       date:
-        displayName: Date
+        displayName: date
         description: TeamSeason Start Date
         type: date-only
         required: true
+      endDate:
+        displayName: endDate
+        description: TeamSeason End Date (by default, today's date)
+        type: date-only
+        required: false
+      isWithinDateRange:
+        displayName: isWithinDateRange
+        description: If **enabled**, returns `teamSeasons` between the start and end dates (If end date is not provided, returns all `teamSeasons` after the start date) If **disabled**, returns `teamSeasons` with start date equal to the give date.
+        type: boolean
+        required: false
     responses:
       200:
         body:
