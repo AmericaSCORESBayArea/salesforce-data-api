@@ -113,7 +113,40 @@ uses:
           body:
             application/json:
               example:
-                message: Seasons not found    
+                message: Seasons not found 
+  /{seasonId}:
+    uriParameters:
+      seasonId:
+        description: The unique identifier for the season
+        type: string
+        required: true
+        pattern: "^[A-Za-z0-9]{18}$"
+    /teamSeasons:
+      get:
+        description: Get a list of teamSeasons based on SeasonId and Region Name
+        queryParameters:
+          region:
+            displayName: Region
+            description: Associated region
+            type: string
+            required: false
+        responses:
+          200:
+            description: Successfully retrieved user's Team-Seasons
+            body:
+              application/json:
+                type: types.TeamSeasonBaseModel[]
+          400: 
+            body:
+              application/json:
+                example:
+                  message: Error retrieving Team-Seasons
+          404: 
+            body:
+              application/json:
+                example:
+                  message: Team-Seasons Not Found
+      
 /enrollments:
   post:
     description: Create a new Enrollment for a TeamSeason
