@@ -1,0 +1,184 @@
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="get:\seasons\(seasonId)\teamSeasons:salesforce-data-api-config">
+		<flow-ref doc:name="entry-flow" doc:id="f03c84fc-4bd0-4686-b017-4dbdb6308788" name="entry-flow" />
+		<logger level="INFO" message='Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath].' doc:name="Method and request path" doc:id="dvnloj" />
+		<ee:transform doc:name="Store URI parameter (seasonId)" doc:id="f0ca847c-2413-4e76-bde8-9aec2edd7b7d">
+			<ee:variables>
+				<ee:set-variable variableName="seasonId">
+					<![CDATA[attributes.uriParams.'seasonId']]>
+				</ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<ee:transform doc:name="Store `region` (query parameter)" doc:id="0d5c09b6-6426-4e0e-a056-31a4d65764d4">
+			<ee:message />
+			<ee:variables>
+				<ee:set-variable variableName="region">
+					<![CDATA[
+        				(attributes.queryParams.'region' default null)
+        			]]>
+				</ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger level="INFO" message='Provided bariables: `seasonId`: #[vars.seasonid], `region`: #[vars.region]' doc:name="Provided varaibles" doc:id="zyenuv" />
+		<choice doc:name="Choice" doc:id="ewsjie">
+			<when expression='#[isEmpty(vars.region)]'>
+				<salesforce:query doc:name="Query" doc:id="09cc2d2c-6b33-49fe-96e1-534e448b7af8" config-ref="Salesforce_Config">
+					<salesforce:salesforce-query>
+						<![CDATA[
+			SELECT 
+				Anticipated_Players_Enrollment__c,
+				Coach_Soccer__c,
+				Coach_Writing__c,
+				Season__r.Id,
+				CreatedById,
+				CreatedDate,
+				Date_Last_Session_Attended__c,
+				Id,
+				IsDeleted,
+				LastActivityDate,
+				LastModifiedById,
+				LastModifiedDate,
+				LastReferencedDate,
+				LastViewedDate,
+				Name,
+				Number_of_Attendance_Completed__c,
+				Number_of_Attendance_Incomplete__c,
+				Number_of_Students_Absent__c,
+				Number_of_Students_Present__c,
+				Number_of_Team_Seasons__c,
+				Partnership__c,
+				Percent_of_Attendance_Completed__c,
+				Percent_of_Students_Present__c,
+				Schedule__c,
+				School_Site__c,
+				SCORES_Program_Coordinator__r.Name,
+				SCORES_Program_Manager__r.Name,
+				Season_End_Date__c,
+				Season_Start_Date__c,
+				Season__c,
+				SystemModstamp,
+				Team__c,
+				Total_Number_of_Players__c,
+				Total_Number_of_Sessions__c,
+				Coach_Soccer__r.Name,
+				Coach_Writing__r.Name,
+				Team__r.Name,
+				Season__r.Name,
+				Team__r.School_Site__r.Region__c 
+			FROM 
+				Team_Season__c 
+			WHERE 
+				Season__r.Id = ':seasonId'
+			ORDER BY 
+				Season_End_Date__c DESC
+			]]>
+					</salesforce:salesforce-query>
+					<salesforce:parameters>
+						<![CDATA[#[output application/java
+					---
+					{
+						seasonId : vars.seasonId as String,
+					}
+				]]]>
+					</salesforce:parameters>
+				</salesforce:query>
+			</when>
+			<otherwise>
+				<salesforce:query doc:name="Query" doc:id="09cc2d2c-6b43-49fe-96e1-534e448b7af8" config-ref="Salesforce_Config">
+					<salesforce:salesforce-query>
+						<![CDATA[
+			SELECT 
+				Anticipated_Players_Enrollment__c,
+				Coach_Soccer__c,
+				Coach_Writing__c,
+				Season__r.Id,
+				CreatedById,
+				CreatedDate,
+				Date_Last_Session_Attended__c,
+				Id,
+				IsDeleted,
+				LastActivityDate,
+				LastModifiedById,
+				LastModifiedDate,
+				LastReferencedDate,
+				LastViewedDate,
+				Name,
+				Number_of_Attendance_Completed__c,
+				Number_of_Attendance_Incomplete__c,
+				Number_of_Students_Absent__c,
+				Number_of_Students_Present__c,
+				Number_of_Team_Seasons__c,
+				Partnership__c,
+				Percent_of_Attendance_Completed__c,
+				Percent_of_Students_Present__c,
+				Schedule__c,
+				School_Site__c,
+				SCORES_Program_Coordinator__r.Name,
+				SCORES_Program_Manager__r.Name,
+				Season_End_Date__c,
+				Season_Start_Date__c,
+				Season__c,
+				SystemModstamp,
+				Team__c,
+				Total_Number_of_Players__c,
+				Total_Number_of_Sessions__c,
+				Coach_Soccer__r.Name,
+				Coach_Writing__r.Name,
+				Team__r.Name,
+				Season__r.Name,
+				Team__r.School_Site__r.Region__c 
+			FROM 
+				Team_Season__c 
+			WHERE 
+				Season__r.Id = ':seasonId'
+				AND
+				Team__r.School_Site__r.Region__c  = ':region'
+			ORDER BY 
+				Season_End_Date__c DESC
+			]]>
+					</salesforce:salesforce-query>
+					<salesforce:parameters>
+						<![CDATA[#[output application/java
+					---
+					{
+						seasonId : vars.seasonId as String,
+						region: vars.region as String
+					}
+				]]]>
+					</salesforce:parameters>
+				</salesforce:query>
+			</otherwise>
+
+		</choice>
+		<ee:transform doc:name="Create Response" doc:id="8a2e5e69-2df1-459b-9aeb-60c9c5198763">
+			<ee:message>
+				<ee:set-payload>
+					<![CDATA[%dw 2.0
+						output application/json
+						---
+						payload map ( payload01 , indexOfPayload01 ) -> {
+							SeasonStartDate: payload01.Season_Start_Date__c as String default "",
+							TotalNoOfSessions: payload01.Total_Number_of_Sessions__c default 0,
+							CoachWriting: payload01.Coach_Writing__r.Name default  "" as String,
+							Partnership: payload01.Partnership__c default "",
+							SeasonName: payload01.Season__r.Name default "" as String,
+							TotalNoOfPlayers: payload01.Total_Number_of_Players__c default 0,
+							TeamSeasonName: payload01.Name default "",
+							CoachSoccer: payload01.Coach_Soccer__r.Name,
+							TeamSeasonId: payload01.Id default "",
+							TeamName: payload01.Team__r.Name default "" as String,
+							SchoolSite: payload01.School_Site__c default "",
+							SeasonEndDate: payload01.Season_End_Date__c as String default "",
+							ScoresProgramManager: payload01.SCORES_Program_Manager__r.Name default  "" as String,
+							ProgramCoordinator:  payload01.SCORES_Program_Coordinator__r.Name default  "" as String,
+							Region: payload01.Team__r.School_Site__r.Region__c,
+							SeasonId: payload01.Season__r.Id default "" as String
+						}
+					]]>
+				</ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Log Created Response" doc:id="92e9c386-35b3-4d98-be23-c9749a746778" message="#[payload]" />
+		<flow-ref doc:name="exit-flow" doc:id="bd0b5388-10ca-4a51-b191-f04cd7855832" name="exit-flow" />
+	</flow>
+</mule>
