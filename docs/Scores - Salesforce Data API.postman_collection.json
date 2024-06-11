@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "28c75169-8268-4b26-9e52-ab530dcfaa90",
+		"_postman_id": "db9aaab2-9413-4245-abb0-b21a90221066",
 		"name": "Scores - Salesforce Data API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "34720049"
@@ -184,7 +184,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/teamSeasons?date=2019-01-04",
+							"raw": "{{base_url}}/teamSeasons?date=2019-01-01&endDate=2019-09-01&isWithinDateRange=true",
 							"host": [
 								"{{base_url}}"
 							],
@@ -194,7 +194,15 @@
 							"query": [
 								{
 									"key": "date",
-									"value": "2019-01-04"
+									"value": "2019-01-01"
+								},
+								{
+									"key": "endDate",
+									"value": "2019-09-01"
+								},
+								{
+									"key": "isWithinDateRange",
+									"value": "true"
 								}
 							]
 						}
