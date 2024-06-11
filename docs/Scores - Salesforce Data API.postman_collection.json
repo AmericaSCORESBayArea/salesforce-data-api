@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "6c9f54a0-c4bc-48a5-adbc-0cc165ebf853",
+		"_postman_id": "28c75169-8268-4b26-9e52-ab530dcfaa90",
 		"name": "Scores - Salesforce Data API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "34720049"
@@ -291,6 +291,41 @@
 							],
 							"path": [
 								"seasons"
+							]
+						},
+						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
+					},
+					"response": []
+				},
+				{
+					"name": "/seasons/{seasonId}/teamSeasons",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/seasons/a0o1T000005QRU1QAO/teamSeasons?region=San Francisco Crocker",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"seasons",
+								"a0o1T000005QRU1QAO",
+								"teamSeasons"
+							],
+							"query": [
+								{
+									"key": "region",
+									"value": "San Francisco Crocker"
+								}
 							]
 						},
 						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
