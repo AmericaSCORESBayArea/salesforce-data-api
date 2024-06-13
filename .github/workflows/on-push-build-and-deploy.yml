@@ -55,11 +55,11 @@ jobs:
           exit 1
         fi
     
-        sed -i "s/sfdc.tkn=/sfdc.tkn=${{ secrets.sfdc_tkn }}/" src/main/resources/properties/sandbox.properties
+        sed -i "s/sfdc.tkn=/sfdc.tkn=${{ secrets.sfdc_sandbox_integrationuser_tkn }}/" src/main/resources/properties/sandbox.properties
         sed -i "s/sfdc.password=/sfdc.password=${{ secrets.sfdc_sandbox_integrationuser_pwd }}/" src/main/resources/properties/sandbox.properties
-        sed -i "s/typeform.clientid=/typeform.clientid=${{ secrets.typeform.clientid }}/" src/main/resources/properties/sandbox.properties
-        sed -i "s/typeform.clientsecret=/typeform.clientsecret=${{ secrets.typeform.clientsecret }}/" src/main/resources/properties/sandbox.properties
-        sed -i "s/typeform.tkn=/typeform.tkn=${{ secrets.typeform.tkn }}/" src/main/resources/properties/sandbox.properties
+        sed -i "s/typeform.clientid=/typeform.clientid=${{ secrets.typeform_clientid }}/" src/main/resources/properties/sandbox.properties
+        sed -i "s/typeform.clientsecret=/typeform.clientsecret=${{ secrets.typeform_clientsecret }}/" src/main/resources/properties/sandbox.properties
+        sed -i "s/typeform.tkn=/typeform.tkn=${{ secrets.typeform_tkn }}/" src/main/resources/properties/sandbox.properties
     - name: Print effective-settings
       run: mvn help:effective-settings
     - name: Print effective-pom
