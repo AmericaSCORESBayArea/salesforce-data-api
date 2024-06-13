@@ -37,6 +37,19 @@ jobs:
            "username": "${{ secrets.anypoint_cicd_username }}",
            "password": "${{ secrets.anypoint_cicd_password }}"
           }]
+    - name: Insert Secret Properties to the .properties file
+      env:
+        SFDC_TKN: ${{ secrets.sfdc_tkn }}
+        SFDC_PASSWORD: ${{ secrets.sfdc_sandbox_integrationuser_pwd }}
+        TYPEFORM_CLIENTID: ${{ secrets.typeform_clientid }}
+        TYPEFORM_CLIENTSECRET: ${{ secrets.typeform_clientsecret }}
+        TYPEFORM_TKN: ${{ secrets.typeform_tkn }}
+      run: | 
+        sed -i 's/sfdc.tkn=/sfdc.tkn='${{ secrets.sfdc_tkn }}'/' properties/sandbox.properties
+        sed -i 's/sfdc.password=/sfdc.password='${{ secrets.sfdc_sandbox_integrationuser_pwd }}'/' properties/sandbox.properties
+        sed -i 's/typeform.clientid=/typeform.clientid='${{ secrets.typeform_clientid }}'/' properties/sandbox.properties
+        sed -i 's/typeform.clientsecret=/typeform.clientsecret='${{ secrets.typeform_clientsecret }}'/' properties/sandbox.properties
+        sed -i 's/typeform.tkn=/typeform.tkn='${{ secrets.typeform_tkn }}'/' properties/sandbox.properties
     - name: Print effective-settings
       run: mvn help:effective-settings
     - name: Print effective-pom
