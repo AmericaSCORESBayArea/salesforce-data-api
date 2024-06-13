@@ -44,12 +44,18 @@ jobs:
         TYPEFORM_CLIENTID: ${{ secrets.typeform_clientid }}
         TYPEFORM_CLIENTSECRET: ${{ secrets.typeform_clientsecret }}
         TYPEFORM_TKN: ${{ secrets.typeform_tkn }}
-      run: | 
+      run: |
+        echo "Before replacing secrets:"
+        grep -E 'sfdc.tkn=|sfdc.password=|typeform.clientid=|typeform.clientsecret=|typeform.tkn=' src/main/resources/properties/sandbox.properties
+    
         sed -i "s/sfdc.tkn=/sfdc.tkn=${{ secrets.sfdc_tkn }}/" src/main/resources/properties/sandbox.properties
         sed -i "s/sfdc.password=/sfdc.password=${{ secrets.sfdc_sandbox_integrationuser_pwd }}/" src/main/resources/properties/sandbox.properties
         sed -i "s/typeform.clientid=/typeform.clientid=${{ secrets.typeform_clientid }}/" src/main/resources/properties/sandbox.properties
         sed -i "s/typeform.clientsecret=/typeform.clientsecret=${{ secrets.typeform_clientsecret }}/" src/main/resources/properties/sandbox.properties
         sed -i "s/typeform.tkn=/typeform.tkn=${{ secrets.typeform_tkn }}/" src/main/resources/properties/sandbox.properties
+    
+        echo "After replacing secrets:"
+        grep -E 'sfdc.tkn=|sfdc.password=|typeform.clientid=|typeform.clientsecret=|typeform.tkn=' src/main/resources/properties/sandbox.properties
     - name: Print effective-settings
       run: mvn help:effective-settings
     - name: Print effective-pom
