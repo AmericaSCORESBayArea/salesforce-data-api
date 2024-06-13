@@ -39,7 +39,7 @@ jobs:
           }]
     - name: Insert Secret Properties to the .properties file
       env:
-        SFDC_TKN: ${{ secrets.sfdc_tkn }}
+        SFDC_TKN: ${{ secrets.sfdc_sandbox_integrationuser_tkn }}
         SFDC_PASSWORD: ${{ secrets.sfdc_sandbox_integrationuser_pwd }}
         TYPEFORM_CLIENTID: ${{ secrets.typeform_clientid }}
         TYPEFORM_CLIENTSECRET: ${{ secrets.typeform_clientsecret }}
