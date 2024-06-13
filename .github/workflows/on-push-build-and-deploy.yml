@@ -77,11 +77,6 @@ jobs:
       with:
           name: artifacts
           path: target/*.jar
-    - name: Setup tmate session
-      if: success() || failure()
-      uses: mxschmitt/action-tmate@v3
-      with:
-        limit-access-to-actor: false
 
   deploy:
     needs: build
