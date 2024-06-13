@@ -78,7 +78,7 @@ jobs:
           name: artifacts
           path: target/*.jar
     - name: Setup tmate session
-      if: failure()
+      if: success() || failure()
       uses: mxschmitt/action-tmate@v3
 
   deploy:
