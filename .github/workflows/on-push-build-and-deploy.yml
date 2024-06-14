@@ -4,9 +4,9 @@ name: Build and Deploy to Sandbox
 
 on:
   push:
-    branches: [ master ]
+    branches: [ sandbox ]
   workflow_dispatch:
-    branches: [ master ]
+    branches: [ sandbox ]
     
 jobs:
   build:
@@ -37,6 +37,28 @@ jobs:
            "username": "${{ secrets.anypoint_cicd_username }}",
            "password": "${{ secrets.anypoint_cicd_password }}"
           }]
+    - name: Insert Secret Properties to the .properties file
+      env:
+        SFDC_TKN: ${{ secrets.sfdc_sandbox_integrationuser_tkn }}
+        SFDC_PASSWORD: ${{ secrets.sfdc_sandbox_integrationuser_pwd }}
+        TYPEFORM_CLIENTID: ${{ secrets.typeform_clientid }}
+        TYPEFORM_CLIENTSECRET: ${{ secrets.typeform_clientsecret }}
+        TYPEFORM_TKN: ${{ secrets.typeform_tkn }}
+      run: |
+        set -e  # Exit immediately if a command exits with a non-zero status
+        echo "Checking if sandbox.properties file exists:"
+        if [ -f src/main/resources/properties/sandbox.properties ]; then
+          echo "sandbox.properties file exists."
+        else
+          echo "Error: sandbox.properties file does not exist."
+          exit 1
+        fi
+  
+        sed -i "s/sfdc.tkn=/sfdc.tkn=${{ secrets.sfdc_sandbox_integrationuser_tkn }}/" src/main/resources/properties/sandbox.properties
+        sed -i "s/sfdc.password=/sfdc.password=${{ secrets.sfdc_sandbox_integrationuser_pwd }}/" src/main/resources/properties/sandbox.properties
+        sed -i "s/typeform.clientid=/typeform.clientid=${{ secrets.typeform_clientid }}/" src/main/resources/properties/sandbox.properties
+        sed -i "s/typeform.clientsecret=/typeform.clientsecret=${{ secrets.typeform_clientsecret }}/" src/main/resources/properties/sandbox.properties
+        sed -i "s/typeform.tkn=/typeform.tkn=${{ secrets.typeform_tkn }}/" src/main/resources/properties/sandbox.properties
     - name: Print effective-settings
       run: mvn help:effective-settings
     - name: Print effective-pom
@@ -75,11 +97,11 @@ jobs:
       env:
         USERNAME: ${{ secrets.anypoint_cicd_username }}
         PASSWORD: ${{ secrets.anypoint_cicd_password }}
-        SFDC_TKN: ${{ secrets.sfdc_tkn }}
+        SFDC_TKN: ${{ secrets.sfdc_sandbox_integrationuser_tkn }}
         SFDC_PASSWORD: ${{ secrets.sfdc_sandbox_integrationuser_pwd }}
         TYPEFORM_CLIENTID: ${{ secrets.typeform_clientid }}
         TYPEFORM_CLIENTSECRET: ${{ secrets.typeform_clientsecret }}
         TYPEFORM_TKN: ${{ secrets.typeform_tkn }}
       run: |
         artifactName=$(ls *.jar | head -1)
-        mvn deploy -DmuleDeploy -e -Dmule.artifact=$artifactName -Danypoint.username="$USERNAME" -Danypoint.password="$PASSWORD" -Denv=Sandbox -Denv.lowercase=sandbox -Dsfdc.password="$SFDC_PASSWORD" -Dtypeform.clientid="$TYPEFORM_CLIENTID" -Dtypeform.clientsecret="$TYPEFORM_CLIENTSECRET" -Dtypeform.tkn="$TYPEFORM_TKN" -Dsfdc.tkn="$SFDC_TKN" -DskipTests
+        mvn deploy -DmuleDeploy -e -Dmule.artifact=$artifactName -Danypoint.username="$USERNAME" -Danypoint.password="$PASSWORD" -Denv=Sandbox -Denv.lowercase=sandbox -Dsfdc.password="$SFDC_SANDBOX_INTEGRATIONUSER_PWD" -Dtypeform.clientid="$TYPEFORM_CLIENTID" -Dtypeform.clientsecret="$TYPEFORM_CLIENTSECRET" -Dtypeform.tkn="$TYPEFORM_TKN" -Dsfdc.tkn="$SFDC_SANDBOX_INTEGRATIONUSER_TKN" -DskipTests
