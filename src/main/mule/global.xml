@@ -2,7 +2,7 @@
   <http:listener-config name="salesforce-data-api-httpListenerConfig">
     <http:listener-connection host="${http.host}" port="${http.private.port}"></http:listener-connection>
   </http:listener-config>
-  <apikit:config api="resource::6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd:salesforce-data-api:4.0.2:raml:zip:salesforce-data-api.raml" disableValidations="false" httpStatusVarName="httpStatus" name="salesforce-data-api-config" outboundHeadersMapName="outboundHeaders"></apikit:config>
+  <apikit:config api="resource::6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd:salesforce-data-api:4.0.3:raml:zip:salesforce-data-api.raml" disableValidations="false" httpStatusVarName="httpStatus" name="salesforce-data-api-config" outboundHeadersMapName="outboundHeaders"></apikit:config>
   <salesforce:sfdc-config doc:id="2a1bf2bd-81d6-4865-8976-cb3072a34787" doc:name="Salesforce Config" name="Salesforce_Config">
     <salesforce:basic-connection password="${sfdc.password}" securityToken="${sfdc.tkn}" url="${sfdc.url}" username="${sfdc.user}"></salesforce:basic-connection>
   </salesforce:sfdc-config>
