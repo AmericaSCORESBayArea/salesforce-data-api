@@ -685,8 +685,19 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 				<ee:set-variable variableName="searchString">
 					<![CDATA[attributes.queryParams.'searchString']]>
 				</ee:set-variable>
+				<ee:set-variable variableName="region">
+					<![CDATA[attributes.queryParams.'region']]>
+				</ee:set-variable>
 			</ee:variables>
 		</ee:transform>
+		<choice doc:name="Choice">
+           <when expression="#[isEmpty(vars.region)]">
+               <set-variable variableName="regionQueryCondition" value=""/>
+           </when>
+           <otherwise>	
+				<set-variable variableName="regionQueryCondition" value="#[' AND Region__c = \'' ++ (vars.region default '') ++ '\'']"/>
+           </otherwise>
+       </choice>
 		<salesforce:search doc:name="Search" doc:id="f195a55e-9140-44b5-b60e-1809649ef0a3" config-ref="Salesforce_Config">
 			<salesforce:search-string>
 				<![CDATA[
@@ -748,7 +759,8 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 				Media_Release__c,
 				Data_Release__c 
 			WHERE 
-				Contact_Type__c = 'SCORES Student'
+				(Contact_Type__c = 'SCORES Student'
+				:regionQuery)
 			) 
 			LIMIT 8
 			]]>
@@ -757,7 +769,8 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 				<![CDATA[#[output application/java
 ---
 {
-	searchString : vars.searchString
+	searchString : vars.searchString,
+	regionQuery : vars.regionQueryCondition
 }]]]>
 			</salesforce:parameters>
 		</salesforce:search>
