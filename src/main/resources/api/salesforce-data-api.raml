@@ -282,11 +282,17 @@ uses:
           description: Phone number
           type: string
           required: true
+          pattern: '^\+?[1-9]\d{1,14}$'  # E.164 international phone number format
       responses:
         200:
           body:
             application/json:
               type: types.Contact[]
+        400:
+          body:
+            application/json:
+              example:
+                message: Invalid phone number format. The phone number must be in E.164 format.
 
   /{contactId}:
     get:
