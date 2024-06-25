@@ -88,27 +88,27 @@
             <version>1.0.2</version>
             <scope>test</scope>
         </dependency>
-        <!-- <dependency>
+        <dependency>
             <groupId>6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd</groupId>
             <artifactId>salesforce-data-api</artifactId>
             <version>4.0.3</version>
             <classifier>raml</classifier>
             <type>zip</type>
-        </dependency> -->
-        <!-- <dependency>
-			<groupId>com.mulesoft.munit</groupId>
-			<artifactId>munit-tools</artifactId>
-			<version>2.3.14</version>
-			<classifier>mule-plugin</classifier>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.mulesoft.munit</groupId>
-			<artifactId>munit-runner</artifactId>
-			<version>2.3.14</version>
-			<classifier>mule-plugin</classifier>
-			<scope>test</scope>
-		</dependency> -->
+        </dependency>
+        <dependency>
+		<groupId>com.mulesoft.munit</groupId>
+		<artifactId>munit-tools</artifactId>
+		<version>2.3.14</version>
+		<classifier>mule-plugin</classifier>
+		<scope>test</scope>
+	</dependency>
+	<dependency>
+		<groupId>com.mulesoft.munit</groupId>
+		<artifactId>munit-runner</artifactId>
+		<version>2.3.14</version>
+		<classifier>mule-plugin</classifier>
+		<scope>test</scope>
+	</dependency>
         <dependency>
             <groupId>org.mule.connectors</groupId>
             <artifactId>mule-http-connector</artifactId>
@@ -120,6 +120,13 @@
             <artifactId>mule-sockets-connector</artifactId>
             <version>1.2.3</version>
             <classifier>mule-plugin</classifier>
+        </dependency>
+	<dependency>
+            <groupId>6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd</groupId>
+            <artifactId>salesforce-data-api</artifactId>
+            <version>4.0.3</version>
+            <classifier>raml</classifier>
+            <type>zip</type>
         </dependency>
         <dependency>
             <groupId>org.mule.modules</groupId>
@@ -133,6 +140,20 @@
             <version>10.18.3</version>
             <classifier>mule-plugin</classifier>
         </dependency>
+	<!-- <dependency>
+			<groupId>com.mulesoft.munit</groupId>
+			<artifactId>munit-tools</artifactId>
+			<version>2.3.14</version>
+			<classifier>mule-plugin</classifier>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.mulesoft.munit</groupId>
+			<artifactId>munit-runner</artifactId>
+			<version>2.3.14</version>
+			<classifier>mule-plugin</classifier>
+			<scope>test</scope>
+		</dependency> -->
     </dependencies>
     <repositories>
         <repository>
