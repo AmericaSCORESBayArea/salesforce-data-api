@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "db9aaab2-9413-4245-abb0-b21a90221066",
+		"_postman_id": "881aed75-e69b-47fc-bdbe-e4afa4893ac7",
 		"name": "Scores - Salesforce Data API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "34720049"
@@ -787,6 +787,23 @@
 			"item": [
 				{
 					"name": "/regions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/regions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"regions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/regions/active",
 					"request": {
 						"method": "GET",
 						"header": [],
