@@ -8,7 +8,7 @@
   ],
   "redeploymentEnabled": true,
   "name": "secure-properties",
-  "minMuleVersion": "4.4.0",
+  "minMuleVersion": "4.6.3",
   "requiredProduct": "MULE_EE",
   "classLoaderModelLoaderDescriptor": {
     "id": "mule",
@@ -21,6 +21,6 @@
     "attributes": {}
   },
   "javaSpecificationVersions": [
-    "11"
+    "17"
   ]
 }
