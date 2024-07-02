@@ -282,11 +282,17 @@ uses:
           description: Phone number
           type: string
           required: true
+          pattern: '^\+?[1-9]\d{1,14}$'  # E.164 international phone number format
       responses:
         200:
           body:
             application/json:
               type: types.Contact[]
+        400:
+          body:
+            application/json:
+              example:
+                message: Invalid phone number format. The phone number must be in E.164 format.
 
   /{contactId}:
     get:
@@ -417,7 +423,25 @@ uses:
           application/json:
             example:
               message: regions not found 
-              
+  /active:
+    get:
+      displayName: Retrieve Active Regions
+      description: |
+        Retrieves a list of active regions. Each region includes only the region name.
+      responses:
+        200:
+          description: A list of active regions with school sites.
+          body:
+            application/json:
+              example: |
+                [
+                  {
+                    "RegionName": "North Region"
+                  },
+                  {
+                    "RegionName": "South Region"
+                  }
+                ]
   /{regionName}/schoolsites:
     get:
       displayName: Retrieve schoolsites
