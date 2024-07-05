@@ -4,11 +4,13 @@
 	http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd
 	http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd">
   <http:listener-config name="salesforce-data-api-httpListenerConfig">
-        <http:listener-connection host="${http.listener.host}" port="${http.listener.port}"></http:listener-connection>
+    <http:listener-connection host="${http.listener.host}" port="${http.listener.port}" tlsContext="tls-context" protocol="HTTPS"></http:listener-connection>
   </http:listener-config>
-  <apikit:config api="salesforce-data-api.raml" disableValidations="false" httpStatusVarName="httpStatus" name="salesforce-data-api-config" outboundHeadersMapName="outboundHeaders"></apikit:config>
-  <salesforce:sfdc-config doc:id="5f66efdc-67a7-42c7-97ef-420e32118489" doc:name="Salesforce Config" name="Salesforce_Config">
+  
+  <apikit:config api="resource::6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd:salesforce-data-api:4.0.4:raml:zip:salesforce-data-api.raml" disableValidations="false" httpStatusVarName="httpStatus" name="salesforce-data-api-config" outboundHeadersMapName="outboundHeaders"></apikit:config>
+  <salesforce:sfdc-config doc:id="5f66efdc-67a7-42c7-97ef-430e32118489" doc:name="Salesforce Config" name="Salesforce_Config">
     <salesforce:basic-connection password="${sfdc.password}" securityToken="${sfdc.tkn}" url="${sfdc.url}" username="${sfdc.user}"></salesforce:basic-connection>
   </salesforce:sfdc-config>
-  <configuration-properties doc:id="0863edff-f537-40bd-b6de-0d4d7c3d55db" doc:name="Configuration properties" file="properties/${env}.properties"></configuration-properties>
+  <configuration-properties doc:id="0863edff-f537-40bd-b6de-0d5d7c3d55db" doc:name="Configuration properties" file="properties/${env}.properties"></configuration-properties>
+	<api-gateway:autodiscovery apiId="${api.id}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="db48c567-5713-4072-ba01-458941f5c8f1" flowRef="salesforce-data-api-main" />
 </mule>
