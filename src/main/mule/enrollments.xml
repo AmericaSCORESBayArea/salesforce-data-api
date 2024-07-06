@@ -138,10 +138,11 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 				Id = ':enrollmentId'
 			]]></salesforce:salesforce-query>
 			<salesforce:parameters><![CDATA[#[output application/java
----
-{
-	enrollmentId : vars.enrollmentId
-}]]]></salesforce:parameters>
+				---
+				{
+					enrollmentId : vars.enrollmentId
+				}]]]>
+			</salesforce:parameters>
 		</salesforce:query>
 		<ee:transform
 			xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
@@ -149,28 +150,79 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			doc:id="5194d465-d73d-4f19-a5c9-252f50062a57">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-(payload map ( payload01 , indexOfPayload01 ) -> {
-	EnrollmentId: payload01.Id default "",
-	EnrollmentName: payload01.Name default "",
-	TeamSeasonId: payload01.Team_Season__c default "",
-	StudentId: payload01.Contact__c default "",
-	StudentName: payload01.Contact__r.Name default "",
-	FirstName: payload01.Contact__r.FirstName,
-	LastName: payload01.Contact__r.LastName,
-	Birthdate: payload01.Contact__r.Birthdate default "",
-	Gender: payload01.Contact__r.Gender__c default "",
-	Ethnicity: payload01.Contact__r.Ethnicity__c default "",
-	ZipCode: payload01.Contact__r.Zip_First_Five_Digits__c default ""
-}) reduce ($$ ++ $)]]></ee:set-payload>
+					output application/json
+					---
+					payload map ( payload01 , indexOfPayload01 ) -> {
+						EnrollmentId: payload01.Id default "",
+						EnrollmentName: payload01.Name default "",
+						TeamSeasonId: payload01.Team_Season__c default "",
+						StudentId: payload01.Contact__c default "",
+						StudentName: payload01.Contact__r.Name default "",
+						FirstName: payload01.Contact__r.FirstName,
+						LastName: payload01.Contact__r.LastName,
+						Birthdate: payload01.Contact__r.Birthdate default "",
+						Gender: payload01.Contact__r.Gender__c default "",
+						Ethnicity: payload01.Contact__r.Ethnicity__c default "",
+						ZipCode: payload01.Contact__r.Zip_First_Five_Digits__c default ""
+					}]]>
+				</ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger
-			level="INFO"
-			doc:name="Log Created Response"
-			doc:id="9c4812bf-ca0b-4363-9dd9-3cb37d96529c"
-			message="#[payload]" />
+		<logger level="INFO" doc:name="Log Created Response" doc:id="1cee3392-3963-4ed2-b6d9-17b8509d2102" message="Post Query payload: #[payload]" />
+		<choice
+			doc:name="Get enrollment successful?"
+			doc:id="ee82b0c8-2c07-4456-a51a-80fba2c1f448">
+			<when expression="#[payload != null and sizeOf(payload) != 0]">
+				<ee:transform 
+					xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" 
+					doc:name="Success Response" 
+					doc:id="291c1946-dfea-4dd5-aaba-c30b5a5b4311">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+							output application/json
+							---
+							payload map ( payload01 , indexOfPayload01 ) -> {
+								EnrollmentId: payload01.EnrollmentId default "",
+								EnrollmentName: payload01.EnrollmentName default "",
+								TeamSeasonId: payload01.TeamSeasonId default "",
+								StudentId: payload01.StudentId default "",
+								StudentName: payload01.StudentName default "",
+								FirstName: payload01.FirstName,
+								LastName: payload01.LastName,
+								Birthdate: payload01.Birthdate default "",
+								Gender: payload01.Gender default "",
+								Ethnicity: payload01.Ethnicity default "",
+								ZipCode: payload01.ZipCode default ""
+							}]]>
+						</ee:set-payload>
+					</ee:message>
+					<ee:variables>
+						<ee:set-variable variableName="httpStatus"><![CDATA[200]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+        	</when>
+			<otherwise>
+				<ee:transform
+					xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
+					doc:name="Failure Response"
+					doc:id="291c1937-dfea-4dd5-aaba-c30n5a5b4311">
+					<ee:message>
+						<ee:set-payload>
+							<![CDATA[%dw 2.0
+							output application/json
+							---
+							{
+								message: "Enrollment Not Found"
+							}]]>
+						</ee:set-payload>
+					</ee:message>
+					<ee:variables>
+						<ee:set-variable variableName="httpStatus"><![CDATA[404]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="Log Created Response" doc:id="1cee3392-3963-4ed2-a6d9-17b8509d2102" message="Post choice payload: #[payload]" />
 		<flow-ref
 			doc:name="exit flow"
 			doc:id="58405e41-0baf-4121-ac6b-f0b16bff945b"
