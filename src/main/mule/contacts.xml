@@ -1217,7 +1217,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	LiabilityWaiver: payload01.Liability__c as String default "" ,
 	MediaReleaseWaiver: payload01.Media_Release__c as String default "" ,
 	DataReleaseWaiver: payload01.Data_Release__c as String default "" ,
-	Incomplete_Record__c: payload01.Incomplete_Record__c as String default ""
+	IncompleteRecord: payload01.Incomplete_Record__c as String default ""
 }]]>
           				
         </ee:set-payload>
@@ -1229,15 +1229,19 @@ payload map ( payload01 , indexOfPayload01 ) -> {
   <flow name="patch:\contacts\(contactId):application\json:salesforce-data-api-config">
     <flow-ref doc:id="ea712ccc-883f-484d-96c5-5d4f6e5782e7" doc:name="entry-flow" name="entry-flow"></flow-ref>
     <logger doc:id="630fb42f-aa01-455b-84ab-ae96ae695b29" doc:name="Log entry-flow" level="INFO" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]"></logger>
-    <ee:transform doc:id="16374a77-ca21-4661-a15f-b4d0f23e368b" doc:name="Store Query parameters">
-      <ee:variables>
-        <ee:set-variable variableName="contactId">
-          					
-          <![CDATA[attributes.uriParams.'contactId']]>
-          				
-        </ee:set-variable>
-      </ee:variables>
-    </ee:transform>
+        <choice doc:name="Choice" doc:id="ngwiov" >
+            <when expression="#[vars.contactId == null]">
+			<ee:transform doc:id="16374a77-ca21-4661-a15f-b4d0f23e368b" doc:name="Store Query parameters">
+				<ee:variables>
+					<ee:set-variable variableName="contactId">
+										
+					<![CDATA[attributes.uriParams.'contactId']]>
+									
+					</ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			</when>
+        </choice>
     <ee:transform doc:id="592cfbca-f5bb-4ed0-842a-8e72b8d5c977" doc:name="Transform Message">
       <ee:message>
         <ee:set-payload>
@@ -1293,7 +1297,8 @@ output application/java
 	(Media_Release__c: payload.MediaReleaseWaiver) if(payload.MediaReleaseWaiver?) ,
 	(Data_Release__c: payload.DataReleaseWaiver) if(payload.DataReleaseWaiver?),
 	(School_Attending__c: payload.SchoolName) if(payload.SchoolName?),
-	(AccountId: payload.AccountId) if(payload.AccountId?)
+	(AccountId: payload.AccountId) if(payload.AccountId?),
+	(Incomplete_Record__c: vars.incompleteRecord) if(vars.incompleteRecord?) // we can get it from another flow, but not from the payload
 }]]]>
           				
         </ee:set-payload>
@@ -1425,15 +1430,9 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 		<flow-ref  name="post:\waiver\(waiverId):application\json:salesforce-data-api-config"/>
         <choice doc:name="Choice" doc:id="rbsmfh" >
             <when expression="#[payload.WaiverHistory != null]">
-				<set-payload value="#[%dw 2.0
-					output application/json
-					---
-					[{
-						Incomplete_Record__c: false
-
-					}]
-					]" doc:name="Set Payload with DataWeave"/>
-			    <salesforce:update config-ref="Salesforce_Config" doc:id="22d1f2d0-33bc-4987-82e8-200abcd9b67a" doc:name="Update" type="Contact"></salesforce:update>
+                <set-variable variableName="WaiverHistory" value="#[payload.WaiverHistory]" doc:name="Set variable" doc:id="gjtppd" />
+                <set-variable value="#[false]" variableName="IncompleteRecord" doc:name="Set variable" doc:id="pdlkbq" />
+                <flow-ref  name="patch:\contacts\(contactId):application\json:salesforce-data-api-config"/>
                 <flow-ref  name="get:\contacts\(contactId):salesforce-data-api-config"/>
 				<ee:transform doc:id="bc80392c-09c1-43c1-2c5b-ebf8dd509785" doc:name="Create response" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 					<ee:message>
@@ -1444,6 +1443,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 							---
 							{	
 								message: "Success. Waiver Signed. `Incomplete_Record__c` set to false",
+								WaiverHistory: vars.WaiverHistory,
 								data: payload
 							}]]>
 																
