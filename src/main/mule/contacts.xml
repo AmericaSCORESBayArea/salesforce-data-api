@@ -272,6 +272,78 @@ payload.items[0].payload]]>
 								<raise-error doc:name="Raise error" doc:id="ce9837bc-7e7b-40a4-a132-7f35e82f12bc" type="CREATECONTACT:CONFLICT" />
 							</when>
 							<otherwise>
+                                <set-variable value="#[payload.items[0].id]" variableName="new_id" doc:name="Set variable" doc:id="cpmuyh" />
+								<salesforce:query doc:name="Query" doc:id="484b2e2a-c7aa-42d5-9463-cd953b4abb1e" config-ref="Salesforce_Config">
+									<salesforce:salesforce-query>
+										<![CDATA[
+									SELECT 
+										Id,
+										Contact_Type__c,
+										RecordTypeId,
+										FirstName,
+										MiddleName,
+										LastName,
+										AccountId,
+										Account.Region__c,
+										School_Attending__c,
+										Email,
+										HomePhone,
+										Birthdate,
+										Gender__c,
+										Grade__c,
+										Level__c,
+										Ethnicity__c,
+										Permission_to_Commute_Alone__c,
+										Reduced_Price_Lunch__c,
+										Allergies__c,
+										External_Student_ID__c,
+										External_Student_DB__c,
+										Parent_First_Name__c,
+										Parent_Last_Name__c,
+										Parent_Email_Address__c,
+										Parent_Relationship_to_Child__c,
+										Parent_Phone_01__c,
+										Parent_Phone_02__c,
+										Parent_Phone_03__c,
+										MailingStreet,
+										MailingCity,
+										MailingState,
+										MailingPostalCode,
+										MailingCountry,
+										Parent_English_Fluency__c,
+										Parent_Home_Language__c,
+										Parent_Other_Language__c,
+										Volunteer_for_this_Program_Parent__c,
+										Emergency_Contact_Name__c,
+										Emergency_Contact_Relationship_to_Child__c,
+										Emergency_Contact_Name_Phone_01__c,
+										Emergency_Contact_Name_Phone_02__c,
+										Emergency_Contact_Name_Phone_03__c,
+										Emergency_Contact_Permission_to_Pick_Up__c,
+										Second_Emergency_Contact_Name__c,
+										Second_Emerg_Contact_Relationship_Child__c	,
+										Second_Emergency_Phone_01__c,
+										Second_Emergency_Phone_02__c,
+										Second_Emergency_Phone_03__c,
+										Second_Emergency_Permission_to_Pick_Up__c,
+										Liability__c,
+										Media_Release__c,
+										Data_Release__c,
+										Incomplete_Record__c
+									FROM 
+										Contact 
+									WHERE 
+										Id = ':id'
+									]]>
+									</salesforce:salesforce-query>
+									<salesforce:parameters>
+										<![CDATA[#[output application/java
+											---
+											{
+												id: vars.new_id,
+											}]]]>
+									</salesforce:parameters>
+								</salesforce:query>
 								<ee:transform doc:name="Create response" doc:id="18206104-36d4-441a-aed7-42d906b5b2a2" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 									<ee:message>
 										<ee:set-payload>
@@ -280,7 +352,8 @@ output application/json
 ---
 {
 	message: vars.responseMessage,
-	ContactId: payload.items[0].id
+	ContactId: vars.new_id,
+	data: payload
 }]]>
 										</ee:set-payload>
 									</ee:message>
@@ -354,7 +427,7 @@ output application/json
 	Liability__c: vars.originalPayload.LiabilityWaiver,
 	Media_Release__c: vars.originalPayload.MediaReleaseWaiver,
 	Data_Release__c: vars.originalPayload.DataReleaseWaiver,
-	
+	Incomplete_Record__c: true
 }]]]]>
 							</salesforce:records>
 						</salesforce:create>
@@ -374,6 +447,78 @@ payload.items[0].payload]]>
 								<raise-error doc:name="Raise error" doc:id="e2b03e01-fe96-4b23-86e0-5db2d933c816" type="CREATECONTACT:CONFLICT" />
 							</when>
 							<otherwise>
+                                <set-variable value="#[payload.items[0].id]" variableName="new_id" doc:name="Set variable" doc:id="eatcfc" />
+								<salesforce:query doc:name="Query" doc:id="4843be2a-c7aa-42d5-9463-cd953b4abb1e" config-ref="Salesforce_Config">
+									<salesforce:salesforce-query>
+										<![CDATA[
+									SELECT 
+										Id,
+										Contact_Type__c,
+										RecordTypeId,
+										FirstName,
+										MiddleName,
+										LastName,
+										AccountId,
+										Account.Region__c,
+										School_Attending__c,
+										Email,
+										HomePhone,
+										Birthdate,
+										Gender__c,
+										Grade__c,
+										Level__c,
+										Ethnicity__c,
+										Permission_to_Commute_Alone__c,
+										Reduced_Price_Lunch__c,
+										Allergies__c,
+										External_Student_ID__c,
+										External_Student_DB__c,
+										Parent_First_Name__c,
+										Parent_Last_Name__c,
+										Parent_Email_Address__c,
+										Parent_Relationship_to_Child__c,
+										Parent_Phone_01__c,
+										Parent_Phone_02__c,
+										Parent_Phone_03__c,
+										MailingStreet,
+										MailingCity,
+										MailingState,
+										MailingPostalCode,
+										MailingCountry,
+										Parent_English_Fluency__c,
+										Parent_Home_Language__c,
+										Parent_Other_Language__c,
+										Volunteer_for_this_Program_Parent__c,
+										Emergency_Contact_Name__c,
+										Emergency_Contact_Relationship_to_Child__c,
+										Emergency_Contact_Name_Phone_01__c,
+										Emergency_Contact_Name_Phone_02__c,
+										Emergency_Contact_Name_Phone_03__c,
+										Emergency_Contact_Permission_to_Pick_Up__c,
+										Second_Emergency_Contact_Name__c,
+										Second_Emerg_Contact_Relationship_Child__c	,
+										Second_Emergency_Phone_01__c,
+										Second_Emergency_Phone_02__c,
+										Second_Emergency_Phone_03__c,
+										Second_Emergency_Permission_to_Pick_Up__c,
+										Liability__c,
+										Media_Release__c,
+										Data_Release__c,
+										Incomplete_Record__c
+									FROM 
+										Contact 
+									WHERE 
+										Id = ':id'
+									]]>
+									</salesforce:salesforce-query>
+									<salesforce:parameters>
+										<![CDATA[#[output application/java
+											---
+											{
+												id: vars.new_id,
+											}]]]>
+									</salesforce:parameters>
+								</salesforce:query>
 								<ee:transform doc:name="Create response" doc:id="bc80392c-09c1-43c1-ac5b-ebf8dd509785" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 									<ee:message>
 										<ee:set-payload>
@@ -382,7 +527,8 @@ payload.items[0].payload]]>
 											---
 											{	
 												message: vars.responseMessage,
-												ContactId: payload.items[0].id
+												ContactId: vars.new_id,
+												data: payload
 											}]]>
 										</ee:set-payload>
 									</ee:message>
