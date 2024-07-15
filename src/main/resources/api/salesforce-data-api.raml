@@ -328,6 +328,7 @@ uses:
     /waiver/{waiverId}:
       get:
         displayName: Get Waiver History by contact id and waiver id
+        description: Retrieve Waiver History data for a speciifc contact id and waiver id
         responses:
           200:
             body:
@@ -344,6 +345,7 @@ uses:
                   message: Waiver not found
   /{contactId}/enrollments:
     get:
+      displayName: Get enrollment data by contact id
       description: Retrieve enrollment data for a specific contact.
       queryParameters:
         schoolSiteName:
