@@ -10,7 +10,7 @@ Our MuleSoft app is built to interact with Scores data in Salesforce database. I
 
 [API Documentation](https://anypoint.mulesoft.com/exchange/portals/americascores-bayarea/6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd/salesforce-data-api/minor/3.0/console/summary/) (in review 🚧)
 
-[Postman Collection](https://github.com/AmericaSCORESBayArea/salesforce-data-api/blob/master/Scores%20-%20Salesforce%20Data%20API.postman_collection.json) (outdated 🚧)
+[Postman Collection](https://github.com/AmericaSCORESBayArea/salesforce-data-api/blob/master/docs/Scores%20-%20Salesforce%20Data%20API.postman_collection.json) (in progress 👨‍💻)
 
 [CloudHub Deployment](https://github.com/AmericaSCORESBayArea/salesforce-data-api/blob/master/cloudhub-deployment.md) (outdated 🚧)
 
@@ -103,3 +103,30 @@ Ta-da! You are now running the Mule app in the cloud-based environment. 🚀
     1. Go to [the Anypoint Code Builder dashboard](https://anypoint.mulesoft.com/codebuilder/)
     2. Select `Manage your IDE` option.
     3. Click on the `Reboot` button.
+
+
+## Build and Deployment
+The local build performed during the run differs from the build performed during the deployment. When running the app locally, `raml` files in local `src/main/resources/api` folder are used. When deploying the app, the `raml` files fetched from the Exchange are used. When building the app for deployment, the `global.xml.anypoint` should be used instead of `global.xml`. (handled by the `local-build.sh` script)
+
+To manually build the app for deployment, you need to execute the `local-build.sh` script. Then, you can manually upload the generated `.jar` file to CloudHub. Make sure the following properties are set in Mule Runtime secrets:
+
+```properties
+anypoint.platform.config.analytics.agent.enabled=
+anypoint.platform.client_id=
+anypoint.platform.client_secret=
+
+keystore.password=
+keystore.key.password=
+
+
+sfdc.password= 
+sfdc.tkn=
+
+typeform.clientsecret=
+typeform.clientid=
+typeform.tkn=
+
+api.id=
+
+env=
+```
