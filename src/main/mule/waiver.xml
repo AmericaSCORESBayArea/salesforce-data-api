@@ -44,11 +44,15 @@ payload map ( payload01 ,indexOfPayload01 ) -> {
 	</flow>
 	<flow name="post:\waiver\(waiverId):application\json:salesforce-data-api-config" doc:id="8b1473c4-3931-4408-9c18-5d77ac8fc694" >
 		<flow-ref doc:name="entry-flow" doc:id="4e9a74ac-9da5-4a28-ab4c-1f74f9c952cd" name="entry-flow" />
-		<ee:transform doc:name="Transform Message" doc:id="72ce180c-ba71-4658-ad7a-4162acfea0a9" >
-			<ee:variables >
-				<ee:set-variable variableName="waiverId" ><![CDATA[attributes.uriParams.'waiverId']]></ee:set-variable>
-			</ee:variables>
-		</ee:transform>
+        <choice doc:name="Choice" doc:id="bplsbn" >
+            <when expression="#[vars.waiverId == null]">
+				<ee:transform doc:name="Transform Message" doc:id="72ce180c-ba71-4658-ad7a-4162acfea0a9" >
+					<ee:variables >
+						<ee:set-variable variableName="waiverId" ><![CDATA[attributes.uriParams.'waiverId']]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</when>    
+        </choice>
 		<salesforce:create doc:name="Create" doc:id="152574e4-872a-4c9e-89d9-bbf784f017c0" config-ref="Salesforce_Config" type="Waiver_History__c">
 			<salesforce:records ><![CDATA[#[output application/java
 ---

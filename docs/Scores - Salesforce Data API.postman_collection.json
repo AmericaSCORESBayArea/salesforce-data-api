@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "881aed75-e69b-47fc-bdbe-e4afa4893ac7",
+		"_postman_id": "1a18b013-cef6-4906-8173-cfc023602561",
 		"name": "Scores - Salesforce Data API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "34720049"
@@ -774,6 +774,44 @@
 								"contacts",
 								"003U8000008Mz3RIAS",
 								"enrollments"
+							]
+						},
+						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
+					},
+					"response": []
+				},
+				{
+					"name": "/contacts/{contactId}/finishRegistration",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"datetime\": \"2024-06-27T15:45:30Z\",\n    \"waiverResponse\": \"yes!\",\n    \"waiverId\": \"a3WU8000000DiRXMA0\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/contacts/003U8000008Mz3RIAS/finishRegistration",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"contacts",
+								"003U8000008Mz3RIAS",
+								"finishRegistration"
 							]
 						},
 						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"

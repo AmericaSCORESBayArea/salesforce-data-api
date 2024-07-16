@@ -1,0 +1,231 @@
+{
+	"info": {
+		"_postman_id": "d39e6469-8818-4fba-9ca4-9ddded1fa17f",
+		"name": "Scores - Student Registration Steps",
+		"description": "When a new student created, \"Incomplete_Record__c\" ist set to \\`True\\`. (Step 1)\n\n\"Incomplete_Record__c\" will be set to \\`False\\` once Step 4 is performed and the waiver is sgined.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34720049"
+	},
+	"item": [
+		{
+			"name": "Step 1. Create Contact",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "{{sandbox_client_id}}",
+						"type": "text"
+					},
+					{
+						"key": "client_secret",
+						"value": "{{sandbox_client_secret}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"FirstName\": \"Aleksandr (sandbox test)\",\n  \"LastName\": \"Test July 15\",\n  \"Gender__c\": \"Male\",\n  \"Grade__c\": \"5\",\n  \"Region__c\": \"North\",\n  \"School_Attending__c\": \"Test\",\n  \"SchoolSiteId\": \"0015000002HvvW3AAJ\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/contacts",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"contacts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Step 2. Update Contact",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "{{sandbox_client_id}}",
+						"type": "text"
+					},
+					{
+						"key": "client_secret",
+						"value": "{{sandbox_client_secret}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"ParentFName\": \"Test First Name for Parent\",\n    \"ParentLName\": \"Test Last Name for Parent\",\n    \"Relationship\": \"Parent\",\n    \"ParentEmail\" : \"email@example.com\",\n    \"ParentPhone1\": \"1111111111\",\n    \"ParentPhone2\": \"1111111111\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/contacts/{{contactId}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"contacts",
+						"{{contactId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Step 3. Update Contact",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "{{sandbox_client_id}}",
+						"type": "text"
+					},
+					{
+						"key": "client_secret",
+						"value": "{{sandbox_client_secret}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"Allergies\": \"List some allergies / other needs\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/contacts/{{contactId}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"contacts",
+						"{{contactId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Step 4. Finish Registration",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "{{sandbox_client_id}}"
+					},
+					{
+						"key": "client_secret",
+						"value": "{{sandbox_client_secret}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"datetime\": \"2024-06-27T15:45:30Z\",\n    \"waiverResponse\": \"Acceptance\",\n    \"waiverId\": \"a3WU8000000DiRXMA0\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/contacts/{{contactId}}/finishRegistration",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"contacts",
+						"{{contactId}}",
+						"finishRegistration"
+					],
+					"query": [
+						{
+							"key": "phoneNumber",
+							"value": "2",
+							"disabled": true
+						}
+					]
+				},
+				"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
+			},
+			"response": []
+		},
+		{
+			"name": "/contacts/{contactId}",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "{{sandbox_client_id}}"
+					},
+					{
+						"key": "client_secret",
+						"value": "{{sandbox_client_secret}}"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/contacts/003U8000008Mz3RIAS",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"contacts",
+						"003U8000008Mz3RIAS"
+					]
+				},
+				"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "https://sandbox-salesforce-data-api.us-e2.cloudhub.io/api",
+			"type": "string"
+		},
+		{
+			"key": "contactId",
+			"value": "003U800000BjjxPIAR",
+			"type": "string"
+		}
+	]
+}
