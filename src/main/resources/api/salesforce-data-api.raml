@@ -659,6 +659,7 @@ uses:
 /coach/{coachId}:
   /regions:
     get:
+      displayName: Get Regions
       description: Retrieves a list of all the Regions where a Coach has at least one Team Season
       responses:
         200:
@@ -681,6 +682,7 @@ uses:
                 message: Regions Not Found
   /allSessions:
     get:
+      displayName: Get All Sessions
       description: Retrieves a list of all sessions a Coach has in the lastest Season
       queryParameters:
         date:
@@ -707,6 +709,7 @@ uses:
           
   /teamseasonsNotOwnedByCoach:
     get:
+      displayName: Get Team Seasons Not Owned 
       description: Retrieves a list of all Team-Seasons that the user(coach) is a not part of
       queryParameters:
         date:
@@ -744,6 +747,7 @@ uses:
                 message: Team-Seasons Not Found
   /teamseasons:
     get:
+      displayName: Get All Team Seasons
       description: Retrieves a list of all Team-Seasons that the user(coach) is a part of for a given Season
       queryParameters:
         season:
@@ -771,6 +775,7 @@ uses:
 
     /{teamSeasonId}/sessions:
       get:
+        displayName: Get Sessions
         description: Get Sessions for a TeamSeason and given date
         responses:
           200:
@@ -809,7 +814,8 @@ uses:
 
       /{sessionId}/attendances:
         get:
-          description: Retrives attendance data for a given session id
+          displayName: Get Attendance
+          description: Retrieves attendance data for a given session id
           responses:
            200:
             body:
@@ -833,7 +839,7 @@ uses:
               body:
                 application/json:
                   example:
-                    message: Attendance list updated      
+                    message: Attendance taken      
             400:
               body:
                 application/json:
@@ -860,6 +866,7 @@ uses:
                     message: Error updating attendance list.
       /{sessionId}/assessments:
         post:
+          displayName: Create Assessments
           description: create a new assessment 
           body:
             application/json:
@@ -879,6 +886,7 @@ uses:
                     message: Error in creating assessment!
     /{teamSeasonId}/enrollments:
       get:
+        displayName: Get Enrollments
         description: Get enrollments for a given session
         responses:
           200:
@@ -897,6 +905,7 @@ uses:
                   message: No enrollments for this session
   /all:
     get:
+      displayName: Get All
       description: Get all objects (i.e. team seasons, sessions, enrollments etc) under a coachId for active seasons for a given date  in one call.
       queryParameters:
         firstDate:
