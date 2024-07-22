@@ -341,7 +341,7 @@ if __name__ == "__main__":
         download_asset(token, latest_version)
         print("Downloaded asset successfully.")
         print("4. Zipping the existing directory...")
-        zip_directory('src/main/resources/api', 'new_salesforce-data-api.zip')
+        zip_directory('../src/main/resources/api', 'new_salesforce-data-api.zip')
         ignore_patterns = ['exchange.json', '.DS_Store']
         identical, details = are_files_identical("salesforce-data-api.zip", "new_salesforce-data-api.zip", ignore_list=ignore_patterns)
         if identical:
