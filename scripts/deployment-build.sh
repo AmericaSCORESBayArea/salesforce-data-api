@@ -14,7 +14,8 @@
 KEYSTORE_KEY_PASSWORD=${1:-password}
 KEYSTORE_PASSWORD=${2:-password}
 
-DIR="src/main/mule"
+
+DIR="../src/main/mule"
 
 # 1. RENAME FILES TO BUILD DEPLOYMENT PACKAGE
 if [ -f "$DIR/global.xml.anypoint" ]; then
@@ -43,11 +44,11 @@ keytool -genkeypair -keystore keystore.jks \
   -alias mule \
   -ext SAN=DNS:localhost,IP:127.0.0.1 \
   -validity 9999
-mv keystore.jks src/main/resources
+mv keystore.jks ../src/main/resources
 
 #3. BUILD .JAR FILE
 echo "Building deployment package..."
-mvn -B package --file pom.xml
+mvn -B package --file ../pom.xml
 
 
 #4. RENAME FILES BACK TO RUN IT LOCALLY
@@ -74,7 +75,7 @@ else
   LAST_COMMIT_HASH=$(git rev-parse --short "$GITHUB_SHA")
 fi
 echo "The last commit hash on the current branch is: $LAST_COMMIT_HASH"
-mv "target/salesforce-data-api-1.0.0-SNAPSHOT-mule-application.jar" "target/salesforce-data-api-$LAST_COMMIT_HASH.jar"
+mv "../target/salesforce-data-api-1.0.0-SNAPSHOT-mule-application.jar" "../target/salesforce-data-api-$LAST_COMMIT_HASH.jar"
 
 
 #6. IF MAC, OPEN TARGET FOLDER
