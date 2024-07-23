@@ -113,6 +113,15 @@ jobs:
           -Denv=Sandbox \
           -Denv.lowercase=sandbox \
           -DskipTests
+          -Dapi.id=${{ secrets.SANDBOX_API_ID }}
+          -Dkeystore.key.password=${{ secrets.KEYSTORE_KEY_PASSWORD }}
+          -Dkeystore.password=${{ secrets.KEYSTORE_PASSWORD }}
+          -Dsfdc.password=${{ secrets.SFDC_SANDBOX_INTEGRATIONUSER_PWD }}
+          -Dsfdc.tkn=${{ secrets.SFDC_SANDBOX_INTEGRATIONUSER_TKN }}
+          -Dtypeform.clientid=${{ secrets.TYPEFORM_CLIENTID }}
+          -Dtypeform.clientsecret=${{ secrets.TYPEFORM_CLIENTSECRET }}
+          -Dtypeform.tkn=${{ secrets.TYPEFORM_TKN }}
+ 
 
     - name: Confirm Deployment
       run: |
