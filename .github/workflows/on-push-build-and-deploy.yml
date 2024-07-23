@@ -107,19 +107,19 @@ jobs:
         artifactName=$(ls *.jar | head -1)
         echo "Deploying artifact $artifactName to the Sandbox environment."
         mvn deploy -DmuleDeploy -e -Dmule.artifact=$artifactName \
-          -Danypoint.username="${{ secrets.anypoint_cicd_username }}" \
-          -Danypoint.password="${{ secrets.anypoint_cicd_password }}" \
+          -Danypoint.username="${{ secrets.ANYPOINT_CICD_USERNAME }}" \
+          -Danypoint.password="${{ secrets.ANYPOINT_CICD_PASSWORD }}" \
           -Dapp.name=sandbox-salesforce-data-api \
           -Denv=Sandbox \
           -Denv.lowercase=sandbox \
-          -Dapi.id=${{ secrets.SANDBOX_API_ID }}" \
-          -Dkeystore.key.password=${{ secrets.KEYSTORE_KEY_PASSWORD }}" \
-          -Dkeystore.password=${{ secrets.KEYSTORE_PASSWORD }}" \
-          -Dsfdc.password=${{ secrets.SFDC_SANDBOX_INTEGRATIONUSER_PWD }}" \
-          -Dsfdc.tkn=${{ secrets.SFDC_SANDBOX_INTEGRATIONUSER_TKN }}" \
-          -Dtypeform.clientid=${{ secrets.TYPEFORM_CLIENTID }}" \
-          -Dtypeform.clientsecret=${{ secrets.TYPEFORM_CLIENTSECRET }}" \
-          -Dtypeform.tkn=${{ secrets.TYPEFORM_TKN }}" \
+          -Dapi.id="${{ secrets.SANDBOX_API_ID }}" \
+          -Dkeystore.key.password="${{ secrets.KEYSTORE_KEY_PASSWORD }}" \
+          -Dkeystore.password="${{ secrets.KEYSTORE_PASSWORD }}" \
+          -Dsfdc.password="${{ secrets.SFDC_SANDBOX_INTEGRATIONUSER_PWD }}" \
+          -Dsfdc.tkn="${{ secrets.SFDC_SANDBOX_INTEGRATIONUSER_TKN }}" \
+          -Dtypeform.clientid="${{ secrets.TYPEFORM_CLIENTID }}" \
+          -Dtypeform.clientsecret="${{ secrets.TYPEFORM_CLIENTSECRET }}" \
+          -Dtypeform.tkn="${{ secrets.TYPEFORM_TKN }}" \
           -DskipTests
  
 
