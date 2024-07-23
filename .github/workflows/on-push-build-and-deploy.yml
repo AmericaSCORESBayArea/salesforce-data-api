@@ -47,7 +47,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Cache Maven repository
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~/.m2/repository
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -55,7 +55,7 @@ jobs:
           ${{ runner.os }}-maven-
 
     - name: Set up JDK 17
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         distribution: 'adopt'
         java-version: 17
@@ -86,7 +86,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Cache Maven repository
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~/.m2/repository
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -94,7 +94,7 @@ jobs:
           ${{ runner.os }}-maven-
 
     - name: Download artifact
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: artifacts
         path: .
