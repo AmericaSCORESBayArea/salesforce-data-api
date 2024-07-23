@@ -8,7 +8,7 @@ on:
 
 jobs:
 
-  exchange_updater:
+  upload_raml:
     runs-on: ubuntu-latest
 
     steps:
@@ -38,8 +38,8 @@ jobs:
 
 
 
-  build:
-    needs: exchange_updater
+  build_mule:
+    needs: upload_raml
     runs-on: ubuntu-latest
 
     steps:
@@ -77,8 +77,8 @@ jobs:
         name: artifacts
         path: ./target/*.jar
 
-  deploy:
-    needs: build
+  deploy_mule:
+    needs: build_mule
     runs-on: ubuntu-latest
 
     steps:
