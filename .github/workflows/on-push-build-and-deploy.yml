@@ -32,13 +32,8 @@ jobs:
         API_MANAGER_INSTANCE_ID: ${{ secrets.EXCHANGE_UPDATE_API_MANAGER_INSTANCE_ID }}
         CLIENT_ID: ${{ secrets.EXCHANGE_UPDATE_CLIENT_ID }}
         CLIENT_SECRET: ${{ secrets.EXCHANGE_UPDATE_CLIENT_SECRET }}
-      run: |
-        python ./scripts/exchange-update.py \
-          $ORGANIZATION_ID \
-          $API_MANAGER_ENVIRONMENT_ID \
-          $API_MANAGER_INSTANCE_ID \
-          $CLIENT_ID \
-          $CLIENT_SECRET   
+      run: python ./scripts/exchange-update.py $ORGANIZATION_ID $API_MANAGER_ENVIRONMENT_ID $API_MANAGER_INSTANCE_ID $CLIENT_ID $CLIENT_SECRET
+
 
   build:
     needs: exchange_updater
