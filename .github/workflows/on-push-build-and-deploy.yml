@@ -25,6 +25,9 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r ./scripts/requirements.txt
 
+    - name: List files in the target directory before zipping
+      run: ls -alh ../src/main/resources/api
+
     - name: Execute exchange-update.py with secrets
       env:
         ORGANIZATION_ID: ${{ secrets.EXCHANGE_UPDATE_ORGANIZATION_ID }}
@@ -32,7 +35,10 @@ jobs:
         API_MANAGER_INSTANCE_ID: ${{ secrets.EXCHANGE_UPDATE_API_MANAGER_INSTANCE_ID }}
         CLIENT_ID: ${{ secrets.EXCHANGE_UPDATE_CLIENT_ID }}
         CLIENT_SECRET: ${{ secrets.EXCHANGE_UPDATE_CLIENT_SECRET }}
-      run: python ./scripts/exchange-update.py $ORGANIZATION_ID $API_MANAGER_ENVIRONMENT_ID $API_MANAGER_INSTANCE_ID $CLIENT_ID $CLIENT_SECRET
+      run: |
+        cd scripts
+        python exchange-update.py $ORGANIZATION_ID $API_MANAGER_ENVIRONMENT_ID $API_MANAGER_INSTANCE_ID $CLIENT_ID $CLIENT_SECRET
+
 
 
   build:
