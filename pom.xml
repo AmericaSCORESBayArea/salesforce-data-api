@@ -12,7 +12,7 @@
         <app.name>salesforce-data-api</app.name>
         <app.runtime>4.6-java17</app.runtime>
         <!-- <munit.version>2.3.6</munit.version> -->
-        <mule.maven.plugin.version>4.0.0</mule.maven.plugin.version>
+        <mule.maven.plugin.version>4.1.1</mule.maven.plugin.version>
     </properties>
     <build>
         <plugins>
