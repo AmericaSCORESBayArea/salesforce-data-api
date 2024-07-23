@@ -44,6 +44,12 @@
                             <anypoint.platform.config.analytics.agent.enabled>true</anypoint.platform.config.analytics.agent.enabled>
                             <sfdc.password>${sfdc.password}</sfdc.password>
                             <sfdc.tkn>${sfdc.tkn}</sfdc.tkn>
+                            <typeform.clientid>${typeform.clientid}</typeform.clientid>
+                            <typeform.clientsecret>${typeform.clientsecret}</typeform.clientsecret>
+                            <typeform.tkn>${typeform.tkn}</typeform.tkn>
+                            <api.id>${api.id}</api.id>
+                            <keystore.key.password>${keystore.key.password}</keystore.key.password>
+                            <keystore.password>${keystore.password}</keystore.password>
                         </properties>
                     </cloudHubDeployment>
                 </configuration>
