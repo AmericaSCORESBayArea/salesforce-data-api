@@ -69,7 +69,7 @@ jobs:
         KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
       run: |
         cd scripts
-        deployment-build.sh $KEYSTORE_KEY_PASSWORD $KEYSTORE_PASSWORD
+        ./deployment-build.sh $KEYSTORE_KEY_PASSWORD $KEYSTORE_PASSWORD
 
     - name: Upload artifact
       uses: actions/upload-artifact@v2
