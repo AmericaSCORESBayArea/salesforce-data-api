@@ -292,13 +292,18 @@ def are_files_identical(file1, file2, ignore_list=None):
 def zip_directory(folder_path, output_path):
     with zipfile.ZipFile(output_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
         base_path = os.path.abspath(folder_path)
+        print(f"Base path: {base_path}")
         for root, dirs, files in os.walk(folder_path):
+            print(f"Walking through: {root}")
             for file in files:
                 file_path = os.path.join(root, file)
-                # Extract the relative path for files with respect to the folder_path
                 relative_path = os.path.relpath(file_path, base_path)
-                # Write the file to the zip archive using its relative path
                 zipf.write(file_path, relative_path)
+                print(f"Adding file: {file_path} as {relative_path}")
+            if not files and not dirs:
+                relative_path = os.path.relpath(root, base_path)
+                zipf.write(root, relative_path + '/')
+                print(f"Adding empty directory: {relative_path}")
 
 
 def increment_version(version_str):
