@@ -110,6 +110,7 @@ jobs:
           -Danypoint.username="${{ secrets.anypoint_cicd_username }}" \
           -Danypoint.password="${{ secrets.anypoint_cicd_password }}" \
           -Dapp.name=sandbox-salesforce-data-api \
+          -Dapp.runtime=${{ secrets.MULE_RUNTIME_VERSION }}
           -Denv=Sandbox \
           -Denv.lowercase=sandbox \
           -DskipTests
