@@ -48,6 +48,8 @@
                             <typeform.clientsecret>${typeform.clientsecret}</typeform.clientsecret>
                             <typeform.tkn>${typeform.tkn}</typeform.tkn>
                             <api.id>${api.id}</api.id>
+                            <anypoint.platform.client_id>${anypoint.platform.client_id}</anypoint.platform.client_id>
+                            <anypoint.platform.client_secret>${anypoint.platform.client_secret}</anypoint.platform.client_secret>
                             <keystore.key.password>${keystore.key.password}</keystore.key.password>
                             <keystore.password>${keystore.password}</keystore.password>
                         </properties>
