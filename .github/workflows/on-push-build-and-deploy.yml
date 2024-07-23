@@ -25,9 +25,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r ./scripts/requirements.txt
 
-    - name: List files in the target directory before zipping
-      run: ls -alh ../src/main/resources/api
-
     - name: Execute exchange-update.py with secrets
       env:
         ORGANIZATION_ID: ${{ secrets.EXCHANGE_UPDATE_ORGANIZATION_ID }}
