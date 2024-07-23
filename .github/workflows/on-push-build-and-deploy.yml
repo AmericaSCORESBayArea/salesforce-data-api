@@ -104,11 +104,12 @@ jobs:
 
     - name: Deploy to Sandbox
       run: |
-        artifactName=sandbox-$(ls *.jar | head -1)
+        artifactName=$(ls *.jar | head -1)
         echo "Deploying artifact $artifactName to the Sandbox environment."
         mvn deploy -DmuleDeploy -e -Dmule.artifact=$artifactName \
           -Danypoint.username="${{ secrets.anypoint_cicd_username }}" \
           -Danypoint.password="${{ secrets.anypoint_cicd_password }}" \
+          -Dapp.name=sandbox-salesforce-data-api \
           -Denv=Sandbox \
           -Denv.lowercase=sandbox \
           -DskipTests
