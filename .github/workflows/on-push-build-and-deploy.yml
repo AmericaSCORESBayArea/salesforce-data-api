@@ -104,7 +104,7 @@ jobs:
 
     - name: Deploy to Sandbox
       run: |
-        artifactName=$(ls *.jar | head -1)
+        artifactName=sandbox-$(ls *.jar | head -1)
         echo "Deploying artifact $artifactName to the Sandbox environment."
         mvn deploy -DmuleDeploy -e -Dmule.artifact=$artifactName \
           -Danypoint.username="${{ secrets.anypoint_cicd_username }}" \
