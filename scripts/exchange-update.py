@@ -1,5 +1,5 @@
 """
-This script is used upload a new RAML to the MuleSoft Exchange API and update the API Manager instance specification ONLY WHEN the RAML files have been updated.
+This script is used to upload a new RAML to the MuleSoft Exchange API and update the API Manager instance specification ONLY WHEN the RAML files have been updated.
 
 Usage:
     python3 exchange-update.py ORGANIZATION_ID API_MANAGER_ENVIRONMENT_ID API_MANAGER_INSTANCE_ID CLIENT_ID CLIENT_SECRET
