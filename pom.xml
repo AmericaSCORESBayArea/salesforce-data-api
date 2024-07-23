@@ -10,7 +10,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <app.name>salesforce-data-api</app.name>
-        <app.runtime>4.4.0</app.runtime>
+        <app.runtime>4.6.3</app.runtime>
         <!-- <munit.version>2.3.6</munit.version> -->
         <mule.maven.plugin.version>4.0.0</mule.maven.plugin.version>
     </properties>
