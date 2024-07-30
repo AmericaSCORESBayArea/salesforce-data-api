@@ -5,41 +5,54 @@
     <ee:transform doc:id="omudff" doc:name="Transform">
       <ee:variables>
         <ee:set-variable variableName="contactId">
-          					
+                    					
+          
           <![CDATA[attributes.uriParams.'contactId']]>
-          				
+                    				
+        
         </ee:set-variable>
         <ee:set-variable variableName="schoolSiteName">
-          					
+                    					
+          
           <![CDATA[attributes.queryParams['schoolSiteName']]]>
-          				
+                    				
+        
         </ee:set-variable>
         <ee:set-variable variableName="seasonName">
-          					
+                    					
+          
           <![CDATA[attributes.queryParams['seasonName']]]>
-          				
+                    				
+        
         </ee:set-variable>
         <ee:set-variable variableName="teamSeasonName">
-          					
+                    					
+          
           <![CDATA[attributes.queryParams['teamSeasonName']]]>
-          				
+                    				
+        
         </ee:set-variable>
         <ee:set-variable variableName="startDate">
-          					
+                    					
+          
           <![CDATA[attributes.queryParams['startDate']]]>
-          				
+                    				
+        
         </ee:set-variable>
         <ee:set-variable variableName="endDate">
-          					
+                    					
+          
           <![CDATA[attributes.queryParams['endDate']]]>
-          				
+                    				
+        
         </ee:set-variable>
       </ee:variables>
     </ee:transform>
     <ee:transform doc:id="build-query" doc:name="Build Query">
       <ee:variables>
         <ee:set-variable variableName="query">
-          					
+                    					
+          
           <![CDATA[%dw 2.0
                     output application/java
                     var baseQuery = "SELECT Id, Team_Season__r.Id, Team_Season__r.Name, Team_Season__r.Season_Start_Date__c, Team_Season__r.Season_End_Date__c, Team_Season__r.Season__r.Name, Team_Season__r.Team__r.Id, Team_Season__r.Team__r.Name, Team_Season__r.Team__r.School_Site__r.Id, Team_Season__r.Team__r.School_Site__r.Acknowledgement_Listing_Name__c, Contact__r.Id FROM Enrollment__c WHERE Contact__r.Id = ':contactId'"
@@ -51,18 +64,22 @@
                     (if (vars.startDate != null) " AND Team_Season__r.Season_Start_Date__c >= :startDate" else "") ++
                     (if (vars.endDate != null) " AND Team_Season__r.Season_End_Date__c <= :endDate" else "")
                     ]]>
-          				
+                    				
+        
         </ee:set-variable>
       </ee:variables>
     </ee:transform>
     <salesforce:query config-ref="Salesforce_Config" doc:id="kpgdxo" doc:name="Query">
       <salesforce:salesforce-query>
-        				
+                				
+        
         <![CDATA[#[vars.query]]]>
-        			
+                			
+      
       </salesforce:salesforce-query>
       <salesforce:parameters>
-        				
+                				
+        
         <![CDATA[#[output application/java
             ---
             {
@@ -73,13 +90,15 @@
                 startDate: vars.startDate,
                 endDate: vars.endDate
             }]]]>
-        			
+                			
+      
       </salesforce:parameters>
     </salesforce:query>
     <ee:transform doc:id="fhzmqe" doc:name="Transform">
       <ee:message>
         <ee:set-payload>
-          					
+                    					
+          
           <![CDATA[%dw 2.0
                 output application/json
                 ---
@@ -96,7 +115,8 @@
                     SchoolSiteId: payload01.Team_Season__r.Team__r.School_Site__r.Id,
                     SchoolSiteName: payload01.Team_Season__r.Team__r.School_Site__r.Acknowledgement_Listing_Name__c
                 }]]>
-          				
+                    				
+        
         </ee:set-payload>
       </ee:message>
     </ee:transform>
@@ -110,18 +130,21 @@
       <ee:message></ee:message>
       <ee:variables>
         <ee:set-variable variableName="originalPayload">
-          					
+                    					
+          
           <![CDATA[output application/json
 ---
 payload]]>
-          				
+                    				
+        
         </ee:set-variable>
       </ee:variables>
     </ee:transform>
     <ee:transform doc:id="check-required-fields" doc:name="Check Required Fields">
       <ee:message>
         <ee:set-payload>
-          					
+                    					
+          
           <![CDATA[%dw 2.0
 					output application/java
 					---
@@ -134,7 +157,8 @@ payload]]>
 							if (isEmpty(vars.originalPayload.SchoolSiteId) or vars.originalPayload.SchoolSiteId == null) "SchoolSiteId" else ""
 						] filter ((field) -> field != "")
 						}]]>
-          				
+                    				
+        
         </ee:set-payload>
       </ee:message>
     </ee:transform>
@@ -143,7 +167,8 @@ payload]]>
         <ee:transform doc:id="raise-missing-fields-error" doc:name="Raise Missing Fields Error">
           <ee:message>
             <ee:set-payload>
-              							
+                            							
+              
               <![CDATA[%dw 2.0
 							output application/json
 							---
@@ -151,7 +176,8 @@ payload]]>
 								error: "Field Error",
     							missingFields: (payload.missingFields joinBy ", ")
 							}]]>
-              						
+                            						
+            
             </ee:set-payload>
           </ee:message>
         </ee:transform>
@@ -160,7 +186,8 @@ payload]]>
       <otherwise>
         <salesforce:query config-ref="Salesforce_Config" doc:id="61c0f5f7-6cee-4580-a92a-2432384dba3c" doc:name="Check for matching Contacts">
           <salesforce:salesforce-query>
-            						
+                        						
+            
             <![CDATA[
 			SELECT 
 				Id,
@@ -222,10 +249,12 @@ payload]]>
 				AND LastName = ':lastName' 
 			)
 			]]>
-            					
+                        					
+          
           </salesforce:salesforce-query>
           <salesforce:parameters>
-            						
+                        						
+            
             <![CDATA[#[output application/java
 import * from modules::GlobalModules
 ---
@@ -234,7 +263,8 @@ import * from modules::GlobalModules
 	lastName: escapeSpecialSOQLChars(vars.originalPayload.LastName, chars) default ''
 	// birthDate: vars.originalPayload.Birthdate as Date {format: 'yyyy-MM-dd'}
 }]]]>
-            					
+                        					
+          
           </salesforce:parameters>
         </salesforce:query>
         <choice doc:id="lkfxwp" doc:name="Choice">
@@ -251,15 +281,18 @@ import * from modules::GlobalModules
               <ee:message></ee:message>
               <ee:variables>
                 <ee:set-variable variableName="ContactRecordType">
-                  									
+                                    									
+                  
                   <![CDATA['01250000000VBbWAAW']]>
-                  								
+                                    								
+                
                 </ee:set-variable>
               </ee:variables>
             </ee:transform>
             <salesforce:create config-ref="Salesforce_Config" doc:id="dd33ee5c-1b02-4cc9-a47b-733ddccb4800" doc:name="Create" type="Contact">
               <salesforce:records>
-                								
+                                								
+                
                 <![CDATA[#[output application/java
 ---
 [{
@@ -276,7 +309,8 @@ import * from modules::GlobalModules
 	Gender__c: vars.originalPayload.Gender,
 	Ethnicity__c: vars.originalPayload.Ethnicity
 	}]]]]>
-                							
+                                							
+              
               </salesforce:records>
             </salesforce:create>
             <choice doc:id="f4cd0f1b-881f-43ff-9b0d-5f376b8d1c95" doc:name="Choice">
@@ -285,12 +319,14 @@ import * from modules::GlobalModules
                 <ee:transform doc:id="25161c62-97b1-46bb-b132-14cfffd013e3" doc:name="Transform Message">
                   <ee:message>
                     <ee:set-payload>
-                      											
+                                            											
+                      
                       <![CDATA[%dw 2.0
 output application/json
 ---
 payload.items[0].payload]]>
-                      										
+                                            										
+                    
                     </ee:set-payload>
                   </ee:message>
                 </ee:transform>
@@ -302,7 +338,8 @@ payload.items[0].payload]]>
                 <ee:transform doc:id="18206104-36d4-441a-aed7-42d906b5b2a2" doc:name="Create response" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                   <ee:message>
                     <ee:set-payload>
-                      											
+                                            											
+                      
                       <![CDATA[%dw 2.0
 												output application/json
 												---
@@ -311,7 +348,8 @@ payload.items[0].payload]]>
 													ContactId: vars.contactId,
 													data: payload
 												}]]>
-                      										
+                                            										
+                    
                     </ee:set-payload>
                   </ee:message>
                   <ee:variables></ee:variables>
@@ -325,15 +363,18 @@ payload.items[0].payload]]>
               <ee:message></ee:message>
               <ee:variables>
                 <ee:set-variable variableName="ContactRecordType">
-                  									
+                                    									
+                  
                   <![CDATA['01250000000VBbXAAW']]>
-                  								
+                                    								
+                
                 </ee:set-variable>
               </ee:variables>
             </ee:transform>
             <salesforce:create config-ref="Salesforce_Config" doc:id="83b3d0bc-e34e-4734-9a47-7d8892564f82" doc:name="Create" type="Contact">
               <salesforce:records>
-                								
+                                								
+                
                 <![CDATA[#[output application/java
 ---
 [{ 
@@ -389,7 +430,8 @@ payload.items[0].payload]]>
 	Data_Release__c: vars.originalPayload.DataReleaseWaiver,
 	Incomplete_Record__c: true
 }]]]]>
-                							
+                                							
+              
               </salesforce:records>
             </salesforce:create>
             <choice doc:id="991c54f0-e8dc-4917-b914-9d0f787614c1" doc:name="Choice">
@@ -398,12 +440,14 @@ payload.items[0].payload]]>
                 <ee:transform doc:id="959dfdf6-d25f-47c4-a78e-ecc16c362c9b" doc:name="Transform Message">
                   <ee:message>
                     <ee:set-payload>
-                      											
+                                            											
+                      
                       <![CDATA[%dw 2.0
 output application/json
 ---
 payload.items[0].payload]]>
-                      										
+                                            										
+                    
                     </ee:set-payload>
                   </ee:message>
                 </ee:transform>
@@ -415,7 +459,8 @@ payload.items[0].payload]]>
                 <ee:transform doc:id="bc80392c-09c1-43c1-ac5b-ebf8dd509785" doc:name="Create response" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                   <ee:message>
                     <ee:set-payload>
-                      											
+                                            											
+                      
                       <![CDATA[%dw 2.0
 											output application/json
 											---
@@ -424,7 +469,8 @@ payload.items[0].payload]]>
 												ContactId: vars.contactId,
 												data: payload
 											}]]>
-                      										
+                                            										
+                    
                     </ee:set-payload>
                   </ee:message>
                   <ee:variables></ee:variables>
@@ -442,29 +488,39 @@ payload.items[0].payload]]>
     <ee:transform doc:id="13306605-ff4a-46bf-a760-5257cb741357" doc:name="Store Query parameters">
       <ee:variables>
         <ee:set-variable variableName="externalStudentId">
-          					
+                    					
+          
           <![CDATA[attributes.queryParams.'externalStudentId']]>
-          				
+                    				
+        
         </ee:set-variable>
         <ee:set-variable variableName="externalStudentIdSource">
-          					
+                    					
+          
           <![CDATA[attributes.queryParams.'externalStudentIdSource']]>
-          				
+                    				
+        
         </ee:set-variable>
         <ee:set-variable variableName="firstName">
-          					
+                    					
+          
           <![CDATA[attributes.queryParams.'firstName']]>
-          				
+                    				
+        
         </ee:set-variable>
         <ee:set-variable variableName="lastName">
-          					
+                    					
+          
           <![CDATA[attributes.queryParams.'lastName']]>
-          				
+                    				
+        
         </ee:set-variable>
         <ee:set-variable variableName="birthDate">
-          					
+                    					
+          
           <![CDATA[attributes.queryParams.'birthDate']]>
-          				
+                    				
+        
         </ee:set-variable>
       </ee:variables>
     </ee:transform>
@@ -474,7 +530,8 @@ payload.items[0].payload]]>
           <when expression="#[vars.birthDate != null and vars.birthDate != '']">
             <salesforce:query config-ref="Salesforce_Config" doc:id="2d2bd613-7cc8-48df-b3e3-e1c628982996" doc:name="Select Query with Birthdate">
               <salesforce:salesforce-query>
-                								
+                                								
+                
                 <![CDATA[
 					SELECT 
 						Id,
@@ -544,10 +601,12 @@ payload.items[0].payload]]>
 						)
 					)
 					]]>
-                							
+                                							
+              
               </salesforce:salesforce-query>
               <salesforce:parameters>
-                								
+                                								
+                
                 <![CDATA[#[output application/java
 import * from modules::GlobalModules
 ---
@@ -558,14 +617,16 @@ import * from modules::GlobalModules
 	lastName: escapeSpecialSOQLChars(vars.lastName default '', chars) default '',
 	birthDate: vars.birthDate as Date {format: 'yyyy-MM-dd'}
 }]]]>
-                							
+                                							
+              
               </salesforce:parameters>
             </salesforce:query>
           </when>
           <otherwise>
             <salesforce:query config-ref="Salesforce_Config" doc:id="ec730d90-d661-40ce-b9c0-d05dd4fc28a0" doc:name="Select Query without Birthdate">
               <salesforce:salesforce-query>
-                								
+                                								
+                
                 <![CDATA[
 					SELECT 
 						Id,
@@ -634,10 +695,12 @@ import * from modules::GlobalModules
 						)
 					)
 					]]>
-                							
+                                							
+              
               </salesforce:salesforce-query>
               <salesforce:parameters>
-                								
+                                								
+                
                 <![CDATA[#[output application/java
 import * from modules::GlobalModules
 ---
@@ -647,7 +710,8 @@ import * from modules::GlobalModules
 	firstName: escapeSpecialSOQLChars(vars.firstName default '', chars) default '',
 	lastName: escapeSpecialSOQLChars(vars.lastName default '', chars) default ''
 }]]]>
-                							
+                                							
+              
               </salesforce:parameters>
             </salesforce:query>
           </otherwise>
@@ -655,7 +719,8 @@ import * from modules::GlobalModules
         <ee:transform doc:id="143eb63d-2152-42b7-9da0-2c0ad80b73f0" doc:name="Create Response" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
           <ee:message>
             <ee:set-payload>
-              							
+                            							
+              
               <![CDATA[%dw 2.0
 output application/json
 ---
@@ -712,7 +777,8 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	MediaReleaseWaiver: payload01.Media_Release__c as String default "" ,
 	DataReleaseWaiver: payload01.Data_Release__c as String default "" 
 }]]>
-              						
+                            						
+            
             </ee:set-payload>
           </ee:message>
         </ee:transform>
@@ -732,14 +798,18 @@ payload map ( payload01 , indexOfPayload01 ) -> {
     <ee:transform doc:id="06bf0ffb-bedf-4d91-afb9-accd04fb3580" doc:name="Store Query parameters">
       <ee:variables>
         <ee:set-variable variableName="searchString">
-          					
+                    					
+          
           <![CDATA[attributes.queryParams.'searchString']]>
-          				
+                    				
+        
         </ee:set-variable>
         <ee:set-variable variableName="region">
-          					
+                    					
+          
           <![CDATA[attributes.queryParams.'region']]>
-          				
+                    				
+        
         </ee:set-variable>
       </ee:variables>
     </ee:transform>
@@ -753,7 +823,8 @@ payload map ( payload01 , indexOfPayload01 ) -> {
     </choice>
     <salesforce:search config-ref="Salesforce_Config" doc:id="f195a55e-9140-44b5-b60e-1809649ef0a3" doc:name="Search">
       <salesforce:search-string>
-        				
+                				
+        
         <![CDATA[
 			FIND
 			 { :searchString } 
@@ -818,23 +889,27 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			) 
 			LIMIT 8
 			]]>
-        			
+                			
+      
       </salesforce:search-string>
       <salesforce:parameters>
-        				
+                				
+        
         <![CDATA[#[output application/java
 ---
 {
 	searchString : vars.searchString,
 	regionQuery : vars.regionQueryCondition
 }]]]>
-        			
+                			
+      
       </salesforce:parameters>
     </salesforce:search>
     <ee:transform doc:id="32f388c1-5da5-43ab-8241-874d02d18d35" doc:name="Transform Message">
       <ee:message>
         <ee:set-payload>
-          					
+                    					
+          
           <![CDATA[%dw 2.0
 output application/json
 ---
@@ -892,7 +967,8 @@ Id: payload01.record.Id as String default "",
 	MediaReleaseWaiver: payload01.record.Media_Release__c as String default "" ,
 	DataReleaseWaiver: payload01.record.Data_Release__c as String default "" 
 }]]>
-          				
+                    				
+        
         </ee:set-payload>
       </ee:message>
     </ee:transform>
@@ -903,7 +979,8 @@ Id: payload01.record.Id as String default "",
     <ee:transform doc:id="7e56aada-f163-47f0-8ffc-213f7acd09a8" doc:name="Store Query parameters">
       <ee:variables>
         <ee:set-variable variableName="phoneNumberLast4Digits">
-          					
+                    					
+          
           <![CDATA[%dw 2.0
 import substring from dw::core::Strings
 
@@ -911,18 +988,22 @@ var cleanedPhoneNumber = replace(attributes.queryParams.'phoneNumber', /(\D+)/) 
 var stringSize = sizeOf(cleanedPhoneNumber)
 ---
 substring(cleanedPhoneNumber, stringSize - 4, stringSize)]]>
-          				
+                    				
+        
         </ee:set-variable>
         <ee:set-variable variableName="phoneNumber">
-          					
+                    					
+          
           <![CDATA[replace(attributes.queryParams.'phoneNumber', /(\D+)/) with("")]]>
-          				
+                    				
+        
         </ee:set-variable>
       </ee:variables>
     </ee:transform>
     <salesforce:search config-ref="Salesforce_Config" doc:id="1d085a1a-e15b-412b-a836-4014557a9abd" doc:name="Search By Phone Number">
       <salesforce:search-string>
-        				
+                				
+        
         <![CDATA[
 			FIND
 			 { :phoneNumber } 
@@ -988,23 +1069,27 @@ substring(cleanedPhoneNumber, stringSize - 4, stringSize)]]>
 			) 
 			LIMIT 8
 			]]>
-        			
+                			
+      
       </salesforce:search-string>
       <salesforce:parameters>
-        				
+                				
+        
         <![CDATA[#[output application/java
 ---
 {
 	phoneNumber : vars.phoneNumber,
 	phoneNumberLast4Digits : vars.phoneNumberLast4Digits
 }]]]>
-        			
+                			
+      
       </salesforce:parameters>
     </salesforce:search>
     <ee:transform doc:id="cca12834-e1ee-4cc9-90ef-91c9be555af9" doc:name="Transform Message">
       <ee:message>
         <ee:set-payload>
-          					
+                    					
+          
           <![CDATA[%dw 2.0
 output application/json
 ---
@@ -1063,7 +1148,8 @@ payload.searchRecords map ( payload01 , indexOfpayload01 ) -> {
 	DataReleaseWaiver: payload01.record.Data_Release__c as String default "",
 	IncompleteRecord: payload01.record.Incomplete_Record__c as String default ""
 }]]>
-          				
+                    				
+        
         </ee:set-payload>
       </ee:message>
     </ee:transform>
@@ -1076,9 +1162,11 @@ payload.searchRecords map ( payload01 , indexOfpayload01 ) -> {
         <ee:transform doc:id="f0ca847c-5413-4e76-bde8-9aec2edd7b7d" doc:name="Store URI parameters">
           <ee:variables>
             <ee:set-variable variableName="contactId">
-              							
+                            							
+              
               <![CDATA[attributes.uriParams.'contactId']]>
-              						
+                            						
+            
             </ee:set-variable>
           </ee:variables>
         </ee:transform>
@@ -1086,7 +1174,8 @@ payload.searchRecords map ( payload01 , indexOfpayload01 ) -> {
     </choice>
     <salesforce:query config-ref="Salesforce_Config" doc:id="484bbe2a-c7aa-42d5-9463-cd953b4abb1e" doc:name="Query">
       <salesforce:salesforce-query>
-        				
+                				
+        
         <![CDATA[
 			SELECT 
 				Id,
@@ -1147,22 +1236,26 @@ payload.searchRecords map ( payload01 , indexOfpayload01 ) -> {
 			WHERE 
 				Id = ':id'
 			]]>
-        			
+                			
+      
       </salesforce:salesforce-query>
       <salesforce:parameters>
-        				
+                				
+        
         <![CDATA[#[output application/java
 ---
 {
 	id : vars.contactId
 }]]]>
-        			
+                			
+      
       </salesforce:parameters>
     </salesforce:query>
     <ee:transform doc:id="1032e8df-84aa-4e0e-b9cc-e538858184b9" doc:name="Create Response" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
       <ee:message>
         <ee:set-payload>
-          					
+                    					
+          
           <![CDATA[%dw 2.0
 output application/json
 ---
@@ -1221,7 +1314,8 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	DataReleaseWaiver: payload01.Data_Release__c as String default "" ,
 	IncompleteRecord: payload01.Incomplete_Record__c as String default ""
 }]]>
-          				
+                    				
+        
         </ee:set-payload>
       </ee:message>
     </ee:transform>
@@ -1231,23 +1325,26 @@ payload map ( payload01 , indexOfPayload01 ) -> {
   <flow name="patch:\contacts\(contactId):application\json:salesforce-data-api-config">
     <flow-ref doc:id="ea712ccc-883f-484d-96c5-5d4f6e5782e7" doc:name="entry-flow" name="entry-flow"></flow-ref>
     <logger doc:id="630fb42f-aa01-455b-84ab-ae96ae695b29" doc:name="Log entry-flow" level="INFO" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]"></logger>
-        <choice doc:name="Choice" doc:id="ngwiov" >
-            <when expression="#[vars.contactId == null]">
-			<ee:transform doc:id="16374a77-ca21-4661-a15f-b4d0f23e368b" doc:name="Store Query parameters">
-				<ee:variables>
-					<ee:set-variable variableName="contactId">
-										
-					<![CDATA[attributes.uriParams.'contactId']]>
-									
-					</ee:set-variable>
-				</ee:variables>
-			</ee:transform>
-			</when>
-        </choice>
+    <choice doc:id="ngwiov" doc:name="Choice">
+      <when expression="#[vars.contactId == null]">
+        <ee:transform doc:id="16374a77-ca21-4661-a15f-b4d0f23e368b" doc:name="Store Query parameters">
+          <ee:variables>
+            <ee:set-variable variableName="contactId">
+              										
+					
+              <![CDATA[attributes.uriParams.'contactId']]>
+              									
+					
+            </ee:set-variable>
+          </ee:variables>
+        </ee:transform>
+      </when>
+    </choice>
     <ee:transform doc:id="592cfbca-f5bb-4ed0-842a-8e72b8d5c977" doc:name="Transform Message">
       <ee:message>
         <ee:set-payload>
-          					
+                    					
+          
           <![CDATA[%dw 2.0
 output application/java
 ---
@@ -1302,7 +1399,8 @@ output application/java
 	(AccountId: payload.AccountId) if(payload.AccountId?),
 	(Incomplete_Record__c: vars.incompleteRecord) if(vars.incompleteRecord?) // we can get it from another flow, but not from the payload
 }]]]>
-          				
+                    				
+        
         </ee:set-payload>
       </ee:message>
     </ee:transform>
@@ -1312,21 +1410,25 @@ output application/java
         <ee:transform doc:id="7c3a7df0-eb2b-4a4d-9182-1fcfd74a48fb" doc:name="Transform Message">
           <ee:message>
             <ee:set-payload>
-              							
+                            							
+              
               <![CDATA[%dw 2.0
 output application/json
 ---
 {
 	message: payload.items[0].message
 }]]>
-              						
+                            						
+            
             </ee:set-payload>
           </ee:message>
           <ee:variables>
             <ee:set-variable variableName="httpStatus">
-              							
+                            							
+              
               <![CDATA[400]]>
-              						
+                            						
+            
             </ee:set-variable>
           </ee:variables>
         </ee:transform>
@@ -1336,7 +1438,8 @@ output application/json
         <ee:transform doc:name="Create Response" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
           <ee:message>
             <ee:set-payload>
-              							
+                            							
+              
               <![CDATA[%dw 2.0
 output application/json
 ---
@@ -1344,7 +1447,8 @@ output application/json
   message: "Contact updated",
   data: payload
 }]]>
-              						
+                            						
+            
             </ee:set-payload>
           </ee:message>
         </ee:transform>
@@ -1359,30 +1463,39 @@ output application/json
     <ee:transform doc:id="8d327553-1d7b-4e62-a011-fa77e027aa13" doc:name="Store uri Params">
       <ee:variables>
         <ee:set-variable variableName="contactId">
-          					
+                    					
+          
           <![CDATA[attributes.uriParams.'contactId']]>
-          				
+                    				
+        
         </ee:set-variable>
         <ee:set-variable variableName="waiverId">
-          					
+                    					
+          
           <![CDATA[attributes.uriParams.'waiverId']]>
-          				
+                    				
+        
         </ee:set-variable>
         <ee:set-variable variableName="region">
-          					
+                    					
+          
           <![CDATA[attributes.queryParams.'region']]>
-          				
+                    				
+        
         </ee:set-variable>
       </ee:variables>
     </ee:transform>
     <salesforce:query config-ref="Salesforce_Config" doc:id="56572ed9-228d-4c40-adec-754af5eec846" doc:name="Query">
       <salesforce:salesforce-query>
-        				
+                				
+        
         <![CDATA[SELECT Name, WaiverEvent__c FROM Waiver_History__c WHERE Waiver_Contact__c = ':contactId' AND Waiver__c = ':waiverId' AND Waiver__r.WaiverRegion__c = ':region' AND Waiver__r.Waiver_Active_End__c > TODAY]]>
-        			
+                			
+      
       </salesforce:salesforce-query>
       <salesforce:parameters>
-        				
+                				
+        
         <![CDATA[#[output application/java
 ---
 {
@@ -1390,13 +1503,15 @@ output application/json
 	region : vars.region,
 	waiverId : vars.waiverId
 }]]]>
-        			
+                			
+      
       </salesforce:parameters>
     </salesforce:query>
     <ee:transform doc:id="81c2c65f-050c-4403-9b9f-8cd8135c6f9d" doc:name="Create Response" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
       <ee:message>
         <ee:set-payload>
-          					
+                    					
+          
           <![CDATA[%dw 2.0
 output application/json
 ---
@@ -1404,7 +1519,8 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	"WaiverHistoryId": payload01.Name as String default null,
 	"Response": payload01.WaiverEvent__c as String default null
 }]]>
-          				
+                    				
+        
         </ee:set-payload>
       </ee:message>
     </ee:transform>
@@ -1412,35 +1528,29 @@ payload map ( payload01 , indexOfPayload01 ) -> {
     <flow-ref doc:id="04e2abf5-b5e3-44e4-ac09-278008e8dac2" doc:name="exit flow" name="exit-flow"></flow-ref>
   </flow>
   <flow name="post:\contacts\(contactId)\finishRegistration:application\json:salesforce-data-api-config">
-        <flow-ref  name="entry-flow"/>
-			<ee:transform doc:name="Transform Message" doc:id="72c2180c-ba71-4658-ad7a-4162acfea0a9" >
-			<ee:variables >
-				<ee:set-variable variableName="waiverId" ><![CDATA[payload.waiverId]]></ee:set-variable>
-			</ee:variables>
-		</ee:transform>
-		<set-payload value="#[%dw 2.0
-				output application/json
-				---
-				{
-					waiverId: vars.waiverId,
-					datetime: payload.datetime,
-					contactId: attributes.uriParams.'contactId',
-					waiverResponse: payload.waiverResponse
-
-				}]" doc:name="Set Payload with DataWeave"/>
-		<set-variable doc:id="ea1tcfc" doc:name="Set variable" value="#[attributes.uriParams.'contactId']" variableName="contactId"></set-variable>
-		<flow-ref  name="post:\waiver\(waiverId):application\json:salesforce-data-api-config"/>
-        <choice doc:name="Choice" doc:id="rbsmfh" >
-            <when expression="#[payload.WaiverHistory != null]">
-                <set-variable variableName="WaiverHistory" value="#[payload.WaiverHistory]" doc:name="Set variable" doc:id="gjtppd" />
-                <set-variable value="#[false]" variableName="IncompleteRecord" doc:name="Set variable" doc:id="pdlkbq" />
-                <flow-ref  name="patch:\contacts\(contactId):application\json:salesforce-data-api-config"/>
-                <flow-ref  name="get:\contacts\(contactId):salesforce-data-api-config"/>
-				<ee:transform doc:id="bc80392c-09c1-43c1-2c5b-ebf8dd509785" doc:name="Create response" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-					<ee:message>
-						<ee:set-payload>
-																	
-							<![CDATA[%dw 2.0
+    <flow-ref name="entry-flow"></flow-ref>
+    <ee:transform doc:id="72c2180c-ba71-4658-ad7a-4162acfea0a9" doc:name="Transform Message">
+      <ee:variables>
+        <ee:set-variable variableName="waiverId">
+          <![CDATA[payload.waiverId]]>
+        </ee:set-variable>
+      </ee:variables>
+    </ee:transform>
+    <set-payload doc:name="Set Payload with DataWeave" value="#[%dw 2.0     output application/json     ---     {      waiverId: vars.waiverId,      datetime: payload.datetime,      contactId: attributes.uriParams.'contactId',      waiverResponse: payload.waiverResponse      }]"></set-payload>
+    <set-variable doc:id="ea1tcfc" doc:name="Set variable" value="#[attributes.uriParams.'contactId']" variableName="contactId"></set-variable>
+    <flow-ref name="post:\waiver\(waiverId):application\json:salesforce-data-api-config"></flow-ref>
+    <choice doc:id="rbsmfh" doc:name="Choice">
+      <when expression="#[payload.WaiverHistory != null]">
+        <set-variable doc:id="gjtppd" doc:name="Set variable" value="#[payload.WaiverHistory]" variableName="WaiverHistory"></set-variable>
+        <set-variable doc:id="pdlkbq" doc:name="Set variable" value="#[false]" variableName="IncompleteRecord"></set-variable>
+        <flow-ref name="patch:\contacts\(contactId):application\json:salesforce-data-api-config"></flow-ref>
+        <flow-ref name="get:\contacts\(contactId):salesforce-data-api-config"></flow-ref>
+        <ee:transform doc:id="bc80392c-09c1-43c1-2c5b-ebf8dd509785" doc:name="Create response" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+          <ee:message>
+            <ee:set-payload>
+              																	
+							
+              <![CDATA[%dw 2.0
 							output application/json
 							---
 							{	
@@ -1448,32 +1558,82 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 								WaiverHistory: vars.WaiverHistory,
 								data: payload
 							}]]>
-																
-						</ee:set-payload>
-						</ee:message>
-					<ee:variables></ee:variables>
-				</ee:transform>
-			</when>
-			<otherwise>
-			<ee:transform doc:id="bc80292c-09c1-43c1-2c5b-ebf8dd509785" doc:name="Create response" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-					<ee:message>
-						<ee:set-payload>
-																	
-							<![CDATA[%dw 2.0
+              																
+						
+            </ee:set-payload>
+          </ee:message>
+          <ee:variables></ee:variables>
+        </ee:transform>
+      </when>
+      <otherwise>
+        <ee:transform doc:id="bc80292c-09c1-43c1-2c5b-ebf8dd509785" doc:name="Create response" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+          <ee:message>
+            <ee:set-payload>
+              																	
+							
+              <![CDATA[%dw 2.0
 							output application/json
 							---
 							{	
 								message: "Failure. Waiver not signed.",
 								data: payload
 							}]]>
-																
-						</ee:set-payload>
-						</ee:message>
-					<ee:variables></ee:variables>
-				</ee:transform>
-			</otherwise>
+              																
+						
+            </ee:set-payload>
+          </ee:message>
+          <ee:variables></ee:variables>
+        </ee:transform>
+      </otherwise>
+    </choice>
+    <flow-ref name="exit-flow"></flow-ref>
+  </flow>
+  <flow name="delete:\contacts\(contactId):salesforce-data-api-config">
+        <choice doc:name="Choice" doc:id="faybix" >
+            <when expression="#[p('env') == 'production']">
+		        <set-variable doc:name="405 HTTP Status" value="405" variableName="httpStatus"></set-variable>
+		        <set-payload doc:name="Set Error Response" value="#[output application/json --- {  'message': 'Method Not Allowed on Production'  }]"></set-payload>
+		</when>
+		<otherwise>
+        	<set-variable variableName="contactId" value="#[attributes.uriParams.'contactId']" doc:name="Set Contact ID"/>
+
+			<salesforce:query config-ref="Salesforce_Config" doc:id="kspgdxo" doc:name="Query">
+				<salesforce:salesforce-query>
+					<![CDATA[
+						SELECT Id FROM Contact WHERE Id = ':contactId'
+					]]>
+				</salesforce:salesforce-query>
+				<salesforce:parameters>
+					<![CDATA[#[{
+						contactId: vars.contactId
+					}]]]>
+				</salesforce:parameters>
+			</salesforce:query>
+
+
+			<!-- Check if the contact exists (optional) -->
+			<choice doc:name="Check Contact Exists">
+				<when expression="#[sizeOf(payload) > 0]">
+					<!-- Delete the Contact object -->
+					<salesforce:delete config-ref="Salesforce_Config" doc:name="Delete Contact">
+        				<salesforce:ids><![CDATA[#[[vars.contactId]]]]></salesforce:ids>
+					</salesforce:delete>
+					    <!-- Capture the delete result in a variable -->
+					<set-payload value="#[output application/json --- { 'message': 'Contact deleted' }]" doc:name="Set Success Response"/>
+					<set-variable variableName="httpStatus" value="200" doc:name="204 HTTP Status"/>
+				</when>
+				<otherwise>
+					<!-- Handle the case where the Contact does not exist -->
+					<logger level="INFO" doc:name="Contact Not Found" message="Contact with ID #[vars.contactId] not found."/>
+					<set-variable variableName="httpStatus" value="404" doc:name="404 HTTP Status"/>
+					<set-payload value="#[output application/json --- { 'message': 'Contact not found' }]" doc:name="Set Error Response"/>
+				</otherwise>
+			</choice>
+
+		</otherwise>
+
+            
+            
         </choice>
-		
-        <flow-ref  name="exit-flow"/>
-		</flow>
+	</flow>
 </mule>
