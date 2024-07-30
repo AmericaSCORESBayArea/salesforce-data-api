@@ -980,7 +980,8 @@ substring(cleanedPhoneNumber, stringSize - 4, stringSize)]]>
 				Second_Emergency_Permission_to_Pick_Up__c,
 				Liability__c,
 				Media_Release__c,
-				Data_Release__c
+				Data_Release__c,
+				Incomplete_Record__c
 			WHERE 
 				Contact_Type__c = 'SCORES Student'
 				AND Parent_Phone_01__c LIKE '%:phoneNumberLast4Digits'
@@ -1059,7 +1060,8 @@ payload.searchRecords map ( payload01 , indexOfpayload01 ) -> {
 	Second_Emergency_Contact_Permission_to_Pickup_child: payload01.record.Second_Emergency_Permission_to_Pick_Up__c as String default "" ,
 	LiabilityWaiver: payload01.record.Liability__c as String default "" ,
 	MediaReleaseWaiver: payload01.record.Media_Release__c as String default "" ,
-	DataReleaseWaiver: payload01.record.Data_Release__c as String default ""
+	DataReleaseWaiver: payload01.record.Data_Release__c as String default "",
+	IncompleteRecord: payload01.record.Incomplete_Record__c as String default ""
 }]]>
           				
         </ee:set-payload>
