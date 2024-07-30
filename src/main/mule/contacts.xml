@@ -1065,7 +1065,9 @@ substring(cleanedPhoneNumber, stringSize - 4, stringSize)]]>
 				Incomplete_Record__c
 			WHERE 
 				Contact_Type__c = 'SCORES Student'
-				AND Parent_Phone_01__c LIKE '%:phoneNumberLast4Digits'
+				AND (Parent_Phone_01__c LIKE '%:phoneNumberLast4Digits'
+				OR Parent_Phone_02__c LIKE '%:phoneNumberLast4Digits'
+				OR Parent_Phone_03__c LIKE '%:phoneNumberLast4Digits')
 			) 
 			LIMIT 8
 			]]>
