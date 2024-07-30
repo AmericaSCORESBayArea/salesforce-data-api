@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "db9aaab2-9413-4245-abb0-b21a90221066",
+		"_postman_id": "881aed75-e69b-47fc-bdbe-e4afa4893ac7",
 		"name": "Scores - Salesforce Data API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "34720049"
@@ -803,6 +803,23 @@
 					"response": []
 				},
 				{
+					"name": "/regions/active",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/regions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"regions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "/regions/{regionName}/schoolsites",
 					"request": {
 						"method": "GET",
@@ -1108,7 +1125,25 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": ""
+							"raw": "{{base_url}}/coach/003U8000008dKdNIAU/teamseasonsNotOwnedByCoach?region=\"San Francisco\"&season=a0o1T000003ribeQAA",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"coach",
+								"003U8000008dKdNIAU",
+								"teamseasonsNotOwnedByCoach"
+							],
+							"query": [
+								{
+									"key": "region",
+									"value": "San Francisco"
+								},
+								{
+									"key": "season",
+									"value": "a0o1T000003ribeQAA"
+								}
+							]
 						}
 					},
 					"response": []
@@ -1222,7 +1257,7 @@
 								"a0qHs00000BvrIUIAZ",
 								"sessions",
 								"a0pHs00000TqrmUIAR",
-								"assessments"
+								"attendances"
 							]
 						}
 					},
@@ -1266,20 +1301,16 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/coach/003U8000008dKdNIAU/teamseasons?season=",
+							"raw": "{{base_url}}/coach/003U8000008dKdNIAU/teamseasons/a0qHs00000BvrIUIAZ/enrollments",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"coach",
 								"003U8000008dKdNIAU",
-								"teamseasons"
-							],
-							"query": [
-								{
-									"key": "season",
-									"value": ""
-								}
+								"teamseasons",
+								"a0qHs00000BvrIUIAZ",
+								"enrollments"
 							]
 						}
 					},
@@ -1299,6 +1330,12 @@
 								"coach",
 								"003U8000008dKdNIAU",
 								"all"
+							],
+							"query": [
+								{
+									"key": "firstDate",
+									"value": "2023-05-01"
+								}
 							]
 						}
 					},

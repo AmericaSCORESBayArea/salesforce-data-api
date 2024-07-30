@@ -282,11 +282,17 @@ uses:
           description: Phone number
           type: string
           required: true
+          pattern: '^\+?[1-9]\d{1,14}$'  # E.164 international phone number format
       responses:
         200:
           body:
             application/json:
               type: types.Contact[]
+        400:
+          body:
+            application/json:
+              example:
+                message: Invalid phone number format. The phone number must be in E.164 format.
 
   /{contactId}:
     get:
@@ -417,7 +423,25 @@ uses:
           application/json:
             example:
               message: regions not found 
-              
+  /active:
+    get:
+      displayName: Retrieve Active Regions
+      description: |
+        Retrieves a list of active regions. Each region includes only the region name.
+      responses:
+        200:
+          description: A list of active regions with school sites.
+          body:
+            application/json:
+              example: |
+                [
+                  {
+                    "RegionName": "North Region"
+                  },
+                  {
+                    "RegionName": "South Region"
+                  }
+                ]
   /{regionName}/schoolsites:
     get:
       displayName: Retrieve schoolsites
@@ -635,6 +659,7 @@ uses:
 /coach/{coachId}:
   /regions:
     get:
+      displayName: Get Regions
       description: Retrieves a list of all the Regions where a Coach has at least one Team Season
       responses:
         200:
@@ -657,6 +682,7 @@ uses:
                 message: Regions Not Found
   /allSessions:
     get:
+      displayName: Get All Sessions
       description: Retrieves a list of all sessions a Coach has in the lastest Season
       queryParameters:
         date:
@@ -683,6 +709,7 @@ uses:
           
   /teamseasonsNotOwnedByCoach:
     get:
+      displayName: Get Team Seasons Not Owned 
       description: Retrieves a list of all Team-Seasons that the user(coach) is a not part of
       queryParameters:
         date:
@@ -720,6 +747,7 @@ uses:
                 message: Team-Seasons Not Found
   /teamseasons:
     get:
+      displayName: Get All Team Seasons
       description: Retrieves a list of all Team-Seasons that the user(coach) is a part of for a given Season
       queryParameters:
         season:
@@ -747,6 +775,7 @@ uses:
 
     /{teamSeasonId}/sessions:
       get:
+        displayName: Get Sessions
         description: Get Sessions for a TeamSeason and given date
         responses:
           200:
@@ -785,7 +814,8 @@ uses:
 
       /{sessionId}/attendances:
         get:
-          description: Retrives attendance data for a given session id
+          displayName: Get Attendance
+          description: Retrieves attendance data for a given session id
           responses:
            200:
             body:
@@ -809,7 +839,7 @@ uses:
               body:
                 application/json:
                   example:
-                    message: Attendance list updated      
+                    message: Attendance taken      
             400:
               body:
                 application/json:
@@ -836,6 +866,7 @@ uses:
                     message: Error updating attendance list.
       /{sessionId}/assessments:
         post:
+          displayName: Create Assessments
           description: create a new assessment 
           body:
             application/json:
@@ -855,6 +886,7 @@ uses:
                     message: Error in creating assessment!
     /{teamSeasonId}/enrollments:
       get:
+        displayName: Get Enrollments
         description: Get enrollments for a given session
         responses:
           200:
@@ -873,6 +905,7 @@ uses:
                   message: No enrollments for this session
   /all:
     get:
+      displayName: Get All
       description: Get all objects (i.e. team seasons, sessions, enrollments etc) under a coachId for active seasons for a given date  in one call.
       queryParameters:
         firstDate:
