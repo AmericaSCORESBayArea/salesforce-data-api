@@ -105,10 +105,10 @@ jobs:
     # - name: Print effective-settings
     #   run: mvn help:effective-settings
 
-    - name: Deploy to Sandbox
+    - name: Deploy to Production
       run: |
         artifactName=$(ls *.jar | head -1)
-        echo "Deploying artifact $artifactName to the Sandbox environment."
+        echo "Deploying artifact $artifactName to the Production environment."
         mvn deploy -DmuleDeploy -e -Dmule.artifact=$artifactName \
           -Danypoint.username="${{ secrets.ANYPOINT_CICD_USERNAME }}" \
           -Danypoint.password="${{ secrets.ANYPOINT_CICD_PASSWORD }}" \
@@ -131,3 +131,84 @@ jobs:
     - name: Confirm Deployment
       run: |
         echo "Deployment to Sandbox completed."
+
+  create-release:
+    needs: deploy_mule
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Get latest commit message and hash
+      id: get_commit_info
+      run: |
+        commit_message=$(git log -1 --pretty=%B)
+        commit_hash=$(git log -1 --pretty=format:"%h")
+        echo "Commit message: $commit_message"
+        echo "::set-output name=commit_message::$commit_message"
+        echo "::set-output name=commit_hash::$commit_hash"
+
+    - name: Determine version increment
+      id: determine_increment
+      run: |
+        commit_message=${{ steps.get_commit_info.outputs.commit_message }}
+        increment_part="patch"
+        if [[ "$commit_message" == *"[major]"* ]]; then
+          increment_part="major"
+        elif [[ "$commit_message" == *"[minor]"* ]]; then
+          increment_part="minor"
+        fi
+        echo "::set-output name=increment_part::$increment_part"
+
+    - name: Get latest tag
+      id: get_latest_tag
+      run: |
+        latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+        if [ -z "$latest_tag" ]; then
+          latest_tag="v0.0.0"
+        fi
+        echo "::set-output name=tag::$latest_tag"
+
+    - name: Increment version
+      id: increment_version
+      run: |
+        latest_tag=${{ steps.get_latest_tag.outputs.tag }}
+        IFS='.' read -r -a parts <<< "${latest_tag//v/}"
+        major=${parts[0]}
+        minor=${parts[1]}
+        patch=${parts[2]}
+        increment_part=${{ steps.determine_increment.outputs.increment_part }}
+        if [ "$increment_part" == "major" ]; then
+          major=$((major + 1))
+          minor=0
+          patch=0
+        elif [ "$increment_part" == "minor" ]; then
+          minor=$((minor + 1))
+          patch=0
+        else
+          patch=$((patch + 1))
+        fi
+        new_tag="v$major.$minor.$patch"
+        echo "::set-output name=new_tag::$new_tag"
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.increment_version.outputs.new_tag }}
+        release_name: Release ${{ steps.increment_version.outputs.new_tag }}
+        body: "Release of the production-salesforce-data-api"
+        draft: false
+        prerelease: false
+
+    - name: Upload artifact to release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./target/*.jar
+        asset_name: production-salesforce-data-api-${{ steps.increment_version.outputs.new_tag }}-${{ steps.get_commit_info.outputs.commit_hash }}.jar
+        asset_content_type: application/java-archive
