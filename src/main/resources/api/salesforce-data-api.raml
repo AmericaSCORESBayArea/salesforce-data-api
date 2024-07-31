@@ -325,6 +325,31 @@ uses:
             application/json:
               example:
                 message: Contact not found
+
+    delete:
+      displayName: Delete contact
+      description: Delete contact for given id
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                message: Contact deleted
+        400:
+          body:
+            application/json:
+              example:
+                message: Bad request
+        404:
+          body:
+            application/json:
+              example:
+                message: Contact not found
+        405:
+          body:
+            application/json:
+              example:
+                message: Method not allowed (on production)
     /finishRegistration:
       post:
         displayName: Finish Student Registration
