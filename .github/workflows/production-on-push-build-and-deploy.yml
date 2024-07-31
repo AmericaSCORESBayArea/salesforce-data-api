@@ -139,56 +139,12 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Get latest commit message and hash
-      id: get_commit_info
+    - name: Execute version.sh to determine new tag
+      id: determine_version
       run: |
-        commit_message=$(git log -1 --pretty=%B)
-        commit_hash=$(git log -1 --pretty=format:"%h")
-        echo "Commit message: $commit_message"
-        echo "::set-output name=commit_message::$commit_message"
-        echo "::set-output name=commit_hash::$commit_hash"
-
-    - name: Determine version increment
-      id: determine_increment
-      run: |
-        commit_message=${{ steps.get_commit_info.outputs.commit_message }}
-        increment_part="patch"
-        if [[ "$commit_message" == *"[major]"* ]]; then
-          increment_part="major"
-        elif [[ "$commit_message" == *"[minor]"* ]]; then
-          increment_part="minor"
-        fi
-        echo "::set-output name=increment_part::$increment_part"
-
-    - name: Get latest tag
-      id: get_latest_tag
-      run: |
-        latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
-        if [ -z "$latest_tag" ]; then
-          latest_tag="v0.0.0"
-        fi
-        echo "::set-output name=tag::$latest_tag"
-
-    - name: Increment version
-      id: increment_version
-      run: |
-        latest_tag=${{ steps.get_latest_tag.outputs.tag }}
-        IFS='.' read -r -a parts <<< "${latest_tag//v/}"
-        major=${parts[0]}
-        minor=${parts[1]}
-        patch=${parts[2]}
-        increment_part=${{ steps.determine_increment.outputs.increment_part }}
-        if [ "$increment_part" == "major" ]; then
-          major=$((major + 1))
-          minor=0
-          patch=0
-        elif [ "$increment_part" == "minor" ]; then
-          minor=$((minor + 1))
-          patch=0
-        else
-          patch=$((patch + 1))
-        fi
-        new_tag="v$major.$minor.$patch"
+        cd scripts
+        chmod +x ./version.sh
+        new_tag=$(./version.sh)
         echo "::set-output name=new_tag::$new_tag"
 
     - name: Create Release
@@ -197,8 +153,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ steps.increment_version.outputs.new_tag }}
-        release_name: Release ${{ steps.increment_version.outputs.new_tag }}
+        tag_name: ${{ steps.determine_version.outputs.new_tag }}
+        release_name: Release ${{ steps.determine_version.outputs.new_tag }}
         body: "Release of the production-salesforce-data-api"
         draft: false
         prerelease: false
@@ -210,5 +166,5 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./target/*.jar
-        asset_name: production-salesforce-data-api-${{ steps.increment_version.outputs.new_tag }}-${{ steps.get_commit_info.outputs.commit_hash }}.jar
+        asset_name: production-salesforce-data-api-${{ steps.determine_version.outputs.new_tag }}.jar
         asset_content_type: application/java-archive
