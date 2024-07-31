@@ -1,0 +1,131 @@
+name: Build and Deploy to Production
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+
+  upload_raml:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python environment
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r ./scripts/requirements.txt
+
+    - name: Execute exchange-update.py with secrets
+      env:
+        ORGANIZATION_ID: ${{ secrets.EXCHANGE_UPDATE_ORGANIZATION_ID }}
+        API_MANAGER_ENVIRONMENT_ID: ${{ secrets.PRODUCTION_EXCHANGE_UPDATE_API_MANAGER_ENVIRONMENT_ID }}
+        API_MANAGER_INSTANCE_ID: ${{ secrets.PRODUCTION_EXCHANGE_UPDATE_API_MANAGER_INSTANCE_ID }}
+        CLIENT_ID: ${{ secrets.EXCHANGE_UPDATE_CLIENT_ID }}
+        CLIENT_SECRET: ${{ secrets.EXCHANGE_UPDATE_CLIENT_SECRET }}
+      run: |
+        cd scripts
+        python exchange-update.py $ORGANIZATION_ID $API_MANAGER_ENVIRONMENT_ID $API_MANAGER_INSTANCE_ID $CLIENT_ID $CLIENT_SECRET
+
+
+
+  build_mule:
+    needs: upload_raml
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Cache Maven repository
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'adopt'
+        java-version: 17
+
+    - name: Set up script permissions
+      run: chmod +x ./scripts/deployment-build.sh
+
+
+    - name: Disable validations & execute deployment-build.sh with secrets
+      env:
+        KEYSTORE_KEY_PASSWORD: ${{ secrets.PRODUCTION_KEYSTORE_KEY_PASSWORD }}
+        KEYSTORE_PASSWORD: ${{ secrets.PRODUCTION_KEYSTORE_PASSWORD }}
+      run: |
+        cd scripts
+        ./disable-validations.sh
+        ./deployment-build.sh $KEYSTORE_KEY_PASSWORD $KEYSTORE_PASSWORD
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: artifacts
+        path: ./target/*.jar
+
+  deploy_mule:
+    needs: build_mule
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Cache Maven repository
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+
+    - name: Download artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: artifacts
+        path: .
+
+    # - name: Print effective-settings
+    #   run: mvn help:effective-settings
+
+    - name: Deploy to Sandbox
+      run: |
+        artifactName=$(ls *.jar | head -1)
+        echo "Deploying artifact $artifactName to the Sandbox environment."
+        mvn deploy -DmuleDeploy -e -Dmule.artifact=$artifactName \
+          -Danypoint.username="${{ secrets.ANYPOINT_CICD_USERNAME }}" \
+          -Danypoint.password="${{ secrets.ANYPOINT_CICD_PASSWORD }}" \
+          -Dapp.name=production-salesforce-data-api \
+          -Denv=Production \
+          -Denv.lowercase=production \
+          -Dapi.id="${{ secrets.PRODUCTION_API_ID }}" \
+          -Dkeystore.key.password="${{ secrets.PRODUCTION_KEYSTORE_KEY_PASSWORD }}" \
+          -Dkeystore.password="${{ secrets.PRODUCTION_KEYSTORE_PASSWORD }}" \
+          -Danypoint.platform.client_id="${{ secrets.ANYPOINT_PLATFORM_CLIENT_ID }}" \
+          -Danypoint.platform.client_secret="${{ secrets.ANYPOINT_PLATFORM_CLIENT_SECRET }}" \
+          -Dsfdc.password="${{ secrets.SFDC_PROD_INTEGRATIONUSER_PWD }}" \
+          -Dsfdc.tkn="${{ secrets.SFDC_PROD_INTEGRATIONUSER_TKN }}" \
+          -Dtypeform.clientid="${{ secrets.TYPEFORM_CLIENTID }}" \
+          -Dtypeform.clientsecret="${{ secrets.TYPEFORM_CLIENTSECRET }}" \
+          -Dtypeform.tkn="${{ secrets.TYPEFORM_TKN }}" \
+          -DskipTests
+ 
+
+    - name: Confirm Deployment
+      run: |
+        echo "Deployment to Sandbox completed."
