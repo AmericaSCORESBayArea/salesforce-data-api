@@ -142,9 +142,8 @@ jobs:
     - name: Execute version.sh to determine new tag
       id: determine_version
       run: |
-        cd scripts
-        chmod +x ./version.sh
-        new_tag=$(./version.sh)
+        chmod +x ./scripts/version.sh
+        new_tag=$(./scripts/version.sh)
         echo "::set-output name=new_tag::$new_tag"
 
     - name: Create Release
