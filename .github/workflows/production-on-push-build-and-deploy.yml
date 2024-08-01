@@ -158,15 +158,21 @@ jobs:
         draft: false
         prerelease: false
 
+    - name: Download artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: artifacts
+        path: .
+        
     - name: List target directory
       run: ls
 
-    # - name: Upload artifact to release
-    #   uses: actions/upload-release-asset@v1
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   with:
-    #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-    #     asset_path: ./target/*.jar
-    #     asset_name: production-salesforce-data-api-${{ steps.determine_version.outputs.new_tag }}.jar
-    #     asset_content_type: application/java-archive
+    - name: Upload artifact to release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./target/*.jar
+        asset_name: production-salesforce-data-api-${{ steps.determine_version.outputs.new_tag }}.jar
+        asset_content_type: application/java-archive
