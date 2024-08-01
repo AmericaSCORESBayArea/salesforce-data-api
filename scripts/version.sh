@@ -14,7 +14,7 @@ LATEST_COMMIT_REV=$(git rev-list HEAD --max-count=1)
 # Check if a tag revision exists.
 if [ -n "$LATEST_TAG_REV" ]; then
     # If a tag revision exists, get the latest tag.
-    LATEST_TAG=$(git describe --tags "$(git rev-list --tags --max-count=1)")
+    LATEST_TAG=$(git describe --tags "$LATEST_TAG_REV")
 else
     # If no tag revision exists, default to "v1.0.0".
     LATEST_TAG="v1.0.0"
@@ -29,7 +29,10 @@ increment_version() {
     local part=$2
     local major minor patch
 
-    IFS='.' read -r major minor patch <<< "$version"
+    # Extract only the version number part
+    version_number=$(echo "$version" | sed -E 's/^v?([0-9]+\.[0-9]+\.[0-9]+).*$/\1/')
+    
+    IFS='.' read -r major minor patch <<< "$version_number"
 
     case $part in
         major)
@@ -46,7 +49,7 @@ increment_version() {
             ;;
     esac
 
-    echo "$major.$minor.$patch"
+    echo "v$major.$minor.$patch"
 }
 
 # Determine which part of the version to increment.
