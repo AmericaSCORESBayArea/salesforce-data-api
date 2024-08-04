@@ -59,7 +59,7 @@ payload map ( payload01 ,indexOfPayload01 ) -> {
 [{
 	Waiver__c: vars.waiverId,
 	WaiverEvent__c: payload.waiverResponse,
-	WaiverEvent_DateTime__c: payload.datetime as DateTime {format: "yyyy-MM-dd'T'HH:mm:ssz"},
+	WaiverEvent_DateTime__c: now() as DateTime {format: "yyyy-MM-dd'T'HH:mm:ssz"},
 	Waiver_Contact__c: payload.contactId,
 	WaiverSignature_email__c: payload.contactEmail,
 	Paper_Form_Received__c: payload.PaperReceived
