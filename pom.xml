@@ -10,9 +10,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <app.name>salesforce-data-api</app.name>
-        <app.runtime>4.4.0</app.runtime>
+        <app.runtime>4.6-java17</app.runtime>
         <!-- <munit.version>2.3.6</munit.version> -->
-        <mule.maven.plugin.version>4.0.0</mule.maven.plugin.version>
+        <mule.maven.plugin.version>4.1.1</mule.maven.plugin.version>
     </properties>
     <build>
         <plugins>
@@ -44,6 +44,14 @@
                             <anypoint.platform.config.analytics.agent.enabled>true</anypoint.platform.config.analytics.agent.enabled>
                             <sfdc.password>${sfdc.password}</sfdc.password>
                             <sfdc.tkn>${sfdc.tkn}</sfdc.tkn>
+                            <typeform.clientid>${typeform.clientid}</typeform.clientid>
+                            <typeform.clientsecret>${typeform.clientsecret}</typeform.clientsecret>
+                            <typeform.tkn>${typeform.tkn}</typeform.tkn>
+                            <api.id>${api.id}</api.id>
+                            <anypoint.platform.client_id>${anypoint.platform.client_id}</anypoint.platform.client_id>
+                            <anypoint.platform.client_secret>${anypoint.platform.client_secret}</anypoint.platform.client_secret>
+                            <keystore.key.password>${keystore.key.password}</keystore.key.password>
+                            <keystore.password>${keystore.password}</keystore.password>
                         </properties>
                     </cloudHubDeployment>
                 </configuration>

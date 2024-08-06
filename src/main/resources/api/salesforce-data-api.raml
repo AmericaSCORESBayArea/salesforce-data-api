@@ -18,6 +18,8 @@ uses:
             type: types.Team[]
   /{teamId}:
     get:
+      displayName: Get Team details
+      description: Get Team details associated with the team Id
       responses:
         200:
           body:
@@ -325,9 +327,74 @@ uses:
             application/json:
               example:
                 message: Contact not found
+
+    delete:
+      displayName: Delete contact
+      description: Delete contact for given id
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                message: Contact deleted
+        400:
+          body:
+            application/json:
+              example:
+                message: Bad request
+        404:
+          body:
+            application/json:
+              example:
+                message: Contact not found
+        405:
+          body:
+            application/json:
+              example:
+                message: Method not allowed (on production)
+    /finishRegistration:
+      post:
+        displayName: Finish Student Registration
+        description: Finish student registration by signing waiver and marking `Incomplete_Record__c` as false.
+        body:
+          application/json:
+            type: object
+            properties:
+              waiverId:
+                type: string
+                description: "The unique identifier for the waiver."
+                required: true
+              datetime:
+                type: string
+                description: "The date and time of the registration, in ISO 8601 format."
+                required: true
+              waiverResponse:
+                type: string
+                description: "Response to the waiver."
+                required: true
+        responses:
+          200:
+            description: Registration completed.
+            body:
+              application/json:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Registration completed."
+          400:
+            description: Bad request.
+            body:
+              application/json:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Bad request."
     /waiver/{waiverId}:
       get:
         displayName: Get Waiver History by contact id and waiver id
+        description: Retrieve Waiver History data for a speciifc contact id and waiver id
         responses:
           200:
             body:
@@ -344,6 +411,7 @@ uses:
                   message: Waiver not found
   /{contactId}/enrollments:
     get:
+      displayName: Get enrollment data by contact id
       description: Retrieve enrollment data for a specific contact.
       queryParameters:
         schoolSiteName:

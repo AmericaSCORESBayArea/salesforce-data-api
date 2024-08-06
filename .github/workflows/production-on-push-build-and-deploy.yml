@@ -1,10 +1,9 @@
-name: Build and Deploy to Sandbox
+name: Build and Deploy to Production
 
 on:
   push:
-    branches: [ sandbox ]
+    branches: [ master ]
   workflow_dispatch:
-    branches: [ sandbox ]
 
 jobs:
 
@@ -28,8 +27,8 @@ jobs:
     - name: Execute exchange-update.py with secrets
       env:
         ORGANIZATION_ID: ${{ secrets.EXCHANGE_UPDATE_ORGANIZATION_ID }}
-        API_MANAGER_ENVIRONMENT_ID: ${{ secrets.EXCHANGE_UPDATE_API_MANAGER_ENVIRONMENT_ID }}
-        API_MANAGER_INSTANCE_ID: ${{ secrets.EXCHANGE_UPDATE_API_MANAGER_INSTANCE_ID }}
+        API_MANAGER_ENVIRONMENT_ID: ${{ secrets.PRODUCTION_EXCHANGE_UPDATE_API_MANAGER_ENVIRONMENT_ID }}
+        API_MANAGER_INSTANCE_ID: ${{ secrets.PRODUCTION_EXCHANGE_UPDATE_API_MANAGER_INSTANCE_ID }}
         CLIENT_ID: ${{ secrets.EXCHANGE_UPDATE_CLIENT_ID }}
         CLIENT_SECRET: ${{ secrets.EXCHANGE_UPDATE_CLIENT_SECRET }}
       run: |
@@ -63,12 +62,16 @@ jobs:
     - name: Set up script permissions
       run: chmod +x ./scripts/deployment-build.sh
 
-    - name: Execute deployment-build.sh with secrets
+    - name: Set up script permissions 2
+      run: chmod +x ./scripts/disable-validations.sh
+
+    - name: Disable validations & execute deployment-build.sh with secrets
       env:
-        KEYSTORE_KEY_PASSWORD: ${{ secrets.KEYSTORE_KEY_PASSWORD }}
-        KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        KEYSTORE_KEY_PASSWORD: ${{ secrets.PRODUCTION_KEYSTORE_KEY_PASSWORD }}
+        KEYSTORE_PASSWORD: ${{ secrets.PRODUCTION_KEYSTORE_PASSWORD }}
       run: |
         cd scripts
+        ./disable-validations.sh
         ./deployment-build.sh $KEYSTORE_KEY_PASSWORD $KEYSTORE_PASSWORD
 
     - name: Upload artifact
@@ -102,23 +105,23 @@ jobs:
     # - name: Print effective-settings
     #   run: mvn help:effective-settings
 
-    - name: Deploy to Sandbox
+    - name: Deploy to Production
       run: |
         artifactName=$(ls *.jar | head -1)
-        echo "Deploying artifact $artifactName to the Sandbox environment."
+        echo "Deploying artifact $artifactName to the Production environment."
         mvn deploy -DmuleDeploy -e -Dmule.artifact=$artifactName \
           -Danypoint.username="${{ secrets.ANYPOINT_CICD_USERNAME }}" \
           -Danypoint.password="${{ secrets.ANYPOINT_CICD_PASSWORD }}" \
-          -Dapp.name=sandbox-salesforce-data-api \
-          -Denv=Sandbox \
-          -Denv.lowercase=sandbox \
-          -Dapi.id="${{ secrets.SANDBOX_API_ID }}" \
-          -Dkeystore.key.password="${{ secrets.KEYSTORE_KEY_PASSWORD }}" \
-          -Dkeystore.password="${{ secrets.KEYSTORE_PASSWORD }}" \
+          -Dapp.name=production-salesforce-data-api \
+          -Denv=Production \
+          -Denv.lowercase=production \
+          -Dapi.id="${{ secrets.PRODUCTION_API_ID }}" \
+          -Dkeystore.key.password="${{ secrets.PRODUCTION_KEYSTORE_KEY_PASSWORD }}" \
+          -Dkeystore.password="${{ secrets.PRODUCTION_KEYSTORE_PASSWORD }}" \
           -Danypoint.platform.client_id="${{ secrets.ANYPOINT_PLATFORM_CLIENT_ID }}" \
           -Danypoint.platform.client_secret="${{ secrets.ANYPOINT_PLATFORM_CLIENT_SECRET }}" \
-          -Dsfdc.password="${{ secrets.SFDC_SANDBOX_INTEGRATIONUSER_PWD }}" \
-          -Dsfdc.tkn="${{ secrets.SFDC_SANDBOX_INTEGRATIONUSER_TKN }}" \
+          -Dsfdc.password="${{ secrets.SFDC_PROD_INTEGRATIONUSER_PWD }}" \
+          -Dsfdc.tkn="${{ secrets.SFDC_PROD_INTEGRATIONUSER_TKN }}" \
           -Dtypeform.clientid="${{ secrets.TYPEFORM_CLIENTID }}" \
           -Dtypeform.clientsecret="${{ secrets.TYPEFORM_CLIENTSECRET }}" \
           -Dtypeform.tkn="${{ secrets.TYPEFORM_TKN }}" \
@@ -128,3 +131,49 @@ jobs:
     - name: Confirm Deployment
       run: |
         echo "Deployment to Sandbox completed."
+
+  create-release:
+    needs: deploy_mule
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Execute version.sh to determine new tag
+      id: determine_version
+      run: |
+        chmod +x ./scripts/version.sh
+        new_tag=$(./scripts/version.sh)
+        echo "::set-output name=new_tag::$new_tag"
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.determine_version.outputs.new_tag }}
+        release_name: Release ${{ steps.determine_version.outputs.new_tag }}
+        body: "Release of the production-salesforce-data-api"
+        draft: false
+        prerelease: false
+
+    - name: Download artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: artifacts
+        path: .
+        
+    - name: Capture artifact file path
+      id: get_file
+      run: echo "FILE_PATH=$(ls ./*.jar)" >> $GITHUB_ENV
+  
+    - name: Upload artifact to release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ env.FILE_PATH }}
+        asset_name: production-salesforce-data-api-${{ steps.determine_version.outputs.new_tag }}.jar
+        asset_content_type: application/java-archive

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "881aed75-e69b-47fc-bdbe-e4afa4893ac7",
+		"_postman_id": "aeb59660-8085-4890-870b-0ea9b8d58bc8",
 		"name": "Scores - Salesforce Data API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "34720049"
@@ -724,6 +724,50 @@
 					"response": []
 				},
 				{
+					"name": "/contacts/{contactId} (ONLY SANDBOX)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"FirstName\": \"John10\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/contacts/003U8000008Mz3RIAS",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"contacts",
+								"003U8000008Mz3RIAS"
+							],
+							"query": [
+								{
+									"key": "phoneNumber",
+									"value": "2",
+									"disabled": true
+								}
+							]
+						},
+						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
+					},
+					"response": []
+				},
+				{
 					"name": "/contacts/{contactId}/waiver/{waiverId}",
 					"request": {
 						"method": "GET",
@@ -774,6 +818,44 @@
 								"contacts",
 								"003U8000008Mz3RIAS",
 								"enrollments"
+							]
+						},
+						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
+					},
+					"response": []
+				},
+				{
+					"name": "/contacts/{contactId}/finishRegistration",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"datetime\": \"2024-06-27T15:45:30Z\",\n    \"waiverResponse\": \"yes!\",\n    \"waiverId\": \"a3WU8000000DiRXMA0\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/contacts/003U8000008Mz3RIAS/finishRegistration",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"contacts",
+								"003U8000008Mz3RIAS",
+								"finishRegistration"
 							]
 						},
 						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
@@ -1438,7 +1520,7 @@
 	"variable": [
 		{
 			"key": "base_url",
-			"value": "http://localhost:8091/api-internal"
+			"value": "http://localhost:8091/api"
 		}
 	]
 }
