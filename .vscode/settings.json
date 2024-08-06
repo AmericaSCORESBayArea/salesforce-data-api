@@ -15,7 +15,5 @@
         "**/.mvn": true,
         "**/.exchange_modules_tmp": true,
         ".mule": true
-    },
-    "java.configuration.updateBuildConfiguration": "interactive",
-    "java.compile.nullAnalysis.mode": "automatic"
+    }
 }
