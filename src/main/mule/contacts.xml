@@ -154,7 +154,7 @@ payload]]>
 							if (isEmpty(vars.originalPayload.LastName) or vars.originalPayload.LastName == null) "LastName" else "",
 							// if (isEmpty(vars.originalPayload.Birthdate) or vars.originalPayload.Birthdate == null) "Birthdate" else "",
 							// if (isEmpty(vars.originalPayload.ContactType) or vars.originalPayload.ContactType == null) "ContactType" else "",
-							if (isEmpty(vars.originalPayload.SchoolSiteId) or vars.originalPayload.SchoolSiteId == null) "SchoolSiteId" else ""
+							// if (isEmpty(vars.originalPayload.SchoolSiteId) or vars.originalPayload.SchoolSiteId == null) "SchoolSiteId" else ""
 						] filter ((field) -> field != "")
 						}]]>
                     				
