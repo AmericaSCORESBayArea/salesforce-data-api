@@ -15,31 +15,46 @@ http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mu
 			</ee:variables>
 		</ee:transform>
 		<salesforce:query doc:name="Query" doc:id="f7eea34a-c7f6-4ff7-ba4b-e76c55c9d153" config-ref="Salesforce_Config">
-			<salesforce:salesforce-query ><![CDATA[SELECT Id,Name,WaiverRegion__c,WaiverSource_email__c,WaiverSource__c,WaiverText__c,Waiver_Active_End__c,Waiver_Active_Start__c FROM Waiver__c WHERE WaiverRegion__c = ':region']]></salesforce:salesforce-query>
+			<salesforce:salesforce-query ><![CDATA[SELECT Id,Name,WaiverRegion__c,WaiverSource_email__c,WaiverSource__c,WaiverText__c,Waiver_Active_End__c,Waiver_Active_Start__c, Archived__c FROM Waiver__c WHERE WaiverRegion__c = ':region']]></salesforce:salesforce-query>
 			<salesforce:parameters ><![CDATA[#[output application/java
 ---
 {
 	region : vars.region
 }]]]></salesforce:parameters>
 		</salesforce:query>
-		<ee:transform doc:name="Transform Message" doc:id="07e0a122-9cec-42b7-8487-a2be14f422b2">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
+<ee:transform doc:name="Filter Archived Items" doc:id="filter-transform">
+    <ee:message>
+        <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-payload map ( payload01 ,indexOfPayload01 ) -> {
-	WaiverId: payload01.Id as String default "",
-	Name: payload01.Name as String default "",
-	Region: payload01.WaiverRegion__c as String default "",
-	SourceEmail: payload01.WaiverSource_email__c as String default "",
-	Source: payload01.WaiverSource__c as String default "",
-	Content: payload01.WaiverText__c as String default "",
-	ValidFrom: payload01.Waiver_Active_End__c as String default "",
-	ValidUntil: payload01.Waiver_Active_Start__c as String default "",
-	PaperReceived: payload01.Paper_Form_Received__c as Boolean default false
-}]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
+(payload default [])
+    // Filter out archived items
+    filter (payload01) -> not (payload01.Archived__c as Boolean)
+]]></ee:set-payload>
+    </ee:message>
+</ee:transform>
+<ee:transform doc:name="Map Filtered Items" doc:id="map-transform">
+    <ee:message>
+        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload
+    // Map the filtered items to the desired format
+    map (payload01) -> {
+        WaiverId: payload01.Id as String default "",
+        Name: payload01.Name as String default "",
+        Region: payload01.WaiverRegion__c as String default "",
+        SourceEmail: payload01.WaiverSource_email__c as String default "",
+        Source: payload01.WaiverSource__c as String default "",
+        Content: payload01.WaiverText__c as String default "",
+        ValidFrom: payload01.Waiver_Active_End__c as String default "",
+        ValidUntil: payload01.Waiver_Active_Start__c as String default "",
+        Archived: payload01.Archived__c as Boolean default false
+    }
+]]></ee:set-payload>
+    </ee:message>
+</ee:transform>
+
 		<flow-ref doc:name="exit-flow" doc:id="00c2dda1-3348-4a07-90c8-7840a86d048d" name="exit-flow"/>
 	</flow>
 	<flow name="post:\waiver\(waiverId):application\json:salesforce-data-api-config" doc:id="8b1473c4-3931-4408-9c18-5d77ac8fc694" >
