@@ -785,5 +785,23 @@ types:
         type: string
         required: false
         
-
+  WaiverHistory:
+    type: object
+    properties:
+      WaiverHistoryId:
+        type: SalesforceUniqueId
+      Name:
+        type: string
+      WaiverId:
+        type: SalesforceUniqueId
+      PaperReceived:
+        type: boolean
+      ContactId:
+        type: SalesforceUniqueId
+      ContactEmail:
+        type: string
+      PaperReceivedDate:
+        type: date-only
+      WaiverCreatedDate:
+        type: date-only
     
