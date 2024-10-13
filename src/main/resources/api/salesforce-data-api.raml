@@ -752,12 +752,6 @@ uses:
     get:
       displayName: Get All Sessions
       description: Retrieves a list of all sessions a Coach has in the lastest Season
-      queryParameters:
-        date:
-          displayName: Date
-          description: Date selected in the mobile app
-          type: date-only
-          required: true
       responses:
         200:
           description: Succesfully retrieved all Sessions
@@ -975,17 +969,6 @@ uses:
     get:
       displayName: Get All
       description: Get all objects (i.e. team seasons, sessions, enrollments etc) under a coachId for active seasons for a given date  in one call.
-      queryParameters:
-        firstDate:
-          displayName: Date/Start date
-          description: Date selected in the mobile app
-          type: date-only
-          required: true
-        secondDate:
-          displayName: End date
-          description: Date selected in the mobile app if search by ranges is desired.
-          type: date-only
-          required: false
       responses:
         200:
           description: Successfully retrieved user's Team-Seasons
