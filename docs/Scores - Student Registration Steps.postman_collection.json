@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "d39e6469-8818-4fba-9ca4-9ddded1fa17f",
 		"name": "Scores - Student Registration Steps",
-		"description": "When a new student created, \"Incomplete_Record__c\" ist set to \\`True\\`. (Step 1)\n\n\"Incomplete_Record__c\" will be set to \\`False\\` once Step 4 is performed and the waiver is sgined.",
+		"description": "When a new student created, \"Student_Record_Complete__c\" ist set to \\`False\\`. (Step 1)\n\n\"Student_Record_Complete__c\" will be set to \\`True\\` once Step 4 is performed and the waiver is sgined.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "34720049"
 	},
