@@ -1398,8 +1398,7 @@ output application/java
 	(Media_Release__c: payload.MediaReleaseWaiver) if(payload.MediaReleaseWaiver?) ,
 	(Data_Release__c: payload.DataReleaseWaiver) if(payload.DataReleaseWaiver?),
 	(School_Attending__c: payload.SchoolName) if(payload.SchoolName?),
-	(AccountId: payload.AccountId) if(payload.AccountId?),
-	(Student_Record_Complete__c: vars.CompleteRecord) if(vars.CompleteRecord?) // we can get it from another flow, but not from the payload
+	(AccountId: payload.AccountId) if(payload.AccountId?)
 }]]]>
                     				
         
@@ -1544,7 +1543,6 @@ payload map ( payload01 , indexOfPayload01 ) -> {
     <choice doc:id="rbsmfh" doc:name="Choice">
       <when expression="#[payload.WaiverHistory != null]">
         <set-variable doc:id="gjtppd" doc:name="Set variable" value="#[payload.WaiverHistory]" variableName="WaiverHistory"></set-variable>
-        <set-variable doc:id="pdlkbq" doc:name="Set variable" value="#[true]" variableName="CompleteRecord"></set-variable>
         <flow-ref name="patch:\contacts\(contactId):application\json:salesforce-data-api-config"></flow-ref>
         <flow-ref name="get:\contacts\(contactId):salesforce-data-api-config"></flow-ref>
         <ee:transform doc:id="bc80392c-09c1-43c1-2c5b-ebf8dd509785" doc:name="Create response" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
