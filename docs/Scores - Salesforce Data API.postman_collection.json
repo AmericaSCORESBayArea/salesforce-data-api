@@ -859,6 +859,29 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "/waiverHistory",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/waiverHistory?contactId=003UQ00000GXyAfYAL",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"waiverHistory"
+							],
+							"query": [
+								{
+									"key": "contactId",
+									"value": "003UQ00000GXyAfYAL"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
