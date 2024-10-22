@@ -1148,7 +1148,7 @@ payload.searchRecords map ( payload01 , indexOfpayload01 ) -> {
 	LiabilityWaiver: payload01.record.Liability__c as String default "" ,
 	MediaReleaseWaiver: payload01.record.Media_Release__c as String default "" ,
 	DataReleaseWaiver: payload01.record.Data_Release__c as String default "",
-	StudentRecordComplete: payload01.record.Student_Record_Complete__c as String default ""
+	StudentRecordComplete: payload01.record.Student_Record_Complete__c as Boolean default false
 }]]>
                     				
         
@@ -1314,7 +1314,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	LiabilityWaiver: payload01.Liability__c as String default "" ,
 	MediaReleaseWaiver: payload01.Media_Release__c as String default "" ,
 	DataReleaseWaiver: payload01.Data_Release__c as String default "" ,
-	StudentRecordComplete: payload01.Student_Record_Complete__c as String default ""
+	StudentRecordComplete: payload01.Student_Record_Complete__c as Boolean default false
 }]]>
                     				
         
