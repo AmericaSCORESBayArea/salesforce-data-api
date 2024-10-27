@@ -1,54 +1,79 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
-	xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
-http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
-	<flow name="get:\regions:salesforce-data-api-config" doc:id="166faefb-233d-4d0a-8703-d5d06b629d7d" >
-		<flow-ref doc:name="entry-flow" doc:id="027e6ede-aebc-48ce-bd8a-efb07a516e9c" name="entry-flow" />
-		<salesforce:query doc:name="Query" doc:id="d5b03749-da65-46ae-a1c3-7293f1110e12" config-ref="Salesforce_Config" >
-			<salesforce:salesforce-query ><![CDATA[SELECT Region__c FROM Account GROUP BY Region__c]]></salesforce:salesforce-query>
-		</salesforce:query>
-		<ee:transform doc:name="Transform Message1" doc:id="c9c90255-2681-4e9c-b3c3-e72557a6bd8f" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+  <flow doc:id="166faefb-233d-4d0a-8703-d5d06b629d7d" name="get:\regions:salesforce-data-api-config">
+    <flow-ref doc:id="027e6ede-aebc-48ce-bd8a-efb07a516e9c" doc:name="entry-flow" name="entry-flow"></flow-ref>
+    <salesforce:query config-ref="Salesforce_Config" doc:id="d5b03749-da65-46ae-a1c3-7293f1110e12" doc:name="Query">
+      <salesforce:salesforce-query>
+        <![CDATA[SELECT Region__c FROM Account GROUP BY Region__c]]>
+      </salesforce:salesforce-query>
+    </salesforce:query>
+    <ee:transform doc:id="c9c90255-2681-4e9c-b3c3-e72557a6bd8f" doc:name="Transform Message1">
+      <ee:message>
+        <ee:set-payload>
+          <![CDATA[%dw 2.0
 output application/json
 ---
 payload map ( payload01 ,indexOfPayload01 ) -> {
 	RegionName: payload01.Region__c as String default ""
-}]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-		<flow-ref doc:name="exit-flow" doc:id="65eed082-9f5b-43f4-8ae6-15be0b79ca52" name="exit-flow" />
-	</flow>
-	<flow name="get:\regions\(regionName)\schoolsites:salesforce-data-api-config" doc:id="84da70e8-dfac-4f19-b9fb-c64587e388b2" >
-		<flow-ref doc:name="entry-flow" doc:id="cd532f25-1f5a-42cd-aa5d-50f0616e6927" name="entry-flow" />
-		<ee:transform doc:name="Transform Message" doc:id="b82de028-833e-4a66-ac1e-1527ee628f67" >
-			<ee:message />
-			<ee:variables >
-				<ee:set-variable variableName="region" ><![CDATA[attributes.uriParams.'regionName']]></ee:set-variable>
-			</ee:variables>
-		</ee:transform>
-		<salesforce:query doc:name="Query" doc:id="76559089-3881-4d75-937f-1d58c0150f14" config-ref="Salesforce_Config" >
-			<salesforce:salesforce-query ><![CDATA[SELECT Id, Name FROM Account WHERE Region__C = ':region']]></salesforce:salesforce-query>
-			<salesforce:parameters ><![CDATA[#[output application/java
+}]]>
+        </ee:set-payload>
+      </ee:message>
+    </ee:transform>
+    <flow-ref doc:id="65eed082-9f5b-43f4-8ae6-15be0b79ca52" doc:name="exit-flow" name="exit-flow"></flow-ref>
+  </flow>
+  <flow doc:id="84da70e8-dfac-4f19-b9fb-c64587e388b2" name="get:\regions\(regionName)\schoolsites:salesforce-data-api-config">
+    <flow-ref doc:id="cd532f25-1f5a-42cd-aa5d-50f0616e6927" doc:name="entry-flow" name="entry-flow"></flow-ref>
+    <ee:transform doc:id="b82de028-833e-4a66-ac1e-1527ee628f67" doc:name="Transform Message">
+      <ee:message></ee:message>
+      <ee:variables>
+        <ee:set-variable variableName="region">
+          <![CDATA[attributes.uriParams.'regionName']]>
+        </ee:set-variable>
+      </ee:variables>
+    </ee:transform>
+    <salesforce:query config-ref="Salesforce_Config" doc:id="76559089-3881-4d75-937f-1d58c0150f14" doc:name="Query">
+      <salesforce:salesforce-query>
+        <![CDATA[SELECT Id, Name FROM Account WHERE Region__C = ':region']]>
+      </salesforce:salesforce-query>
+      <salesforce:parameters>
+        <![CDATA[#[output application/java
 ---
 {
 	region : vars.region
-}]]]></salesforce:parameters>
-		</salesforce:query>
-		<ee:transform doc:name="Transform Message1" doc:id="85f0ef8b-4719-423e-8f42-95a7a31fd326" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+}]]]>
+      </salesforce:parameters>
+    </salesforce:query>
+    <ee:transform doc:id="85f0ef8b-4719-423e-8f42-95a7a31fd326" doc:name="Transform Message1">
+      <ee:message>
+        <ee:set-payload>
+          <![CDATA[%dw 2.0
 output application/json
 ---
 payload map ( payload01 ,indexOfPayload01 ) -> {
 	Id: payload01.Id as String default "",
 	Name: payload01.Name as String default "",
-}]]></ee:set-payload>
-			</ee:message>
+}]]>
+        </ee:set-payload>
+      </ee:message>
+    </ee:transform>
+    <flow-ref doc:id="25cb019b-648a-4e65-bd61-95bcd6731dd7" doc:name="exit-flow" name="exit-flow"></flow-ref>
+  </flow>
+  <flow name="get:\regions\active">
+	<flow-ref doc:id="cd532f25-1f5a-42cd-aa5d-50f061626927" doc:name="entry-flow" name="entry-flow"></flow-ref>
+        <salesforce:query config-ref="Salesforce_Config" doc:name="Retrieve Active Regions" doc:id="urqtug" >
+          <salesforce:salesforce-query><![CDATA[
+			SELECT Id, Value, Label, DurableId, EntityParticleId, ValidFor, IsActive FROM PicklistValueInfo WHERE EntityParticle.EntityDefinition.QualifiedApiName = 'Account' AND EntityParticle.QualifiedApiName = 'Region__c' AND isActive = TRUE
+		  ]]></salesforce:salesforce-query>
+        </salesforce:query>
+		<ee:transform doc:name="Set Payload" doc:id="b82de028-833e-4a66-ac1e-1527ee128f67">
+		  <ee:message>
+			<ee:set-payload><![CDATA[%dw 2.0
+				output application/json
+				---
+				payload map ( payload01 ,indexOfPayload01 ) -> {
+					RegionName: payload01.Value as String default ""
+				}]]></ee:set-payload>
+			  </ee:message>
 		</ee:transform>
-		<flow-ref doc:name="exit-flow" doc:id="25cb019b-648a-4e65-bd61-95bcd6731dd7" name="exit-flow" />
-	</flow>
+	<flow-ref doc:id="25cb019b-618a-4e65-bd61-95bcd6731dd7" doc:name="exit-flow" name="exit-flow"></flow-ref>
+  </flow>
 </mule>
