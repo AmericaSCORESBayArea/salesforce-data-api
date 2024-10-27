@@ -53,3 +53,4 @@ src/main/resources/deploy.json
 .tooling-project/*
 .vscode/*
 
+src/main/resources/keystore.jks

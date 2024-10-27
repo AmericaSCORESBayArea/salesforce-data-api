@@ -1,56 +1,80 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
-	xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
-http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
-	<flow name="get:\waiver:salesforce-data-api-config" doc:id="dd4a0323-53eb-475f-8d22-1e47cef4fe56" >
-		<flow-ref doc:name="entry-flow" doc:id="b1e71f84-e7aa-432a-96ce-1a44bc65e41c" name="entry-flow"/>
-		<ee:transform doc:name="Transform Message" doc:id="0955be0d-6f6d-43f2-93d8-db11c0e90793" >
-			<ee:message >
-			</ee:message>
-			<ee:variables >
-				<ee:set-variable variableName="region" ><![CDATA[attributes.queryParams.'region']]></ee:set-variable>
-			</ee:variables>
-		</ee:transform>
-		<salesforce:query doc:name="Query" doc:id="f7eea34a-c7f6-4ff7-ba4b-e76c55c9d153" config-ref="Salesforce_Config">
-			<salesforce:salesforce-query ><![CDATA[SELECT Id,Name,WaiverRegion__c,WaiverSource_email__c,WaiverSource__c,WaiverText__c,Waiver_Active_End__c,Waiver_Active_Start__c FROM Waiver__c WHERE WaiverRegion__c = ':region']]></salesforce:salesforce-query>
-			<salesforce:parameters ><![CDATA[#[output application/java
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+  <flow doc:id="dd4a0323-53eb-475f-8d22-1e47cef4fe56" name="get:\waiver:salesforce-data-api-config">
+    <flow-ref doc:id="b1e71f84-e7aa-432a-96ce-1a44bc65e41c" doc:name="entry-flow" name="entry-flow"></flow-ref>
+    <ee:transform doc:id="0955be0d-6f6d-43f2-93d8-db11c0e90793" doc:name="Transform Message">
+      <ee:message></ee:message>
+      <ee:variables>
+        <ee:set-variable variableName="region">
+          <![CDATA[attributes.queryParams.'region']]>
+        </ee:set-variable>
+      </ee:variables>
+    </ee:transform>
+    <salesforce:query config-ref="Salesforce_Config" doc:id="f7eea34a-c7f6-4ff7-ba4b-e76c55c9d153" doc:name="Query">
+      <salesforce:salesforce-query>
+        <![CDATA[SELECT Id,Name,WaiverRegion__c,WaiverSource_email__c,WaiverSource__c,WaiverText__c,Waiver_Active_End__c,Waiver_Active_Start__c, Archived__c FROM Waiver__c WHERE WaiverRegion__c = ':region']]>
+      </salesforce:salesforce-query>
+      <salesforce:parameters>
+        <![CDATA[#[output application/java
 ---
 {
 	region : vars.region
-}]]]></salesforce:parameters>
-		</salesforce:query>
-		<ee:transform doc:name="Transform Message" doc:id="07e0a122-9cec-42b7-8487-a2be14f422b2">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
+}]]]>
+      </salesforce:parameters>
+    </salesforce:query>
+    <ee:transform doc:id="filter-transform" doc:name="Filter Archived Items">
+      <ee:message>
+        <ee:set-payload>
+          <![CDATA[%dw 2.0
 output application/json
 ---
-payload map ( payload01 ,indexOfPayload01 ) -> {
-	WaiverId: payload01.Id as String default "",
-	Name: payload01.Name as String default "",
-	Region: payload01.WaiverRegion__c as String default "",
-	SourceEmail: payload01.WaiverSource_email__c as String default "",
-	Source: payload01.WaiverSource__c as String default "",
-	Content: payload01.WaiverText__c as String default "",
-	ValidFrom: payload01.Waiver_Active_End__c as String default "",
-	ValidUntil: payload01.Waiver_Active_Start__c as String default "",
-	PaperReceived: payload01.Paper_Form_Received__c as Boolean default false
-}]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-		<flow-ref doc:name="exit-flow" doc:id="00c2dda1-3348-4a07-90c8-7840a86d048d" name="exit-flow"/>
-	</flow>
-	<flow name="post:\waiver\(waiverId):application\json:salesforce-data-api-config" doc:id="8b1473c4-3931-4408-9c18-5d77ac8fc694" >
-		<flow-ref doc:name="entry-flow" doc:id="4e9a74ac-9da5-4a28-ab4c-1f74f9c952cd" name="entry-flow" />
-		<ee:transform doc:name="Transform Message" doc:id="72ce180c-ba71-4658-ad7a-4162acfea0a9" >
-			<ee:variables >
-				<ee:set-variable variableName="waiverId" ><![CDATA[attributes.uriParams.'waiverId']]></ee:set-variable>
-			</ee:variables>
-		</ee:transform>
-		<salesforce:create doc:name="Create" doc:id="152574e4-872a-4c9e-89d9-bbf784f017c0" config-ref="Salesforce_Config" type="Waiver_History__c">
-			<salesforce:records ><![CDATA[#[output application/java
+(payload default [])
+    // Filter out archived items
+    filter (payload01) -> not (payload01.Archived__c as Boolean)
+]]>
+        </ee:set-payload>
+      </ee:message>
+    </ee:transform>
+    <ee:transform doc:id="map-transform" doc:name="Map Filtered Items">
+      <ee:message>
+        <ee:set-payload>
+          <![CDATA[%dw 2.0
+output application/json
+---
+payload
+    // Map the filtered items to the desired format
+    map (payload01) -> {
+        WaiverId: payload01.Id as String default "",
+        Name: payload01.Name as String default "",
+        Region: payload01.WaiverRegion__c as String default "",
+        SourceEmail: payload01.WaiverSource_email__c as String default "",
+        Source: payload01.WaiverSource__c as String default "",
+        Content: payload01.WaiverText__c as String default "",
+        ValidFrom: payload01.Waiver_Active_End__c as String default "",
+        ValidUntil: payload01.Waiver_Active_Start__c as String default "",
+        Archived: payload01.Archived__c as Boolean default false
+    }
+]]>
+        </ee:set-payload>
+      </ee:message>
+    </ee:transform>
+    <flow-ref doc:id="00c2dda1-3348-4a07-90c8-7840a86d048d" doc:name="exit-flow" name="exit-flow"></flow-ref>
+  </flow>
+  <flow doc:id="8b1473c4-3931-4408-9c18-5d77ac8fc694" name="post:\waiver\(waiverId):application\json:salesforce-data-api-config">
+    <flow-ref doc:id="4e9a74ac-9da5-4a28-ab4c-1f74f9c952cd" doc:name="entry-flow" name="entry-flow"></flow-ref>
+    <choice doc:id="bplsbn" doc:name="Choice">
+      <when expression="#[vars.waiverId == null]">
+        <ee:transform doc:id="72ce180c-ba71-4658-ad7a-4162acfea0a9" doc:name="Transform Message">
+          <ee:variables>
+            <ee:set-variable variableName="waiverId">
+              <![CDATA[attributes.uriParams.'waiverId']]>
+            </ee:set-variable>
+          </ee:variables>
+        </ee:transform>
+      </when>
+    </choice>
+    <salesforce:create config-ref="Salesforce_Config" doc:id="152574e4-872a-4c9e-89d9-bbf784f017c0" doc:name="Create" type="Waiver_History__c">
+      <salesforce:records>
+        <![CDATA[#[output application/java
 ---
 [{
 	Waiver__c: vars.waiverId,
@@ -58,35 +82,84 @@ payload map ( payload01 ,indexOfPayload01 ) -> {
 	WaiverEvent_DateTime__c: payload.datetime as DateTime {format: "yyyy-MM-dd'T'HH:mm:ssz"},
 	Waiver_Contact__c: payload.contactId,
 	WaiverSignature_email__c: payload.contactEmail,
-	Paper_Form_Received__c: payload.PaperReceived
-}]]]]></salesforce:records>
-		</salesforce:create>
-		<choice doc:name="Choice" doc:id="b35bd46b-d29e-4976-8e2b-b74f74afa199">
-			<when expression="#[payload.successful == false and payload..errors != null]">
-				<logger level="INFO" doc:name="Logger" doc:id="2b354024-fa67-4edf-9d72-97886e5b084e" message="#[payload.items[0].message]" />
-				<ee:transform doc:name="Transform Message" doc:id="bce41c8d-176f-45bd-b28f-8e1fb95f3744">
-					<ee:message>
-						<ee:set-payload><![CDATA[%dw 2.0
+	Signed_Paper_Form_Received__c: payload.PaperReceived
+}]]]]>
+      </salesforce:records>
+    </salesforce:create>
+    <choice doc:id="b35bd46b-d29e-4976-8e2b-b74f74afa199" doc:name="Choice">
+      <when expression="#[payload.successful == false and payload..errors != null]">
+        <logger doc:id="2b354024-fa67-4edf-9d72-97886e5b084e" doc:name="Logger" level="INFO" message="#[payload.items[0].message]"></logger>
+        <ee:transform doc:id="bce41c8d-176f-45bd-b28f-8e1fb95f3744" doc:name="Transform Message">
+          <ee:message>
+            <ee:set-payload>
+              <![CDATA[%dw 2.0
 output application/json
 ---
-message: "Waiver History creation failed"]]></ee:set-payload>
-					</ee:message>
-				</ee:transform>
-				<raise-error doc:name="Raise error" doc:id="d316eae0-0b40-413b-8346-38a855763a8f" type="CREATECONTACT:CONFLICT" />
-			</when>
-			<otherwise>
-				<ee:transform doc:name="Create response" doc:id="e46654f4-c283-433b-ae4d-d2a4ae4ae206" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-					<ee:message>
-						<ee:set-payload><![CDATA[%dw 2.0
+message: "Waiver History creation failed"]]>
+            </ee:set-payload>
+          </ee:message>
+        </ee:transform>
+        <raise-error doc:id="d316eae0-0b40-413b-8346-38a855763a8f" doc:name="Raise error" type="CREATECONTACT:CONFLICT"></raise-error>
+      </when>
+      <otherwise>
+        <ee:transform doc:id="e46654f4-c283-433b-ae4d-d2a4ae4ae206" doc:name="Create response" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+          <ee:message>
+            <ee:set-payload>
+              <![CDATA[%dw 2.0
 output application/json
 ---
 {
 	WaiverHistory: payload.items[0].id
-}]]></ee:set-payload>
-					</ee:message>
-					<ee:variables />
-				</ee:transform>
-			</otherwise>
-		</choice>
-	</flow>
+}]]>
+            </ee:set-payload>
+          </ee:message>
+          <ee:variables></ee:variables>
+        </ee:transform>
+      </otherwise>
+    </choice>
+  </flow>
+  <flow name="get:\waiverHistory:salesforce-data-api-config">
+    <ee:transform doc:id="0955be0d-6f6d-43f2-933d8-db11c0e90793" doc:name="Get ContactID">
+    <ee:message></ee:message>
+    <ee:variables>
+      <ee:set-variable variableName="contactId">
+        <![CDATA[attributes.queryParams.'contactId']]>
+      </ee:set-variable>
+    </ee:variables>
+  </ee:transform>
+  <salesforce:query config-ref="Salesforce_Config" doc:id="f37eea34a-c7f6-4ff7-ba4b-e76c55c9d153" doc:name="Query to Retrieve `Waiver_History__c`">
+      <salesforce:salesforce-query>
+        <![CDATA[SELECT Id, Name, Waiver__c, Signed_Paper_Form_Received__c, Waiver_Contact__c, WaiverSignature_email__c, Date_Signed_Paper_Form_Received__c, Waiver_Creation_Date__c FROM Waiver_History__c WHERE Waiver_Contact__c = ':region']]>
+      </salesforce:salesforce-query>
+      <salesforce:parameters>
+        <![CDATA[#[output application/java
+          ---
+          {
+            region : vars.contactId
+          }]]]>
+      </salesforce:parameters>
+    </salesforce:query>
+    <ee:transform doc:id="map-transform-2" doc:name="Map Items">
+      <ee:message>
+        <ee:set-payload>
+          <![CDATA[%dw 2.0
+              output application/json
+              ---
+              payload
+                  // Map the filtered items to the desired format
+                  map (payload01) -> {
+                      WaiverHistoryId: payload01.Id as String default "",
+                      Name: payload01.Name as String default "",
+                      WaiverId: payload01.Waiver__c as String default "",
+                      PaperReceived: payload01.Signed_Paper_Form_Received__c as Boolean default false,
+                      ContactId: payload01.Waiver_Contact__c as String default "",
+                      ContactEmail: payload01.WaiverSignature_email__c as String default "",
+                      PaperReceivedDate: payload01.Date_Signed_Paper_Form_Received__c as String default "",
+                      WaiverCreationDate: payload01.Waiver_Creation_Date__c as String default ""
+                  }
+              ]]>
+        </ee:set-payload>
+      </ee:message>
+    </ee:transform>
+  </flow>
 </mule>
