@@ -1,5 +1,9 @@
 # salesforce-data-api
 
+## Automatic Deployment via Github Actions
+The [Actions associated with this repo](https://github.com/AmericaSCORESBayArea/salesforce-data-api/actions/workflows/on-push-build-and-deploy.yml) cofigure and deploy to various instances.
+#### _Need more explanation here_
+
 ## Manual Deployment Process 
 
 ### Deploying to Sandbox

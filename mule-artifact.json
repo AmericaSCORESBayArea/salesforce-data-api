@@ -1,11 +1,5 @@
 {
-  "secureProperties": [
-    "sfdc.password",
-    "sfdc.tkn",
-    "typeform.tkn",
-    "typeform.clientid",
-    "typeform.clientsecret"
-  ],
+  "secureProperties": ["sfdc.password", "sfdc.tkn", "typeform.tkn", "typeform.clientid", "typeform.clientsecret"],
   "redeploymentEnabled": true,
   "name": "secure-properties",
   "minMuleVersion": "4.6.8",
@@ -19,8 +13,5 @@
   "bundleDescriptorLoader": {
     "id": "mule",
     "attributes": {}
-  },
-  "javaSpecificationVersions": [
-    "17"
-  ]
+  }
 }

@@ -389,100 +389,33 @@ output application/json
 			doc:id="def4e728-8bf5-45ff-85ac-c213895d9de4"
 			name="exit-flow" />
 	</flow>
-
-	<!-- delete flow -->
 	<flow name="delete:\enrollments:application\json:salesforce-data-api-config" doc:id="7f025bf8-4fc6-4557-9905-879b551ef142" >
 	<flow-ref doc:name="entry-flow" doc:id="0f3ac219-0a9d-45e8-9f56-78bd80d10a18" name="entry-flow" />
 		<logger level="INFO" doc:name="Log entry-flow" doc:id="e19144a5-1de4-48e7-ba5c-6fd97100f910" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]." />
 		<ee:transform doc:name="Transform Message" doc:id="f73ccde1-d7ca-41d8-90a1-d9feeb9f4fd1" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
-					output application/java
-					---
-					payload map ( payload01 , indexOfPayload01 ) -> {
-						Id: payload01.EnrollmentId
-					}]]>
-				</ee:set-payload>
+output application/java
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	Id: payload01.EnrollmentId
+}]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 		<salesforce:delete doc:name="Delete" doc:id="85d7c28c-124a-472b-bfa1-541ab9396aff" config-ref="Salesforce_Config">
 			<salesforce:ids ><![CDATA[#[payload.Id]]]></salesforce:ids>
 		</salesforce:delete>
-		<ee:transform doc:name="Transform Message" doc:id="903290a7-d881-492c-801e-80979a824387">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
-					output application/json
-					---
-					payload]]>
-				</ee:set-payload>
+		<ee:transform doc:name="Transform Message" doc:id="7ff0dfbc-49fc-4b13-9fd5-e7f45ecd92a9" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  message: "Enrollment/s deleted successfully"
+}]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-        <logger level="INFO" message='Post delete payload: #[payload]' doc:name="Logger" doc:id="vvxdmx" />
-		<choice
-			doc:name="Enrollment deletion successful?"
-			doc:id="ee82b0c8-2c07-4456-a51a-80fba2c1e448">
-			<when expression="#[payload.successful]">
-				<ee:transform 
-					xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" 
-					doc:name="Success Response" 
-					doc:id="291c1946-dfea-4dd5-aaba-c30a5a5b4311">
-					<ee:message>
-						<ee:set-payload>
-							<![CDATA[%dw 2.0
-							output application/json
-							---
-							{
-								message: "Enrollment/s deleted successfully"
-							}]]>
-						</ee:set-payload>
-					</ee:message>
-					<ee:variables>
-						<ee:set-variable variableName="httpStatus"><![CDATA[200]]></ee:set-variable>
-					</ee:variables>
-				</ee:transform>
-        	</when>
-			<when expression="#[sizeOf(payload.items) == sizeOf(payload.items filter ((item) -> item.successful == false))]">
-				<ee:transform
-					doc:name="Create Error Response"
-					doc:id="aab7a4b8-dfff-4774-bf3e-acdbb63ea782">
-					<ee:message>
-						<ee:set-payload><![CDATA[%dw 2.0
-							output application/json
-							---
-							{
-								message: "Enrollment/s Not Found"
-							}]]>
-						</ee:set-payload>
-					</ee:message>
-					<ee:variables>
-						<ee:set-variable variableName="httpStatus"><![CDATA[404]]></ee:set-variable>
-					</ee:variables>
-				</ee:transform>
-			</when>
-			<otherwise>
-				<ee:transform
-					xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
-					doc:name="Partial Success Response"
-					doc:id="291c1937-dfea-4dd5-aaba-c30a5a5b4311">
-					<ee:message>
-						<ee:set-payload><![CDATA[%dw 2.0
-							output application/json
-							---
-							{
-								message: "Partial Success",
-								deleted: payload.items filter ((item) -> item.payload.success == true) map ((item) -> item.payload.id),
-								not_found: payload.items filter ((item) -> item.payload.success == false) map ((item) -> if (item.payload.id == null) "unknown id" else item.payload.id)
-							}]]>
-						</ee:set-payload>
-					</ee:message>
-					<ee:variables>
-						<ee:set-variable variableName="httpStatus"><![CDATA[206]]></ee:set-variable>
-					</ee:variables>
-				</ee:transform>
-			</otherwise>
-		</choice>
 		<logger level="INFO" doc:name="Log Created Response" doc:id="1cee3392-3963-4ec2-a6d9-17b8509d2102" message="#[payload]" />
-		<!-- <set-property propertyName="http.status" value="#[vars.httpStatus]" doc:name="Set HTTP Status" /> -->
 		<flow-ref doc:name="exit flow" doc:id="d6d6a729-bac5-4e4f-b490-96c7029afbce" name="exit-flow" />
 	</flow>
 </mule>
