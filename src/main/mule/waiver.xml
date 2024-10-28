@@ -11,7 +11,7 @@
     </ee:transform>
     <salesforce:query config-ref="Salesforce_Config" doc:id="f7eea34a-c7f6-4ff7-ba4b-e76c55c9d153" doc:name="Query">
       <salesforce:salesforce-query>
-        <![CDATA[SELECT Id,Name,WaiverRegion__c,WaiverSource_email__c,WaiverSource__c,WaiverText__c,Waiver_Active_End__c,Waiver_Active_Start__c, Archived__c FROM Waiver__c WHERE WaiverRegion__c = ':region']]>
+        <![CDATA[SELECT Id,Name,WaiverRegion__c,WaiverSource_email__c,WaiverSource__c,WaiverText__c,Waiver_Active_End__c,Waiver_Active_Start__c, Archived__c FROM Waiver__c WHERE WaiverRegion__c = ':region' AND Archived__c = false AND Waiver_Active_End__c >= TODAY]]>
       </salesforce:salesforce-query>
       <salesforce:parameters>
         <![CDATA[#[output application/java
@@ -21,42 +21,49 @@
 }]]]>
       </salesforce:parameters>
     </salesforce:query>
-    <ee:transform doc:id="filter-transform" doc:name="Filter Archived Items">
-      <ee:message>
-        <ee:set-payload>
-          <![CDATA[%dw 2.0
-output application/json
----
-(payload default [])
-    // Filter out archived items
-    filter (payload01) -> not (payload01.Archived__c as Boolean)
-]]>
-        </ee:set-payload>
-      </ee:message>
-    </ee:transform>
-    <ee:transform doc:id="map-transform" doc:name="Map Filtered Items">
-      <ee:message>
-        <ee:set-payload>
-          <![CDATA[%dw 2.0
-output application/json
----
-payload
-    // Map the filtered items to the desired format
-    map (payload01) -> {
-        WaiverId: payload01.Id as String default "",
-        Name: payload01.Name as String default "",
-        Region: payload01.WaiverRegion__c as String default "",
-        SourceEmail: payload01.WaiverSource_email__c as String default "",
-        Source: payload01.WaiverSource__c as String default "",
-        Content: payload01.WaiverText__c as String default "",
-        ValidFrom: payload01.Waiver_Active_End__c as String default "",
-        ValidUntil: payload01.Waiver_Active_Start__c as String default "",
-        Archived: payload01.Archived__c as Boolean default false
-    }
-]]>
-        </ee:set-payload>
-      </ee:message>
-    </ee:transform>
+        <choice doc:name="Check If Payload Is Empty" doc:id="a25c9bb9-2d4c-4983-87e4-4e3abf64e31c">
+        <when expression="#[isEmpty(payload)]">
+            <ee:transform
+                      doc:name="Create Error Response"
+                      doc:id="92521a9b-a8a5-4f91-ac00-166310c64e45">
+                      <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+                      output application/json
+                      ---
+                      {
+                        message: "No current waiver found"
+            }]]></ee:set-payload>
+                      </ee:message>
+                      <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[404]]></ee:set-variable>
+                      </ee:variables>
+                    </ee:transform>        </when>
+        <otherwise>
+            <ee:transform doc:id="map-transform" doc:name="Map Filtered Items">
+                <ee:message>
+                    <ee:set-payload>
+                        <![CDATA[%dw 2.0
+                          output application/json
+                          ---
+                          payload
+                              // Map the filtered items to the desired format
+                              map (payload01) -> {
+                                  WaiverId: payload01.Id as String default "",
+                                  Name: payload01.Name as String default "",
+                                  Region: payload01.WaiverRegion__c as String default "",
+                                  SourceEmail: payload01.WaiverSource_email__c as String default "",
+                                  Source: payload01.WaiverSource__c as String default "",
+                                  Content: payload01.WaiverText__c as String default "",
+                                  ValidFrom: payload01.Waiver_Active_Start__c as String default "",
+                                  ValidUntil: payload01.Waiver_Active_End__c as String default "",
+                                  Archived: payload01.Archived__c as Boolean default false
+                              }
+                          ]]>
+                    </ee:set-payload>
+                </ee:message>
+            </ee:transform>
+        </otherwise>
+    </choice>
     <flow-ref doc:id="00c2dda1-3348-4a07-90c8-7840a86d048d" doc:name="exit-flow" name="exit-flow"></flow-ref>
   </flow>
   <flow doc:id="8b1473c4-3931-4408-9c18-5d77ac8fc694" name="post:\waiver\(waiverId):application\json:salesforce-data-api-config">
