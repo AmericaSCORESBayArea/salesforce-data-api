@@ -1554,7 +1554,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 							output application/json
 							---
 							{	
-								message: "Success. Waiver Signed. `Student_Record_Complete__c` set to true",
+								message: "Success. Waiver Signed.",
 								WaiverHistory: vars.WaiverHistory,
 								data: payload
 							}]]>
