@@ -240,7 +240,9 @@ payload]]>
 				Second_Emergency_Permission_to_Pick_Up__c,
 				Liability__c,
 				Media_Release__c,
-				Data_Release__c
+				Data_Release__c,
+				Year_of_Reference_for_Grade_Information__c,
+				Grades_child_participated__c
 			FROM 
 				Contact 
 			WHERE 
@@ -428,7 +430,9 @@ payload.items[0].payload]]>
 	Liability__c: vars.originalPayload.LiabilityWaiver,
 	Media_Release__c: vars.originalPayload.MediaReleaseWaiver,
 	Data_Release__c: vars.originalPayload.DataReleaseWaiver,
-	Student_Record_Complete__c: false
+	Student_Record_Complete__c: false,
+	Year_of_Reference_for_Grade_Information__c: vars.originalPayload.YearOfReferenceForGradeInformation,
+	Grades_child_participated__c: vars.originalPayload.GradesChildParticipated
 }]]]]>
                                 							
               
@@ -584,7 +588,9 @@ payload.items[0].payload]]>
 						Second_Emergency_Permission_to_Pick_Up__c,
 						Liability__c,
 						Media_Release__c,
-						Data_Release__c 
+						Data_Release__c,
+						Year_of_Reference_for_Grade_Information__c,
+						Grades_child_participated__c
 					FROM 
 						Contact 
 					WHERE 
@@ -679,7 +685,9 @@ import * from modules::GlobalModules
 						Second_Emergency_Permission_to_Pick_Up__c,
 						Liability__c,
 						Media_Release__c,
-						Data_Release__c
+						Data_Release__c,
+						Year_of_Reference_for_Grade_Information__c,
+						Grades_child_participated__c
 					FROM 
 						Contact 
 					WHERE 
@@ -775,7 +783,10 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	Second_Emergency_Contact_Permission_to_Pickup_child: payload01.Second_Emergency_Permission_to_Pick_Up__c as String default "" ,
 	LiabilityWaiver: payload01.Liability__c as String default "" ,
 	MediaReleaseWaiver: payload01.Media_Release__c as String default "" ,
-	DataReleaseWaiver: payload01.Data_Release__c as String default "" 
+	DataReleaseWaiver: payload01.Data_Release__c as String default "" ,
+	YearOfReferenceForGradeInformation: payload01.Year_of_Reference_for_Grade_Information__c as String default "" ,
+	GradesChildParticipated: payload01.Grades_child_participated__c as String default ""
+
 }]]>
                             						
             
@@ -882,7 +893,9 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 				Second_Emergency_Permission_to_Pick_Up__c,
 				Liability__c,
 				Media_Release__c,
-				Data_Release__c 
+				Data_Release__c,
+				Year_of_Reference_for_Grade_Information__c,
+				Grades_child_participated__c
 			WHERE 
 				(Contact_Type__c = 'SCORES Student'
 				:regionQuery)
@@ -965,7 +978,9 @@ Id: payload01.record.Id as String default "",
 	Second_Emergency_Contact_Permission_to_Pickup_child: payload01.record.Second_Emergency_Permission_to_Pick_Up__c as String default "" ,
 	LiabilityWaiver: payload01.record.Liability__c as String default "" ,
 	MediaReleaseWaiver: payload01.record.Media_Release__c as String default "" ,
-	DataReleaseWaiver: payload01.record.Data_Release__c as String default "" 
+	DataReleaseWaiver: payload01.record.Data_Release__c as String default "",
+	YearOfReferenceForGradeInformation: payload01.Year_of_Reference_for_Grade_Information__c as String default "" ,
+	GradesChildParticipated: payload01.Grades_child_participated__c as String default ""
 }]]>
                     				
         
@@ -1062,7 +1077,9 @@ substring(cleanedPhoneNumber, stringSize - 4, stringSize)]]>
 				Liability__c,
 				Media_Release__c,
 				Data_Release__c,
-				Student_Record_Complete__c
+				Student_Record_Complete__c,
+				Year_of_Reference_for_Grade_Information__c,
+				Grades_child_participated__c
 			WHERE 
 				Contact_Type__c = 'SCORES Student'
 				AND (Parent_Phone_01__c LIKE '%:phoneNumberLast4Digits'
@@ -1148,7 +1165,9 @@ payload.searchRecords map ( payload01 , indexOfpayload01 ) -> {
 	LiabilityWaiver: payload01.record.Liability__c as String default "" ,
 	MediaReleaseWaiver: payload01.record.Media_Release__c as String default "" ,
 	DataReleaseWaiver: payload01.record.Data_Release__c as String default "",
-	StudentRecordComplete: payload01.record.Student_Record_Complete__c as Boolean default false
+	StudentRecordComplete: payload01.record.Student_Record_Complete__c as Boolean default false,
+	YearOfReferenceForGradeInformation: payload01.Year_of_Reference_for_Grade_Information__c as String default "" ,
+	GradesChildParticipated: payload01.Grades_child_participated__c as String default ""
 }]]>
                     				
         
@@ -1232,7 +1251,9 @@ payload.searchRecords map ( payload01 , indexOfpayload01 ) -> {
 				Liability__c,
 				Media_Release__c,
 				Data_Release__c,
-				Student_Record_Complete__c
+				Student_Record_Complete__c,
+				Year_of_Reference_for_Grade_Information__c,
+				Grades_child_participated__c
 			FROM 
 				Contact 
 			WHERE 
@@ -1314,7 +1335,9 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	LiabilityWaiver: payload01.Liability__c as String default "" ,
 	MediaReleaseWaiver: payload01.Media_Release__c as String default "" ,
 	DataReleaseWaiver: payload01.Data_Release__c as String default "" ,
-	StudentRecordComplete: payload01.Student_Record_Complete__c as Boolean default false
+	StudentRecordComplete: payload01.Student_Record_Complete__c as Boolean default false,
+	YearOfReferenceForGradeInformation: payload01.Year_of_Reference_for_Grade_Information__c as String default "" ,
+	GradesChildParticipated: payload01.Grades_child_participated__c as String default ""
 }]]>
                     				
         
@@ -1398,7 +1421,9 @@ output application/java
 	(Media_Release__c: payload.MediaReleaseWaiver) if(payload.MediaReleaseWaiver?) ,
 	(Data_Release__c: payload.DataReleaseWaiver) if(payload.DataReleaseWaiver?),
 	(School_Attending__c: payload.SchoolName) if(payload.SchoolName?),
-	(AccountId: payload.AccountId) if(payload.AccountId?)
+	(AccountId: payload.AccountId) if(payload.AccountId?),
+	(Year_of_Reference_for_Grade_Information__c: payload.YearOfReferenceForGradeInformation) if(payload.YearOfReferenceForGradeInformation?),
+	(Grades_child_participated__c: payload.GradesChildParticipated) if(payload.GradesChildParticipated?)
 }]]]>
                     				
         
