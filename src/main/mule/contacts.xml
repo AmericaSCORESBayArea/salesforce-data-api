@@ -242,7 +242,8 @@ payload]]>
 				Media_Release__c,
 				Data_Release__c,
 				Year_of_Reference_for_Grade_Information__c,
-				Grades_child_participated__c
+				Grades_child_participated__c,
+				Latest_Waiver_Date__c
 			FROM 
 				Contact 
 			WHERE 
@@ -432,7 +433,7 @@ payload.items[0].payload]]>
 	Data_Release__c: vars.originalPayload.DataReleaseWaiver,
 	Student_Record_Complete__c: false,
 	Year_of_Reference_for_Grade_Information__c: vars.originalPayload.YearOfReferenceForGradeInformation,
-	Grades_child_participated__c: vars.originalPayload.GradesChildParticipated
+	Grades_child_participated__c: vars.originalPayload.GradesChildParticipated,
 }]]]]>
                                 							
               
@@ -590,7 +591,8 @@ payload.items[0].payload]]>
 						Media_Release__c,
 						Data_Release__c,
 						Year_of_Reference_for_Grade_Information__c,
-						Grades_child_participated__c
+						Grades_child_participated__c,
+						Latest_Waiver_Date__c
 					FROM 
 						Contact 
 					WHERE 
@@ -687,7 +689,8 @@ import * from modules::GlobalModules
 						Media_Release__c,
 						Data_Release__c,
 						Year_of_Reference_for_Grade_Information__c,
-						Grades_child_participated__c
+						Grades_child_participated__c,
+						Latest_Waiver_Date__c
 					FROM 
 						Contact 
 					WHERE 
@@ -785,8 +788,8 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	MediaReleaseWaiver: payload01.Media_Release__c as String default "" ,
 	DataReleaseWaiver: payload01.Data_Release__c as String default "" ,
 	YearOfReferenceForGradeInformation: payload01.Year_of_Reference_for_Grade_Information__c as String default "" ,
-	GradesChildParticipated: payload01.Grades_child_participated__c as String default ""
-
+	GradesChildParticipated: payload01.Grades_child_participated__c as String default "",
+	LatestWaiverDate: payload01.Latest_Waiver_Date__c as String default ""
 }]]>
                             						
             
@@ -895,7 +898,8 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 				Media_Release__c,
 				Data_Release__c,
 				Year_of_Reference_for_Grade_Information__c,
-				Grades_child_participated__c
+				Grades_child_participated__c,
+				Latest_Waiver_Date__c
 			WHERE 
 				(Contact_Type__c = 'SCORES Student'
 				:regionQuery)
@@ -980,7 +984,8 @@ Id: payload01.record.Id as String default "",
 	MediaReleaseWaiver: payload01.record.Media_Release__c as String default "" ,
 	DataReleaseWaiver: payload01.record.Data_Release__c as String default "",
 	YearOfReferenceForGradeInformation: payload01.Year_of_Reference_for_Grade_Information__c as String default "" ,
-	GradesChildParticipated: payload01.Grades_child_participated__c as String default ""
+	GradesChildParticipated: payload01.Grades_child_participated__c as String default "",
+	LatestWaiverDate: payload01.Latest_Waiver_Date__c as String default ""
 }]]>
                     				
         
@@ -1079,7 +1084,8 @@ substring(cleanedPhoneNumber, stringSize - 4, stringSize)]]>
 				Data_Release__c,
 				Student_Record_Complete__c,
 				Year_of_Reference_for_Grade_Information__c,
-				Grades_child_participated__c
+				Grades_child_participated__c,
+				Latest_Waiver_Date__c
 			WHERE 
 				Contact_Type__c = 'SCORES Student'
 				AND (Parent_Phone_01__c LIKE '%:phoneNumberLast4Digits'
@@ -1167,7 +1173,8 @@ payload.searchRecords map ( payload01 , indexOfpayload01 ) -> {
 	DataReleaseWaiver: payload01.record.Data_Release__c as String default "",
 	StudentRecordComplete: payload01.record.Student_Record_Complete__c as Boolean default false,
 	YearOfReferenceForGradeInformation: payload01.Year_of_Reference_for_Grade_Information__c as String default "" ,
-	GradesChildParticipated: payload01.Grades_child_participated__c as String default ""
+	GradesChildParticipated: payload01.Grades_child_participated__c as String default "",
+	LatestWaiverDate: payload01.Latest_Waiver_Date__c as String default ""
 }]]>
                     				
         
@@ -1253,7 +1260,8 @@ payload.searchRecords map ( payload01 , indexOfpayload01 ) -> {
 				Data_Release__c,
 				Student_Record_Complete__c,
 				Year_of_Reference_for_Grade_Information__c,
-				Grades_child_participated__c
+				Grades_child_participated__c,
+				Latest_Waiver_Date__c
 			FROM 
 				Contact 
 			WHERE 
@@ -1337,7 +1345,8 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	DataReleaseWaiver: payload01.Data_Release__c as String default "" ,
 	StudentRecordComplete: payload01.Student_Record_Complete__c as Boolean default false,
 	YearOfReferenceForGradeInformation: payload01.Year_of_Reference_for_Grade_Information__c as String default "" ,
-	GradesChildParticipated: payload01.Grades_child_participated__c as String default ""
+	GradesChildParticipated: payload01.Grades_child_participated__c as String default "",
+	LatestWaiverDate: payload01.Latest_Waiver_Date__c as String default ""
 }]]>
                     				
         
