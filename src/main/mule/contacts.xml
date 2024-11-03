@@ -787,9 +787,9 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	LiabilityWaiver: payload01.Liability__c as String default "" ,
 	MediaReleaseWaiver: payload01.Media_Release__c as String default "" ,
 	DataReleaseWaiver: payload01.Data_Release__c as String default "" ,
-	YearOfReferenceForGradeInformation: payload01.Year_of_Reference_for_Grade_Information__c as String default "" ,
-	GradesChildParticipated: payload01.Grades_child_participated__c as String default "",
-	LatestWaiverDate: payload01.Latest_Waiver_Date__c as String default ""
+	YearOfReferenceForGradeInformation: payload01.record.Year_of_Reference_for_Grade_Information__c as String default "" ,
+	GradesChildParticipated: payload01.record.Grades_child_participated__c as String default "",
+	LatestWaiverDate: payload01.record.Latest_Waiver_Date__c as String default ""
 }]]>
                             						
             
@@ -983,9 +983,9 @@ Id: payload01.record.Id as String default "",
 	LiabilityWaiver: payload01.record.Liability__c as String default "" ,
 	MediaReleaseWaiver: payload01.record.Media_Release__c as String default "" ,
 	DataReleaseWaiver: payload01.record.Data_Release__c as String default "",
-	YearOfReferenceForGradeInformation: payload01.Year_of_Reference_for_Grade_Information__c as String default "" ,
-	GradesChildParticipated: payload01.Grades_child_participated__c as String default "",
-	LatestWaiverDate: payload01.Latest_Waiver_Date__c as String default ""
+	YearOfReferenceForGradeInformation: payload01.record.Year_of_Reference_for_Grade_Information__c as String default "" ,
+	GradesChildParticipated: payload01.record.Grades_child_participated__c as String default "",
+	LatestWaiverDate: payload01.record.Latest_Waiver_Date__c as String default ""
 }]]>
                     				
         
@@ -1172,9 +1172,9 @@ payload.searchRecords map ( payload01 , indexOfpayload01 ) -> {
 	MediaReleaseWaiver: payload01.record.Media_Release__c as String default "" ,
 	DataReleaseWaiver: payload01.record.Data_Release__c as String default "",
 	StudentRecordComplete: payload01.record.Student_Record_Complete__c as Boolean default false,
-	YearOfReferenceForGradeInformation: payload01.Year_of_Reference_for_Grade_Information__c as String default "" ,
-	GradesChildParticipated: payload01.Grades_child_participated__c as String default "",
-	LatestWaiverDate: payload01.Latest_Waiver_Date__c as String default ""
+	YearOfReferenceForGradeInformation: payload01.record.Year_of_Reference_for_Grade_Information__c as String default "" ,
+	GradesChildParticipated: payload01.record.Grades_child_participated__c as String default "",
+	LatestWaiverDate: payload01.record.Latest_Waiver_Date__c as String default ""
 }]]>
                     				
         
@@ -1344,9 +1344,9 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	MediaReleaseWaiver: payload01.Media_Release__c as String default "" ,
 	DataReleaseWaiver: payload01.Data_Release__c as String default "" ,
 	StudentRecordComplete: payload01.Student_Record_Complete__c as Boolean default false,
-	YearOfReferenceForGradeInformation: payload01.Year_of_Reference_for_Grade_Information__c as String default "" ,
-	GradesChildParticipated: payload01.Grades_child_participated__c as String default "",
-	LatestWaiverDate: payload01.Latest_Waiver_Date__c as String default ""
+	YearOfReferenceForGradeInformation: payload01.record.Year_of_Reference_for_Grade_Information__c as String default "" ,
+	GradesChildParticipated: payload01.record.Grades_child_participated__c as String default "",
+	LatestWaiverDate: payload01.record.Latest_Waiver_Date__c as String default ""
 }]]>
                     				
         
