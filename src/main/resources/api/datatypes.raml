@@ -804,4 +804,34 @@ types:
         type: date-only
       WaiverCreatedDate:
         type: date-only
-    
+  SCORES_Task:
+    type: object
+    properties:
+      Id: string
+      AssignedBy: string
+      AssignedTo: string
+      CreatedBy: string
+      CreatedContact: string
+      Description: string
+      DueDate: date-only
+      LastModifiedBy: string
+      LastModifiedContact: string
+      OwnerId: string
+      Priority: string
+      PriorityIcon: string
+      ResourceLink: string
+      Session: string
+      Name: string
+      TaskStatus: string
+      TaskType: string
+  SCORES_Tag:
+    type: object
+    properties:
+      Id: string
+      TaskId: string
+      TaskName: string
+      TagId: string
+      TagName: string
+      TagColor: string
+      Description: string
+      TaskTagName: string
