@@ -1200,6 +1200,17 @@ payload.searchRecords map ( payload01 , indexOfpayload01 ) -> {
         </ee:transform>
       </when>
     </choice>
+	<flow-ref name="get:\contacts\(contactId)\enrollments:salesforce-data-api-config" doc:name="Call External Flow" />
+    <ee:transform doc:id="extract-school-site-name" doc:name="Extract School Site Name">
+        <ee:variables>
+            <ee:set-variable variableName="schoolSiteName">
+                <![CDATA[
+                if (isEmpty(payload)) null
+                else payload[0].SchoolSiteName
+                ]]>
+            </ee:set-variable>
+        </ee:variables>
+    </ee:transform>
     <salesforce:query config-ref="Salesforce_Config" doc:id="484bbe2a-c7aa-42d5-9463-cd953b4abb1e" doc:name="Query">
       <salesforce:salesforce-query>
                 				
@@ -1282,6 +1293,8 @@ payload.searchRecords map ( payload01 , indexOfpayload01 ) -> {
       
       </salesforce:parameters>
     </salesforce:query>
+
+	
     <ee:transform doc:id="1032e8df-84aa-4e0e-b9cc-e538858184b9" doc:name="Create Response" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
       <ee:message>
         <ee:set-payload>
@@ -1346,7 +1359,8 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	StudentRecordComplete: payload01.Student_Record_Complete__c as Boolean default false,
 	YearOfReferenceForGradeInformation: payload01.Year_of_Reference_for_Grade_Information__c as String default "" ,
 	GradesChildParticipated: payload01.Grades_child_participated__c as String default "",
-	LatestWaiverDate: payload01.Latest_Waiver_Date__c as String default ""
+	LatestWaiverDate: payload01.Latest_Waiver_Date__c as String default "",
+	LatestEnrolledSite: vars.schoolSiteName as String default ""
 }]]>
                     				
         
