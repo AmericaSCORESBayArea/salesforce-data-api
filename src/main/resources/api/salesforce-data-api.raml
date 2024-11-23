@@ -1107,6 +1107,17 @@ uses:
                   "TaskType": "General"
                 }
               ]
+  post: 
+    description: Create a new SCORES task
+    body:
+      application/json:
+        type: types.SCORES_Task_Create
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              message: Task created
   /{taskId}:
     uriParameters:
       taskId:

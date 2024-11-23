@@ -1,25 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
-	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-	http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
-	http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-	
-	<flow name="get:\tasks:salesforce-data-api-config">
-		<logger level="INFO" message="get:\tasks:salesforce-data-api-config" />
-		<ee:transform doc:id="7e56aada-f163-47f0-8ffc-213f3acd09a8" doc:name="Store Query parameters">
-			<ee:variables>
-				<ee:set-variable variableName="contactId">
-					<![CDATA[attributes.queryParams.'contactId']]>    			
-				</ee:set-variable>
-		</ee:variables>
-		</ee:transform>
-		<salesforce:query config-ref="Salesforce_Config" doc:id="1d085a1a-e15b-412b-a836-1014557a9abd" doc:name="Query to get tasks by contactId">
-      		<salesforce:salesforce-query>
-			<![CDATA[
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd  http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd  http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+  <flow name="get:\tasks:salesforce-data-api-config">
+    <logger level="INFO" message="get:\tasks:salesforce-data-api-config"></logger>
+    <ee:transform doc:id="7e56aada-f163-47f0-8ffc-213f3acd09a8" doc:name="Store Query parameters">
+      <ee:variables>
+        <ee:set-variable variableName="contactId">
+          <![CDATA[attributes.queryParams.'contactId']]>
+        </ee:set-variable>
+      </ee:variables>
+    </ee:transform>
+    <salesforce:query config-ref="Salesforce_Config" doc:id="1d085a1a-e15b-412b-a836-1014557a9abd" doc:name="Query to get tasks by contactId">
+      <salesforce:salesforce-query>
+        <![CDATA[
 				SELECT 
 					Id,
 					Assigned_By__c,
@@ -43,20 +34,20 @@
 				WHERE 
 					Assigned_To__c = ':contactId'
 				]]>
-			</salesforce:salesforce-query>
-		<salesforce:parameters>   
-			<![CDATA[#[output application/java
+      </salesforce:salesforce-query>
+      <salesforce:parameters>
+        <![CDATA[#[output application/java
 				---
 				{
 					contactId : vars.contactId,
 				}
-			]]]>  
-		</salesforce:parameters>
-		</salesforce:query>
-		<ee:transform doc:id="cca12834-e1ee-4339-90ef-91c9be555af9" doc:name="Transform Message">
-		<ee:message>
-			<ee:set-payload>				
-			<![CDATA[%dw 2.0
+			]]]>
+      </salesforce:parameters>
+    </salesforce:query>
+    <ee:transform doc:id="cca12834-e1ee-4339-90ef-91c9be555af9" doc:name="Transform Message">
+      <ee:message>
+        <ee:set-payload>
+          <![CDATA[%dw 2.0
 					output application/json
 					---
 					payload map ( payload01 , indexOfpayload01 ) -> {
@@ -78,23 +69,22 @@
 						"TaskStatus": payload01.Task_Status__c as String default "",
 						"TaskType": payload01.Task_Type__c as String default ""
 					}]]>
-			</ee:set-payload>
-		</ee:message>
-		</ee:transform>
-	</flow>
-
-	<flow name="get:\tasks\(taskId)\tags:salesforce-data-api-config">
-		<logger level="INFO" message="get:\tasks\(taskId)\tags:salesforce-data-api-config" />
-		<ee:transform doc:id="7e56aada-f163-47f0-8ffc-213f1acd09a8" doc:name="Store Query parameters">
-			<ee:variables>
-				<ee:set-variable variableName="taskId">           					
-					<![CDATA[attributes.uriParams.'taskId']]>                            				
-				</ee:set-variable>
-			</ee:variables>
-		</ee:transform>
-		<salesforce:query config-ref="Salesforce_Config" doc:id="1d085a1-e15b-412b-a836-10142557a9abd" doc:name="Search By ownerId (contactId)">
-		<salesforce:salesforce-query>      				
-			<![CDATA[
+        </ee:set-payload>
+      </ee:message>
+    </ee:transform>
+  </flow>
+  <flow name="get:\tasks\(taskId)\tags:salesforce-data-api-config">
+    <logger level="INFO" message="get:\tasks\(taskId)\tags:salesforce-data-api-config"></logger>
+    <ee:transform doc:id="7e56aada-f163-47f0-8ffc-213f1acd09a8" doc:name="Store Query parameters">
+      <ee:variables>
+        <ee:set-variable variableName="taskId">
+          <![CDATA[attributes.uriParams.'taskId']]>
+        </ee:set-variable>
+      </ee:variables>
+    </ee:transform>
+    <salesforce:query config-ref="Salesforce_Config" doc:id="1d085a1-e15b-412b-a836-10142557a9abd" doc:name="Search By ownerId (contactId)">
+      <salesforce:salesforce-query>
+        <![CDATA[
 				SELECT 
 					Id,
 					SCORES_Task__c,
@@ -109,20 +99,20 @@
 				WHERE 
 					SCORES_Task__c = ':taskId'
 			]]>
-			</salesforce:salesforce-query>
-		<salesforce:parameters>   
-			<![CDATA[#[output application/java
+      </salesforce:salesforce-query>
+      <salesforce:parameters>
+        <![CDATA[#[output application/java
 				---
 				{
 					taskId : vars.taskId,
 				}
-			]]]>  
-		</salesforce:parameters>
-		</salesforce:query>
-		<ee:transform doc:id="cca12834-e1ee-4c39-90ef-91c9be555af9" doc:name="Transform Message">
-		<ee:message>
-			<ee:set-payload>				
-			<![CDATA[%dw 2.0
+			]]]>
+      </salesforce:parameters>
+    </salesforce:query>
+    <ee:transform doc:id="cca12834-e1ee-4c39-90ef-91c9be555af9" doc:name="Transform Message">
+      <ee:message>
+        <ee:set-payload>
+          <![CDATA[%dw 2.0
 					output application/json
 					---
 					payload map ( payload01 , indexOfpayload01 ) -> {
@@ -136,8 +126,91 @@
 						"TaskTagName": payload01.Name as String default ""
 
 					}]]>
-			</ee:set-payload>
-		</ee:message>
+        </ee:set-payload>
+      </ee:message>
+    </ee:transform>
+  </flow>
+  <flow name="post:\tasks:salesforce-data-api-config">
+		<flow-ref doc:id="7d35fac9-4eff-49204-9840-1c046ef8a84a" doc:name="entry-flow" name="entry-flow"></flow-ref>
+		<ee:transform doc:id="d5391b37-613a-4aa1-8a95-31766e6f7b3ce" doc:name="Store payload">
+			<ee:variables>
+				<ee:set-variable variableName="originalPayload">
+												
+						<![CDATA[output application/json
+							---
+							payload
+						]]>                    				
+				</ee:set-variable>
+			</ee:variables>
 		</ee:transform>
-	</flow>
+		<salesforce:create config-ref="Salesforce_Config" doc:id="dd33ee35c-1b02-4cc9-a47b-733ddccb4800" doc:name="Create" type="SCORES_Task__c">
+              <salesforce:records>              							    
+				<![CDATA[#[output application/java
+				---
+				[{
+					Assigned_To__c: vars.originalPayload.AssignedTo, // Mandatory field
+					(Assigned_By__c: vars.originalPayload.AssignedBy) if vars.originalPayload.AssignedBy != null,
+					(Created_By_Contact__c: vars.originalPayload.CreatedById) if vars.originalPayload.CreatedById != null,
+					(Description__c: vars.originalPayload.Description) if vars.originalPayload.Description != null,
+					(Due_Date__c: vars.originalPayload.DueDate as Date) if vars.originalPayload.DueDate != null,
+					(Last_Modified_By_Contact__c: vars.originalPayload.LastModifiedById) if vars.originalPayload.LastModifiedById != null,
+					(Name: vars.originalPayload.Name) if vars.originalPayload.Name != null,
+					(OwnerId: vars.originalPayload.OwnerId) if vars.originalPayload.OwnerId != null,
+					(Priority__c: vars.originalPayload.Priority) if vars.originalPayload.Priority != null,
+					(Resource_Link__c: vars.originalPayload.ResourceLink) if vars.originalPayload.ResourceLink != null,
+					(Session__c: vars.originalPayload.Session) if vars.originalPayload.Session != null,
+					(Task_Status__c: vars.originalPayload.TaskStatus) if vars.originalPayload.TaskStatus != null,
+					(Task_Type__c: vars.originalPayload.TaskType) if vars.originalPayload.TaskType != null
+				}]]]]>
+              </salesforce:records>
+        </salesforce:create>
+		<choice doc:name="Task creation successful?" doc:id="ee82b0c8-2c09-4456-a531a-80fba2c1e448">
+			<when expression="#[payload.items[0].successful == false]">
+				<ee:transform
+					doc:name="Create Error Response"
+					doc:id="aab7a4b8-dfff-46734-bf3e-acdbb63ea782">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+						output application/json
+						---
+						{
+							message: payload.items[0].message
+						}]]></ee:set-payload>
+					</ee:message>
+						<ee:variables>
+							<ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
+						</ee:variables>
+						</ee:transform>
+					</when>
+					<otherwise>
+					<ee:transform
+						xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
+						doc:name="Create Response"
+						doc:id="291c1936-dfea-4dd5-aaba-c320a5a5b4311">
+						<ee:message>
+							<ee:set-payload><![CDATA[%dw 2.0
+								output application/json
+								---
+								{
+								TaskId: payload.items[0].id
+								}]]>
+							</ee:set-payload>
+						</ee:message>
+					</ee:transform>
+				</otherwise>
+		</choice>
+		<logger
+			level="INFO"
+			doc:name="Log Created Response"
+			doc:id="640a58eb-a8ab-40f9-bcc23-a9cadcf86bb5"
+			message="#[payload]" />
+		<flow-ref
+			doc:name="exit flow"
+			doc:id="ffed222e-011b-42f6-a9a1-2f3cb065c6e44"
+			name="exit-flow" />
+  </flow>
+    <flow name="patch:\tasks\(taskId):salesforce-data-api-config">
+		<flow-ref doc:id="7d35fac9-4eff-49304-9840-1c046ef8a84a" doc:name="entry-flow" name="entry-flow"></flow-ref>
+
+  </flow>
 </mule>

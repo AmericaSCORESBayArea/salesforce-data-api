@@ -824,6 +824,45 @@ types:
       Name: string
       TaskStatus: string
       TaskType: string
+  SCORES_Task_Create:
+    type: object
+    properties:
+      AssignedBy: 
+        type: string
+        required: false    
+      AssignedTo: 
+        type: string
+        required: true
+      CreatedByContact: 
+        type: string
+        required: false
+      Description:
+        type: string
+        required: false
+      DueDate:
+        type: date-only
+        required: false
+      LastModifiedBy:
+        type: string
+        required: false
+      Name: 
+        type: string
+        required: false
+      OwnerId:
+        type: string
+        required: false
+      Priority: 
+        type: string
+        required: false
+      ResourceLink: 
+        type: string
+        required: false
+      Session: 
+        type: string
+        required: false
+      TaskType: 
+        type: string
+        required: false 
   SCORES_Tag:
     type: object
     properties:
