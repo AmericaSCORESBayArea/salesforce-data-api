@@ -755,7 +755,9 @@ import * from modules::GlobalModules
 							---
 							(vars.contactResults default []) ++ [{
 								contactId: vars.contactId,
-								LatestEnrolledSite: payload
+								LatestEnrolledEndDate: payload.LatestEnrolledEndDate,
+								LatestEnrolledSiteId: payload.LatestEnrolledSiteId,
+								LatestEnrolledSiteName: payload.LatestEnrolledSiteName
 							}]
 						]]>
 				</ee:set-variable>
@@ -827,7 +829,9 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	YearOfReferenceForGradeInformation: payload01.Year_of_Reference_for_Grade_Information__c as String default "" ,
 	GradesChildParticipated: payload01.Grades_child_participated__c as String default "",
 	LatestWaiverDate: payload01.Latest_Waiver_Date__c as String default "",
-	LatestEnrolledSite: vars.contactResults[indexOfPayload01].LatestEnrolledSite as String default ""
+	LatestEnrolledEndDate: vars.contactResults[indexOfPayload01].LatestEnrolledEndDate as String default "",
+	LatestEnrolledSiteId: vars.contactResults[indexOfPayload01].LatestEnrolledSiteId as String default "",
+	LatestEnrolledSiteName: vars.contactResults[indexOfPayload01].LatestEnrolledSiteName as String default ""
 }]]>
                             						
             
@@ -1029,7 +1033,9 @@ Id: payload01.record.Id as String default "",
 	YearOfReferenceForGradeInformation: payload01.record.Year_of_Reference_for_Grade_Information__c as String default "" ,
 	GradesChildParticipated: payload01.record.Grades_child_participated__c as String default "",
 	LatestWaiverDate: payload01.record.Latest_Waiver_Date__c as String default "",
-	LatestEnrolledSite: vars.contactResults[indexOfPayload01].LatestEnrolledSite as String default ""
+	LatestEnrolledEndDate: vars.contactResults[indexOfPayload01].LatestEnrolledEndDate as String default "",
+	LatestEnrolledSiteId: vars.contactResults[indexOfPayload01].LatestEnrolledSiteId as String default "",
+	LatestEnrolledSiteName: vars.contactResults[indexOfPayload01].LatestEnrolledSiteName as String default ""	
 }]]>
                     				
         
@@ -1164,7 +1170,7 @@ substring(cleanedPhoneNumber, stringSize - 4, stringSize)]]>
           <![CDATA[%dw 2.0
 output application/json
 ---
-payload.searchRecords map ( payload01 , indexOfpayload01 ) -> {
+payload.searchRecords map ( payload01 , indexOfPayload01 ) -> {
 	Id: payload01.record.Id as String default "",
 	ContactType: payload01.record.Contact_Type__c as String default "",
 	ContactRecordType: payload01.record.RecordTypeId as String default "",
@@ -1221,8 +1227,9 @@ payload.searchRecords map ( payload01 , indexOfpayload01 ) -> {
 	YearOfReferenceForGradeInformation: payload01.record.Year_of_Reference_for_Grade_Information__c as String default "" ,
 	GradesChildParticipated: payload01.record.Grades_child_participated__c as String default "",
 	LatestWaiverDate: payload01.record.Latest_Waiver_Date__c as String default "",
-	LatestEnrolledSite: vars.contactResults[indexOfpayload01].LatestEnrolledSite as String default ""
-
+	LatestEnrolledEndDate: vars.contactResults[indexOfPayload01].LatestEnrolledEndDate as String default "",
+	LatestEnrolledSiteId: vars.contactResults[indexOfPayload01].LatestEnrolledSiteId as String default "",
+	LatestEnrolledSiteName: vars.contactResults[indexOfPayload01].LatestEnrolledSiteName as String default ""
 }]]>
                     				
         
@@ -1234,7 +1241,7 @@ payload.searchRecords map ( payload01 , indexOfpayload01 ) -> {
     <flow-ref doc:id="3cefb3dd-a787-43f6-b305-ea08ddd5c2ce" doc:name="entry-flow" name="entry-flow"></flow-ref>
     <logger doc:id="259840a7-a4b5-4c17-9326-0794dfea6b26" doc:name="Log entry-flow" level="INFO" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]"></logger>
     <choice doc:id="xqgzcq" doc:name="Choice">
-      <when expression="#[vars.contactId  == null]">
+      <when expression="#[isEmpty(vars.contactId)]">
         <ee:transform doc:id="f0ca847c-5413-4e76-bde8-9aec2edd7b7d" doc:name="Store URI parameters">
           <ee:variables>
             <ee:set-variable variableName="contactId">
@@ -1248,18 +1255,17 @@ payload.searchRecords map ( payload01 , indexOfpayload01 ) -> {
         </ee:transform>
       </when>
     </choice>
-	<ee:transform doc:id="extract-school-site-name-set-contactId" doc:name="Set contactId as a variable">
-        <ee:variables>
-			<ee:set-variable variableName="contactId">
-				<![CDATA[attributes.uriParams.'contactId']]>	
-			</ee:set-variable>
-        </ee:variables>
-    </ee:transform>
 	<flow-ref name="retrieve-latest-enrollment-based-on-contactId" doc:name="Call External Flow" />
     <ee:transform doc:id="extract-school-site-name" doc:name="Extract School Site Name">
         <ee:variables>
             <ee:set-variable variableName="schoolSiteName">
-                <![CDATA[payload]]>
+                <![CDATA[
+					{
+						LatestEnrolledEndDate: payload.LatestEnrolledEndDate,
+						LatestEnrolledSiteId: payload.LatestEnrolledSiteId,
+						LatestEnrolledSiteName: payload.LatestEnrolledSiteName
+					}
+				]]>
             </ee:set-variable>
         </ee:variables>
     </ee:transform>
@@ -1412,7 +1418,10 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	YearOfReferenceForGradeInformation: payload01.Year_of_Reference_for_Grade_Information__c as String default "" ,
 	GradesChildParticipated: payload01.Grades_child_participated__c as String default "",
 	LatestWaiverDate: payload01.Latest_Waiver_Date__c as String default "",
-	LatestEnrolledSite: vars.schoolSiteName as String default ""
+	LatestEnrolledEndDate: vars.schoolSiteName.LatestEnrolledEndDate as String default "",
+	LatestEnrolledSiteId: vars.schoolSiteName.LatestEnrolledSiteId as String default "",
+	LatestEnrolledSiteName: vars.schoolSiteName.LatestEnrolledSiteName as String default ""
+
 }]]>
                     				
         
@@ -1744,11 +1753,13 @@ payload map ( payload01 , indexOfPayload01 ) -> {
         <ee:variables>
             <ee:set-variable variableName="query">
                 <![CDATA[
-                    "SELECT Id, Team_Season__r.Team__r.School_Site__r.Acknowledgement_Listing_Name__c
-                     FROM Enrollment__c
-                     WHERE Contact__r.Id = ':contactId'
-					 ORDER BY CreatedDate DESC
-                     LIMIT 1"
+                    "
+					SELECT End_Date__c, Team_Season__r.Team__r.School_Site__c,  Team_Season__r.Team__r.School_Site__r.Name
+                    FROM Enrollment__c
+                    WHERE Contact__r.Id = ':contactId'
+					ORDER BY CreatedDate DESC
+                    LIMIT 1
+					"
                 ]]>
             </ee:set-variable>
         </ee:variables>
@@ -1768,12 +1779,19 @@ payload map ( payload01 , indexOfPayload01 ) -> {
     <ee:transform doc:name="Transform Result">
         <ee:message>
             <ee:set-payload>
-                <![CDATA[%dw 2.0
-                output application/json
-                ---
-                if (isEmpty(payload)) "" 
-                else payload[0].Team_Season__r.Team__r.School_Site__r.Acknowledgement_Listing_Name__c]]>
-            </ee:set-payload>
+            <![CDATA[%dw 2.0
+            output application/json
+            ---
+            if (isEmpty(payload)) {
+				LatestEnrolledEndDate: "",
+                LatestEnrolledSiteId: "",
+                LatestEnrolledSiteName: ""
+			} 
+            else {
+                LatestEnrolledEndDate: payload[0].End_Date__c,
+                LatestEnrolledSiteId: payload[0].Team_Season__r.Team__r.School_Site__c,
+                LatestEnrolledSiteName: payload[0].Team_Season__r.Team__r.School_Site__r.Name
+            }]]>            </ee:set-payload>
         </ee:message>
     </ee:transform>
 </flow>
@@ -1806,7 +1824,9 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 						---
 						(vars.contactResults default []) ++ [{
 							contactId: vars.contactId,
-							LatestEnrolledSite: payload
+							LatestEnrolledEndDate: payload.LatestEnrolledEndDate,
+							LatestEnrolledSiteId: payload.LatestEnrolledSiteId,
+							LatestEnrolledSiteName: payload.LatestEnrolledSiteName
 						}]
 					]]>
 			</ee:set-variable>
