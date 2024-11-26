@@ -558,6 +558,9 @@
 				},
 				{
 					"name": "/contacts",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"method": "GET",
 						"header": [
@@ -570,13 +573,32 @@
 								"value": "{{sandbox_client_secret}}"
 							}
 						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{base_url}}/contacts",
+							"raw": "{{base_url_s}}/contacts?firstName=A&lastName=3",
 							"host": [
-								"{{base_url}}"
+								"{{base_url_s}}"
 							],
 							"path": [
 								"contacts"
+							],
+							"query": [
+								{
+									"key": "firstName",
+									"value": "A"
+								},
+								{
+									"key": "lastName",
+									"value": "3"
+								}
 							]
 						},
 						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
@@ -632,9 +654,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/contacts/searchByPhoneNumber?phoneNumber=269",
+							"raw": "{{base_url_s}}/contacts/searchByPhoneNumber?phoneNumber=65032071320",
 							"host": [
-								"{{base_url}}"
+								"{{base_url_s}}"
 							],
 							"path": [
 								"contacts",
@@ -643,7 +665,7 @@
 							"query": [
 								{
 									"key": "phoneNumber",
-									"value": "269"
+									"value": "65032071320"
 								}
 							]
 						},
@@ -1639,6 +1661,79 @@
 					"response": []
 				},
 				{
+					"name": "/tasks",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"AssignedBy\": \"\",\n    \"AssignedTo\": \"003cX000008IZnXQAW\",\n    \"CreatedByContact\": \"0051T000009eHfvQAE\",\n    \"CreatedContact\": \"\",\n    \"Description\": \"This is a test of the POST method #2.\",\n    \"DueDate\": \"2020-11-03\",\n    \"LastModifiedBy\": \"0051T000009eHfvQAE\",\n    \"LastModifiedContact\": \"\",\n    \"OwnerId\": \"0051T000009eHfvQAE\",\n    \"Priority\": 90.2,\n    \"ResourceLink\": \"\",\n    \"Session\": \"\",\n    \"Name\": \"Third task to do!\",\n    \"TaskStatus\": \"Complete\",\n    \"TaskType\": \"HR Requirement\" \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/tasks",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks"
+							]
+						},
+						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
+					},
+					"response": []
+				},
+				{
+					"name": "/tasks/{taskId}",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"AssignedBy\": \"\",\n    \"AssignedTo\": \"003cX000008IZnXQAW\",\n    \"CreatedByContact\": \"0051T000009eHfvQAE\",\n    \"CreatedContact\": \"\",\n    \"Description\": \"This is a test of the POST method #2.\",\n    \"DueDate\": \"2020-11-03\",\n    \"LastModifiedBy\": \"0051T000009eHfvQAE\",\n    \"LastModifiedContact\": \"\",\n    \"OwnerId\": \"0051T000009eHfvQAE\",\n    \"Priority\": 90.2,\n    \"ResourceLink\": \"\",\n    \"Session\": \"\",\n    \"Name\": \"Third task to do!!\",\n    \"TaskStatus\": \"Complete\",\n    \"TaskType\": \"HR Requirement\" \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/tasks/a40cX000000GcR7QAK",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"a40cX000000GcR7QAK"
+							]
+						},
+						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
+					},
+					"response": []
+				},
+				{
 					"name": "/tasks/{taskId}/tags",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
@@ -1665,13 +1760,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/tasks/003cX000008IZnXQAW/tags",
+							"raw": "{{base_url}}/tasks/a40cX000000GVRFQA4/tags",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"tasks",
-								"003cX000008IZnXQAW",
+								"a40cX000000GVRFQA4",
 								"tags"
 							]
 						},
