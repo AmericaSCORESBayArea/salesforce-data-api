@@ -1087,7 +1087,7 @@ uses:
             type: types.SCORES_Task[]
             example: |
               [
-                {
+               {
                   "Id": "a01ABC123456789",
                   "AssignedBy": "a012345678901234",
                   "AssignedTo": "a098765432109876",
@@ -1098,13 +1098,13 @@ uses:
                   "LastModifiedBy": "a078901234567890",
                   "LastModifiedContact": "a098765432109876",
                   "OwnerId": "a076543210987654",
-                  "Priority": "High",
-                  "PriorityIcon": "https://example.com/icon.png",
+                  "Priority": 100.00,
+                  "PriorityIcon": "🔴",
                   "ResourceLink": "https://example.com/resource",
                   "Session": "a054321098765432",
                   "Name": "Task Name",
-                  "TaskStatus": "In Progress",
-                  "TaskType": "General"
+                  "TaskStatus": "Complete",
+                  "TaskType": "HR Requirement"
                 }
               ]
   post: 
@@ -1124,6 +1124,17 @@ uses:
         description: The ID of the SCORES task to retrieve tags for
         type: string
         required: true
+    patch:
+      description: Update a SCORES task
+      body:
+        application/json:
+          type: types.SCORES_Task_Create
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                message: Task updated
     /tags:
       get:
         description: Retrieve tags associated with a specific SCORES task
