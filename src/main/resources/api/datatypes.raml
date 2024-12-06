@@ -246,7 +246,7 @@ types:
         type: date-only
       SessionTopic:
         type: string
-        enum: [ "Soccer", "Writing", "Game_Day", "Soccer_and_Writing"]
+        enum: [ "Soccer", "Writing", "Game Day", "Soccer and Writing", "Service Learning"]
       TeamSeasonId:
         type: SalesforceUniqueId
     examples: !include sessioncreatemodel-examples.raml
@@ -567,6 +567,15 @@ types:
       MediaReleaseWaiver:
        type: boolean
        required: false
+      LatestEnrolledEndDate:
+        type: date-only
+        required: false
+      LatestEnrolledSiteId:
+        type: string
+        required: false
+      LatestEnrolledSiteName:
+        type: string
+        required: false
 
   ContactPatchModel:
     type: object
@@ -804,4 +813,73 @@ types:
         type: date-only
       WaiverCreatedDate:
         type: date-only
-    
+  SCORES_Task:
+    type: object
+    properties:
+      Id: string
+      AssignedBy: string
+      AssignedTo: string
+      CreatedBy: string
+      CreatedContact: string
+      Description: string
+      DueDate: date-only
+      LastModifiedBy: string
+      LastModifiedContact: string
+      OwnerId: string
+      Priority: number
+      PriorityIcon: string
+      ResourceLink: string
+      Session: string
+      Name: string
+      TaskStatus: string
+      TaskType: string
+  SCORES_Task_Create:
+    type: object
+    properties:
+      AssignedBy: 
+        type: string
+        required: false    
+      AssignedTo: 
+        type: string
+        required: true
+      CreatedByContact: 
+        type: string
+        required: false
+      Description:
+        type: string
+        required: false
+      DueDate:
+        type: date-only
+        required: false
+      LastModifiedBy:
+        type: string
+        required: false
+      Name: 
+        type: string
+        required: false
+      OwnerId:
+        type: string
+        required: false
+      Priority: 
+        type: number
+        required: false
+      ResourceLink: 
+        type: string
+        required: false
+      Session: 
+        type: string
+        required: false
+      TaskType: 
+        type: string
+        required: false 
+  SCORES_Tag:
+    type: object
+    properties:
+      Id: string
+      TaskId: string
+      TaskName: string
+      TagId: string
+      TagName: string
+      TagColor: string
+      Description: string
+      TaskTagName: string

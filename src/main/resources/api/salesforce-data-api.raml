@@ -1072,3 +1072,87 @@ uses:
         body:
           application/json:
             type: types.UserAccount
+/tasks:
+  get:
+    description: Retrieve SCORES tasks assigned to a specific contact
+    queryParameters:
+      contactId:
+        description: The ID of the contact to retrieve tasks for
+        type: string
+        required: true
+    responses:
+      200:
+        body:
+          application/json:
+            type: types.SCORES_Task[]
+            example: |
+              [
+               {
+                  "Id": "a01ABC123456789",
+                  "AssignedBy": "a012345678901234",
+                  "AssignedTo": "a098765432109876",
+                  "CreatedBy": "a056789012345678",
+                  "CreatedContact": "a034567890123456",
+                  "Description": "Task description here",
+                  "DueDate": "2024-11-30",
+                  "LastModifiedBy": "a078901234567890",
+                  "LastModifiedContact": "a098765432109876",
+                  "OwnerId": "a076543210987654",
+                  "Priority": 100.00,
+                  "PriorityIcon": "🔴",
+                  "ResourceLink": "https://example.com/resource",
+                  "Session": "a054321098765432",
+                  "Name": "Task Name",
+                  "TaskStatus": "Complete",
+                  "TaskType": "HR Requirement"
+                }
+              ]
+  post: 
+    description: Create a new SCORES task
+    body:
+      application/json:
+        type: types.SCORES_Task_Create
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              message: Task created
+  /{taskId}:
+    uriParameters:
+      taskId:
+        description: The ID of the SCORES task to retrieve tags for
+        type: string
+        required: true
+    patch:
+      description: Update a SCORES task
+      body:
+        application/json:
+          type: types.SCORES_Task_Create
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                message: Task updated
+    /tags:
+      get:
+        description: Retrieve tags associated with a specific SCORES task
+        responses:
+          200:
+            body:
+              application/json:
+                type: types.SCORES_Tag[]
+                example: |
+                  [
+                    {
+                      "Id": "a09ABC123456789",
+                      "TaskId": "a01ABC123456789",
+                      "TaskName": "Task Name",
+                      "TagId": "a04ABC123456789",
+                      "TagName": "Urgent",
+                      "TagColor": "#FF0000",
+                      "Description": "This task is urgent.",
+                      "TaskTagName": "Urgency Tag"
+                    }
+                  ]
