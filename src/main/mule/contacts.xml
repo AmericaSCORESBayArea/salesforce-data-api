@@ -102,7 +102,7 @@
           <![CDATA[%dw 2.0
                 output application/json
                 ---
-                if (isEmpty(payload)) null
+                if (isEmpty(payload)) []
                 else payload map (payload01) -> {
                     Id: payload01.Id,
                     TeamSeasonId: payload01.Team_Season__r.Id,
