@@ -184,9 +184,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/teamSeasons?date=2019-01-01&endDate=2019-09-01&isWithinDateRange=true",
+							"raw": "{{base_url_s}}/teamSeasons?date=2024-01-01&endDate=2025-09-01&isWithinDateRange=true",
 							"host": [
-								"{{base_url}}"
+								"{{base_url_s}}"
 							],
 							"path": [
 								"teamSeasons"
@@ -194,11 +194,11 @@
 							"query": [
 								{
 									"key": "date",
-									"value": "2019-01-01"
+									"value": "2024-01-01"
 								},
 								{
 									"key": "endDate",
-									"value": "2019-09-01"
+									"value": "2025-09-01"
 								},
 								{
 									"key": "isWithinDateRange",
@@ -361,7 +361,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"TeamSeasonId\": \"\",\n  \"StudentId\": \"\",\n  \"StartDate\": \"\",\n  \"EndDate\": \"\"\n}",
+							"raw": "{\n  \"TeamSeasonId\": \"a0qUQ000003SRI5YAO\",\n  \"StudentId\": \"003cX000009kPO1QAM\",\n  \"StartDate\": \"2017-01-01\",\n  \"EndDate\": \"2018-01-01\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -369,9 +369,9 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/enrollments",
+							"raw": "{{base_url_s}}/enrollments",
 							"host": [
-								"{{base_url}}"
+								"{{base_url_s}}"
 							],
 							"path": [
 								"enrollments"
@@ -396,9 +396,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/enrollments?teamSeasonId=a0q1T000008JoB4QAK",
+							"raw": "{{base_url_s}}/enrollments?teamSeasonId=a0q1T000008JoB4QAK",
 							"host": [
-								"{{base_url}}"
+								"{{base_url_s}}"
 							],
 							"path": [
 								"enrollments"
@@ -465,13 +465,13 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/enrollments/a0m1T000008KwXkQAK",
+							"raw": "{{base_url_s}}/enrollments/a0qUQ000004TQpwYAG",
 							"host": [
-								"{{base_url}}"
+								"{{base_url_s}}"
 							],
 							"path": [
 								"enrollments",
-								"a0m1T000008KwXkQAK"
+								"a0qUQ000004TQpwYAG"
 							]
 						},
 						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
@@ -527,16 +527,16 @@
 						"header": [
 							{
 								"key": "client_id",
-								"value": "{{sandbox_client_id}}"
+								"value": "{{prod_client_id}}"
 							},
 							{
 								"key": "client_secret",
-								"value": "{{sandbox_client_secret}}"
+								"value": "{{prod_client_secret}}"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"FirstName\": \"\",\n  \"LastName\": \"\",\n  \"SchoolSiteId\": \"\"\n}",
+							"raw": "{\n  \"FirstName\": \"Aleksandr\",\n  \"LastName\": \"Testing On Nov 27\",\n  \"SchoolSiteId\": \"\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -544,9 +544,9 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/contacts",
+							"raw": "{{base_url_p}}/contacts",
 							"host": [
-								"{{base_url}}"
+								"{{base_url_p}}"
 							],
 							"path": [
 								"contacts"
@@ -631,7 +631,7 @@
 							"query": [
 								{
 									"key": "searchString",
-									"value": "John"
+									"value": "Aleksandr"
 								}
 							]
 						},
@@ -688,13 +688,13 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/contacts/003U8000008Mz3RIAS",
+							"raw": "{{base_url_s}}/contacts/003cX000009H3nWQAS",
 							"host": [
-								"{{base_url}}"
+								"{{base_url_s}}"
 							],
 							"path": [
 								"contacts",
-								"003U8000008Mz3RIAS"
+								"003cX000009H3nWQAS"
 							]
 						},
 						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
@@ -725,13 +725,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/contacts/003U8000008Mz3RIAS",
+							"raw": "{{base_url}}/contacts/003UQ00000GXyx3YAD",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"contacts",
-								"003U8000008Mz3RIAS"
+								"003UQ00000GXyx3YAD"
 							],
 							"query": [
 								{
@@ -788,9 +788,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/contacts/003U8000008Mz3RIAS/enrollments",
+							"raw": "{{base_url_s}}/contacts/003U8000008Mz3RIAS/enrollments",
 							"host": [
-								"{{base_url}}"
+								"{{base_url_s}}"
 							],
 							"path": [
 								"contacts",
@@ -914,11 +914,31 @@
 					"name": "/sessions",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}",
+								"type": "text"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"SessionDate\": \"2024-11-19\",\n    \"SessionTopic\": \"Game Day\",\n    \"TeamSeasonId\": \"a0qcX000000GEggQAG\",\n    \"SessionStart\": \"16:00:00.000Z\",\n    \"SessionEnd\": \"18:00:00.000Z\" \n  \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{base_url}}/sessions",
+							"raw": "{{base_url_s}}/sessions",
 							"host": [
-								"{{base_url}}"
+								"{{base_url_s}}"
 							],
 							"path": [
 								"sessions"
@@ -954,15 +974,26 @@
 					"name": "/sessions/{sessionId}",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}",
+								"type": "text"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}",
+								"type": "text"
+							}
+						],
 						"url": {
-							"raw": "{{base_url}}/sessions/a0p1T00000FcFfGQAV",
+							"raw": "{{base_url_s}}/sessions/a0pcX0000008y3pQAA",
 							"host": [
-								"{{base_url}}"
+								"{{base_url_s}}"
 							],
 							"path": [
 								"sessions",
-								"a0p1T00000FcFfGQAV"
+								"a0pcX0000008y3pQAA"
 							],
 							"query": [
 								{
@@ -1642,9 +1673,9 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/tasks?contactId=003cX000008IZnXQAW",
+							"raw": "{{base_url_s}}/tasks?contactId=003cX000008IZnXQAW",
 							"host": [
-								"{{base_url}}"
+								"{{base_url_s}}"
 							],
 							"path": [
 								"tasks"
@@ -1676,7 +1707,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"AssignedBy\": \"\",\n    \"AssignedTo\": \"003cX000008IZnXQAW\",\n    \"CreatedByContact\": \"0051T000009eHfvQAE\",\n    \"CreatedContact\": \"\",\n    \"Description\": \"This is a test of the POST method #2.\",\n    \"DueDate\": \"2020-11-03\",\n    \"LastModifiedBy\": \"0051T000009eHfvQAE\",\n    \"LastModifiedContact\": \"\",\n    \"OwnerId\": \"0051T000009eHfvQAE\",\n    \"Priority\": 90.2,\n    \"ResourceLink\": \"\",\n    \"Session\": \"\",\n    \"Name\": \"Third task to do!\",\n    \"TaskStatus\": \"Complete\",\n    \"TaskType\": \"HR Requirement\" \n}",
+							"raw": "{\n    \"AssignedBy\": \"\",\n    \"AssignedTo\": \"003cX000008IZnXQAW\",\n    \"CreatedByContact\": \"0051T000009eHfvQAE\",\n    \"CreatedContact\": \"\",\n    \"Description\": \"This is a test of the a task with a session ID\",\n    \"DueDate\": \"2020-11-03\",\n    \"LastModifiedBy\": \"0051T000009eHfvQAE\",\n    \"LastModifiedContact\": \"\",\n    \"OwnerId\": \"0051T000009eHfvQAE\",\n    \"Priority\": 76.2,\n    \"ResourceLink\": \"\",\n    \"Session\": \"a0pcX0000008y3pQAA\",\n    \"Name\": \"Third task to do!\",\n    \"TaskStatus\": \"Complete\",\n    \"TaskType\": \"HR Requirement\" \n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1684,9 +1715,9 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/tasks",
+							"raw": "{{base_url_s}}/tasks",
 							"host": [
-								"{{base_url}}"
+								"{{base_url_s}}"
 							],
 							"path": [
 								"tasks"
