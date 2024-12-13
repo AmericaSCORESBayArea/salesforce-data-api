@@ -1080,6 +1080,10 @@ uses:
         description: The ID of the contact to retrieve tasks for
         type: string
         required: true
+      sessionId:
+        description: The ID of the session to retrieve tasks for
+        type: string
+        required: false
     responses:
       200:
         body:
@@ -1135,6 +1139,14 @@ uses:
             application/json:
               example:
                 message: Task updated
+    delete:
+      description: Delete a SCORES task
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                message: Task deleted successfully.
     /tags:
       get:
         description: Retrieve tags associated with a specific SCORES task
