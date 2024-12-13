@@ -6,6 +6,24 @@
         <ee:set-variable variableName="contactId">
           <![CDATA[attributes.queryParams.'contactId']]>
         </ee:set-variable>
+		<ee:set-variable variableName="sessionId">
+          <![CDATA[attributes.queryParams.'sessionId']]>
+        </ee:set-variable>
+      </ee:variables>
+    </ee:transform>
+	  <ee:transform doc:id="7e56aada-f163-47f0-8ffc-213f3ecd09a8" doc:name="Prepare Query Condition">
+      <ee:variables>
+        <ee:set-variable variableName="query">
+			<![CDATA[
+				%dw 2.0
+				output application/json
+				---
+				if (vars.sessionId != null) 
+				"Assigned_To__c = '" ++ (vars.contactId default "") ++ "' AND Session__c = '" ++ (vars.sessionId default "") ++ "'"
+				else 
+				"Assigned_To__c = '" ++ (vars.contactId default "") ++ "'"
+			]]>
+        </ee:set-variable>
       </ee:variables>
     </ee:transform>
     <salesforce:query config-ref="Salesforce_Config" doc:id="1d085a1a-e15b-412b-a836-1014557a9abd" doc:name="Query to get tasks by contactId">
@@ -32,14 +50,14 @@
 				FROM 
 					SCORES_Task__c
 				WHERE 
-					Assigned_To__c = ':contactId'
-				]]>
+					:query
+			]]>
       </salesforce:salesforce-query>
       <salesforce:parameters>
         <![CDATA[#[output application/java
 				---
 				{
-					contactId : vars.contactId,
+					query: vars.query,
 				}
 			]]]>
       </salesforce:parameters>
