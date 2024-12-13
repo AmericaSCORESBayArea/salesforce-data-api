@@ -1675,7 +1675,7 @@
 						"url": {
 							"raw": "{{base_url}}/tasks?contactId=003cX000008IZnXQAW&sessionId=a0pcX0000008y3pQAA",
 							"host": [
-								"{{base_url}}"
+								"{{base_url_s}}"
 							],
 							"path": [
 								"tasks"
