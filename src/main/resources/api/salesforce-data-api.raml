@@ -1139,6 +1139,14 @@ uses:
             application/json:
               example:
                 message: Task updated
+    delete:
+      description: Delete a SCORES task
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                message: Task deleted successfully.
     /tags:
       get:
         description: Retrieve tags associated with a specific SCORES task
