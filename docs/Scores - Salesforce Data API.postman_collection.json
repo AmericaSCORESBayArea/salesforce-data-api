@@ -210,6 +210,44 @@
 					"response": []
 				},
 				{
+					"name": "/teamSeasons/searchByTeamName",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							},
+							{
+								"key": "",
+								"value": "",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/teamSeasons/searchByTeamName?teamName=Hall",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"teamSeasons",
+								"searchByTeamName"
+							],
+							"query": [
+								{
+									"key": "teamName",
+									"value": "Hall"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "/teamSeasons (not implemented)",
 					"request": {
 						"method": "GET",
