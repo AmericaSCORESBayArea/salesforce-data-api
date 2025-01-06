@@ -365,11 +365,15 @@ output application/json
           <salesforce:salesforce-query>
             <![CDATA[
 			SELECT 
-				Id
+				Id,
+				Season__r.Name,
+				Season__c,
+				Season_Start_Date__c,
+				Season_End_Date__c
 			FROM 
 				Team_Season__c 
 			WHERE 
-				  Name LIKE ':name'
+				Name LIKE ':name'
 			ORDER BY 
 				Season_End_Date__c DESC
 			LIMIT
@@ -391,7 +395,11 @@ output application/json
 			output application/json
 			---
 			payload map ( payload01 , indexOfPayload01 ) -> {
-				id: payload01.Id as String default ""
+				id: payload01.Id as String default "",
+				SeasonId: payload01.Season__c as String default "",
+				SeasonName: payload01.Season__r.Name as String default "",
+				SeasonStartDate: payload01.Season_Start_Date__c as String default "",
+				SeasonEndDate: payload01.Season_End_Date__c as String default ""
 			}]]>
         </ee:set-payload>
       </ee:message>
