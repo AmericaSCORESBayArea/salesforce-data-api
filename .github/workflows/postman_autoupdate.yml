@@ -20,7 +20,7 @@ jobs:
         POSTMAN_API_KEY: ${{ secrets.POSTMAN_KEY }}
       run: |
         # Set variables
-        COLLECTION_ID="salesforce-data-api"  # Replace with your Postman collection ID
+        COLLECTION_ID="39663015-3c317f2e-5338-42f3-b3ae-035fa8c1c681"  # Replace with your Postman collection ID
         COLLECTION_FILE="docs/Scores - Salesforce Data API.postman_collection.json"  # Replace with the relative path to your collection
 
         # Update Postman Collection via API
