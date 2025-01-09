@@ -1,0 +1,28 @@
+name: Update Postman Collection on Push
+
+on:
+  push:
+    branches:
+      - sandbox  # Trigger on pushes to the main branch
+
+jobs:
+  update-postman:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Update Postman Collection
+      env:
+        POSTMAN_API_KEY: ${{ secrets.POSTMAN_KEY }}
+      run: |
+        # Set variables
+        COLLECTION_ID="salesforce-data-api"  # Replace with your Postman collection ID
+        COLLECTION_FILE="docs/Scores - Salesforce Data API.postman_collection.json"  # Replace with the relative path to your collection
+
+        # Update Postman Collection via API
+        curl --location --request PUT "https://api.getpostman.com/collections/$COLLECTION_ID" \
+        --header "X-Api-Key: $POSTMAN_API_KEY" \
+        --header "Content-Type: application/json" \
+        --data @"$COLLECTION_FILE"
