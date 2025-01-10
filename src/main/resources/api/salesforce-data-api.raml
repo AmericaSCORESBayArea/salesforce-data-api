@@ -423,6 +423,32 @@ uses:
               application/json:
                 example:
                   message: Waiver not found
+      post:
+        description: Submits a waiver response.
+        body:
+          application/json:
+            type: object
+            properties:
+              waiverResponse: string
+              datetime: string
+              contactId: string
+              contactEmail: string
+              PaperReceived: boolean
+            example:
+              waiverResponse: Acceptance
+              datetime: 2025-01-09T14:30:00Z
+              contactId: 003cX00000AzCjHQAV
+              contactEmail: email@003cX000008IZnXQAWemail.com
+              PaperReceived: true
+        responses:
+          200:
+            body:
+              application/json:
+                example: { "WaiverHistory": "a3VcX000000GpY1UAK" }
+          400:
+            body:
+              application/json:
+                example: { "message": "Waiver History creation failed"}
   /{contactId}/enrollments:
     get:
       displayName: Get enrollment data by contact id

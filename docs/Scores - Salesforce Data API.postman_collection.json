@@ -910,12 +910,28 @@
 					"response": []
 				},
 				{
-					"name": "/waiver/{waiverId} (not implemented)",
+					"name": "/waiver/{waiverId}",
 					"request": {
-						"method": "GET",
+						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"waiverResponse\": \"Acceptance\",\n    \"datetime\": \"2025-01-09T14:30:00Z\",\n    \"contactId\": \"003cX00000AzCjHQAV\",\n    \"contactEmail\": \"email@003cX000008IZnXQAWemail.com\",\n    \"PaperReceived\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": ""
+							"raw": "{{base_url}}/waiver/a3WcX0000003er8UAA",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"waiver",
+								"a3WcX0000003er8UAA"
+							]
 						}
 					},
 					"response": []
@@ -939,6 +955,17 @@
 									"value": "003UQ00000GXyAfYAL"
 								}
 							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/waiver/{waiverId} (not implemented)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
 						}
 					},
 					"response": []
