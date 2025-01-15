@@ -65,6 +65,20 @@ uses:
         body:
           application/json:
             type: types.TeamSeasonBaseModel[]
+  /searchByTeamName:
+    get:
+      description: Get TeamSeasons for given query params
+      queryParameters:
+        teamName:
+          displayName: teamName
+          description: Team Name
+          type: string
+          required: true
+      responses:
+        200:
+          body:
+            application/json:
+              type: types.TeamSeasonBaseModel[]
   /{teamSeasonId}:
     get:
       description: (NOT IMPLEMENTED)
@@ -409,6 +423,32 @@ uses:
               application/json:
                 example:
                   message: Waiver not found
+      post:
+        description: Submits a waiver response.
+        body:
+          application/json:
+            type: object
+            properties:
+              waiverResponse: string
+              datetime: string
+              contactId: string
+              contactEmail: string
+              PaperReceived: boolean
+            example:
+              waiverResponse: Acceptance
+              datetime: 2025-01-09T14:30:00Z
+              contactId: 003cX00000AzCjHQAV
+              contactEmail: email@003cX000008IZnXQAWemail.com
+              PaperReceived: true
+        responses:
+          200:
+            body:
+              application/json:
+                example: { "WaiverHistory": "a3VcX000000GpY1UAK" }
+          400:
+            body:
+              application/json:
+                example: { "message": "Waiver History creation failed"}
   /{contactId}/enrollments:
     get:
       displayName: Get enrollment data by contact id
@@ -1080,6 +1120,10 @@ uses:
         description: The ID of the contact to retrieve tasks for
         type: string
         required: true
+      sessionId:
+        description: The ID of the session to retrieve tasks for
+        type: string
+        required: false
     responses:
       200:
         body:
@@ -1135,6 +1179,14 @@ uses:
             application/json:
               example:
                 message: Task updated
+    delete:
+      description: Delete a SCORES task
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                message: Task deleted successfully.
     /tags:
       get:
         description: Retrieve tags associated with a specific SCORES task

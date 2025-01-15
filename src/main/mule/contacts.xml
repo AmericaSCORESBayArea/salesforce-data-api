@@ -102,7 +102,7 @@
           <![CDATA[%dw 2.0
                 output application/json
                 ---
-                if (isEmpty(payload)) null
+                if (isEmpty(payload)) []
                 else payload map (payload01) -> {
                     Id: payload01.Id,
                     TeamSeasonId: payload01.Team_Season__r.Id,
@@ -877,17 +877,15 @@ payload map ( payload01 , indexOfPayload01 ) -> {
         <set-variable value="#[' AND Region__c = \'' ++ (vars.region default '') ++ '\'']" variableName="regionQueryCondition"></set-variable>
       </otherwise>
     </choice>
-    <salesforce:search config-ref="Salesforce_Config" doc:id="f195a55e-9140-44b5-b60e-1809649ef0a3" doc:name="Search">
-      <salesforce:search-string>
-                				
-        
-        <![CDATA[
-			FIND
-			 { :searchString } 
-			 IN NAME FIELDS RETURNING 
-			 Contact
-			 (
-			 	Id,
+	<salesforce:query
+			doc:name="Search Query"
+			doc:id="2938911f-53b8-243a5-a53e-14fca711003d"
+			config-ref="Salesforce_Config">
+		<salesforce:salesforce-query>
+		<![CDATA[
+			SELECT 
+				Id,
+				Name,
 				Contact_Type__c,
 				RecordTypeId,
 				FirstName,
@@ -942,33 +940,34 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 				Year_of_Reference_for_Grade_Information__c,
 				Grades_child_participated__c,
 				Latest_Waiver_Date__c
-			WHERE 
-				(Contact_Type__c = 'SCORES Student'
-				:regionQuery)
-			) 
-			LIMIT 8
-			]]>
-                			
-      
-      </salesforce:search-string>
-      <salesforce:parameters>
-	  
-                				
-        
-        <![CDATA[#[output application/java
----
-{
-	searchString : vars.searchString,
-	regionQuery : vars.regionQueryCondition
-}]]]>
-                			
-      
-      </salesforce:parameters>
-    </salesforce:search>
-
+				FROM 
+					Contact
+				WHERE 
+					Contact_Type__c = 'SCORES Student' 
+					AND 
+					(Name LIKE ':searchString')
+					:regionQuery
+				LIMIT 8
+				]]>
+			</salesforce:salesforce-query>
+			<salesforce:parameters><![CDATA[#[output application/java
+				---
+				{
+					searchString : "%" ++ (vars.searchString default "")  ++ "%",
+					regionQuery : vars.regionQueryCondition
+				}]]]>
+			</salesforce:parameters>
+		</salesforce:query>
+		<ee:transform doc:name="Wrap Records with 'record'" doc:id="wrapRecords">
+			<ee:message>
+				<ee:set-payload><![CDATA[#[{
+					searchRecords: payload map ((item, index) -> {
+						record: item
+					})
+				}]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 		<flow-ref name="retrieve-latest-enrollment-based-on-payload-with-contacts" doc:name="Call External Flow to Retrieve all Latest Sites" />
-
-	
     	<ee:transform doc:id="32f388c1-5da5-43ab-8241-874d02d18d35" doc:name="Transform Message">
       <ee:message>
         <ee:set-payload>
