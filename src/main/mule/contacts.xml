@@ -943,7 +943,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 				FROM 
 					Contact
 				WHERE 
-					Contact_Type__c = 'SCORES Student' 
+					RecordTypeId = '01250000000VBbXAAW' 
 					AND 
 					(Name LIKE ':searchString')
 					:regionQuery
