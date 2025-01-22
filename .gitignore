@@ -54,3 +54,4 @@ src/main/resources/deploy.json
 .vscode/*
 
 src/main/resources/keystore.jks
+/bin/
