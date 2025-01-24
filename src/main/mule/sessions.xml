@@ -264,6 +264,12 @@ output application/json
 			doc:name="Log entry-flow"
 			doc:id="eeb32be2-c86a-4bb7-a34d-7258ee797f6a"
 			message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
+		<ee:transform doc:name="Extract Payload and Save to Variables">
+        <ee:variables>
+            <ee:set-variable variableName="teamSeasonId">#[payload.TeamSeasonId]</ee:set-variable>
+            <ee:set-variable variableName="sessionDate">#[payload.SessionDate]</ee:set-variable>
+        </ee:variables>
+    </ee:transform>
 		<ee:transform
 			doc:name="Create Request"
 			doc:id="38bd186d-e6af-481c-9dd1-3405eba1e8d8">
@@ -321,6 +327,51 @@ output application/json
 				</ee:transform>
 			</otherwise>
 		</choice>
+		<ee:transform doc:name="Save Session Id">
+			<ee:variables>
+				<ee:set-variable variableName="sessionId">#[payload.SessionId]</ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		 <salesforce:query 
+			doc:name="Select Query with TeamSeasonId and SessionDate from Enrollment object" 
+			config-ref="Salesforce_Config" 
+			target="enrollmentResponse">
+			<salesforce:salesforce-query ><![CDATA[
+				SELECT Contact__c 
+				FROM Enrollment__c 
+				WHERE Team_Season__c = ':teamSeasonId' 
+				AND Start_Date__c <= :sessionDate
+				AND End_Date__c >= :sessionDate
+				]]>
+			</salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[output application/java
+				---
+				{
+					teamSeasonId : vars.teamSeasonId,
+					sessionDate : vars.sessionDate
+				}]]]>
+			</salesforce:parameters>
+		</salesforce:query>
+		    <foreach doc:name="For Each Contact" collection="#[vars.enrollmentResponse]">
+        <ee:transform doc:name="Set Current Contact">
+            <ee:variables>
+                <ee:set-variable variableName="currentContactId">#[payload.Contact__c]</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+
+        <!-- Decision Router: Check if attendanceResponse is empty -->
+			<salesforce:upsert objectType="Attendance__c" externalIdFieldName="ExternalId__c" doc:name="Upsert Attendance" doc:id="823a28a8-9534-46b8-9fb1-fee9b7beae98" config-ref="Salesforce_Config">
+						<salesforce:records><![CDATA[#[%dw 2.0
+output application/java
+---
+[{
+	Contact__c: vars.currentContactId,
+	Session__c: vars.sessionId,
+	Attended__c: false,
+	ExternalId__c: vars.currentContactId ++ '-' ++ vars.sessionId
+}]]]]></salesforce:records>
+					</salesforce:upsert>
+    </foreach>
 		<logger
 			level="INFO"
 			doc:name="Log Created Response"
@@ -340,7 +391,9 @@ output application/json
 				]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<salesforce:query doc:name="Select Query with sessionId from Assessment object" doc:id="1e288924-44bc-4e3c-b544-5b51936d7367" config-ref="Salesforce_Config" target="assesmentResponse" targetValue="#[output application/json &#10;---&#10;payload]">
+		<salesforce:query doc:name="Select Query with sessionId from Assessment object" doc:id="1e288924-44bc-4e3c-b544-5b51936d7367" config-ref="Salesforce_Config" target="assesmentResponse" targetValue="#[output application/json 
+---
+payload]">
 			<salesforce:salesforce-query ><![CDATA[SELECT Id FROM Assessment__c WHERE Session__c = ':sessionId'
 			]]></salesforce:salesforce-query>
 			<salesforce:parameters ><![CDATA[#[output application/java
@@ -349,7 +402,9 @@ output application/json
 	sessionId : vars.sessionId
 }]]]></salesforce:parameters>
 		</salesforce:query>
-		<salesforce:query doc:name="Select Query with sessionId from Attendence object" doc:id="cfe08f1a-cc1a-4102-bf59-a6aaeb021ec5" config-ref="Salesforce_Config" target="attendanceResponse" targetValue="#[output application/json &#10;---&#10;payload]">
+		<salesforce:query doc:name="Select Query with sessionId from Attendence object" doc:id="cfe08f1a-cc1a-4102-bf59-a6aaeb021ec5" config-ref="Salesforce_Config" target="attendanceResponse" targetValue="#[output application/json 
+---
+payload]">
 			<salesforce:salesforce-query ><![CDATA[SELECT Id FROM Attendance__c WHERE  Session__c = ':sessionId' AND Attended__c = true
 			]]></salesforce:salesforce-query>
 			<salesforce:parameters ><![CDATA[#[output application/java
