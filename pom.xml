@@ -1,62 +1,62 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>com.mycompany</groupId>
-    <artifactId>salesforce-data-api</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <packaging>mule-application</packaging>
-    <name>salesforce-data-api</name>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <app.name>salesforce-data-api</app.name>
-        <app.runtime>4.6-java17</app.runtime>
-        <!-- <munit.version>2.3.6</munit.version> -->
-        <mule.maven.plugin.version>4.1.1</mule.maven.plugin.version>
-    </properties>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-clean-plugin</artifactId>
-                <version>3.0.0</version>
-            </plugin>
-            <plugin>
-                <groupId>org.mule.tools.maven</groupId>
-                <artifactId>mule-maven-plugin</artifactId>
-                <version>${mule.maven.plugin.version}</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <classifier>mule-application</classifier>
-                    <cloudHubDeployment>
-                        <uri>https://anypoint.mulesoft.com</uri>
-                        <muleVersion>${app.runtime}</muleVersion>
-                        <username>${anypoint.username}</username>
-                        <password>${anypoint.password}</password>
-                        <applicationName>${app.name}</applicationName>
-                        <environment>${env}</environment>
-                        <workerType>MICRO</workerType>
-                        <region>us-east-2</region>
-                        <workers>1</workers>
-                        <objectStoreV2>true</objectStoreV2>
-                        <properties>
-                            <env>${env.lowercase}</env>
-                            <anypoint.platform.config.analytics.agent.enabled>true</anypoint.platform.config.analytics.agent.enabled>
-                            <sfdc.password>${sfdc.password}</sfdc.password>
-                            <sfdc.tkn>${sfdc.tkn}</sfdc.tkn>
-                            <typeform.clientid>${typeform.clientid}</typeform.clientid>
-                            <typeform.clientsecret>${typeform.clientsecret}</typeform.clientsecret>
-                            <typeform.tkn>${typeform.tkn}</typeform.tkn>
-                            <api.id>${api.id}</api.id>
-                            <anypoint.platform.client_id>${anypoint.platform.client_id}</anypoint.platform.client_id>
-                            <anypoint.platform.client_secret>${anypoint.platform.client_secret}</anypoint.platform.client_secret>
-                            <keystore.key.password>${keystore.key.password}</keystore.key.password>
-                            <keystore.password>${keystore.password}</keystore.password>
-                        </properties>
-                    </cloudHubDeployment>
-                </configuration>
-            </plugin>
-            <!-- <plugin>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.mycompany</groupId>
+	<artifactId>salesforce-data-api</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>mule-application</packaging>
+	<name>salesforce-data-api</name>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<app.name>salesforce-data-api</app.name>
+		<app.runtime>4.6-java17</app.runtime>
+		<!-- <munit.version>2.3.6</munit.version> -->
+		<mule.maven.plugin.version>4.3.0</mule.maven.plugin.version>
+	</properties>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>3.0.0</version>
+			</plugin>
+			<plugin>
+				<groupId>org.mule.tools.maven</groupId>
+				<artifactId>mule-maven-plugin</artifactId>
+				<version>${mule.maven.plugin.version}</version>
+				<extensions>true</extensions>
+				<configuration>
+					<classifier>mule-application</classifier>
+					<cloudHubDeployment>
+						<uri>https://anypoint.mulesoft.com</uri>
+						<muleVersion>${app.runtime}</muleVersion>
+						<username>${anypoint.username}</username>
+						<password>${anypoint.password}</password>
+						<applicationName>${app.name}</applicationName>
+						<environment>${env}</environment>
+						<workerType>MICRO</workerType>
+						<region>us-east-2</region>
+						<workers>1</workers>
+						<objectStoreV2>true</objectStoreV2>
+						<properties>
+							<env>${env.lowercase}</env>
+							<anypoint.platform.config.analytics.agent.enabled>true</anypoint.platform.config.analytics.agent.enabled>
+							<sfdc.password>${sfdc.password}</sfdc.password>
+							<sfdc.tkn>${sfdc.tkn}</sfdc.tkn>
+							<typeform.clientid>${typeform.clientid}</typeform.clientid>
+							<typeform.clientsecret>${typeform.clientsecret}</typeform.clientsecret>
+							<typeform.tkn>${typeform.tkn}</typeform.tkn>
+							<api.id>${api.id}</api.id>
+							<anypoint.platform.client_id>${anypoint.platform.client_id}</anypoint.platform.client_id>
+							<anypoint.platform.client_secret>${anypoint.platform.client_secret}</anypoint.platform.client_secret>
+							<keystore.key.password>${keystore.key.password}</keystore.key.password>
+							<keystore.password>${keystore.password}</keystore.password>
+						</properties>
+					</cloudHubDeployment>
+				</configuration>
+			</plugin>
+			<!-- <plugin>
 				<groupId>com.mulesoft.munit.tools</groupId>
 				<artifactId>munit-maven-plugin</artifactId>
 				<version>${munit.version}</version>
@@ -87,23 +87,23 @@
 				</configuration>
 
 			</plugin> -->
-        </plugins>
-    </build>
-    <dependencies>
-        <dependency>
-            <groupId>org.mule.weave</groupId>
-            <artifactId>assertions</artifactId>
-            <version>1.0.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd</groupId>
-            <artifactId>salesforce-data-api</artifactId>
-            <version>4.0.4</version>
-            <classifier>raml</classifier>
-            <type>zip</type>
-        </dependency>
-        <!-- <dependency>
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>org.mule.weave</groupId>
+			<artifactId>assertions</artifactId>
+			<version>1.0.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd</groupId>
+			<artifactId>salesforce-data-api</artifactId>
+			<version>4.0.4</version>
+			<classifier>raml</classifier>
+			<type>zip</type>
+		</dependency>
+		<!-- <dependency>
 			<groupId>com.mulesoft.munit</groupId>
 			<artifactId>munit-tools</artifactId>
 			<version>2.3.14</version>
@@ -117,102 +117,102 @@
 			<classifier>mule-plugin</classifier>
 			<scope>test</scope>
 		</dependency> -->
-        <dependency>
-            <groupId>org.mule.connectors</groupId>
-            <artifactId>mule-http-connector</artifactId>
-            <version>1.9.3</version>
-            <classifier>mule-plugin</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.mule.connectors</groupId>
-            <artifactId>mule-sockets-connector</artifactId>
-            <version>1.2.4</version>
-            <classifier>mule-plugin</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.mule.modules</groupId>
-            <artifactId>mule-apikit-module</artifactId>
-            <version>1.10.4</version>
-            <classifier>mule-plugin</classifier>
-        </dependency>
-        <dependency>
-            <groupId>com.mulesoft.connectors</groupId>
-            <artifactId>mule-salesforce-connector</artifactId>
-            <version>10.20.3</version>
-            <classifier>mule-plugin</classifier>
-        </dependency>
-    </dependencies>
-    <repositories>
-        <repository>
-            <id>mulesoft-releases</id>
-            <name>MuleSoft Releases Repository</name>
-            <url>https://repository.mulesoft.org/releases/</url>
-            <layout>default</layout>
-        </repository>
-        <repository>
-            <id>scores-exchange</id>
-            <name>SCORES Exchange</name>
-            <url>https://maven.anypoint.mulesoft.com/api/v2/organizations/6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd/maven</url>
-            <layout>default</layout>
-        </repository>
-        <repository>
-            <id>anypoint-exchange-v3</id>
-            <name>Anypoint Exchange V3</name>
-            <url>https://maven.anypoint.mulesoft.com/api/v3/maven</url>
-            <layout>default</layout>
-        </repository>
-        <repository>
-            <id>anypoint-exchange-v2</id>
-            <name>Anypoint Exchange</name>
-            <url>https://maven.anypoint.mulesoft.com/api/v2/maven</url>
-            <layout>default</layout>
-        </repository>
-        <repository>
-            <id>mule-enterprise</id>
-            <name>Mule Enterprise Repository</name>
-            <url>https://repository.mulesoft.org/nexus-ee/content/repositories/releases-ee/</url>
-            <layout>default</layout>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>mule-enterprise</id>
-            <name>Mule Enterprise Repository</name>
-            <url>https://repository.mulesoft.org/nexus-ee/content/repositories/releases-ee/</url>
-            <layout>default</layout>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </pluginRepository>
-        <pluginRepository>
-            <id>mule-public</id>
-            <name>Mule Public Repository</name>
-            <url>https://repository.mulesoft.org/nexus/content/repositories/public/</url>
-            <layout>default</layout>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </pluginRepository>
-        <pluginRepository>
-            <id>mulesoft-releases</id>
-            <name>mulesoft release repository</name>
-            <layout>default</layout>
-            <url>https://repository.mulesoft.org/releases/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
+		<dependency>
+			<groupId>org.mule.connectors</groupId>
+			<artifactId>mule-http-connector</artifactId>
+			<version>1.9.3</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.mule.connectors</groupId>
+			<artifactId>mule-sockets-connector</artifactId>
+			<version>1.2.4</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.mule.modules</groupId>
+			<artifactId>mule-apikit-module</artifactId>
+			<version>1.10.4</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.mulesoft.connectors</groupId>
+			<artifactId>mule-salesforce-connector</artifactId>
+			<version>10.20.3</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
+	</dependencies>
+	<repositories>
+		<repository>
+			<id>mulesoft-releases</id>
+			<name>MuleSoft Releases Repository</name>
+			<url>https://repository.mulesoft.org/releases/</url>
+			<layout>default</layout>
+		</repository>
+		<repository>
+			<id>scores-exchange</id>
+			<name>SCORES Exchange</name>
+			<url>https://maven.anypoint.mulesoft.com/api/v2/organizations/6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd/maven</url>
+			<layout>default</layout>
+		</repository>
+		<repository>
+			<id>anypoint-exchange-v3</id>
+			<name>Anypoint Exchange V3</name>
+			<url>https://maven.anypoint.mulesoft.com/api/v3/maven</url>
+			<layout>default</layout>
+		</repository>
+		<repository>
+			<id>anypoint-exchange-v2</id>
+			<name>Anypoint Exchange</name>
+			<url>https://maven.anypoint.mulesoft.com/api/v2/maven</url>
+			<layout>default</layout>
+		</repository>
+		<repository>
+			<id>mule-enterprise</id>
+			<name>Mule Enterprise Repository</name>
+			<url>https://repository.mulesoft.org/nexus-ee/content/repositories/releases-ee/</url>
+			<layout>default</layout>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>mule-enterprise</id>
+			<name>Mule Enterprise Repository</name>
+			<url>https://repository.mulesoft.org/nexus-ee/content/repositories/releases-ee/</url>
+			<layout>default</layout>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>mule-public</id>
+			<name>Mule Public Repository</name>
+			<url>https://repository.mulesoft.org/nexus/content/repositories/public/</url>
+			<layout>default</layout>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>mulesoft-releases</id>
+			<name>mulesoft release repository</name>
+			<layout>default</layout>
+			<url>https://repository.mulesoft.org/releases/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
 </project>
