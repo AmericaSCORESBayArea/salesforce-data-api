@@ -62,16 +62,13 @@ jobs:
     - name: Set up script permissions
       run: chmod +x ./scripts/deployment-build.sh
 
-    - name: Set up script permissions 2
-      run: chmod +x ./scripts/disable-validations.sh
 
-    - name: Disable validations & execute deployment-build.sh with secrets
+    - name: Execute deployment-build.sh with secrets
       env:
         KEYSTORE_KEY_PASSWORD: ${{ secrets.PRODUCTION_KEYSTORE_KEY_PASSWORD }}
         KEYSTORE_PASSWORD: ${{ secrets.PRODUCTION_KEYSTORE_PASSWORD }}
       run: |
         cd scripts
-        ./disable-validations.sh
         ./deployment-build.sh $KEYSTORE_KEY_PASSWORD $KEYSTORE_PASSWORD
 
     - name: Upload artifact
@@ -125,6 +122,9 @@ jobs:
           -Dtypeform.clientid="${{ secrets.TYPEFORM_CLIENTID }}" \
           -Dtypeform.clientsecret="${{ secrets.TYPEFORM_CLIENTSECRET }}" \
           -Dtypeform.tkn="${{ secrets.TYPEFORM_TKN }}" \
+          -Dslack.client_id="${{ secrets.SLACK_CLIENT_ID }}" \
+          -Dslack.client_secret="${{ secrets.SLACK_CLIENT_SECRET }}" \
+          -Dslack.enabled=true \
           -DskipTests
  
 
