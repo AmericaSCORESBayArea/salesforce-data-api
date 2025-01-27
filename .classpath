@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="con" path="MULE_LIB/com.mulesoft.connectors/mule4-slack-connector/1.0.19"/>
 	<classpathentry kind="con" path="MULE_LIB/com.mulesoft.connectors/mule-salesforce-connector/10.20.3"/>
 	<classpathentry kind="con" path="MULE_LIB/org.mule.modules/mule-apikit-module/1.10.4"/>
 	<classpathentry kind="con" path="org.mule.tooling.API_SPEC_LIB/6c091e72-50d1-49ac-b04d-ee5bb9bc9dbd/salesforce-data-api/4.0.4"/>
