@@ -179,10 +179,11 @@
     </flow>
     <flow name="global-error-handler" doc:id="a1be3754-f0ea-41f0-abcb-137e877e5b4d">
 		<choice doc:name="Choice: " doc:id="f9d0778b-d45e-4b67-89b6-cf6b1ffed3af" >
-			<when expression="#[p('slack.enabled')]">
+			<when expression="#[ (trim(p('slack.enabled') as String)) as Boolean ]">
 				<slack:create-chatpost-message doc:name="Send Slack Message" doc:id="b991cd72-5997-4e02-ad87-a324cfcfa707" config-ref="Slack_Connector_Config">
 				<slack:chatpost-message-content><![CDATA[#[%dw 2.0
 			import p from Mule
+			fun format(d: DateTime) = d as String {format: "MMM dd, yyyy hh:mm:ss a"}
 			output application/json
 			---
 			{
@@ -195,23 +196,48 @@
 			                "type": "mrkdwn",
 			                text: "🚨 *Error Notification* 🚨\n"
 			                   ++ "*Environment:* " ++ p('env') ++ "\n" 
+			                   ++ "*Origin:* " ++ (attributes.headers.Origin default "N/A") ++ "\n"
 			                   ++ "*Endpoint:* `" ++ (attributes.method default "N/A") ++ " " ++ (attributes.maskedRequestPath default "N/A") ++ "`\n"
-			                   ++ "*Timestamp:* " ++ (now() as String {format: "yyyy-MM-dd'T'HH:mm:ssZ"}) ++ "\n"
 			                   ++ "*Query Parameters:* " ++ (attributes.queryString default "N/A") ++ "\n"
-			                   ++ "*Error Type:* " ++ (error.errorType.namespace default "") ++ ":" ++ (error.errorType.identifier default "") ++ "\n"
-			                   ++ "*Error Message:* " ++ (error.description default "N/A") ++ "\n"
-			                   ++ "*Detailed Description:* " ++ (error.detailedDescription default "N/A") ++ "\n"
-			                   ++ "*Source:* " ++ (error.dslSource default "N/A")
-			                   ++ (
-			                       if (!isEmpty(vars.originalPayload)) 
-			                       "\n*Payload Attached:* ```" ++ (write(vars.originalPayload, "application/json") default "No payload available") ++ "```"
-			                       else ""
-			                   )
+			                   ++ "*Timestamp (PT):* " ++ (format(now() >> "America/Los_Angeles"))
 			            }
 			        }
 			    ]
 			}]]]></slack:chatpost-message-content>
 		</slack:create-chatpost-message>
+		<set-variable value="#[payload]" variableName="firstMessageResponse"  doc:name="Save Response" doc:id="d2585c63-91d7-47a7-a06b-8f5e3ffd7ecd" />
+			<slack:create-chatpost-message
+                doc:name="Send Additional Slack Message"
+                doc:id="1e59cb6e-6637-4e1f-b069-d755ed1519b3"
+                config-ref="Slack_Connector_Config">
+                <slack:chatpost-message-content><![CDATA[#[%dw 2.0
+                    import p from Mule
+                    output application/json
+                    ---
+                    {
+                        channel: "mule-api-" ++ p('env') ++ "-errors",
+                        text:"More info:",
+					   	blocks: [
+				        	{
+				            	"type": "section",
+	                        	text: {
+			                        "type": "mrkdwn",
+			                        text: 
+						                  "*Error Type:* " ++ (error.errorType.namespace default "") ++ ":" ++ (error.errorType.identifier default "") ++ "\n"
+						                   ++ "*Error Message:* " ++ (error.description default "N/A") ++ "\n"
+						                   ++ "*Detailed Description:* " ++ (error.detailedDescription default "N/A") ++ "\n"
+						                   ++ "*Source:* " ++ (error.dslSource default "N/A")
+						                   ++ (
+						                       if (!isEmpty(vars.originalPayload)) 
+						                       "\n*Payload Attached:* ```" ++ (write(vars.originalPayload, "application/json") default "No payload available") ++ "```"
+						                       else ""
+					                   		)
+				                   }
+				            	}
+			            ],
+                        thread_ts: vars.firstMessageResponse.ts
+                    }]]]></slack:chatpost-message-content>
+            </slack:create-chatpost-message>
 			</when>
 		</choice>
 	</flow>
