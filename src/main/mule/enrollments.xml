@@ -9,10 +9,6 @@
 http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<flow name="get:\enrollments:salesforce-data-api-config">
-		<flow-ref
-			doc:name="entry-flow"
-			doc:id="b83659c2-6793-4349-9d31-54a52cb56550"
-			name="entry-flow" />
 		<logger
 			level="INFO"
 			doc:name="Log entry-flow"
@@ -90,17 +86,9 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			doc:name="Log Created Response"
 			doc:id="23d190d2-b7d1-4e34-ac23-2b48a62d2b98"
 			message="#[payload]" />
-		<flow-ref
-			doc:name="exit flow"
-			doc:id="3735c26e-7cc4-4e60-b4ab-d67b006e4289"
-			name="exit-flow" />
 	</flow>
 	<flow
 		name="get:\enrollments\(enrollmentId):salesforce-data-api-config">
-		<flow-ref
-			doc:name="entry-flow"
-			doc:id="9fecce71-cfad-4f2d-835f-52433ee250dc"
-			name="entry-flow" />
 		<logger
 			level="INFO"
 			doc:name="Log entry-flow"
@@ -223,17 +211,9 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			</otherwise>
 		</choice>
 		<logger level="INFO" doc:name="Log Created Response" doc:id="1cee3392-3963-4ed2-a6d9-17b8509d2102" message="Post choice payload: #[payload]" />
-		<flow-ref
-			doc:name="exit flow"
-			doc:id="58405e41-0baf-4121-ac6b-f0b16bff945b"
-			name="exit-flow" />
 	</flow>
 	<flow
 		name="patch:\enrollments\(enrollmentId):application\json:salesforce-data-api-config">
-		<flow-ref
-			doc:name="entry-flow"
-			doc:id="8a9ce895-22fa-4763-8601-a740b69ccef2"
-			name="entry-flow" />
 		<logger
 			level="INFO"
 			doc:name="Log entry-flow"
@@ -307,17 +287,9 @@ output application/json
 			doc:name="Log Created Response"
 			doc:id="50386ceb-cbfa-4696-9f94-075d5988da4e"
 			message="#[payload]" />
-		<flow-ref
-			doc:name="exit flow"
-			doc:id="b8ba3115-6241-4702-a85d-ec76550633c4"
-			name="exit-flow" />
 	</flow>
 	<flow
 		name="post:\enrollments:application\json:salesforce-data-api-config">
-		<flow-ref
-			doc:name="entry-flow"
-			doc:id="503c68b8-e6f7-429a-a09e-d09e34f96c29"
-			name="entry-flow" />
 		<logger
 			level="INFO"
 			doc:name="Log entry-flow"
@@ -384,15 +356,10 @@ output application/json
 			doc:name="Log Created Response"
 			doc:id="c5b7c4fb-80e0-4c5c-8188-96caf7a2754b"
 			message="#[payload]" />
-		<flow-ref
-			doc:name="exit flow"
-			doc:id="def4e728-8bf5-45ff-85ac-c213895d9de4"
-			name="exit-flow" />
 	</flow>
 
 	<!-- delete flow -->
 	<flow name="delete:\enrollments:application\json:salesforce-data-api-config" doc:id="7f025bf8-4fc6-4557-9905-879b551ef142" >
-	<flow-ref doc:name="entry-flow" doc:id="0f3ac219-0a9d-45e8-9f56-78bd80d10a18" name="entry-flow" />
 		<logger level="INFO" doc:name="Log entry-flow" doc:id="e19144a5-1de4-48e7-ba5c-6fd97100f910" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]." />
 		<ee:transform doc:name="Transform Message" doc:id="f73ccde1-d7ca-41d8-90a1-d9feeb9f4fd1" >
 			<ee:message >
@@ -483,6 +450,5 @@ output application/json
 		</choice>
 		<logger level="INFO" doc:name="Log Created Response" doc:id="1cee3392-3963-4ec2-a6d9-17b8509d2102" message="#[payload]" />
 		<!-- <set-property propertyName="http.status" value="#[vars.httpStatus]" doc:name="Set HTTP Status" /> -->
-		<flow-ref doc:name="exit flow" doc:id="d6d6a729-bac5-4e4f-b490-96c7029afbce" name="exit-flow" />
 	</flow>
 </mule>

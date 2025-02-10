@@ -1,6 +1,5 @@
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<flow name="get:\seasons\(seasonId)\teamSeasons:salesforce-data-api-config">
-		<flow-ref doc:name="entry-flow" doc:id="f03c84fc-4bd0-4686-b017-4dbdb6308788" name="entry-flow" />
 		<logger level="INFO" message='Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath].' doc:name="Method and request path" doc:id="dvnloj" />
 		<ee:transform doc:name="Store URI parameter (seasonId)" doc:id="f0ca847c-2413-4e76-bde8-9aec2edd7b7d">
 			<ee:variables>
@@ -179,6 +178,5 @@
 			</ee:message>
 		</ee:transform>
 		<logger level="INFO" doc:name="Log Created Response" doc:id="92e9c386-35b3-4d98-be23-c9749a746778" message="#[payload]" />
-		<flow-ref doc:name="exit-flow" doc:id="bd0b5388-10ca-4a51-b191-f04cd7855832" name="exit-flow" />
 	</flow>
 </mule>

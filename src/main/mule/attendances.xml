@@ -9,10 +9,6 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	
 	<flow
 		name="post:\attendances:application\json:salesforce-data-api-config">
-		<flow-ref
-			doc:name="entry-flow"
-			doc:id="b9d898d3-12c3-45d6-a8c8-6fe66a2d8f44"
-			name="entry-flow" />
 		<logger
 			level="INFO"
 			doc:name="Log entry-flow"
@@ -66,9 +62,5 @@ output application/json
 payload.items.*payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<flow-ref
-			doc:name="exit flow"
-			doc:id="042e3e1d-e8f7-46e4-a8e3-ea7563f61b68"
-			name="exit-flow" />
 	</flow>
 	</mule>

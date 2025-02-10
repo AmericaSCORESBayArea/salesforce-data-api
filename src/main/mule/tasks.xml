@@ -149,7 +149,6 @@
     </ee:transform>
   </flow>
   <flow name="post:\tasks:application\json:salesforce-data-api-config">
-    <flow-ref doc:id="7d35fac9-4eff-49204-9840-1c046ef8a84a" doc:name="entry-flow" name="entry-flow"></flow-ref>
     <ee:transform doc:id="d5391b37-613a-4aa1-8a95-31766e6f7b3ce" doc:name="Store payload">
       <ee:variables>
         <ee:set-variable variableName="originalPayload">
@@ -217,10 +216,8 @@
       </otherwise>
     </choice>
     <logger doc:id="640a58eb-a8ab-40f9-bcc23-a9cadcf86bb5" doc:name="Log Created Response" level="INFO" message="#[payload]"></logger>
-    <flow-ref doc:id="ffed222e-011b-42f6-a9a1-2f3cb065c6e44" doc:name="exit flow" name="exit-flow"></flow-ref>
   </flow>
   <flow name="patch:\tasks\(taskId):application\json:salesforce-data-api-config">
-    <flow-ref doc:id="7d35fac9-4eff-49304-9840-1c046ef8a84a" doc:name="entry-flow" name="entry-flow"></flow-ref>
     <set-variable doc:id="e1f7ebc1-0e1e-45b9-88b6-d6c5c998b79c" doc:name="Set Task ID" value="#[attributes.uriParams.taskId]" variableName="taskId"></set-variable>
     <ee:transform doc:id="12345678-90ab-cdef-ghij-1234567890ab" doc:name="Store payload">
       <ee:variables>
@@ -293,7 +290,6 @@
     <!-- Log Updated Response -->
     <logger doc:id="log12345-67890-abcdef-ghijk" doc:name="Log Update Response" level="INFO" message="#[payload]"></logger>
     <!-- Exit Flow -->
-    <flow-ref doc:id="exit1234-5678-90ab-cdef-ghijklmno123" doc:name="exit flow" name="exit-flow"></flow-ref>
   </flow>
   <flow name="delete:\tasks\(taskId):salesforce-data-api-config">
       <logger level="INFO" message="delete:\tasks\(taskId):salesforce-data-api-config"></logger>
