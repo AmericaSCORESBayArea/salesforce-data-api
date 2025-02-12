@@ -95,7 +95,7 @@
                             output application/json
                             ---
                             {
-	                            message: "Unssupported Media Type",
+	                            message: "Unsupported Media Type",
 	                            error: (error.description default ""),
 	                            detailedError: (error.detailedDescription default ""),
 	                            errorType: (error.errorType.namespace default "") ++ ":" ++ (error.errorType.identifier default "")
