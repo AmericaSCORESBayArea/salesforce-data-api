@@ -263,7 +263,7 @@ types:
         required: false
       SessionTopic:
         type: string
-        enum: [ "Soccer", "Writing","Game_Day", "Soccer_and_Writing"]
+        enum: [ "Soccer", "Writing", "Game Day", "Soccer and Writing", "Service Learning"]
         required: false
       TeamSeasonId:
         type: SalesforceUniqueId
@@ -822,7 +822,7 @@ types:
       CreatedBy: string
       CreatedContact: string
       Description: string
-      DueDate: date-only
+      DueDate: datetime
       LastModifiedBy: string
       LastModifiedContact: string
       OwnerId: string
@@ -849,7 +849,7 @@ types:
         type: string
         required: false
       DueDate:
-        type: date-only
+        type: datetime
         required: false
       LastModifiedBy:
         type: string

@@ -16,10 +16,6 @@
 
 	<flow
 		name="get:\coach\(coachId)\teamseasons:salesforce-data-api-config">
-		<flow-ref
-			doc:name="entry-flow"
-			doc:id="82b50611-bf96-4408-bc9f-ce11e969853b"
-			name="entry-flow" />
 		<logger
 			level="INFO"
 			doc:name="Log entry-flow"
@@ -138,17 +134,9 @@ payload map ( payload01 ,
 			doc:name="Log Created Response"
 			doc:id="7d4746f9-9dc9-4598-9bc2-4599b8e2b7be"
 			message="#[payload]" />
-		<flow-ref
-			doc:name="exit flow"
-			doc:id="5fc85786-b9a4-4331-9601-903904e52064"
-			name="exit-flow" />
 	</flow>
 	<flow
 		name="get:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions:salesforce-data-api-config">
-		<flow-ref
-			doc:name="entry-flow"
-			doc:id="be3843a3-1c41-4712-9459-43e9b393b6c0"
-			name="entry-flow" />
 		<logger
 			level="INFO"
 			doc:name="Log entry-flow"
@@ -234,16 +222,8 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			doc:name="Log Created Response"
 			doc:id="19aaf94d-5c4a-4481-8d9d-59a24c6e950c"
 			message="#[payload]" />
-		<flow-ref
-			doc:name="exit flow"
-			doc:id="87c1ea24-9a65-4fdf-9651-94d38ae6b8ee"
-			name="exit-flow" />
 	</flow>
 	<flow name="get:\coach\(coachId)\all:salesforce-data-api-config">
-		<flow-ref
-			doc:name="entry-flow"
-			doc:id="a9ae0f9c-dfcc-4a12-be0d-6e329dfbe7b8"
-			name="entry-flow" />
 		<logger
 			level="INFO"
 			doc:name="Log entry-flow"
@@ -426,17 +406,9 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			doc:name="Log Created Response"
 			doc:id="22b14f46-310f-4768-ab87-5128e5f11c61"
 			message="#[payload]" />
-		<flow-ref
-			doc:name="exit flow"
-			doc:id="1778e3a5-0c0f-4238-b272-a093a9306f18"
-			name="exit-flow" />
 	</flow>
 	<flow
 		name="get:\coach\(coachId)\teamseasons\(teamSeasonId)\enrollments:salesforce-data-api-config">
-		<flow-ref
-			doc:name="entry-flow"
-			doc:id="a0883b26-6773-4d5c-8d61-b8a8361f90e8"
-			name="entry-flow" />
 		<logger
 			level="INFO"
 			doc:name="Log entry-flow"
@@ -575,17 +547,9 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			doc:name="Log Created Response"
 			doc:id="6d1746e6-35ac-4064-9cb3-03e2d2aa2dad"
 			message="#[payload]" />
-		<flow-ref
-			doc:name="exit flow"
-			doc:id="fc0d90c2-2581-49e2-aaef-d58ba1013d8e"
-			name="exit-flow" />
 	</flow>
 	<flow
 		name="post:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\attendances:application\json:salesforce-data-api-config">
-		<flow-ref
-			doc:name="entry-flow"
-			doc:id="319d3747-39e8-43d4-a9c2-9afd1935dd5e"
-			name="entry-flow" />
 		<logger
 			level="INFO"
 			doc:name="Log entry-flow"
@@ -639,17 +603,9 @@ output application/json
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<flow-ref
-			doc:name="exit flow"
-			doc:id="32b947ab-3abc-4f72-b6a5-79c51e3e786f"
-			name="exit-flow" />
 	</flow>
 	<flow
 		name="get:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\attendances:salesforce-data-api-config">
-		<flow-ref
-			doc:name="entry-flow"
-			doc:id="fdc4bec9-fecd-4335-980a-0908eaeb9a17"
-			name="entry-flow" />
 		<logger
 			level="INFO"
 			doc:name="Log entry-flow"
@@ -711,17 +667,9 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			doc:name="Log Created Response"
 			doc:id="30a1023d-5242-40d6-9a42-a3f0668043c7"
 			message="#[payload]" />
-		<flow-ref
-			doc:name="exit flow"
-			doc:id="e74de323-770f-4f76-a146-ee79831b8028"
-			name="exit-flow" />
 	</flow>
 	<flow
 		name="get:\coach\(coachId)\teamseasonsNotOwnedByCoach:salesforce-data-api-config">
-		<flow-ref
-			doc:name="entry-flow"
-			doc:id="80461e4d-5d8c-4847-8fb9-2b4956ce843f"
-			name="entry-flow" />
 		<logger
 			level="INFO"
 			doc:name="Log entry-flow"
@@ -845,17 +793,9 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			doc:name="Log Created Response"
 			doc:id="d8ecc282-d9e5-4701-9daa-79d507b4401e"
 			message="#[payload]" />
-		<flow-ref
-			doc:name="exit flow"
-			doc:id="90679941-f7e0-4b12-a9fe-f461fb6ca5dc"
-			name="exit-flow" />
 	</flow>
 	<flow
 		name="get:\coach\(coachId)\allSessions:salesforce-data-api-config">
-		<flow-ref
-			doc:name="entry-flow"
-			doc:id="88d3fa2f-c16d-400f-8ad2-72ce95d3903c"
-			name="entry-flow" />
 		<logger
 			level="INFO"
 			doc:name="Log entry-flow"
@@ -1140,17 +1080,9 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			doc:name="Log Created Response"
 			doc:id="a819e002-c9f4-4453-a14e-9b294acac38e"
 			message="#[payload]" />
-		<flow-ref
-			doc:name="exit-flow"
-			doc:id="5c0021ed-9897-43bd-9be7-104e54a4a7d0"
-			name="exit-flow" />
 	</flow>
 	<flow
 		name="get:\coach\(coachId)\regions:salesforce-data-api-config">
-		<flow-ref
-			doc:name="entry-flow"
-			doc:id="ff8d3790-5ce7-468b-9d81-d1aa1dc4ba07"
-			name="entry-flow" />
 		<logger
 			level="INFO"
 			doc:name="Log entry-flow"
@@ -1219,17 +1151,9 @@ payload distinctBy (value) -> { "unique" : value }]]></ee:set-payload>
 			doc:name="Log Created Response"
 			doc:id="e19e1f49-7d3c-4cfd-ba87-4f1c8be690b5"
 			message="#[payload]" />
-		<flow-ref
-			doc:name="exit flow"
-			doc:id="c51dfc90-a5c0-4537-9846-77b49544764e"
-			name="exit-flow" />
 	</flow>
 	<flow
 		name="patch:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\attendances:application\json:salesforce-data-api-config">
-		<flow-ref
-			doc:name="entry-flow"
-			doc:id="5c8512bc-5f34-4682-9a0e-bf958db2b2d9"
-			name="entry-flow" />
 		<logger
 			level="INFO"
 			doc:name="Log entry-flow"
@@ -1299,17 +1223,9 @@ output application/json
 			doc:name="Log Created Response"
 			doc:id="6277debb-2aa4-4703-97d1-66d20cd0d8e0"
 			message="#[payload]" />
-		<flow-ref
-			doc:name="exit flow"
-			doc:id="124c2970-ba8d-4bfa-b9c7-0852a61a1dcc"
-			name="exit-flow" />
 	</flow>
 	<flow
 		name="post:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\assessments:application\json:salesforce-data-api-config">
-		<flow-ref
-			doc:name="entry-flow"
-			doc:id="03c8eff7-b276-4283-8a8a-c79ce2777576"
-			name="entry-flow" />
 		<ee:transform>
 			<ee:variables>
 				<ee:set-variable variableName="coachId">attributes.uriParams.'coachId'
@@ -1391,10 +1307,6 @@ output application/json
 			doc:name="Log Created Response"
 			doc:id="8362b61e-5f53-4e52-b853-0eb2188332e0"
 			message="#[payload]" />
-		<flow-ref
-			doc:name="exit flow"
-			doc:id="269bc0e8-d6c5-4492-8a26-f42d12df5ee4"
-			name="exit-flow" />
 	</flow>
 	<flow
 		name="patch:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\assessments:application\json:salesforce-data-api-config">

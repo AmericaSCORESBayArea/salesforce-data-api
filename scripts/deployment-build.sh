@@ -17,20 +17,20 @@ KEYSTORE_PASSWORD=${2:-password}
 
 DIR="../src/main/mule"
 
-# 1. RENAME FILES TO BUILD DEPLOYMENT PACKAGE
-if [ -f "$DIR/global.xml.anypoint" ]; then
-  # Rename global.xml to global.xml.local if it exists
-  if [ -f "$DIR/global.xml" ]; then
-    mv "$DIR/global.xml" "$DIR/global.xml.local"
-    echo "File 'global.xml' renamed to 'global.xml.local'."
-  fi
-
-  # Rename global.xml.anypoint to global.xml
-  mv "$DIR/global.xml.anypoint" "$DIR/global.xml"
-  echo "File 'global.xml.anypoint' renamed to 'global.xml'."
-else
-  echo "File 'global.xml.anypoint' does not exist."
-fi
+## 1. RENAME FILES TO BUILD DEPLOYMENT PACKAGE
+#if [ -f "$DIR/global.xml.anypoint" ]; then
+#  # Rename global.xml to global.xml.local if it exists
+#  if [ -f "$DIR/global.xml" ]; then
+#    mv "$DIR/global.xml" "$DIR/global.xml.local"
+#    echo "File 'global.xml' renamed to 'global.xml.local'."
+#  fi
+#
+#  # Rename global.xml.anypoint to global.xml
+#  mv "$DIR/global.xml.anypoint" "$DIR/global.xml"
+#  echo "File 'global.xml.anypoint' renamed to 'global.xml'."
+#else
+#  echo "File 'global.xml.anypoint' does not exist."
+#fi
 
 
 # 2. GENERATE KEYSTORE USING KEYTOOL
@@ -51,20 +51,20 @@ echo "Building deployment package..."
 mvn -B package --file ../pom.xml
 
 
-#4. RENAME FILES BACK TO RUN IT LOCALLY
-if [ -f "$DIR/global.xml.local" ]; then
-  # Rename global.xml to global.xml.anypoint if it exists
-  if [ -f "$DIR/global.xml" ]; then
-    mv "$DIR/global.xml" "$DIR/global.xml.anypoint"
-    echo "File 'global.xml' renamed BACK to 'global.xml.anypoint'."
-  fi
-
-  # Rename global.xml.local to global.xml
-  mv "$DIR/global.xml.local" "$DIR/global.xml"
-  echo "File 'global.xml.local' renamed BACK to 'global.xml'."
-else
-  echo "File 'global.xml.local' does not exist."
-fi
+##4. RENAME FILES BACK TO RUN IT LOCALLY
+#if [ -f "$DIR/global.xml.local" ]; then
+#  # Rename global.xml to global.xml.anypoint if it exists
+#  if [ -f "$DIR/global.xml" ]; then
+#    mv "$DIR/global.xml" "$DIR/global.xml.anypoint"
+#    echo "File 'global.xml' renamed BACK to 'global.xml.anypoint'."
+#  fi
+#
+#  # Rename global.xml.local to global.xml
+#  mv "$DIR/global.xml.local" "$DIR/global.xml"
+#  echo "File 'global.xml.local' renamed BACK to 'global.xml'."
+#else
+#  echo "File 'global.xml.local' does not exist."
+#fi
 
 #5. APPEND LAST COMMIT HASH TO FILE
 

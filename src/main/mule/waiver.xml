@@ -1,6 +1,5 @@
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
   <flow doc:id="dd4a0323-53eb-475f-8d22-1e47cef4fe56" name="get:\waiver:salesforce-data-api-config">
-    <flow-ref doc:id="b1e71f84-e7aa-432a-96ce-1a44bc65e41c" doc:name="entry-flow" name="entry-flow"></flow-ref>
     <ee:transform doc:id="0955be0d-6f6d-43f2-93d8-db11c0e90793" doc:name="Transform Message">
       <ee:message></ee:message>
       <ee:variables>
@@ -64,10 +63,8 @@
             </ee:transform>
         </otherwise>
     </choice>
-    <flow-ref doc:id="00c2dda1-3348-4a07-90c8-7840a86d048d" doc:name="exit-flow" name="exit-flow"></flow-ref>
   </flow>
   <flow doc:id="8b1473c4-3931-4408-9c18-5d77ac8fc694" name="post:\waiver\(waiverId):application\json:salesforce-data-api-config">
-    <flow-ref doc:id="4e9a74ac-9da5-4a28-ab4c-1f74f9c952cd" doc:name="entry-flow" name="entry-flow"></flow-ref>
     <choice doc:id="bplsbn" doc:name="Choice">
       <when expression="#[vars.waiverId == null]">
         <ee:transform doc:id="72ce180c-ba71-4658-ad7a-4162acfea0a9" doc:name="Transform Message">

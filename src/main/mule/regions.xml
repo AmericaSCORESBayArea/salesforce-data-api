@@ -1,6 +1,5 @@
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
   <flow doc:id="166faefb-233d-4d0a-8703-d5d06b629d7d" name="get:\regions:salesforce-data-api-config">
-    <flow-ref doc:id="027e6ede-aebc-48ce-bd8a-efb07a516e9c" doc:name="entry-flow" name="entry-flow"></flow-ref>
     <salesforce:query config-ref="Salesforce_Config" doc:id="d5b03749-da65-46ae-a1c3-7293f1110e12" doc:name="Query">
       <salesforce:salesforce-query>
         <![CDATA[SELECT Region__c FROM Account GROUP BY Region__c]]>
@@ -18,10 +17,8 @@ payload map ( payload01 ,indexOfPayload01 ) -> {
         </ee:set-payload>
       </ee:message>
     </ee:transform>
-    <flow-ref doc:id="65eed082-9f5b-43f4-8ae6-15be0b79ca52" doc:name="exit-flow" name="exit-flow"></flow-ref>
   </flow>
   <flow doc:id="84da70e8-dfac-4f19-b9fb-c64587e388b2" name="get:\regions\(regionName)\schoolsites:salesforce-data-api-config">
-    <flow-ref doc:id="cd532f25-1f5a-42cd-aa5d-50f0616e6927" doc:name="entry-flow" name="entry-flow"></flow-ref>
     <ee:transform doc:id="b82de028-833e-4a66-ac1e-1527ee628f67" doc:name="Transform Message">
       <ee:message></ee:message>
       <ee:variables>
@@ -55,10 +52,8 @@ payload map ( payload01 ,indexOfPayload01 ) -> {
         </ee:set-payload>
       </ee:message>
     </ee:transform>
-    <flow-ref doc:id="25cb019b-648a-4e65-bd61-95bcd6731dd7" doc:name="exit-flow" name="exit-flow"></flow-ref>
   </flow>
   <flow name="get:\regions\active">
-	<flow-ref doc:id="cd532f25-1f5a-42cd-aa5d-50f061626927" doc:name="entry-flow" name="entry-flow"></flow-ref>
         <salesforce:query config-ref="Salesforce_Config" doc:name="Retrieve Active Regions" doc:id="urqtug" >
           <salesforce:salesforce-query><![CDATA[
 			SELECT Id, Value, Label, DurableId, EntityParticleId, ValidFor, IsActive FROM PicklistValueInfo WHERE EntityParticle.EntityDefinition.QualifiedApiName = 'Account' AND EntityParticle.QualifiedApiName = 'Region__c' AND isActive = TRUE
@@ -74,6 +69,5 @@ payload map ( payload01 ,indexOfPayload01 ) -> {
 				}]]></ee:set-payload>
 			  </ee:message>
 		</ee:transform>
-	<flow-ref doc:id="25cb019b-618a-4e65-bd61-95bcd6731dd7" doc:name="exit-flow" name="exit-flow"></flow-ref>
   </flow>
 </mule>

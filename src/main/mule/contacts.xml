@@ -1,6 +1,5 @@
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns:slack="http://www.mulesoft.org/schema/mule/slack" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd http://www.mulesoft.org/schema/mule/xml-module http://www.mulesoft.org/schema/mule/xml-module/current/mule-xml-module.xsd http://www.mulesoft.org/schema/mule/slack http://www.mulesoft.org/schema/mule/slack/current/mule-slack.xsd  http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
   <flow name="get:\contacts\(contactId)\enrollments:salesforce-data-api-config">
-    <http:listener config-ref="salesforce-data-api-httpListenerConfig" doc:id="wehyhh" doc:name="Listener" path="/api-internal/contacts/{contactId}/enrollments"></http:listener>
     <logger doc:id="yspmgc" doc:name="Logger" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]."></logger>
     <ee:transform doc:id="omudff" doc:name="Transform">
       <ee:variables>
@@ -124,7 +123,6 @@
     <flow-ref name="exit-flow"></flow-ref>
   </flow>
   <flow doc:id="60b5d6bf-7df6-4701-aa81-af52357dd258" name="post:\contacts:application\json:salesforce-data-api-config">
-    <flow-ref doc:id="7d35fac9-4eff-4904-9840-1c046ef8a84a" doc:name="entry-flow" name="entry-flow"></flow-ref>
     <logger doc:id="f6fc4dab-2c51-479f-943e-d978516fcb3e" doc:name="Log entry-flow" level="INFO" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]"></logger>
     <ee:transform doc:id="d5391b37-613a-4aa1-8a95-1766e6f7b3ce" doc:name="Store payload">
       <ee:message></ee:message>
@@ -488,7 +486,6 @@ payload.items[0].payload]]>
     </choice>
   </flow>
   <flow name="get:\contacts:salesforce-data-api-config">
-    <flow-ref doc:id="c9b03396-87ae-4cc7-a322-5a02422f56ec" doc:name="entry-flow" name="entry-flow"></flow-ref>
     <logger doc:id="4757f003-ed95-4269-9939-0811ef781500" doc:name="Log entry-flow" level="INFO" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]"></logger>
     <ee:transform doc:id="13306605-ff4a-46bf-a760-5257cb741357" doc:name="Store Query parameters">
       <ee:variables>
@@ -839,7 +836,6 @@ payload map ( payload01 , indexOfPayload01 ) -> {
           </ee:message>
         </ee:transform>
         <logger doc:id="b374f207-dfe3-48d7-99a2-b74e757cdb96" doc:name="Log Created Response" level="INFO" message="#[payload]"></logger>
-        <flow-ref doc:id="17176b6b-a1c0-4851-984e-43b59c0506eb" doc:name="exit flow" name="exit-flow"></flow-ref>
       </when>
       <otherwise>
         <set-variable doc:name="400 HTTP Status" value="400" variableName="httpStatus"></set-variable>
@@ -849,7 +845,6 @@ payload map ( payload01 , indexOfPayload01 ) -> {
     </choice>
   </flow>
   <flow name="get:\contacts\search:salesforce-data-api-config">
-    <flow-ref doc:id="cf3b6309-0886-4f1e-88e7-a5bf6b29041a" doc:name="entry-flow" name="entry-flow"></flow-ref>
     <logger doc:id="127d162c-eb82-4c68-858e-cba3a849db5c" doc:name="Log entry-flow" level="INFO" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]"></logger>
     <ee:transform doc:id="06bf0ffb-bedf-4d91-afb9-accd04fb3580" doc:name="Store Query parameters">
       <ee:variables>
@@ -1043,7 +1038,6 @@ Id: payload01.record.Id as String default "",
     </ee:transform>
   </flow>
   <flow name="get:\contacts\searchByPhoneNumber:salesforce-data-api-config">
-    <flow-ref doc:id="5c1ff047-a87d-44e0-9afc-34d4a790129e" doc:name="entry-flow" name="entry-flow"></flow-ref>
     <logger doc:id="5702e8bf-921c-4af0-a9f0-9bc9091adf34" doc:name="Log entry-flow" level="INFO" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]"></logger>
     <ee:transform doc:id="7e56aada-f163-47f0-8ffc-213f7acd09a8" doc:name="Store Query parameters">
       <ee:variables>
@@ -1237,7 +1231,6 @@ payload.searchRecords map ( payload01 , indexOfPayload01 ) -> {
     </ee:transform>
   </flow>
   <flow name="get:\contacts\(contactId):salesforce-data-api-config">
-    <flow-ref doc:id="3cefb3dd-a787-43f6-b305-ea08ddd5c2ce" doc:name="entry-flow" name="entry-flow"></flow-ref>
     <logger doc:id="259840a7-a4b5-4c17-9326-0794dfea6b26" doc:name="Log entry-flow" level="INFO" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]"></logger>
     <choice doc:id="xqgzcq" doc:name="Choice">
       <when expression="#[isEmpty(vars.contactId)]">
@@ -1428,10 +1421,8 @@ payload map ( payload01 , indexOfPayload01 ) -> {
       </ee:message>
     </ee:transform>
     <logger doc:id="eb926194-1a98-423e-b0c5-d3910cc9ec21" doc:name="Log Created Response" level="INFO" message="#[payload]"></logger>
-    <flow-ref doc:id="dbbecd8d-132a-4dcc-8e5b-4443895e0d71" doc:name="exit flow" name="exit-flow"></flow-ref>
   </flow>
   <flow name="patch:\contacts\(contactId):application\json:salesforce-data-api-config">
-    <flow-ref doc:id="ea712ccc-883f-484d-96c5-5d4f6e5782e7" doc:name="entry-flow" name="entry-flow"></flow-ref>
     <logger doc:id="630fb42f-aa01-455b-84ab-ae96ae695b29" doc:name="Log entry-flow" level="INFO" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]"></logger>
     <choice doc:id="ngwiov" doc:name="Choice">
       <when expression="#[vars.contactId == null]">
@@ -1564,10 +1555,8 @@ output application/json
       </otherwise>
     </choice>
     <logger doc:id="07b47086-0cbc-4db9-9012-faaabb58cff9" doc:name="Log Created Response" level="INFO" message="#[payload]"></logger>
-    <flow-ref doc:id="db9d32e6-d89b-4614-8b62-e0a9368b687d" doc:name="exit flow" name="exit-flow"></flow-ref>
   </flow>
   <flow doc:id="912d6ddf-b2bf-4f75-837a-21b1feccf869" name="get:\contacts\(contactId)\waiver\(waiverId):salesforce-data-api-config">
-    <flow-ref doc:id="c48c3a65-855f-4f71-a29b-392591232b12" doc:name="entry-flow" name="entry-flow"></flow-ref>
     <logger doc:id="c42d1dd4-9901-45ee-927f-9d59626fafc0" doc:name="Log entry-flow" level="INFO" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]"></logger>
     <ee:transform doc:id="8d327553-1d7b-4e62-a011-fa77e027aa13" doc:name="Store uri Params">
       <ee:variables>
@@ -1634,10 +1623,8 @@ payload map ( payload01 , indexOfPayload01 ) -> {
       </ee:message>
     </ee:transform>
     <logger doc:id="201d5855-01eb-4c6e-aca8-b5bebe871ada" doc:name="Log Created Response" level="INFO" message="#[payload]"></logger>
-    <flow-ref doc:id="04e2abf5-b5e3-44e4-ac09-278008e8dac2" doc:name="exit flow" name="exit-flow"></flow-ref>
   </flow>
   <flow name="post:\contacts\(contactId)\finishRegistration:application\json:salesforce-data-api-config">
-    <flow-ref name="entry-flow"></flow-ref>
     <ee:transform doc:id="72c2180c-ba71-4658-ad7a-4162acfea0a9" doc:name="Transform Message">
       <ee:variables>
         <ee:set-variable variableName="waiverId">
@@ -1694,7 +1681,6 @@ payload map ( payload01 , indexOfPayload01 ) -> {
         </ee:transform>
       </otherwise>
     </choice>
-    <flow-ref name="exit-flow"></flow-ref>
   </flow>
   <flow name="delete:\contacts\(contactId):salesforce-data-api-config">
         <choice doc:name="Choice" doc:id="faybix" >

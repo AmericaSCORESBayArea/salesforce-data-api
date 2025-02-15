@@ -1,6 +1,5 @@
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
   <flow name="get:\seasons:salesforce-data-api-config">
-    <flow-ref doc:id="f06c84fc-4bd0-4686-b017-4dbdb6308788" doc:name="entry-flow" name="entry-flow"></flow-ref>
     <logger doc:id="cc77b99f-c2a5-4180-a80c-a718be36b62d" doc:name="Log entry-flow" level="INFO" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. Also for this request we have queryParam: date=#[attributes.queryParams[0]]"></logger>
     <salesforce:query config-ref="Salesforce_Config" doc:id="55fb0a3d-b3ac-49ae-91b2-38f3f7658c5b" doc:name="Query">
       <salesforce:salesforce-query>
@@ -35,7 +34,6 @@ payload map ( payload01 , indexOfPayload01 ) -> {
       </ee:message>
     </ee:transform>
     <logger doc:id="50ac657e-93db-4e99-b5b3-69c2d3320015" doc:name="Log Created Response" level="INFO" message="#[payload]"></logger>
-    <flow-ref doc:id="df5c0b90-1631-4e45-9321-b4d160076c4e" doc:name="exit flow" name="exit-flow"></flow-ref>
   </flow>
   <flow name="get:\teamSeasons\(teamSeasonId):salesforce-data-api-config">
     <flow-ref doc:id="03174916-e85d-4c3c-9357-eee984a14887" doc:name="message-for-not-implemented-endpoints" name="message-for-not-implemented-endpoints"></flow-ref>
@@ -44,7 +42,6 @@ payload map ( payload01 , indexOfPayload01 ) -> {
     <flow-ref doc:id="beb72f4f-da50-4122-a253-1b4ce87187a1" doc:name="message-for-not-implemented-endpoints" name="message-for-not-implemented-endpoints"></flow-ref>
   </flow>
   <flow name="get:\teamSeasons:salesforce-data-api-config">
-    <flow-ref doc:id="bb8ee023-cc8e-4068-a70c-30b0e599f48f" doc:name="entry-flow" name="entry-flow"></flow-ref>
     <logger doc:id="5e5cb3b3-4ec7-4010-b415-84c629de251d" doc:name="Log entry-flow" level="INFO" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]"></logger>
     <ee:transform doc:id="0d5c09b6-6426-4e0e-a056-31d4d65764d4" doc:name="Store `date`, `endDate` `isWithinDateRange` (query parameters)">
       <ee:message></ee:message>
@@ -275,10 +272,8 @@ payload map ( payload01 , indexOfPayload01 ) -> {
       </ee:message>
     </ee:transform>
     <logger doc:id="92e9c386-35b3-4d98-be2b-c9749a746778" doc:name="Log Created Response" level="INFO" message="#[payload]"></logger>
-    <flow-ref doc:id="bd0b5388-60ca-4a51-b191-f04cd7855832" doc:name="exit-flow" name="exit-flow"></flow-ref>
   </flow>
   <flow name="patch:\teamSeasons\(teamSeasonId):application\json:salesforce-data-api-config">
-    <flow-ref doc:id="60b486d0-c623-43e1-a487-f8f7e2f04015" doc:name="entry-flow" name="entry-flow"></flow-ref>
     <logger doc:id="5e84b14e-5e7d-47b7-8fdf-7cb1afc27820" doc:name="Log entry-flow" level="INFO" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]"></logger>
     <ee:transform doc:id="7d1ddb06-9dee-4bc0-9f6e-5ec2dc18b61b" doc:name="Store URI parameters">
       <ee:variables>
@@ -349,10 +344,8 @@ output application/json
       </otherwise>
     </choice>
     <logger doc:id="7929814c-bb94-4872-a86f-211a4874b58a" doc:name="Log Created Response" level="INFO" message="#[payload]"></logger>
-    <flow-ref doc:id="f15e5791-f7be-4eda-b053-8de38b1a6efc" doc:name="exit flow" name="exit-flow"></flow-ref>
   </flow>
   <flow name="get:\teamSeasons\searchByTeamName:salesforce-data-api-config">
-  <flow-ref doc:id="5c1ff047-a87d-44e0-9afc-34d4a790e129e" doc:name="entry-flow" name="entry-flow"></flow-ref>
     <logger doc:id="5702e8bf-921c-4af0-2a9f0-9bc9091adf34" doc:name="Log entry-flow" level="INFO" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]"></logger>
     <ee:transform doc:id="7e56aada-2f163-47f0-8ffc-213f7acd09a8" doc:name="Store Query parameters">
       <ee:variables>			

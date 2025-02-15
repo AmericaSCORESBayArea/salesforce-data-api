@@ -10,10 +10,6 @@ http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mu
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 
 	<flow name="get:\teams\(teamId):salesforce-data-api-config">
-		<flow-ref
-			doc:name="entry-flow"
-			doc:id="0b6099c6-c65f-4669-9702-304d9d64c5d9"
-			name="entry-flow" />
 		<logger
 			level="INFO"
 			doc:name="Log entry-flow"
@@ -84,10 +80,6 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			doc:name="Log Created Response"
 			doc:id="cf14b433-ac8c-47ea-93c5-e3162f52d4cc"
 			message="#[payload]" />
-		<flow-ref
-			doc:name="exit flow"
-			doc:id="212021ec-4d7a-48da-8a2d-30446d4723cd"
-			name="exit-flow" />
 	</flow>
 	<flow
 		name="patch:\teams\(teamId):application\json:salesforce-data-api-config">
