@@ -10,10 +10,6 @@ http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mu
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
 	<flow name="get:\sessions:salesforce-data-api-config">
-		<flow-ref
-			doc:name="entry-flow"
-			doc:id="dc04c25c-298e-4a7d-b7cd-1359e9c9483a"
-			name="entry-flow" />
 		<logger
 			level="INFO"
 			doc:name="Log entry-flow"
@@ -76,16 +72,8 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			doc:name="Log Created Response"
 			doc:id="f6f08142-6b1a-4797-a855-748520d0ce8f"
 			message="#[payload]" />
-		<flow-ref
-			doc:name="exit flow"
-			doc:id="55791a35-acdf-470a-874a-7809c3c1162d"
-			name="exit-flow" />
 	</flow>
 	<flow name="get:\sessions\(sessionId):salesforce-data-api-config">
-		<flow-ref
-			doc:name="entry-flow"
-			doc:id="f7b0cc37-cc71-4dd8-867a-1940be711428"
-			name="entry-flow" />
 		<logger
 			level="INFO"
 			doc:name="Log entry-flow"
@@ -158,17 +146,9 @@ output application/json
 			doc:name="Log Created Response"
 			doc:id="acf707a7-c898-4973-9def-d8bb2b45577c"
 			message="#[payload]" />
-		<flow-ref
-			doc:name="exit flow"
-			doc:id="a17ba558-9672-4d27-a4e4-da7527faedc7"
-			name="exit-flow" />
 	</flow>
 	<flow
 		name="patch:\sessions\(sessionId):application\json:salesforce-data-api-config">
-		<flow-ref
-			doc:name="entry-flow"
-			doc:id="7d0bfce6-81dd-40ee-8604-fdd5077f2c85"
-			name="entry-flow" />
 		<logger
 			level="INFO"
 			doc:name="Log entry-flow"
@@ -248,17 +228,9 @@ output application/json
 			doc:name="Log Created Response"
 			doc:id="a674f8a2-3d62-4b8d-8f14-18864cb484a6"
 			message="#[payload]" />
-		<flow-ref
-			doc:name="exit flow"
-			doc:id="eb6b3c8c-f332-4022-9148-f3f476454b33"
-			name="exit-flow" />
 	</flow>
 	<flow
 		name="post:\sessions:application\json:salesforce-data-api-config">
-		<flow-ref
-			doc:name="entry-flow"
-			doc:id="18c4ade1-0541-4393-8997-e1e59c766f73"
-			name="entry-flow" />
 		<logger
 			level="INFO"
 			doc:name="Log entry-flow"
@@ -326,13 +298,8 @@ output application/json
 			doc:name="Log Created Response"
 			doc:id="640a58eb-a8ab-40f9-bcc2-a9cadcf86bb5"
 			message="#[payload]" />
-		<flow-ref
-			doc:name="exit flow"
-			doc:id="ffed222e-011b-42f6-a9a1-f3cb065c6e44"
-			name="exit-flow" />
 	</flow>
 	<flow name="delete:\sessions\(sessionId):salesforce-data-api-config" doc:id="d97b31a5-0ea7-46d3-a346-cbca136228e3" >
-		<flow-ref doc:name="entry-flow" doc:id="9c8a442e-a7cd-46a2-ad34-ff5e764ddc81" name="entry-flow" />
 		<logger level="INFO" doc:name="Log entry-flow" doc:id="9ae3dcc8-74f5-4189-b3c1-bd9656a059ec" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
 		<ee:transform doc:name="Store URI parameters" doc:id="ae0066ba-0a60-42b4-9665-2269c6fb5564" >
 			<ee:variables >

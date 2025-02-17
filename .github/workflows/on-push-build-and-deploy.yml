@@ -122,6 +122,9 @@ jobs:
           -Dtypeform.clientid="${{ secrets.TYPEFORM_CLIENTID }}" \
           -Dtypeform.clientsecret="${{ secrets.TYPEFORM_CLIENTSECRET }}" \
           -Dtypeform.tkn="${{ secrets.TYPEFORM_TKN }}" \
+          -Dslack.client_id="${{ secrets.SLACK_CLIENT_ID }}" \
+          -Dslack.client_secret="${{ secrets.SLACK_CLIENT_SECRET }}" \
+          -Dslack.enabled=true \
           -DskipTests
  
 

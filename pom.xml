@@ -12,7 +12,7 @@
         <app.name>salesforce-data-api</app.name>
         <app.runtime>4.6-java17</app.runtime>
         <!-- <munit.version>2.3.6</munit.version> -->
-        <mule.maven.plugin.version>4.1.1</mule.maven.plugin.version>
+        <mule.maven.plugin.version>4.3.0</mule.maven.plugin.version>
     </properties>
     <build>
         <plugins>
@@ -52,6 +52,9 @@
                             <anypoint.platform.client_secret>${anypoint.platform.client_secret}</anypoint.platform.client_secret>
                             <keystore.key.password>${keystore.key.password}</keystore.key.password>
                             <keystore.password>${keystore.password}</keystore.password>
+                            <slack.client_id>${slack.client_id}</slack.client_id>
+                            <slack.client_secret>${slack.client_secret}</slack.client_secret>
+                            <slack.enabled>${slack.enabled}</slack.enabled>
                         </properties>
                     </cloudHubDeployment>
                 </configuration>
@@ -139,6 +142,12 @@
             <groupId>com.mulesoft.connectors</groupId>
             <artifactId>mule-salesforce-connector</artifactId>
             <version>10.20.3</version>
+            <classifier>mule-plugin</classifier>
+        </dependency>
+        <dependency>
+            <groupId>com.mulesoft.connectors</groupId>
+            <artifactId>mule4-slack-connector</artifactId>
+            <version>1.0.19</version>
             <classifier>mule-plugin</classifier>
         </dependency>
     </dependencies>

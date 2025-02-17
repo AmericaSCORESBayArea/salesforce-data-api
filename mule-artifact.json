@@ -4,7 +4,8 @@
     "sfdc.tkn",
     "typeform.tkn",
     "typeform.clientid",
-    "typeform.clientsecret"
+    "typeform.clientsecret",
+    "slack.client_secret"
   ],
   "redeploymentEnabled": true,
   "name": "secure-properties",
