@@ -123,7 +123,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 		    value="#[vars.endDate default payload.EndDate]" />
 		<choice doc:name="Check if 'StarDate' &lt; 'EndDate' (2)" doc:id="0220b134-adb4-42e8-a7d4-49e024544985">
 			<when expression="#[vars.startDate != null and vars.endDate != null and vars.startDate &gt; vars.endDate]">
-				<raise-error doc:name="Raise Bad Request Error" doc:id="c96523bb-6a3c-480f-9931-0ce4445c8e7b" type="CUSTOM:BAD_REQUEST" description="Provided 'StartDate' is bigger than the existing 'EndDate'" />
+				<raise-error doc:name="Raise Bad Request Error" doc:id="c96523bb-6a3c-480f-9931-0ce4445c8e7b" type="CUSTOM:BAD_REQUEST" description="Provided value violates the rule 'StartDate' &lt; 'EndDate'" />
 			</when>
 		</choice>
 		<ee:transform doc:name="Create Request" doc:id="dac65fbc-5356-422a-b90d-87860710acb6" >
