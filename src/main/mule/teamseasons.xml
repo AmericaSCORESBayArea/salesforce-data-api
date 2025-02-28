@@ -35,7 +35,142 @@ payload map ( payload01 , indexOfPayload01 ) -> {
     </ee:transform>
     <logger doc:id="50ac657e-93db-4e99-b5b3-69c2d3320015" doc:name="Log Created Response" level="INFO" message="#[payload]"></logger>
   </flow>
-  <flow name="get:\teamSeasons\(teamSeasonId):salesforce-data-api-config">
+  <flow name="patch:\teamSeasons\(teamSeasonId)\contacts\(contactId)\enrollments\(enrollmentId):salesforce-data-api-config" doc:id="3f5f50e9-befe-4d8e-bff3-f0cdbcc9f54b" >
+		<ee:transform doc:name="Store URI parameters: enrollmentId, teamSeasonId, contactId" doc:id="883f6125-7026-4c17-970f-f6479b0d9a00" >
+			<ee:variables >
+				<ee:set-variable variableName="enrollmentId" ><![CDATA[attributes.uriParams.'enrollmentId']]></ee:set-variable>
+				<ee:set-variable variableName="teamSeasonId" ><![CDATA[attributes.uriParams.'teamSeasonId']]></ee:set-variable>
+				<ee:set-variable variableName="contactId" ><![CDATA[attributes.uriParams.'contactId']]></ee:set-variable>
+				<ee:set-variable variableName="startDate"><![CDATA[
+				  if (payload.StartDate != null)
+				    payload.StartDate as Date {format: "yyyy-MM-dd"}
+				  else
+				    null
+				]]></ee:set-variable>
+				
+				<ee:set-variable variableName="endDate"><![CDATA[
+				  if (payload.EndDate != null)
+				    payload.EndDate as Date {format: "yyyy-MM-dd"}
+				  else
+				    null
+				]]></ee:set-variable>
+
+			</ee:variables>
+		</ee:transform>
+		<choice doc:name="Check if at least 'StartDate' or 'EndDate' are present" doc:id="12f08ad9-6f7d-4188-9c2c-f75cb5d8efd1">
+  			<when expression="#[vars.startDate == null and vars.endDate == null]">
+  			    <raise-error type="CUSTOM:BAD_REQUEST" doc:name="Raise Bad Request Error" description="'StartDate', 'EndDate' or both are missing from Payload."/>
+  			</when>
+		</choice>
+		<choice doc:name="Check if 'StarDate' &lt; 'EndDate'" doc:id="bc3a68a4-f53e-4d67-9805-9ce511f209a9" >
+  			<when expression="#[vars.startDate != null and vars.endDate != null and vars.startDate > vars.endDate]">
+  			    <raise-error type="CUSTOM:BAD_REQUEST" doc:name="Raise Bad Request Error" description="'EndDate' must be bigger than 'StartDate'."/>
+			</when>
+		</choice>
+		<salesforce:query doc:name="Retrieve EnrollmentId" doc:id="cac1cdb2-14ab-4a3d-a0a8-89915f32f17e" config-ref="Salesforce_Config">
+		    <salesforce:salesforce-query><![CDATA[
+		        SELECT 
+		            Id,
+		            Contact__c,
+		            Team_Season__c,
+		            Start_Date__c,
+		            End_Date__c
+		        FROM 
+		            Enrollment__c 
+		        WHERE 
+		            Id = ':EnrollmentId'
+		        LIMIT 1
+		    ]]></salesforce:salesforce-query>
+		    <salesforce:parameters><![CDATA[#[output application/java
+		    ---
+		    {
+		        EnrollmentId: vars.enrollmentId as String
+		    }]]]></salesforce:parameters>
+		</salesforce:query>
+
+		<ee:transform doc:name="Rename Fields" doc:id="3259f5e3-f295-49cf-8723-98f529bd37b1">
+		    <ee:message>
+		        <ee:set-payload><![CDATA[
+		            %dw 2.0
+		            output application/json
+		            ---
+		            {
+		              ContactId: payload[0].Contact__c,
+		              TeamSeasonId: payload[0].Team_Season__c,
+		              StartDate: payload[0].Start_Date__c,
+		              EndDate: payload[0].End_Date__c
+		            }
+		        ]]></ee:set-payload>
+		    </ee:message>
+		</ee:transform>
+		<choice doc:name="Validate Record vs Request" doc:id="144a325e-5e30-464b-b067-cb8f8a7c0546">
+		    <when expression="#[payload.TeamSeasonId == vars.teamSeasonId and payload.ContactId == vars.contactId]">
+		        <logger level="INFO" message="Record matches request TeamSeasonId and ContactId." doc:name="Log Match" />
+		    </when>
+		    <otherwise>
+		        <raise-error type="CUSTOM:BAD_REQUEST" doc:name="Raise Error" description="Provided 'TeamSeasonId' and 'ContactId' do not match with record associated with the provided 'EnrollmentId'" />
+		    </otherwise>
+		</choice>
+		<set-variable 
+		    variableName="StartDate" 
+		    doc:name="Set 'StartDate'" 
+		    doc:id="2085c968-6b8f-4813-8352-1a8ca65a3f29"
+		    value="#[vars.startDate default payload.StartDate]" />
+		<set-variable 
+		    variableName="EndDate" 
+		    doc:name="Set 'EndDate'" 
+		    doc:id="a1b27c52-2c88-4af3-b0ac-6dfbad7eb71a"
+		    value="#[vars.endDate default payload.EndDate]" />
+		<choice doc:name="Check if 'StarDate' &lt; 'EndDate' (2)" doc:id="0220b134-adb4-42e8-a7d4-49e024544985">
+			<when expression="#[vars.startDate != null and vars.endDate != null and vars.startDate &gt; vars.endDate]">
+				<raise-error doc:name="Raise Bad Request Error" doc:id="c96523bb-6a3c-480f-9931-0ce4445c8e7b" type="CUSTOM:BAD_REQUEST" description="Provided value violates the rule 'StartDate' &lt; 'EndDate'" />
+			</when>
+		</choice>
+		<ee:transform doc:name="Create Request" doc:id="dac65fbc-5356-422a-b90d-87860710acb6" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+					output application/java
+					---
+					[{
+						Id: vars.enrollmentId,
+						(Start_Date__c: vars.startDate as Date {format: 'yyyy-MM-dd'}) if vars.startDate != null,
+						(End_Date__c: vars.endDate as Date {format: 'yyyy-MM-dd'}) if vars.endDate != null
+					}]]]>
+				</ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce:update type="Enrollment__c" doc:name="Update" doc:id="67bd555b-2024-4d3b-8720-24dcb8688184" config-ref="Salesforce_Config" />
+		<choice doc:name="Update successful?" doc:id="b659fb79-98a3-4c48-bd2e-e8e8c10dece4" >
+			<when expression="#[payload.items[0].successful == false]" >
+				<ee:transform doc:name="Create Error Response" doc:id="fffa0ab0-96f4-4218-bfb0-7ec3093ed912" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+						output application/json
+						---
+						{
+							message: payload.items[0].message
+						}]]></ee:set-payload>
+					</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[400]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Create Response" doc:id="8790764d-7b54-4f5f-b7ee-c9b6b3bc11f0" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+					output application/json
+					---
+					{
+					  message: "Enrollment updated"
+					}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="get:\teamSeasons\(teamSeasonId):salesforce-data-api-config">
     <flow-ref doc:id="03174916-e85d-4c3c-9357-eee984a14887" doc:name="message-for-not-implemented-endpoints" name="message-for-not-implemented-endpoints"></flow-ref>
   </flow>
   <flow name="post:\teamSeasons:application\json:salesforce-data-api-config">

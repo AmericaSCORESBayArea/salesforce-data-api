@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "57eef8b7-056b-4cd7-8a40-4fdcb3b5cfd4",
+		"_postman_id": "0e927c57-e663-43d7-b54f-7487525e3134",
 		"name": "Scores - Salesforce Data API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "34720049"
@@ -228,6 +228,67 @@
 								{
 									"key": "isWithinDateRange",
 									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/teamSeasons/{teamSeasonId}/contacts/{contactId}/enrollments/{enrollmentId}",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							},
+							{
+								"key": "Origin",
+								"value": "Postman",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"StartDate\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/teamSeasons/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"teamSeasons",
+								""
+							],
+							"query": [
+								{
+									"key": "date",
+									"value": "2024-01-01",
+									"disabled": true
+								},
+								{
+									"key": "endDate",
+									"value": "2025-09-01",
+									"disabled": true
+								},
+								{
+									"key": "isWithinDateRange",
+									"value": "true",
+									"disabled": true
 								}
 							]
 						}

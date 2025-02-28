@@ -14,7 +14,7 @@
 		<apikit:router config-ref="salesforce-data-api-config" />
         <flow-ref doc:name="Log Response" doc:id="553e8f82-198b-4c48-829e-7117c3c7634d" name="exit-flow"/>
 		<error-handler>
-			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="a0f1f919-7033-446f-be52-c49a7341cb34" type="APIKIT:BAD_REQUEST">
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="a0f1f919-7033-446f-be52-c49a7341cb34" type="APIKIT:BAD_REQUEST, CUSTOM:BAD_REQUEST">
 				<flow-ref doc:name="Flow Reference: Slack" doc:id="1faae1e3-cf47-4ace-9b3f-552f9b106394" name="global-error-handler" />
 				<set-variable value="400" doc:name="Set Status Code" doc:id="2307b323-9155-4bc7-aad5-b962fd65c13e" variableName="httpStatus"/>
 				<ee:transform doc:name="Transform Message" doc:id="9e09454e-d82f-4a26-854e-16807ca0c340" >
