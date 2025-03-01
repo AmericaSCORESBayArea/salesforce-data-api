@@ -114,6 +114,49 @@ uses:
             application/json:
               example:
                 message: TeamSeason not found
+    uriParameters:
+      teamSeasonId:
+        description: The unique identifier for the team season
+        type: string
+        required: true
+        pattern: "^[A-Za-z0-9]{18}$"
+    /contacts:
+      /{contactId}:
+        uriParameters:
+          contactId:
+            description: The unique identifier for the contact
+            type: string
+            required: true
+            pattern: "^[A-Za-z0-9]{18}$"
+        /enrollments:
+          /{enrollmentId}:
+            uriParameters:
+              enrollmentId:
+                description: The unique identifier for the enrollment
+                type: string
+                required: true
+                pattern: "^[A-Za-z0-9]{18}$"
+            patch:
+              description: Update Enrollment (dates only)
+              body:
+                application/json:
+                  type: types.EnrollmentUpdateModelDatesOnly
+              responses:
+                200:
+                  body:
+                    application/json:
+                      example:
+                        message: Enrollment updated
+                400:
+                  body:
+                    application/json:
+                      example:
+                        message: Bad request
+                404:
+                  body:
+                    application/json:
+                      example:
+                        message: Enrollment not found
 
 /typeform:
   /responses:
