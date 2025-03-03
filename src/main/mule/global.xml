@@ -1,6 +1,7 @@
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway" xsi:schemaLocation=" http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
-	http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
+<mule xmlns:slack="http://www.mulesoft.org/schema/mule/slack" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway" xsi:schemaLocation=" http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+	http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd
+http://www.mulesoft.org/schema/mule/slack http://www.mulesoft.org/schema/mule/slack/current/mule-slack.xsd">
   <http:listener-config name="salesforce-data-api-httpListenerConfig">
     <http:listener-connection host="${http.host}" port="${http.private.port}"></http:listener-connection>
   </http:listener-config>
@@ -10,4 +11,10 @@
   </salesforce:sfdc-config>
   <configuration-properties doc:id="0863edff-f537-40bd-b6de-0d5d7c3d55db" doc:name="Configuration properties" file="properties/${env}.properties"></configuration-properties>
 	<!-- <api-gateway:autodiscovery apiId="${api.id}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="db48c567-5713-4072-ba01-458941f5c8f1" flowRef="salesforce-data-api-main" /> -->
+	<slack:config name="Slack_Connector_Config" doc:name="Slack Connector Config" doc:id="e48f990e-cbe1-444e-b5e7-e6cc4ce85843" >
+		<slack:slack-auth-connection >
+			<slack:oauth-authorization-code consumerKey="${slack.client_id}" consumerSecret="${slack.client_secret}" scopes="chat:write:bot"/>
+			<slack:oauth-callback-config listenerConfig="salesforce-data-api-httpListenerConfig" callbackPath="/slack/callback" authorizePath="/slack/authorize" externalCallbackUrl="https://${fullDomain}/slack/callback"/>
+		</slack:slack-auth-connection>
+	</slack:config>
 </mule>

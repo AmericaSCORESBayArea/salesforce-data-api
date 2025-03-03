@@ -12,120 +12,167 @@
         </http:listener>
         <apikit:router config-ref="salesforce-data-api-config" />
         <error-handler>
-            <on-error-propagate type="APIKIT:BAD_REQUEST">
-                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-                    <ee:message>
-                        <ee:set-payload><![CDATA[%dw 2.0
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate1" doc:id="2ef4e17a-2265-4bc7-b7ef-4db3f85c06d8" type="APIKIT:BAD_REQUEST" >
+				<flow-ref doc:name="Flow Reference: Slack" doc:id="c9ccaa1a-d3f4-420a-a919-1bcbd19dd9a9" name="global-error-handler" />
+				<set-variable value="400" doc:name="Set Status Code" doc:id="6d517e4c-dd35-462b-bdd4-0f3c6b9d149e" variableName="httpStatus" />
+				<ee:transform doc:name="Transform Message" doc:id="91cee1eb-45b7-4e72-892f-43708a77f7d9" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
                             output application/json
                             ---
                             {
-                                message: "Bad request",
-                                details: error.detailedDescription
-                            }]]>
-                        </ee:set-payload>
-                    </ee:message>
-                    <ee:variables>
-                        <ee:set-variable variableName="httpStatus">400</ee:set-variable>
-                    </ee:variables>
-                </ee:transform>
-            </on-error-propagate>
-            <on-error-propagate type="APIKIT:NOT_FOUND">
-                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-                    <ee:message>
-                        <ee:set-payload><![CDATA[%dw 2.0
-                            output application/json
-                            ---
-                            {message: "Resource not found"}]]>
-                        </ee:set-payload>
-                    </ee:message>
-                    <ee:variables>
-                        <ee:set-variable variableName="httpStatus">404</ee:set-variable>
-                    </ee:variables>
-                </ee:transform>
-            </on-error-propagate>
-            <on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED">
-                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-                    <ee:message>
-                        <ee:set-payload><![CDATA[%dw 2.0
-                            output application/json
-                            ---
-                            {message: "Method not allowed"}]]>
-                        </ee:set-payload>
-                    </ee:message>
-                    <ee:variables>
-                        <ee:set-variable variableName="httpStatus">405</ee:set-variable>
-                    </ee:variables>
-                </ee:transform>
-            </on-error-propagate>
-            <on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
-                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-                    <ee:message>
-                        <ee:set-payload><![CDATA[%dw 2.0
-                            output application/json
-                            ---
-                            {message: "Not acceptable"}]]>
-                        </ee:set-payload>
-                    </ee:message>
-                    <ee:variables>
-                        <ee:set-variable variableName="httpStatus">406</ee:set-variable>
-                    </ee:variables>
-                </ee:transform>
-            </on-error-propagate>
-            <on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
-                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-                    <ee:message>
-                        <ee:set-payload><![CDATA[%dw 2.0
+	                            message: "Invalid Request Format",
+	                            error: (error.description default ""),
+	                            detailedError: (error.detailedDescription default ""),
+	                            errorType: (error.errorType.namespace default "") ++ ":" ++ (error.errorType.identifier default "")
+                            }
+                            ]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-propagate>
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate2" doc:id="0e04ce41-5417-4a35-bb67-dd5f7ea05da6" type="APIKIT:METHOD_NOT_ALLOWED" >
+				<flow-ref doc:name="Flow Reference: Slack" doc:id="83e89079-0552-48d9-8a25-b841ba2924a1" name="global-error-handler" />
+				<set-variable value="405" doc:name="Set Status Code" doc:id="2ffcd89e-e005-47ab-a899-9aa3ef95e7da" variableName="httpStatus" />
+				<ee:transform doc:name="Transform Message" doc:id="e19b8f0b-053d-4b78-a578-3a042f959d62" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
                             output application/json
                             ---
                             {
-                                    message: "Unsupported media type",
-                            }]]>
-                        </ee:set-payload>
-                    </ee:message>
-                    <ee:variables>
-                        <ee:set-variable variableName="httpStatus">415</ee:set-variable>
-                    </ee:variables>
-                </ee:transform>
-            </on-error-propagate>
-            <on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
-                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-                    <ee:message>
-                        <ee:set-payload><![CDATA[%dw 2.0
+	                            message: "Method Not Allowed",
+	                            error: (error.description default ""),
+	                            detailedError: (error.detailedDescription default ""),
+	                            errorType: (error.errorType.namespace default "") ++ ":" ++ (error.errorType.identifier default "")
+                            }
+                            ]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-propagate>
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate3" doc:id="1149fab0-e6f8-45df-81bc-d1c0a053b91c" type="APIKIT:NOT_ACCEPTABLE" >
+				<flow-ref doc:name="Flow Reference: Slack" doc:id="5ad2b296-ea07-4e0e-a09e-f1be2354a25d" name="global-error-handler" />
+				<set-variable value="406" doc:name="Set Status Code" doc:id="5fdf5827-6f09-4e10-bf99-feee74931153" variableName="httpStatus" />
+				<ee:transform doc:name="Transform Message" doc:id="91d909f7-d9c1-4ea7-98d6-af0a7f1eac1c" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
                             output application/json
                             ---
-                            {message: "Not Implemented"}]]>
-                        </ee:set-payload>
-                    </ee:message>
-                    <ee:variables>
-                        <ee:set-variable variableName="httpStatus">501</ee:set-variable>
-                    </ee:variables>
-                </ee:transform>
-            </on-error-propagate>
-            <on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="5252c67b-0ef0-42ed-b2d5-6d7fdd7c034b" type="CREATECONTACT:CONFLICT">
-                <ee:transform doc:name="Transform Message" doc:id="9bc7953f-4cbc-411c-9635-dc532f6bfdf5" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-                    <ee:message>
-                        <ee:set-payload><![CDATA[%dw 2.0
+                            {
+	                            message: "Not Acceptable",
+	                            error: (error.description default ""),
+	                            detailedError: (error.detailedDescription default ""),
+	                            errorType: (error.errorType.namespace default "") ++ ":" ++ (error.errorType.identifier default "")
+                            }
+                            ]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-propagate>
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate4" doc:id="7f2d7dde-8c89-4e9a-b152-fb5add1c5d96" type="APIKIT:NOT_FOUND" >
+				<flow-ref doc:name="Flow Reference: Slack" doc:id="c6971cdf-4439-4f13-aa7a-3073ca210050" name="global-error-handler" />
+				<set-variable value="404" doc:name="Set Status Code" doc:id="e1210aac-dc99-411d-a784-9f24b5c37f31" variableName="httpStatus" />
+				<ee:transform doc:name="Transform Message" doc:id="b32d6e7c-6ec8-4c05-942f-622104f37a0e" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
                             output application/json
                             ---
-                            payload]]>
-                        </ee:set-payload>
-                    </ee:message>
-                    <ee:variables>
-                        <ee:set-variable variableName="httpStatus">409</ee:set-variable>
-                    </ee:variables>
-                </ee:transform>
-            </on-error-propagate>
-            <on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="86924e80-2f5a-4d51-91e9-a122267fd4d1" type="MULE:RETRY_EXHAUSTED">
-                <ee:transform doc:name="Transform Message" doc:id="b39ada89-27d0-4d94-89cf-4560a5f8158a">
-                    <ee:message>
-                        <ee:set-payload><![CDATA[%dw 2.0
+                            {
+	                            message: "Resource Not Found",
+	                            error: (error.description default ""),
+	                            detailedError: (error.detailedDescription default ""),
+	                            errorType: (error.errorType.namespace default "") ++ ":" ++ (error.errorType.identifier default "")
+                            }
+                            ]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-propagate>
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate5" doc:id="987f14cb-7f78-40ef-90b9-69f87a4c25a0" type="APIKIT:UNSUPPORTED_MEDIA_TYPE" >
+				<flow-ref doc:name="Flow Reference: Slack" doc:id="4ba47209-2f23-4738-ae9d-7c8ede68ba61" name="global-error-handler" />
+				<set-variable value="415" doc:name="Set Status Code" doc:id="35136319-9720-4de8-911e-3014661c973b" variableName="httpStatus" />
+				<ee:transform doc:name="Transform Message" doc:id="fd0a9ae7-4745-429d-b5b4-1dcc680cad50" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
                             output application/json
                             ---
-                            payload.items.*payload]]>
-                        </ee:set-payload>
-                    </ee:message>
-                </ee:transform>
-            </on-error-propagate>
+                            {
+	                            message: "Unsupported Media Type",
+	                            error: (error.description default ""),
+	                            detailedError: (error.detailedDescription default ""),
+	                            errorType: (error.errorType.namespace default "") ++ ":" ++ (error.errorType.identifier default "")
+                            }
+                            ]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-propagate>
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate6" doc:id="a6d3a20f-e96d-4843-9f5b-8b25b25a9d3b" type="STREAM_MAXIMUM_SIZE_EXCEEDED" >
+				<flow-ref doc:name="Flow Reference: Slack" doc:id="20cf0a86-7075-45fa-9c18-c4d1adb71215" name="global-error-handler" />
+				<set-variable value="413" doc:name="Set Status Code" doc:id="4ae88a18-3b0f-4b2f-85a6-8878dda9dc7a" variableName="httpStatus" />
+				<ee:transform doc:name="Transform Message" doc:id="3a52fb4a-da4f-4a22-8773-0b92b82cad4a" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+                            output application/json
+                            ---
+                            {
+	                            message: "Payload Too Large",
+	                            error: (error.description default ""),
+	                            detailedError: (error.detailedDescription default ""),
+	                            errorType: (error.errorType.namespace default "") ++ ":" ++ (error.errorType.identifier default "")
+                            }
+                            ]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-propagate>
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate7" doc:id="e379680c-5a7e-48f5-b861-d67a99914f00" type="EXPRESSION" >
+				<flow-ref doc:name="Flow Reference: Slack" doc:id="bbc4e064-f303-4ccb-8c17-33b479f66212" name="global-error-handler" />
+				<set-variable value="500" doc:name="Set Status Code" doc:id="e0656623-3400-4ab0-94e8-7548fd38ca65" variableName="httpStatus" />
+				<ee:transform doc:name="Transform Message" doc:id="16b3f8ce-23a4-482f-bcbc-eac6dea35e76" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+                            output application/json
+                            ---
+                            {
+	                            message: "DataWeave Expression Error",
+	                            error: (error.description default ""),
+	                            detailedError: (error.detailedDescription default ""),
+	                            errorType: (error.errorType.namespace default "") ++ ":" ++ (error.errorType.identifier default "")
+                            }
+                            ]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-propagate>
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate8" doc:id="47f42674-1194-40cf-8315-d3fe173fe027" type="SLACK:BAD_REQUEST, SLACK:CLIENT_ERROR, SLACK:CONNECTIVITY, SLACK:INTERNAL_SERVER_ERROR, SLACK:NOT_ACCEPTABLE, SLACK:NOT_FOUND, SLACK:RETRY_EXHAUSTED, SLACK:SERVER_ERROR, SLACK:SERVICE_UNAVAILABLE, SLACK:TIMEOUT, SLACK:TOO_MANY_REQUESTS, SLACK:UNAUTHORIZED, SLACK:UNSUPPORTED_MEDIA_TYPE" >
+				<flow-ref doc:name="Flow Reference: Slack" doc:id="9329afd4-4839-480d-a1b5-97b8a65ddd0c" name="global-error-handler" />
+				<set-variable value="500" doc:name="Set Status Code" doc:id="73fbed86-b379-4ad8-bd65-4ab58ae2db39" variableName="httpStatus" />
+				<ee:transform doc:name="Transform Message" doc:id="a263ed9f-6f46-4502-ab09-14a768a34da9" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+                            output application/json
+                            ---
+                            {
+	                            message: "Slack API Error",
+	                            error: (error.description default ""),
+	                            detailedError: (error.detailedDescription default ""),
+	                            errorType: (error.errorType.namespace default "") ++ ":" ++ (error.errorType.identifier default "")
+                            }
+                            ]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-propagate>
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate9" doc:id="31e3935b-9df4-4146-9399-1075d81a4eaf" type="ANY" >
+				<flow-ref doc:name="Flow Reference: Slack" doc:id="920b6859-d765-49af-837a-51324235ba90" name="global-error-handler" />
+				<ee:transform doc:name="Transform Message" doc:id="b3805338-b1a8-4a16-a176-c204d640f135" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+                            output application/json
+                            ---
+                            {
+	                            message: "An unknown error occurred",
+	                            error: (error.description default ""),
+	                            detailedError: (error.detailedDescription default ""),
+	                            errorType: "Global Error Handler: " ++ (error.errorType.namespace default "") ++ ":" ++ (error.errorType.identifier default "")
+                            }
+                            ]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-propagate>
         </error-handler>
     </flow>
     <flow name="salesforce-data-api-console">
@@ -288,4 +335,65 @@
             </ee:message>
         </ee:transform>
     </flow>
+	<flow name="global-error-handler" doc:id="cd023c82-8cf3-4cef-8520-72ecb4112847" >
+		<choice doc:name="Choice: " doc:id="60f21540-c23a-4b86-a075-3af4d5c7b16b" >
+			<when expression="#[ (trim(p('slack.enabled') as String)) as Boolean ]" >
+				<slack:create-chatpost-message doc:id="8d667e9d-cb8d-4b2e-85fd-31c7439397e2" config-ref="Slack_Connector_Config" doc:name="Send Slack Message" >
+					<slack:chatpost-message-content ><![CDATA[#[%dw 2.0
+			import p from Mule
+			fun format(d: DateTime) = d as String {format: "MMM dd, yyyy hh:mm:ss a"}
+			output application/json
+			---
+			{
+			    channel: "mule-api-legacy-errors",
+			    text: "🚨 *Error Notification* 🚨",
+			    blocks: [
+			        {
+			            "type": "section",
+			            text: {
+			                "type": "mrkdwn",
+			                text: "🚨 *Error Notification* 🚨\n"
+			                   ++ "*Environment:* " ++ p('env') ++ "\n" 
+			                   ++ "*Origin:* " ++ (attributes.headers.Origin default "N/A") ++ "\n"
+			                   ++ "*Endpoint:* `" ++ (attributes.method default "N/A") ++ " " ++ (attributes.maskedRequestPath default "N/A") ++ "`\n"
+			                   ++ "*Query Parameters:* " ++ (attributes.queryString default "N/A") ++ "\n"
+			                   ++ "*Timestamp (PT):* " ++ (format(now() >> "America/Los_Angeles"))
+			            }
+			        }
+			    ]
+			}]]]></slack:chatpost-message-content>
+				</slack:create-chatpost-message>
+				<set-variable value="#[payload]" doc:name="Save Response" doc:id="710c09e3-8230-4614-b121-ceac64f1e98b" variableName="firstMessageResponse" />
+				<slack:create-chatpost-message doc:id="014837ae-8593-4059-8b3c-9c15d43d81c6" config-ref="Slack_Connector_Config" doc:name="Send Additional Slack Message" >
+					<slack:chatpost-message-content ><![CDATA[#[%dw 2.0
+                    import p from Mule
+                    output application/json
+                    ---
+                    {
+                        channel: "mule-api-legacy-errors",
+                        text:"More info:",
+					   	blocks: [
+				        	{
+				            	"type": "section",
+	                        	text: {
+			                        "type": "mrkdwn",
+			                        text: 
+						                  "*Error Type:* " ++ (error.errorType.namespace default "") ++ ":" ++ (error.errorType.identifier default "") ++ "\n"
+						                   ++ "*Error Message:* " ++ (error.description default "N/A") ++ "\n"
+						                   ++ "*Detailed Description:* " ++ (error.detailedDescription default "N/A") ++ "\n"
+						                   ++ "*Source:* " ++ (error.dslSource default "N/A")
+						                   ++ (
+						                       if (!isEmpty(vars.originalPayload)) 
+						                       "\n*Payload Attached:* ```" ++ (write(vars.originalPayload, "application/json") default "No payload available") ++ "```"
+						                       else ""
+					                   		)
+				                   }
+				            	}
+			            ],
+                        thread_ts: vars.firstMessageResponse.ts
+                    }]]]></slack:chatpost-message-content>
+				</slack:create-chatpost-message>
+			</when>
+		</choice>
+	</flow>
 </mule>
