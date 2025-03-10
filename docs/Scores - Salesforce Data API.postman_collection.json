@@ -1010,6 +1010,51 @@
 						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
 					},
 					"response": []
+				},
+				{
+					"name": "/contacts/searchSOSL",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							},
+							{
+								"key": "Origin",
+								"value": "Postman",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/contacts/searchSOSL?searchString=John&region=SanFrancisco",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"contacts",
+								"searchSOSL"
+							],
+							"query": [
+								{
+									"key": "searchString",
+									"value": "John",
+									"description": "Search string to match against name fields"
+								},
+								{
+									"key": "region",
+									"value": "SanFrancisco",
+									"description": "Filter contacts by region (optional)"
+								}
+							]
+						},
+						"description": "Get contacts matching a search string using Salesforce Object Search Language (SOSL). This endpoint provides better text search performance and more flexible matching compared to the regular search endpoint."
+					},
+					"response": []
 				}
 			]
 		},

@@ -1820,4 +1820,176 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	</foreach>
 </flow>
 
+  <flow name="get:\contacts\searchSOSL:salesforce-data-api-config">
+    <logger doc:id="127d162c-eb82-4c68-858e-cba3a849db5c" doc:name="Log entry-flow" level="INFO" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]"></logger>
+    <ee:transform doc:id="06bf0ffb-bedf-4d91-afb9-accd04fb3580" doc:name="Store Query parameters">
+      <ee:variables>
+        <ee:set-variable variableName="searchString">
+          <![CDATA[attributes.queryParams.'searchString']]>
+        </ee:set-variable>
+        <ee:set-variable variableName="region">
+          <![CDATA[attributes.queryParams.'region']]>
+        </ee:set-variable>
+      </ee:variables>
+    </ee:transform>
+    <choice doc:name="Choice">
+      <when expression="#[isEmpty(vars.region)]">
+        <set-variable value="" variableName="regionQueryCondition"></set-variable>
+      </when>
+      <otherwise>
+        <set-variable value="#[' AND Region__c = \'' ++ (vars.region default '') ++ '\'']" variableName="regionQueryCondition"></set-variable>
+      </otherwise>
+    </choice>
+     <salesforce:search config-ref="Salesforce_Config" doc:id="f195a55e-9140-44b5-b60e-1809649ef0a3" doc:name="Search">
+      <salesforce:search-string>
+        <![CDATA[
+          FIND { :searchString } 
+          IN NAME FIELDS 
+          RETURNING 
+          Contact(
+            Id,
+            Contact_Type__c,
+            RecordTypeId,
+            FirstName,
+            MiddleName,
+            LastName,
+            AccountId,
+            Account.Region__c,
+            School_Attending__c,
+            Email,
+            HomePhone,
+            Birthdate,
+            Gender__c,
+            Grade__c,
+            Level__c,
+            Ethnicity__c,
+            Permission_to_Commute_Alone__c,
+            Reduced_Price_Lunch__c,
+            Allergies__c,
+            External_Student_ID__c,
+            External_Student_DB__c,
+            Parent_First_Name__c,
+            Parent_Last_Name__c,
+            Parent_Email_Address__c,
+            Parent_Relationship_to_Child__c,
+            Parent_Phone_01__c,
+            Parent_Phone_02__c,
+            Parent_Phone_03__c,
+            MailingStreet,
+            MailingCity,
+            MailingState,
+            MailingPostalCode,
+            MailingCountry,
+            Parent_English_Fluency__c,
+            Parent_Home_Language__c,
+            Parent_Other_Language__c,
+            Volunteer_for_this_Program_Parent__c,
+            Emergency_Contact_Name__c,
+            Emergency_Contact_Relationship_to_Child__c,
+            Emergency_Contact_Name_Phone_01__c,
+            Emergency_Contact_Name_Phone_02__c,
+            Emergency_Contact_Name_Phone_03__c,
+            Emergency_Contact_Permission_to_Pick_Up__c,
+            Second_Emergency_Contact_Name__c,
+            Second_Emerg_Contact_Relationship_Child__c,
+            Second_Emergency_Phone_01__c,
+            Second_Emergency_Phone_02__c,
+            Second_Emergency_Phone_03__c,
+            Second_Emergency_Permission_to_Pick_Up__c,
+            Liability__c,
+            Media_Release__c,
+            Data_Release__c,
+            Student_Record_Complete__c,
+            Year_of_Reference_for_Grade_Information__c,
+            Grades_child_participated__c,
+            Latest_Waiver_Date__c
+          WHERE 
+            (Contact_Type__c = 'SCORES Student'
+            :regionQuery)
+          ORDER BY LastName, FirstName
+          ) 
+          LIMIT 24
+        ]]>
+      </salesforce:search-string>
+      <salesforce:parameters>
+        <![CDATA[#[output application/java
+---
+{
+  searchString: vars.searchString ++ "*",
+  regionQuery: vars.regionQueryCondition
+}]]]>
+      </salesforce:parameters>
+    </salesforce:search>
+
+    <flow-ref name="retrieve-latest-enrollment-based-on-payload-with-contacts" doc:name="Call External Flow to Retrieve all Latest Sites" />
+    
+    <ee:transform doc:id="finalTransform" doc:name="Transform Final Response">
+        <ee:message>
+            <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload.searchRecords map ( payload01 , indexOfPayload01 ) -> {
+    Id: payload01.record.Id as String default "",
+    ContactType: payload01.record.Contact_Type__c as String default "",
+    ContactRecordType: payload01.record.RecordTypeId as String default "",
+    FirstName: payload01.record.FirstName as String default "",
+    MiddleName: payload01.record.MiddleName as String default "",
+    LastName: payload01.record.LastName as String default "",
+    SchoolSiteId: payload01.record.AccountId as String default "",
+    SchoolName: payload01.record.School_Attending__c as String default "",
+    Region: payload01.record.Account.Region__c as String default "",
+    PersonalEmail: payload01.record.Email as String default "",
+    HomePhone: payload01.record.HomePhone as String default "",
+    Birthdate: payload01.record.Birthdate as String default "",
+    Gender: payload01.record.Gender__c as String default "",
+    Grade: payload01.record.Grade__c as String default "",
+    K12GradeLevel: payload01.record.Level__c as String default "",
+    Ethnicity: payload01.record.Ethnicity__c as String default "",
+    PermissiontoCommuteAlone: payload01.record.Permission_to_Commute_Alone__c as String default "",
+    ReducedPriceLunch: payload01.record.Reduced_Price_Lunch__c as String default "",
+    Allergies: payload01.record.Allergies__c as String default "",
+    ExternalStudentId: payload01.record.External_Student_ID__c as String default "",
+    ExternalStudentIdSource: payload01.record.External_Student_DB__c as String default "",
+    ParentFName: payload01.record.Parent_First_Name__c as String default "",
+    ParentLName: payload01.record.Parent_Last_Name__c as String default "",
+    ParentEmail: payload01.record.Parent_Email_Address__c as String default "",
+    Relationship: payload01.record.Parent_Relationship_to_Child__c as String default "",
+    ParentPhone1: payload01.record.Parent_Phone_01__c as String default "",
+    ParentPhone2: payload01.record.Parent_Phone_02__c as String default "",
+    ParentPhone3: payload01.record.Parent_Phone_03__c as String default "",
+    MailingStreet: payload01.record.MailingStreet as String default "",
+    MailingCity: payload01.record.MailingCity as String default "",
+    MailingState: payload01.record.MailingState as String default "",
+    MailingZip: payload01.record.MailingPostalCode as String default "",
+    MailingCountry: payload01.record.MailingCountry as String default "",
+    ParentEnglishFluency: payload01.record.Parent_English_Fluency__c as String default "",
+    ParentHomeLang: payload01.record.Parent_Home_Language__c as String default "",
+    OtherLang: payload01.record.Parent_Other_Language__c as String default "",
+    Volunteer: payload01.record.Volunteer_for_this_Program_Parent__c as String default "",
+    Emergency_Contact_Name: payload01.record.Emergency_Contact_Name__c as String default "",
+    Emergency_Contact_Relationship: payload01.record.Emergency_Contact_Relationship_to_Child__c as String default "",
+    Emergency_Contact_Phone1: payload01.record.Emergency_Contact_Name_Phone_01__c as String default "",
+    Emergency_Contact_Phone2: payload01.record.Emergency_Contact_Name_Phone_02__c as String default "",
+    Emergency_Contact_Phone3: payload01.record.Emergency_Contact_Name_Phone_03__c as String default "",
+    Emergency_Contact_Permission_to_Pickup_child: payload01.record.Emergency_Contact_Permission_to_Pick_Up__c as String default "",
+    Second_Emergency_Contact_Name: payload01.record.Second_Emergency_Contact_Name__c as String default "",
+    Second_Emergency_Contact_Relationship: payload01.record.Second_Emerg_Contact_Relationship_Child__c as String default "",
+    Second_Emergency_Contact_Phone1: payload01.record.Second_Emergency_Phone_01__c as String default "",
+    Second_Emergency_Contact_Phone2: payload01.record.Second_Emergency_Phone_02__c as String default "",
+    Second_Emergency_Contact_Phone3: payload01.record.Second_Emergency_Phone_03__c as String default "",
+    Second_Emergency_Contact_Permission_to_Pickup_child: payload01.record.Second_Emergency_Permission_to_Pick_Up__c as String default "",
+    LiabilityWaiver: payload01.record.Liability__c as String default "",
+    MediaReleaseWaiver: payload01.record.Media_Release__c as String default "",
+    DataReleaseWaiver: payload01.record.Data_Release__c as String default "",
+    StudentRecordComplete: payload01.record.Student_Record_Complete__c as Boolean default false,
+    YearOfReferenceForGradeInformation: payload01.record.Year_of_Reference_for_Grade_Information__c as String default "",
+    GradesChildParticipated: payload01.record.Grades_child_participated__c as String default "",
+    LatestWaiverDate: payload01.record.Latest_Waiver_Date__c as String default "",
+    LatestEnrolledEndDate: vars.contactResults[indexOfPayload01].LatestEnrolledEndDate as String default "",
+    LatestEnrolledSiteId: vars.contactResults[indexOfPayload01].LatestEnrolledSiteId as String default "",
+    LatestEnrolledSiteName: vars.contactResults[indexOfPayload01].LatestEnrolledSiteName as String default ""
+}]]></ee:set-payload>
+        </ee:message>
+    </ee:transform>
+</flow>
 </mule>
