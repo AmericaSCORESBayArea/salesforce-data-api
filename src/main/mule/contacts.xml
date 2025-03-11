@@ -869,7 +869,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
         <set-variable value="" variableName="regionQueryCondition"></set-variable>
       </when>
       <otherwise>
-        <set-variable value="#[' AND Region__c = \'' ++ (vars.region default '') ++ '\'']" variableName="regionQueryCondition"></set-variable>
+        <set-variable value="#[' AND Account.Region__c = \'' ++ (vars.region default '') ++ '\'']" variableName="regionQueryCondition"></set-variable>
       </otherwise>
     </choice>
 	<salesforce:query
@@ -1843,7 +1843,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
         <set-variable value="" variableName="regionQueryCondition"></set-variable>
       </when>
       <otherwise>
-        <set-variable value="#[' AND Region__c = \'' ++ (vars.region default '') ++ '\'']" variableName="regionQueryCondition"></set-variable>
+        <set-variable value="#[' AND Account.Region__c = \'' ++ (vars.region default '') ++ '\'']" variableName="regionQueryCondition"></set-variable>
       </otherwise>
     </choice>
 
@@ -1861,7 +1861,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
         <![CDATA[#[output application/java
 ---
 {
-  searchString: vars.searchString ++ "*",
+  searchString: "*" ++ vars.searchString ++ "*",
   regionQuery: vars.regionQueryCondition
 }]]]>
       </salesforce:parameters>
@@ -1936,7 +1936,6 @@ payload map ( payload01 , indexOfPayload01 ) -> {
           WHERE 
             Contact_Type__c = 'SCORES Student'
             :regionQuery
-          ORDER BY LastName, FirstName
           LIMIT :pageSize
           OFFSET :offset
           ) 
@@ -1946,7 +1945,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
         <![CDATA[#[output application/java
 ---
 {
-  searchString: vars.searchString ++ "*",
+  searchString: "*" ++ vars.searchString ++ "*",
   regionQuery: vars.regionQueryCondition,
   pageSize: vars.pageSize,
   offset: (vars.page - 1) * vars.pageSize
