@@ -1031,7 +1031,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/contacts/searchSOSL?searchString=John&region=SanFrancisco",
+							"raw": "{{base_url}}/contacts/searchSOSL?searchString=John&region=San Francisco Crocker&page=1&pageSize=8",
 							"host": [
 								"{{base_url}}"
 							],
@@ -1047,12 +1047,22 @@
 								},
 								{
 									"key": "region",
-									"value": "SanFrancisco",
+									"value": "San Francisco Crocker",
 									"description": "Filter contacts by region (optional)"
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number (1-based). Defaults to 1 if not specified."
+								},
+								{
+									"key": "pageSize",
+									"value": "8",
+									"description": "Number of records per page. Defaults to 8 if not specified. Maximum is 100."
 								}
 							]
 						},
-						"description": "Get contacts matching a search string using Salesforce Object Search Language (SOSL). This endpoint provides better text search performance and more flexible matching compared to the regular search endpoint."
+						"description": "Get contacts matching a search string using Salesforce Object Search Language (SOSL). This endpoint provides better text search performance and more flexible matching compared to the regular search endpoint.\n\nResponse includes pagination information:\n```json\n{\n  \"contacts\": [...],\n  \"totalPages\": 5,\n  \"currentPage\": 1,\n  \"pageSize\": 8,\n  \"totalRecords\": 40\n}\n```"
 					},
 					"response": []
 				}
