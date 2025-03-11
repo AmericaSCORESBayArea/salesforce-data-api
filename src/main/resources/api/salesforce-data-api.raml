@@ -345,11 +345,32 @@ uses:
           description: Filter contacts by region
           type: string
           required: false
+        page:
+          displayName: page
+          description: Page number (1-based). Defaults to 1 if not specified.
+          type: integer
+          required: false
+          minimum: 1
+          default: 1
+        pageSize:
+          displayName: pageSize
+          description: Number of records per page. Defaults to 8 if not specified.
+          type: integer
+          required: false
+          minimum: 1
+          maximum: 100
+          default: 8
       responses:
         200:
           body:
             application/json:
-              type: types.Contact[]
+              type: object
+              properties:
+                contacts: types.Contact[]
+                totalPages: integer
+                currentPage: integer
+                pageSize: integer
+                totalRecords: integer
   /searchByPhoneNumber:
     get:
       displayName: Get matching contacts for a given phone number
