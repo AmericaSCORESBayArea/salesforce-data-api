@@ -849,11 +849,11 @@ payload map ( payload01 , indexOfPayload01 ) -> {
     <ee:transform doc:id="06bf0ffb-bedf-4d91-afb9-accd04fb3580" doc:name="Store Query parameters">
       <ee:variables>
         <ee:set-variable variableName="searchString">
-                    					
-          
-          <![CDATA[attributes.queryParams.'searchString']]>
-                    				
-        
+          <![CDATA[%dw 2.0
+import * from dw::core::Strings
+output application/json
+---
+attributes.queryParams.'searchString' replace /[&|!(){}\[\]^"~*?:\\'+\-]/ with("")]]>
         </ee:set-variable>
         <ee:set-variable variableName="region">
                     					
@@ -1825,10 +1825,18 @@ payload map ( payload01 , indexOfPayload01 ) -> {
     <ee:transform doc:id="06bf0ffb-bedf-4d91-afb9-accd04fb3580" doc:name="Store Query parameters">
       <ee:variables>
         <ee:set-variable variableName="searchString">
-          <![CDATA[attributes.queryParams.'searchString']]>
+          <![CDATA[%dw 2.0
+import * from dw::core::Strings
+output application/json
+---
+attributes.queryParams.'searchString' replace /[&|!(){}\[\]^"~*?:\\'+\-]/ with("")]]>
         </ee:set-variable>
         <ee:set-variable variableName="region">
+                    					
+          
           <![CDATA[attributes.queryParams.'region']]>
+                    				
+        
         </ee:set-variable>
         <ee:set-variable variableName="page">
           <![CDATA[attributes.queryParams.'page' default 1]]>
