@@ -872,7 +872,12 @@ attributes.queryParams.'searchString' replace /[&|!(){}\[\]^"~*?:\\'+\-]/ with("
         <set-variable value="#[' AND Account.Region__c = \'' ++ (vars.region default '') ++ '\'']" variableName="regionQueryCondition"></set-variable>
       </otherwise>
     </choice>
-	<salesforce:query
+	<choice doc:name="Choice1" doc:id="96cea7f6-14a1-4d76-8cf9-8e1d736b29b6">
+			<when expression="#[isEmpty(vars.searchString)]">
+				<raise-error doc:name="Raise error" doc:id="43545a36-38f7-4716-ad03-648ee734f5dc" type="SEARCH:BAD_REQUEST" description="`searchString` is empty or includes only special characters" />
+			</when>
+		</choice>
+		<salesforce:query
 			doc:name="Search Query"
 			doc:id="2938911f-53b8-243a5-a53e-14fca711003d"
 			config-ref="Salesforce_Config">
@@ -1856,7 +1861,12 @@ attributes.queryParams.'searchString' replace /[&|!(){}\[\]^"~*?:\\'+\-]/ with("
     </choice>
 
     <!-- First SOSL query to get total count -->
-    <salesforce:search config-ref="Salesforce_Config" doc:id="count-query" doc:name="Get Total Count">
+    <choice doc:name="Choice" doc:id="6c9d8b1d-4076-42d8-8d96-b8ba6b774ee2" >
+			<when expression="#[isEmpty(vars.searchString)]">
+				<raise-error doc:name="Raise error" doc:id="fe77e7ad-799e-4746-8702-cd006aa82693" type="SEARCH:BAD_REQUEST" description="`searchString` is empty or includes only special characters"/>
+			</when>
+		</choice>
+		<salesforce:search config-ref="Salesforce_Config" doc:id="count-query" doc:name="Get Total Count">
       <salesforce:search-string>
         <![CDATA[
           FIND { :searchString } 
