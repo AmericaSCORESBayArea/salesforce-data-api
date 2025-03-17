@@ -1867,19 +1867,17 @@ attributes.queryParams.'searchString' replace /[&|!(){}\[\]^"~*?:\\'+\-]/ with("
 			</when>
 		</choice>
 		<salesforce:search config-ref="Salesforce_Config" doc:id="count-query" doc:name="Get Total Count">
-      <salesforce:search-string>
-        <![CDATA[
+      <salesforce:search-string><![CDATA[
           FIND { :searchString } 
           IN NAME FIELDS 
           RETURNING 
           Contact(Id WHERE Contact_Type__c = 'SCORES Student' :regionQuery)
         ]]>
       </salesforce:search-string>
-      <salesforce:parameters>
-        <![CDATA[#[output application/java
+      <salesforce:parameters><![CDATA[#[output application/java
 ---
 {
-  searchString: "*" ++ vars.searchString ++ "*",
+  searchString: vars.searchString,
   regionQuery: vars.regionQueryCondition
 }]]]>
       </salesforce:parameters>
@@ -1889,8 +1887,7 @@ attributes.queryParams.'searchString' replace /[&|!(){}\[\]^"~*?:\\'+\-]/ with("
     
     <!-- Main SOSL query with pagination -->
     <salesforce:search config-ref="Salesforce_Config" doc:id="f195a55e-9140-44b5-b60e-1809649ef0a3" doc:name="Search">
-      <salesforce:search-string>
-        <![CDATA[
+      <salesforce:search-string><![CDATA[
           FIND { :searchString } 
           IN NAME FIELDS 
           RETURNING 
@@ -1959,11 +1956,10 @@ attributes.queryParams.'searchString' replace /[&|!(){}\[\]^"~*?:\\'+\-]/ with("
           ) 
         ]]>
       </salesforce:search-string>
-      <salesforce:parameters>
-        <![CDATA[#[output application/java
+      <salesforce:parameters><![CDATA[#[output application/java
 ---
 {
-  searchString: "*" ++ vars.searchString ++ "*",
+  searchString: vars.searchString,
   regionQuery: vars.regionQueryCondition,
   pageSize: vars.pageSize,
   offset: (vars.page - 1) * vars.pageSize
