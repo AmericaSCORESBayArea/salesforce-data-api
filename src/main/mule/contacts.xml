@@ -297,15 +297,15 @@ payload]]>
                 <logger doc:id="7179ab2b-5642-4f83-a3d6-ff4161272ef3" doc:name="Logger" level="INFO" message="Fuzzy contact match found"></logger>
 				<set-variable doc:name="Set Custom Error Type" value="#['SALESFORCE_CONTACT_CREATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" variableName="errorCustomType" />
 				<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="3881f772-34d8-4c47-88d3-1aab40c248d1" variableName="errorCustomMessage" />
-								<raise-error doc:id="ce9837bc-7e7b-40a4-a132-7f35e82f12bc" doc:name="Raise error" type="CUSTOM:CUSTOM_ERROR" description="Something went wrong while creating a contact. " />
-						<choice doc:name="Choice" doc:id="f7787813-3e7d-464d-8c06-e18f246213f9" >
-							<when expression='#[vars.errorCustomType == "SALESFORCE_CONTACT_CREATE:DUPLICATES_DETECTED"]' >
+								<choice doc:name="Choice" doc:id="f7787813-3e7d-464d-8c06-e18f246213f9">
+							<when expression='#[vars.errorCustomType == "SALESFORCE_CONTACT_CREATE:DUPLICATES_DETECTED"]'>
 								<set-variable value="409" doc:name="Set Status Code" doc:id="796109aa-e4db-494c-b26c-b2bce9b90c44" variableName="httpStatus" />
 							</when>
-							<when expression='#[vars.errorCustomType == "SALESFORCE_CONTACT_CREATE:MALFORMED_ID"]' >
+							<when expression='#[vars.errorCustomType == "SALESFORCE_CONTACT_CREATE:MALFORMED_ID"]'>
 								<set-variable value="400" doc:name="Set Status Code" doc:id="65f5844b-33d7-4253-b66f-550d08d48f3f" variableName="httpStatus" />
 							</when>
 						</choice>
+						<raise-error doc:id="ce9837bc-7e7b-40a4-a132-7f35e82f12bc" doc:name="Raise error" type="CUSTOM:CUSTOM_ERROR" description="Something went wrong while creating a contact. " />
               </when>
               <otherwise>
                 <set-variable doc:id="eatcfc" doc:name="Set variable" value="#[payload.items[0].id]" variableName="contactId"></set-variable>
