@@ -725,12 +725,6 @@ attributes.queryParams.'searchString' replace /[&|!(){}\[\]^"~*?:\\'+\-]/ with("
 				<set-variable value="400" doc:name="Set Status Code" doc:id="518684e1-cf60-4f92-9fa2-0fc97c449d8f" variableName="httpStatus" />
 				<raise-error doc:name="Raise error1" doc:id="0e90e196-0b94-4c46-995b-8cc00804bbda" type="CUSTOM:CUSTOM_ERROR" description="Something went while performing a search." />
 			</when>
-			<when expression="#[sizeOf(vars.searchString) == 1]">
-				<set-variable value="SEARCH:BAD_REQUEST" doc:name="Set Custom Error Type" doc:id="b3c7297b-e837-4c3a-b54d-44a865fa6c90" variableName="errorCustomType" />
-				<set-variable value="`searchString` must be more than 1 character after cleaning from special characters." doc:name="Set Custom Error Message" doc:id="a4fa05b2-45c2-4e96-a003-043075240ea9" variableName="errorCustomMessage" />
-				<set-variable value="422" doc:name="Set Status Code" doc:id="f8b49f18-4e14-4b7d-a121-3457ba2f5749" variableName="httpStatus" />
-				<raise-error doc:name="Raise error1" doc:id="1d19d83a-cf9d-4d3d-b7ba-d2a856fc5500" type="CUSTOM:CUSTOM_ERROR" description="Something went while performing a search." />
-			</when>
 		</choice>
 		<salesforce:query
 			doc:name="Search Query"
