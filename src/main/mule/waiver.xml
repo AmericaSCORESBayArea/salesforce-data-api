@@ -93,17 +93,14 @@
     <choice doc:id="b35bd46b-d29e-4976-8e2b-b74f74afa199" doc:name="Choice">
       <when expression="#[payload.successful == false and payload..errors != null]">
         <logger doc:id="2b354024-fa67-4edf-9d72-97886e5b084e" doc:name="Logger" level="INFO" message="#[payload.items[0].message]"></logger>
-        <ee:transform doc:id="bce41c8d-176f-45bd-b28f-8e1fb95f3744" doc:name="Transform Message">
-          <ee:message>
-            <ee:set-payload>
-              <![CDATA[%dw 2.0
-output application/json
----
-message: "Waiver History creation failed"]]>
-            </ee:set-payload>
-          </ee:message>
-        </ee:transform>
-        <raise-error doc:id="d316eae0-0b40-413b-8346-38a855763a8f" doc:name="Raise error" type="CREATECONTACT:CONFLICT"></raise-error>
+				<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="a3444a9a-ceb9-47c7-b2d9-fe096748969c" variableName="errorCustomMessage" />
+				<set-variable value="#['SALESFORCE_WAIVER_CREATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="0ad2360d-ff04-4978-8eaa-9b6075bb93d1" variableName="errorCustomType" />
+				<choice doc:name="Choice" doc:id="f72417e8-d29d-48ff-843b-ad16d2cb2887">
+					<when expression='#[vars.errorCustomType == "SALESFORCE_WAIVER_CREATE:MALFORMED_ID"]'>
+						<set-variable value="409" doc:name="Set Status Code" doc:id="4abd33a0-1317-4314-a8e7-3ab0e36cca54" variableName="httpStatus" />
+					</when>
+				</choice>
+				<raise-error doc:name="Raise error" doc:id="539ff54e-8ec8-4798-8a3a-4342df1095ed" type="CUSTOM:CUSTOM_ERROR" description="Something went wrong while creating a waiver. " />
       </when>
       <otherwise>
         <ee:transform doc:id="e46654f4-c283-433b-ae4d-d2a4ae4ae206" doc:name="Create response" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">

@@ -53,39 +53,48 @@ import time
 #
 # ================================================
 
-number_of_requests = 20
-url = "https://production-salesforce-data-api.us-e2.cloudhub.io/api/enrollments"
+number_of_requests = 10
+url = "https://localhost:8091/api/enrollments"
 headers = {
-  'client_id': '',
-  'client_secret': '',
-  'Content-Type': 'application/json'
+    'Content-Type': 'application/json'
 }
-payload = json.dumps({
-  "TeamSeasonId": "",
-  "StudentId": "",
-  "StartDate": "",
-  "EndDate": ""
-})
+payload = json.dumps(
+    {
+        "TeamSeasonId": "a0qUQ000003SRI5YAO",
+        "StudentId": "003cX000009kPO1QAM",
+        "StartDate": "2017-01-01",
+        "EndDate": "2018-01-01"
+    }
+)
 
 async def send_post_request(session, url, headers, payload, idx):
-    start_time = time.time()  
+    start_time = time.time()
     print(f"Starting request {idx + 1} to {url}")
-    async with session.post(url, headers=headers, data=payload) as response:
-        elapsed_time = time.time() - start_time 
-        print(f"Completed request {idx + 1} to {url}")
-        return await response.text(), response.status, elapsed_time
-
+    try:
+        async with session.post(url, headers=headers, data=payload) as response:
+            elapsed_time = time.time() - start_time
+            print(f"Completed request {idx + 1} to {url}")
+            return await response.text(), response.status, elapsed_time
+    except Exception as e:
+        elapsed_time = time.time() - start_time
+        print(f"Error in request {idx + 1}: {e}")
+        return None, None, elapsed_time
 
 async def main():
-    async with aiohttp.ClientSession() as session:
+    connector = aiohttp.TCPConnector(ssl=False)  # Disable SSL verification
+    timeout = aiohttp.ClientTimeout(total=60)  # Set timeout to 60 seconds
+    async with aiohttp.ClientSession(connector=connector, timeout=timeout) as session:
         tasks = [send_post_request(session, url, headers, payload, idx) for idx in range(number_of_requests)]
         responses = await asyncio.gather(*tasks)
         
         for idx, (response_text, status_code, elapsed_time) in enumerate(responses):
-            print(f"Response from Request {idx + 1}:")
-            print(f"Status Code: {status_code}")
-            print(f"Time Taken: {elapsed_time:.2f} seconds")
-            print(response_text)  
+            if response_text is not None:
+                print(f"\nResponse from Request {idx + 1}:")
+                print(f"Status Code: {status_code}")
+                print(f"Time Taken: {elapsed_time:.2f} seconds")
+                print(response_text)
+            else:
+                print(f"\nRequest {idx + 1} failed.")
 
 start_total_time = time.time()
 
