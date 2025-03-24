@@ -720,7 +720,16 @@ attributes.queryParams.'searchString' replace /[&|!(){}\[\]^"~*?:\\'+\-]/ with("
     </choice>
 	<choice doc:name="Choice1" doc:id="96cea7f6-14a1-4d76-8cf9-8e1d736b29b6">
 			<when expression="#[isEmpty(vars.searchString)]">
-				<raise-error doc:name="Raise error" doc:id="43545a36-38f7-4716-ad03-648ee734f5dc" type="SEARCH:BAD_REQUEST" description="`searchString` is empty or includes only special characters" />
+				<set-variable value="SEARCH:BAD_REQUEST" doc:name="Set Custom Error Type" doc:id="57e888c4-bb95-4039-9807-624f70a3249e" variableName="errorCustomType" />
+				<set-variable value="`searchString` is empty or includes only special characters" doc:name="Set Custom Error Message" doc:id="6a74df74-a9d5-48c4-9c32-b061d11fad2d" variableName="errorCustomMessage" />
+				<set-variable value="400" doc:name="Set Status Code" doc:id="518684e1-cf60-4f92-9fa2-0fc97c449d8f" variableName="httpStatus" />
+				<raise-error doc:name="Raise error1" doc:id="0e90e196-0b94-4c46-995b-8cc00804bbda" type="CUSTOM:CUSTOM_ERROR" description="Something went while performing a search." />
+			</when>
+			<when expression="#[sizeOf(vars.searchString) == 1]">
+				<set-variable value="SEARCH:BAD_REQUEST" doc:name="Set Custom Error Type" doc:id="b3c7297b-e837-4c3a-b54d-44a865fa6c90" variableName="errorCustomType" />
+				<set-variable value="`searchString` must be more than 1 character after cleaning from special characters." doc:name="Set Custom Error Message" doc:id="a4fa05b2-45c2-4e96-a003-043075240ea9" variableName="errorCustomMessage" />
+				<set-variable value="422" doc:name="Set Status Code" doc:id="f8b49f18-4e14-4b7d-a121-3457ba2f5749" variableName="httpStatus" />
+				<raise-error doc:name="Raise error1" doc:id="1d19d83a-cf9d-4d3d-b7ba-d2a856fc5500" type="CUSTOM:CUSTOM_ERROR" description="Something went while performing a search." />
 			</when>
 		</choice>
 		<salesforce:query
@@ -1709,7 +1718,16 @@ attributes.queryParams.'searchString' replace /[&|!(){}\[\]^"~*?:\\'+\-]/ with("
     <!-- First SOSL query to get total count -->
     <choice doc:name="Choice" doc:id="6c9d8b1d-4076-42d8-8d96-b8ba6b774ee2" >
 			<when expression="#[isEmpty(vars.searchString)]">
-				<raise-error doc:name="Raise error" doc:id="fe77e7ad-799e-4746-8702-cd006aa82693" type="SEARCH:BAD_REQUEST" description="`searchString` is empty or includes only special characters"/>
+				<set-variable value="SEARCH:BAD_REQUEST" doc:name="Set Custom Error Type" doc:id="93817aa7-88f2-480e-b17e-172c65934d04" variableName="errorCustomType" />
+				<set-variable value="`searchString` is empty or includes only special characters" doc:name="Set Custom Error Message" doc:id="2bd394d4-e6fc-4155-ae4b-f7de594c0286" variableName="errorCustomMessage" />
+				<set-variable value="400" doc:name="Set Status Code" doc:id="0c98deb5-8566-4366-832d-f7f2ca65ed3e" variableName="httpStatus" />
+				<raise-error doc:name="Raise error1" doc:id="5ddc84e5-66a7-4edb-a986-c4990d471b8e" type="CUSTOM:CUSTOM_ERROR" description="Something went while performing a search." />
+			</when>
+			<when expression="#[sizeOf(vars.searchString) == 1]">
+				<set-variable value="SEARCH:BAD_REQUEST" doc:name="Set Custom Error Type" doc:id="907c8a99-990b-43e2-a2a9-90a8d01f14b7" variableName="errorCustomType" />
+				<set-variable value="`searchString` must be more than 1 character after cleaning from special characters." doc:name="Set Custom Error Message" doc:id="0617dfe4-bb94-47de-993c-547978c7ef6e" variableName="errorCustomMessage" />
+				<set-variable value="422" doc:name="Set Status Code" doc:id="dd0a4f31-e1a3-49ed-ba19-dfdfba7d1fd2" variableName="httpStatus" />
+				<raise-error doc:name="Raise error1" doc:id="23438120-62a7-4e1c-8dfe-e517777ff937" type="CUSTOM:CUSTOM_ERROR" description="Something went while performing a search." />
 			</when>
 		</choice>
 		<salesforce:search config-ref="Salesforce_Config" doc:id="count-query" doc:name="Get Total Count">
