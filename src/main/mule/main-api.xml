@@ -250,10 +250,10 @@
 	                        	text: {
 			                        "type": "mrkdwn",
 			                        text: 
-                                           "*Message to user:* " ++ (vars.errorPayload.message default "N/A") ++ "\n"
+                                           "*Message:* " ++ (vars.errorPayload.message default "N/A") ++ "\n"
                                            ++ "*Error Type:* " ++ (vars.errorPayload.errorType default "N/A") ++ "\n"
 						                   ++ "*Error Message:* " ++ (vars.errorPayload.error default "N/A") ++ "\n"
-						                   ++ "*Detailed Description:* " ++ (vars.errorPayload.detailedError default "N/A") ++ "\n"
+						                   ++ "*Detailed Error Description:* " ++ (vars.errorPayload.detailedError default "N/A") ++ "\n"
 						                   ++ "*Source:* " ++ (error.dslSource default "N/A")
 						                   ++ (
 						                       if (!isEmpty(vars.originalPayload)) 
