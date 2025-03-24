@@ -179,8 +179,8 @@ payload]]>
             <choice doc:id="f4cd0f1b-881f-43ff-9b0d-5f376b8d1c95" doc:name="Choice">
               <when expression="#[payload.successful == false and payload..errors != null]">
                 <logger doc:id="e9c02dd8-02dd-495d-8e01-b26db3d73ec2" doc:name="Logger" level="INFO" message="Fuzzy contact match found"></logger>
-				<set-variable doc:name="Set Custom Error Type" value="#['SALESFORCE_CONTACT_CREATE:' ++ (payload.item[0].statusCode default 'UNKNOWN')]" variableName="errorCustomType" />
-				<set-variable value="#[payload.item[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="3881f772-34d8-4c47-88d3-1aab40c248d1" variableName="errorCustomMessage" />
+				<set-variable doc:name="Set Custom Error Type" value="#['SALESFORCE_CONTACT_CREATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" variableName="errorCustomType" />
+				<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="3881f772-34d8-4c47-88d3-1aab40c248d1" variableName="errorCustomMessage" />
 								<choice doc:name="Choice" doc:id="68822a13-1319-472a-8858-780e4566d86d">
 									<when expression='#[vars.errorCustomType == "SALESFORCE_CONTACT_CREATE:DUPLICATES_DETECTED"]'>
 										<set-variable value="409" doc:name="Set Status Code" doc:id="03654d66-3aed-477e-88a3-e97dd843b1b3" variableName="httpStatus" />
