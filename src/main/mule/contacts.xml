@@ -317,21 +317,17 @@ import * from modules::GlobalModules
             <choice doc:id="f4cd0f1b-881f-43ff-9b0d-5f376b8d1c95" doc:name="Choice">
               <when expression="#[payload.successful == false and payload..errors != null]">
                 <logger doc:id="e9c02dd8-02dd-495d-8e01-b26db3d73ec2" doc:name="Logger" level="INFO" message="Fuzzy contact match found"></logger>
-                <ee:transform doc:id="25161c62-97b1-46bb-b132-14cfffd013e3" doc:name="Transform Message">
-                  <ee:message>
-                    <ee:set-payload>
-                                            											
-                      
-                      <![CDATA[%dw 2.0
-output application/json
----
-payload.items[0].payload]]>
-                                            										
-                    
-                    </ee:set-payload>
-                  </ee:message>
-                </ee:transform>
-                <raise-error doc:id="ce9837bc-7e7b-40a4-a132-7f35e82f12bc" doc:name="Raise error" type="CREATECONTACT:CONFLICT"></raise-error>
+				<set-variable 
+					doc:name="Set Custom Error Type" 
+					value="#['SALESFORCE_CONTACT_CREATE:' ++ (payload.item[0].statusCode default 'UNKNOWN')]" 
+					variableName="errorCustomType" />
+				<set-variable value="#[payload.item[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="3881f772-34d8-4c47-88d3-1aab40c248d1" variableName="errorCustomMessage" />
+								<choice doc:name="Choice" doc:id="68822a13-1319-472a-8858-780e4566d86d">
+									<when expression='#[vars.errorCustomType == "SALESFORCE_CONTACT_CREATE:DUPLICATES_DETECTED"]'>
+										<set-variable value="409" doc:name="Set Status Code" doc:id="03654d66-3aed-477e-88a3-e97dd843b1b3" variableName="httpStatus" />
+									</when>
+								</choice>
+								<raise-error doc:id="ce9837bc-7e7b-40a4-a132-7f35e82f12bc" doc:name="Raise error" type="CUSTOM:CUSTOM_ERROR" description="Something went wrong while creating a contact. " />
               </when>
               <otherwise>
                 <set-variable doc:id="cpmuyh" doc:name="Set variable" value="#[payload.items[0].id]" variableName="contactId"></set-variable>
@@ -440,21 +436,21 @@ payload.items[0].payload]]>
             <choice doc:id="991c54f0-e8dc-4917-b914-9d0f787614c1" doc:name="Choice">
               <when expression="#[payload.successful == false and payload..errors != null]">
                 <logger doc:id="7179ab2b-5642-4f83-a3d6-ff4161272ef3" doc:name="Logger" level="INFO" message="Fuzzy contact match found"></logger>
-                <ee:transform doc:id="959dfdf6-d25f-47c4-a78e-ecc16c362c9b" doc:name="Transform Message">
-                  <ee:message>
-                    <ee:set-payload>
-                                            											
-                      
-                      <![CDATA[%dw 2.0
-output application/json
----
-payload.items[0].payload]]>
-                                            										
-                    
-                    </ee:set-payload>
-                  </ee:message>
-                </ee:transform>
-                <raise-error doc:id="e2b03e01-fe96-4b23-86e0-5db2d933c816" doc:name="Raise error" type="CREATECONTACT:CONFLICT"></raise-error>
+				<set-variable 
+					doc:name="Set Custom Error Type" 
+					value="#['SALESFORCE_CONTACT_CREATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" 
+					variableName="errorCustomType" />
+				<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="3881f772-34d8-4c47-88d3-1aab40c248d1" variableName="errorCustomMessage" />
+								<choice doc:name="Choice" doc:id="e19b47d0-31e0-4dff-8810-f0d5082b93c1">
+									<when expression='#[vars.errorCustomType == "SALESFORCE_CONTACT_CREATE:DUPLICATES_DETECTED"]'>
+										<set-variable value="409" doc:name="Set Status Code" doc:id="d932f031-e140-486f-bf94-284acf5430b5" variableName="httpStatus"/>
+									</when>
+								</choice>
+								<raise-error 
+					doc:id="ce9837bc-7e7b-40a4-a132-7f35e82f12bc" 
+					doc:name="Raise error" 
+					type="CUSTOM:CUSTOM_ERROR"
+					description="Something went wrong while creating a contact. " />
               </when>
               <otherwise>
                 <set-variable doc:id="eatcfc" doc:name="Set variable" value="#[payload.items[0].id]" variableName="contactId"></set-variable>
