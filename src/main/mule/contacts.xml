@@ -138,145 +138,7 @@ payload]]>
         </ee:set-variable>
       </ee:variables>
     </ee:transform>
-    <ee:transform doc:id="check-required-fields" doc:name="Check Required Fields">
-      <ee:message>
-        <ee:set-payload>
-                    					
-          
-          <![CDATA[%dw 2.0
-					output application/java
-					---
-					{
-						missingFields: [
-							if (isEmpty(vars.originalPayload.FirstName) or vars.originalPayload.FirstName == null) "FirstName" else "",
-							if (isEmpty(vars.originalPayload.LastName) or vars.originalPayload.LastName == null) "LastName" else "",
-							// if (isEmpty(vars.originalPayload.Birthdate) or vars.originalPayload.Birthdate == null) "Birthdate" else "",
-							// if (isEmpty(vars.originalPayload.ContactType) or vars.originalPayload.ContactType == null) "ContactType" else "",
-							// if (isEmpty(vars.originalPayload.SchoolSiteId) or vars.originalPayload.SchoolSiteId == null) "SchoolSiteId" else ""
-						] filter ((field) -> field != "")
-						}]]>
-                    				
-        
-        </ee:set-payload>
-      </ee:message>
-    </ee:transform>
-    <choice doc:id="check-for-missing-fields" doc:name="Check for Missing Fields">
-      <when expression="#[sizeOf(payload.missingFields) > 0]">
-        <ee:transform doc:id="raise-missing-fields-error" doc:name="Raise Missing Fields Error">
-          <ee:message>
-            <ee:set-payload>
-                            							
-              
-              <![CDATA[%dw 2.0
-							output application/json
-							---
-							{	
-								error: "Field Error",
-    							missingFields: (payload.missingFields joinBy ", ")
-							}]]>
-                            						
-            
-            </ee:set-payload>
-          </ee:message>
-        </ee:transform>
-        <raise-error doc:id="missing-fields-error" doc:name="Raise error" type="CREATECONTACT:MISSINGFIELDS"></raise-error>
-      </when>
-      <otherwise>
-        <salesforce:query config-ref="Salesforce_Config" doc:id="61c0f5f7-6cee-4580-a92a-2432384dba3c" doc:name="Check for matching Contacts">
-          <salesforce:salesforce-query>
-                        						
-            
-            <![CDATA[
-			SELECT 
-				Id,
-				Contact_Type__c,
-				RecordTypeId,
-				FirstName,
-				MiddleName,
-				LastName,
-				AccountId,
-				School_Attending__c,
-				Email,
-				HomePhone,
-				Birthdate,
-				Gender__c,
-				Grade__c,
-				Level__c,
-				Ethnicity__c,
-				Permission_to_Commute_Alone__c,
-				Reduced_Price_Lunch__c,
-				Allergies__c,
-				External_Student_ID__c,
-				External_Student_DB__c,
-				Parent_First_Name__c,
-				Parent_Last_Name__c,
-				Parent_Email_Address__c,
-				Parent_Relationship_to_Child__c,
-				Parent_Phone_01__c,
-				Parent_Phone_02__c,
-				Parent_Phone_03__c,
-				MailingStreet,
-				MailingCity,
-				MailingState,
-				MailingPostalCode,
-				MailingCountry,
-				Parent_English_Fluency__c,
-				Parent_Home_Language__c,
-				Parent_Other_Language__c,
-				Volunteer_for_this_Program_Parent__c,
-				Emergency_Contact_Name__c,
-				Emergency_Contact_Relationship_to_Child__c,
-				Emergency_Contact_Name_Phone_01__c,
-				Emergency_Contact_Name_Phone_02__c,
-				Emergency_Contact_Name_Phone_03__c,
-				Emergency_Contact_Permission_to_Pick_Up__c,
-				Second_Emergency_Contact_Name__c,
-				Second_Emerg_Contact_Relationship_Child__c	,
-				Second_Emergency_Phone_01__c,
-				Second_Emergency_Phone_02__c,
-				Second_Emergency_Phone_03__c,
-				Second_Emergency_Permission_to_Pick_Up__c,
-				Liability__c,
-				Media_Release__c,
-				Data_Release__c,
-				Year_of_Reference_for_Grade_Information__c,
-				Grades_child_participated__c,
-				Latest_Waiver_Date__c
-			FROM 
-				Contact 
-			WHERE 
-			(
-				FirstName = ':firstName' 
-				AND LastName = ':lastName' 
-			)
-			]]>
-                        					
-          
-          </salesforce:salesforce-query>
-          <salesforce:parameters>
-                        						
-            
-            <![CDATA[#[output application/java
-import * from modules::GlobalModules
----
-{
-	firstName: escapeSpecialSOQLChars(vars.originalPayload.FirstName, chars) default '',
-	lastName: escapeSpecialSOQLChars(vars.originalPayload.LastName, chars) default ''
-	// birthDate: vars.originalPayload.Birthdate as Date {format: 'yyyy-MM-dd'}
-}]]]>
-                        					
-          
-          </salesforce:parameters>
-        </salesforce:query>
-        <choice doc:id="lkfxwp" doc:name="Choice">
-          <when expression="#[(sizeOf(payload)) == 0]">
-            <set-variable doc:name="Set Response Message" value="Contact Created" variableName="responseMessage"></set-variable>
-          </when>
-          <otherwise doc:name="Otherwise">
-            <set-variable doc:name="Set Response Message" value="Matching Record Found, but New Contact Created" variableName="responseMessage"></set-variable>
-          </otherwise>
-        </choice>
-        <choice doc:id="4ebe7cc5-cdea-40dd-ad03-c336e80593f4" doc:name="Choice">
+		<choice doc:id="4ebe7cc5-cdea-40dd-ad03-c336e80593f4" doc:name="Choice">
           <when expression="vars.originalPayload.IsCoach == true">
             <ee:transform doc:id="75aaae73-16f5-47d8-b711-36836005ac55" doc:name="Transform Message">
               <ee:message></ee:message>
@@ -317,35 +179,28 @@ import * from modules::GlobalModules
             <choice doc:id="f4cd0f1b-881f-43ff-9b0d-5f376b8d1c95" doc:name="Choice">
               <when expression="#[payload.successful == false and payload..errors != null]">
                 <logger doc:id="e9c02dd8-02dd-495d-8e01-b26db3d73ec2" doc:name="Logger" level="INFO" message="Fuzzy contact match found"></logger>
-                <ee:transform doc:id="25161c62-97b1-46bb-b132-14cfffd013e3" doc:name="Transform Message">
-                  <ee:message>
-                    <ee:set-payload>
-                                            											
-                      
-                      <![CDATA[%dw 2.0
-output application/json
----
-payload.items[0].payload]]>
-                                            										
-                    
-                    </ee:set-payload>
-                  </ee:message>
-                </ee:transform>
-                <raise-error doc:id="ce9837bc-7e7b-40a4-a132-7f35e82f12bc" doc:name="Raise error" type="CREATECONTACT:CONFLICT"></raise-error>
+				<set-variable doc:name="Set Custom Error Type" value="#['SALESFORCE_CONTACT_CREATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" variableName="errorCustomType" />
+				<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="3881f772-34d8-4c47-88d3-1aab40c248d1" variableName="errorCustomMessage" />
+								<choice doc:name="Choice" doc:id="68822a13-1319-472a-8858-780e4566d86d">
+									<when expression='#[vars.errorCustomType == "SALESFORCE_CONTACT_CREATE:DUPLICATES_DETECTED"]'>
+										<set-variable value="409" doc:name="Set Status Code" doc:id="03654d66-3aed-477e-88a3-e97dd843b1b3" variableName="httpStatus" />
+									</when>
+									<when expression='#[vars.errorCustomType == "SALESFORCE_CONTACT_CREATE:MALFORMED_ID"]'>
+										<set-variable value="400" doc:name="Set Status Code" doc:id="28d20a62-20e9-4298-8fb0-2c715fa266ef" variableName="httpStatus" />
+									</when>
+								</choice>
+								<raise-error doc:id="ce9837bc-7e7b-40a4-a132-7f35e82f12bc" doc:name="Raise error" type="CUSTOM:CUSTOM_ERROR" description="Something went wrong while creating a contact. " />
               </when>
               <otherwise>
                 <set-variable doc:id="cpmuyh" doc:name="Set variable" value="#[payload.items[0].id]" variableName="contactId"></set-variable>
                 <flow-ref name="get:\contacts\(contactId):salesforce-data-api-config"></flow-ref>
                 <ee:transform doc:id="18206104-36d4-441a-aed7-42d906b5b2a2" doc:name="Create response" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                   <ee:message>
-                    <ee:set-payload>
-                                            											
-                      
-                      <![CDATA[%dw 2.0
+                    <ee:set-payload><![CDATA[%dw 2.0
 												output application/json
 												---
 												{
-													message: vars.responseMessage,
+													message: "Contact successfully created.",
 													ContactId: vars.contactId,
 													data: payload
 												}]]>
@@ -440,35 +295,28 @@ payload.items[0].payload]]>
             <choice doc:id="991c54f0-e8dc-4917-b914-9d0f787614c1" doc:name="Choice">
               <when expression="#[payload.successful == false and payload..errors != null]">
                 <logger doc:id="7179ab2b-5642-4f83-a3d6-ff4161272ef3" doc:name="Logger" level="INFO" message="Fuzzy contact match found"></logger>
-                <ee:transform doc:id="959dfdf6-d25f-47c4-a78e-ecc16c362c9b" doc:name="Transform Message">
-                  <ee:message>
-                    <ee:set-payload>
-                                            											
-                      
-                      <![CDATA[%dw 2.0
-output application/json
----
-payload.items[0].payload]]>
-                                            										
-                    
-                    </ee:set-payload>
-                  </ee:message>
-                </ee:transform>
-                <raise-error doc:id="e2b03e01-fe96-4b23-86e0-5db2d933c816" doc:name="Raise error" type="CREATECONTACT:CONFLICT"></raise-error>
+				<set-variable doc:name="Set Custom Error Type" value="#['SALESFORCE_CONTACT_CREATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" variableName="errorCustomType" />
+				<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="3881f772-34d8-4c47-88d3-1aab40c248d1" variableName="errorCustomMessage" />
+								<choice doc:name="Choice" doc:id="f7787813-3e7d-464d-8c06-e18f246213f9">
+							<when expression='#[vars.errorCustomType == "SALESFORCE_CONTACT_CREATE:DUPLICATES_DETECTED"]'>
+								<set-variable value="409" doc:name="Set Status Code" doc:id="796109aa-e4db-494c-b26c-b2bce9b90c44" variableName="httpStatus" />
+							</when>
+							<when expression='#[vars.errorCustomType == "SALESFORCE_CONTACT_CREATE:MALFORMED_ID"]'>
+								<set-variable value="400" doc:name="Set Status Code" doc:id="65f5844b-33d7-4253-b66f-550d08d48f3f" variableName="httpStatus" />
+							</when>
+						</choice>
+						<raise-error doc:id="ce9837bc-7e7b-40a4-a132-7f35e82f12bc" doc:name="Raise error" type="CUSTOM:CUSTOM_ERROR" description="Something went wrong while creating a contact. " />
               </when>
               <otherwise>
                 <set-variable doc:id="eatcfc" doc:name="Set variable" value="#[payload.items[0].id]" variableName="contactId"></set-variable>
                 <flow-ref name="get:\contacts\(contactId):salesforce-data-api-config"></flow-ref>
                 <ee:transform doc:id="bc80392c-09c1-43c1-ac5b-ebf8dd509785" doc:name="Create response" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                   <ee:message>
-                    <ee:set-payload>
-                                            											
-                      
-                      <![CDATA[%dw 2.0
+                    <ee:set-payload><![CDATA[%dw 2.0
 											output application/json
 											---
 											{	
-												message: vars.responseMessage,
+												message: "Contact successfully created.",
 												ContactId: vars.contactId,
 												data: payload
 											}]]>
@@ -482,8 +330,6 @@ payload.items[0].payload]]>
             </choice>
           </otherwise>
         </choice>
-      </otherwise>
-    </choice>
   </flow>
   <flow name="get:\contacts:salesforce-data-api-config">
     <logger doc:id="4757f003-ed95-4269-9939-0811ef781500" doc:name="Log entry-flow" level="INFO" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]"></logger>
@@ -874,7 +720,10 @@ attributes.queryParams.'searchString' replace /[&|!(){}\[\]^"~*?:\\'+\-]/ with("
     </choice>
 	<choice doc:name="Choice1" doc:id="96cea7f6-14a1-4d76-8cf9-8e1d736b29b6">
 			<when expression="#[isEmpty(vars.searchString)]">
-				<raise-error doc:name="Raise error" doc:id="43545a36-38f7-4716-ad03-648ee734f5dc" type="SEARCH:BAD_REQUEST" description="`searchString` is empty or includes only special characters" />
+				<set-variable value="SEARCH:BAD_REQUEST" doc:name="Set Custom Error Type" doc:id="57e888c4-bb95-4039-9807-624f70a3249e" variableName="errorCustomType" />
+				<set-variable value="`searchString` is empty or includes only special characters" doc:name="Set Custom Error Message" doc:id="6a74df74-a9d5-48c4-9c32-b061d11fad2d" variableName="errorCustomMessage" />
+				<set-variable value="400" doc:name="Set Status Code" doc:id="518684e1-cf60-4f92-9fa2-0fc97c449d8f" variableName="httpStatus" />
+				<raise-error doc:name="Raise error1" doc:id="0e90e196-0b94-4c46-995b-8cc00804bbda" type="CUSTOM:CUSTOM_ERROR" description="Something went while performing a search." />
 			</when>
 		</choice>
 		<salesforce:query
@@ -1863,7 +1712,16 @@ attributes.queryParams.'searchString' replace /[&|!(){}\[\]^"~*?:\\'+\-]/ with("
     <!-- First SOSL query to get total count -->
     <choice doc:name="Choice" doc:id="6c9d8b1d-4076-42d8-8d96-b8ba6b774ee2" >
 			<when expression="#[isEmpty(vars.searchString)]">
-				<raise-error doc:name="Raise error" doc:id="fe77e7ad-799e-4746-8702-cd006aa82693" type="SEARCH:BAD_REQUEST" description="`searchString` is empty or includes only special characters"/>
+				<set-variable value="SEARCH:BAD_REQUEST" doc:name="Set Custom Error Type" doc:id="93817aa7-88f2-480e-b17e-172c65934d04" variableName="errorCustomType" />
+				<set-variable value="`searchString` is empty or includes only special characters" doc:name="Set Custom Error Message" doc:id="2bd394d4-e6fc-4155-ae4b-f7de594c0286" variableName="errorCustomMessage" />
+				<set-variable value="400" doc:name="Set Status Code" doc:id="0c98deb5-8566-4366-832d-f7f2ca65ed3e" variableName="httpStatus" />
+				<raise-error doc:name="Raise error1" doc:id="5ddc84e5-66a7-4edb-a986-c4990d471b8e" type="CUSTOM:CUSTOM_ERROR" description="Something went while performing a search." />
+			</when>
+			<when expression="#[sizeOf(vars.searchString) == 1]">
+				<set-variable value="SEARCH:BAD_REQUEST" doc:name="Set Custom Error Type" doc:id="907c8a99-990b-43e2-a2a9-90a8d01f14b7" variableName="errorCustomType" />
+				<set-variable value="`searchString` must be more than 1 character after cleaning from special characters." doc:name="Set Custom Error Message" doc:id="0617dfe4-bb94-47de-993c-547978c7ef6e" variableName="errorCustomMessage" />
+				<set-variable value="422" doc:name="Set Status Code" doc:id="dd0a4f31-e1a3-49ed-ba19-dfdfba7d1fd2" variableName="httpStatus" />
+				<raise-error doc:name="Raise error1" doc:id="23438120-62a7-4e1c-8dfe-e517777ff937" type="CUSTOM:CUSTOM_ERROR" description="Something went while performing a search." />
 			</when>
 		</choice>
 		<salesforce:search config-ref="Salesforce_Config" doc:id="count-query" doc:name="Get Total Count">
