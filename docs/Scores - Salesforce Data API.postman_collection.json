@@ -785,45 +785,6 @@
 					"response": []
 				},
 				{
-					"name": "/contacts/search",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "client_id",
-								"value": "{{sandbox_client_id}}"
-							},
-							{
-								"key": "client_secret",
-								"value": "{{sandbox_client_secret}}"
-							},
-							{
-								"key": "Origin",
-								"value": "Postman",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/contacts/search?searchString=Aleksandr",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"contacts",
-								"search"
-							],
-							"query": [
-								{
-									"key": "searchString",
-									"value": "Aleksandr"
-								}
-							]
-						},
-						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
-					},
-					"response": []
-				},
-				{
 					"name": "/contacts/searchByPhoneNumber",
 					"request": {
 						"method": "GET",
@@ -1012,7 +973,7 @@
 					"response": []
 				},
 				{
-					"name": "/contacts/searchSOSL",
+					"name": "/contacts/search",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -1031,13 +992,13 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/contacts/searchSOSL?searchString=John&region=San Francisco Crocker&page=1&pageSize=8",
+							"raw": "{{base_url}}/contacts/search?searchString=John&region=San Francisco Crocker&page=1&pageSize=8",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"contacts",
-								"searchSOSL"
+								"search"
 							],
 							"query": [
 								{

@@ -312,26 +312,6 @@ uses:
             type: types.Contact[]
   /search:
     get:
-      displayName: Get matching contacts
-      description: Get contacts matching a search string (to be used for Student contacts for now)
-      queryParameters:
-        searchString:
-          displayName: searchString
-          description: Search string
-          type: string
-          required: true
-        region:
-          displayName: region
-          description: Filter contacts by region
-          type: string
-          required: false
-      responses:
-        200:
-          body:
-            application/json:
-              type: types.Contact[]
-  /searchSOSL:
-    get:
       displayName: Get matching contacts using SOSL
       description: Get contacts matching a search string using Salesforce Object Search Language (to be used for Student contacts for now)
       queryParameters:
