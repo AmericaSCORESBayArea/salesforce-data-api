@@ -42,11 +42,10 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 					doc:name="Upsert successful?"
 					doc:id="033792a0-3de2-43bc-8b8e-e792264fa3eb">
 					<when
-						expression="#[(payload.items..*statusCode default []) contains 'UNABLE_TO_LOCK_ROW']">
-						<raise-error
-							doc:name="Raise error"
-							doc:id="31566e63-753c-4bae-9492-05a5ac7da221"
-							type="SALESFORCE-CUSTOM:UNABLE_TO_LOCK_ROW" />
+						expression="#[payload.successful == false]">
+						<set-variable value="#['SALESFORCE_ATTENDANCE_CREATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="be1b9699-37ed-4d17-96b7-3c400670cfea" variableName="errorCustomType" />
+						<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="1af6ccb4-8ef5-4b7e-b50a-dc286d8677be" variableName="errorCustomMessage" />
+						<raise-error doc:name="Raise error" doc:id="2494818a-ac68-43c1-931e-10c19593e6ef" type="CUSTOM:CUSTOM_ERROR" description="Something went while creating an attendance record." />
 					</when>
 				</choice>
 			</try>
