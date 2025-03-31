@@ -24,7 +24,8 @@
 	                            message: "Invalid Request Format",
 	                            error: (error.description default ""),
 	                            detailedError: (error.detailedDescription default ""),
-	                            errorType: (error.errorType.namespace default "") ++ ":" ++ (error.errorType.identifier default "")
+	                            errorType: (error.errorType.namespace default "") ++ ":" ++ (error.errorType.identifier default ""),
+	                            errorSource: (error.dslSource  default "")
                             }
                             ]]></ee:set-payload>
 					</ee:message>
@@ -254,11 +255,11 @@
                                            ++ "*Error Type:* " ++ (vars.errorPayload.errorType default "N/A") ++ "\n"
 						                   ++ "*Error Message:* " ++ (vars.errorPayload.error default "N/A") ++ "\n"
 						                   ++ "*Detailed Error Description:* " ++ (vars.errorPayload.detailedError default "N/A") ++ "\n"
-						                   ++ "*Source:* " ++ (error.dslSource default "N/A")
+						                   ++ "*Source:* " ++ (vars.errorPayload.errorSource default "N/A")
 						                   ++ (
 						                       if (!isEmpty(vars.originalPayload)) 
 						                       "\n*Payload Attached:* ```" ++ (write(vars.originalPayload, "application/json") default "No payload available") ++ "```"
-						                       else ""
+						                       else "\n*Payload Attached:* No payload attached."
 					                   		)
 				                   }
 				            	}
