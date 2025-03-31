@@ -168,6 +168,14 @@
 				<flow-ref doc:name="Flow Reference: Slack" doc:id="4b9c6834-bdea-4c69-8ea9-233bae3a559c" name="global-error-handler" />
 			</on-error-propagate>
             <on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="67896d39-b9c7-4032-9762-8194362c31d7" type="CUSTOM:CUSTOM_ERROR">
+				<choice doc:name="Choice" doc:id="1c191d29-1312-4e97-a1a9-f5d37d8be49a">
+					<when expression='#[vars.errorCustomType contains "DUPLICATES_DETECTED"]'>
+						<set-variable value="409" doc:name="Set Status Code" doc:id="ce66e384-6022-462c-ba5e-342621113bb5" variableName="httpStatus" />
+					</when>
+					<when expression='#[vars.errorCustomType contains "MALFORMED_ID"]'>
+						<set-variable value="400" doc:name="Set Status Code" doc:id="51fbd79f-5402-4a83-8ca3-b8680e3b81e0" variableName="httpStatus" />
+					</when>
+				</choice>
 				<ee:transform doc:name="Transform Message" doc:id="e7421cb1-862d-4dc7-bbee-e8ab29f998fe">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
