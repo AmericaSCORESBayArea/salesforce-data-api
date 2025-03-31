@@ -246,31 +246,14 @@ output application/java
 			doc:name="Update"
 			doc:id="db1b614e-3b4c-4db6-8195-a6e9617257e4"
 			config-ref="Salesforce_Config" />
-		<choice
-			doc:name="Update successful?"
-			doc:id="eb93d985-08a5-4d18-8f5b-9597673b2a24">
-			<when expression="#[payload.items[0].successful == false]">
-				<ee:transform
-					doc:name="Create Error Response"
-					doc:id="36abc3b2-f428-48ee-b518-a1353e6f235a">
-					<ee:message>
-						<ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-	message: payload.items[0].message
-}]]></ee:set-payload>
-					</ee:message>
-					<ee:variables>
-						<ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
-					</ee:variables>
-				</ee:transform>
+		<choice doc:name="Update successful?" doc:id="24b97665-02fd-4dec-bbf7-285f710ea489">
+			<when expression="#[payload.successful == false]">
+				<set-variable value="#['SALESFORCE_ENROLLMENT_UPDATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="b9040877-1f5b-4788-a786-b5384e68f239" variableName="errorCustomType" />
+				<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="7c6fec7f-dbc4-46a3-917a-183fd5bc796b" variableName="errorCustomMessage" />
+				<raise-error doc:name="Raise error" doc:id="844ccc3d-6ada-4719-aa14-1fad90ea1000" type="CUSTOM:CUSTOM_ERROR" description="Something went while updating an enrollment record." />
 			</when>
-			<otherwise>
-				<ee:transform
-					xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
-					doc:name="Create Response"
-					doc:id="5cd8fa6a-e3d1-44de-9625-aff048e5fc8f">
+		</choice>
+		<ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response" doc:id="5cd8fa6a-e3d1-44de-9625-aff048e5fc8f">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -280,8 +263,6 @@ output application/json
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-			</otherwise>
-		</choice>
 		<logger
 			level="INFO"
 			doc:name="Log Created Response"
@@ -316,7 +297,7 @@ output application/java
 			<when expression="#[payload.items[0].successful == false]">
 				<set-variable value="#['SALESFORCE_ENROLLMENT_CREATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="d5c68077-bb4c-4245-b6c5-68396295759c" variableName="errorCustomType" />
 				<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="f52e5839-b9ee-4a28-8944-62b63c974bc6" variableName="errorCustomMessage" />
-				<raise-error doc:name="Raise error" doc:id="20ccb42b-2476-402d-a634-7c7ae8243959" type="CUSTOM:CUSTOM_ERROR" description="Something went wrong while creating a contact. " />
+				<raise-error doc:name="Raise error" doc:id="20ccb42b-2476-402d-a634-7c7ae8243959" type="CUSTOM:CUSTOM_ERROR" description="Something went wrong while creating an enrollment record. " />
 			</when>
 			<otherwise>
 				<ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response" doc:id="291c1936-dfea-4dd5-aaba-c30a5a5b4311">

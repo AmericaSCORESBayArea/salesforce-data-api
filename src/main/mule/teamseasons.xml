@@ -140,26 +140,16 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			</ee:message>
 		</ee:transform>
 		<salesforce:update type="Enrollment__c" doc:name="Update" doc:id="67bd555b-2024-4d3b-8720-24dcb8688184" config-ref="Salesforce_Config" />
-		<choice doc:name="Update successful?" doc:id="b659fb79-98a3-4c48-bd2e-e8e8c10dece4" >
-			<when expression="#[payload.items[0].successful == false]" >
-				<ee:transform doc:name="Create Error Response" doc:id="fffa0ab0-96f4-4218-bfb0-7ec3093ed912" >
-					<ee:message >
-						<ee:set-payload ><![CDATA[%dw 2.0
-						output application/json
-						---
-						{
-							message: payload.items[0].message
-						}]]></ee:set-payload>
-					</ee:message>
-					<ee:variables >
-						<ee:set-variable variableName="httpStatus" ><![CDATA[400]]></ee:set-variable>
-					</ee:variables>
-				</ee:transform>
+		<choice doc:name="Update successful?" doc:id="522e3dfd-dde2-41ec-8374-94bf23b7c298">
+			<when expression="#[payload.successful == false]">
+				<set-variable value="#['SALESFORCE_ENROLLMENT_UPDATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="228e9700-a1a4-4746-bc33-551331da7d44" variableName="errorCustomType" />
+				<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="d36375c3-f397-4add-b0f3-0fca23cd0f52" variableName="errorCustomMessage" />
+				<raise-error doc:name="Raise error" doc:id="579e74cf-ed44-48c6-b31f-03e9e4def9e6" type="CUSTOM:CUSTOM_ERROR" description="Something went while updating an enrollment record." />
 			</when>
-			<otherwise >
-				<ee:transform doc:name="Create Response" doc:id="8790764d-7b54-4f5f-b7ee-c9b6b3bc11f0" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
-					<ee:message >
-						<ee:set-payload ><![CDATA[%dw 2.0
+		</choice>
+		<ee:transform doc:name="Create Response" doc:id="8790764d-7b54-4f5f-b7ee-c9b6b3bc11f0" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
 					output application/json
 					---
 					{
@@ -167,8 +157,6 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 					}]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-			</otherwise>
-		</choice>
 	</flow>
 	<flow name="get:\teamSeasons\(teamSeasonId):salesforce-data-api-config">
     <flow-ref doc:id="03174916-e85d-4c3c-9357-eee984a14887" doc:name="message-for-not-implemented-endpoints" name="message-for-not-implemented-endpoints"></flow-ref>
@@ -443,28 +431,14 @@ output application/java
       </ee:message>
     </ee:transform>
     <salesforce:update config-ref="Salesforce_Config" doc:id="d17f7124-2383-4f56-8891-5b990940aff1" doc:name="Update" type="Team_Season__c"></salesforce:update>
-    <choice doc:id="79b6ffa5-5d2c-4347-a0f2-b8b06a6e1763" doc:name="Update successful?">
-      <when expression="#[payload.items[0].successful == false]">
-        <ee:transform doc:id="2fd09e2d-9361-42f4-9031-a7794997ee0e" doc:name="Create Error Response">
-          <ee:message>
-            <ee:set-payload>
-              <![CDATA[%dw 2.0
-output application/json
----
-{
-	message: payload.items[0].message
-}]]>
-            </ee:set-payload>
-          </ee:message>
-          <ee:variables>
-            <ee:set-variable variableName="httpStatus">
-              <![CDATA[400]]>
-            </ee:set-variable>
-          </ee:variables>
-        </ee:transform>
-      </when>
-      <otherwise>
-        <ee:transform doc:id="72afa280-ab53-48ec-ada3-2965f6254973" doc:name="Create Response" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+    <choice doc:name="Update successful?" doc:id="a879b59b-0a00-4ac3-9198-2fd160012717">
+			<when expression="#[payload.successful == false]">
+				<set-variable value="#['SALESFORCE_TEAMSEASON_UPDATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="026cd259-9726-425e-bb66-154541a22d73" variableName="errorCustomType" />
+				<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="0170e543-819b-4a25-8da1-6bcde2b9d375" variableName="errorCustomMessage" />
+				<raise-error doc:name="Raise error" doc:id="b2683551-d1b1-4f78-ab99-b790a30616ff" type="CUSTOM:CUSTOM_ERROR" description="Something went while creating a TeamSeason record." />
+			</when>
+		</choice>
+		<ee:transform doc:id="72afa280-ab53-48ec-ada3-2965f6254973" doc:name="Create Response" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
           <ee:message>
             <ee:set-payload>
               <![CDATA[%dw 2.0
@@ -476,9 +450,7 @@ output application/json
             </ee:set-payload>
           </ee:message>
         </ee:transform>
-      </otherwise>
-    </choice>
-    <logger doc:id="7929814c-bb94-4872-a86f-211a4874b58a" doc:name="Log Created Response" level="INFO" message="#[payload]"></logger>
+		<logger doc:id="7929814c-bb94-4872-a86f-211a4874b58a" doc:name="Log Created Response" level="INFO" message="#[payload]"></logger>
   </flow>
   <flow name="get:\teamSeasons\searchByTeamName:salesforce-data-api-config">
     <logger doc:id="5702e8bf-921c-4af0-2a9f0-9bc9091adf34" doc:name="Log entry-flow" level="INFO" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]"></logger>
