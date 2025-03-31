@@ -184,7 +184,7 @@
 			<when expression="#[payload.successful == false]">
 				<set-variable value="#['SALESFORCE_TASK_CREATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="f249a0dc-5aa0-4602-8892-7d3f88d9803e" variableName="errorCustomType" />
 				<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="981e406e-d3b3-40ef-a6eb-ed275aefe119" variableName="errorCustomMessage" />
-				<raise-error doc:name="Raise error" doc:id="140608b5-54cf-46b4-bb71-72fc3936666b" type="CUSTOM:CUSTOM_ERROR" description="Something went while creating an attendance record." />
+				<raise-error doc:name="Raise error" doc:id="140608b5-54cf-46b4-bb71-72fc3936666b" type="CUSTOM:CUSTOM_ERROR" description="Something went while creating a task record." />
 			</when>
 		</choice>
     <ee:transform doc:id="291c1936-dfea-4dd5-aaba-c320a5a5b4311" doc:name="Create Response" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
@@ -240,7 +240,7 @@
 			<when expression="#[payload.successful == false]">
 				<set-variable value="#['SALESFORCE_TASK_UPDATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="ccedeaca-059e-42c7-a1f1-7e366f3491a8" variableName="errorCustomType" />
 				<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="2a56b6a0-da4b-42be-8724-c1d6755eed24" variableName="errorCustomMessage" />
-				<raise-error doc:name="Raise error" doc:id="72edbd97-752e-404a-a756-3b0f5fa9d27b" type="CUSTOM:CUSTOM_ERROR" description="Something went while creating an attendance record." />
+				<raise-error doc:name="Raise error" doc:id="72edbd97-752e-404a-a756-3b0f5fa9d27b" type="CUSTOM:CUSTOM_ERROR" description="Something went while updating a task record." />
 			</when>
 		</choice>
 		<ee:transform doc:id="fedcba98-7654-3210-fedc-ba9876543210" doc:name="Create Response">

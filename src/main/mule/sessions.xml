@@ -191,7 +191,7 @@ output application/java
 			<when expression="#[payload.successful == false]">
 				<set-variable value="#['SALESFORCE_SESSION_UPDATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="9fbbe3a1-79b5-4f6d-800f-8beadaaad609" variableName="errorCustomType" />
 				<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="2f5302d7-ac4c-4e32-883c-ab45aa802497" variableName="errorCustomMessage" />
-				<raise-error doc:name="Raise error" doc:id="fb063b28-d382-4f8f-b234-d2f6ff1e150e" type="CUSTOM:CUSTOM_ERROR" description="Something went while creating an attendance record." />
+				<raise-error doc:name="Raise error" doc:id="fb063b28-d382-4f8f-b234-d2f6ff1e150e" type="CUSTOM:CUSTOM_ERROR" description="Something went while updating a session record." />
 			</when>
 		</choice>
 		<ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response" doc:id="e4941d73-e82e-40a0-b233-d8ab1b1563c2">
@@ -242,7 +242,7 @@ output application/java
 			<when expression="#[payload.successful == false]">
 				<set-variable value="#['SALESFORCE_SESSION_CREATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="80d0ee96-1184-465b-a512-34155d33db9d" variableName="errorCustomType" />
 				<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="6e50136b-e978-4594-9c21-44076456a2e9" variableName="errorCustomMessage" />
-				<raise-error doc:name="Raise error" doc:id="c6e24563-2fc9-426c-bc46-6955bc1d402b" type="CUSTOM:CUSTOM_ERROR" description="Something went while creating an attendance record." />
+				<raise-error doc:name="Raise error" doc:id="c6e24563-2fc9-426c-bc46-6955bc1d402b" type="CUSTOM:CUSTOM_ERROR" description="Something went wrong while creating a session record." />
 			</when>
 		</choice>
 		<ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response" doc:id="6779c4d0-a8dc-4e33-befa-a4b77df09562">
