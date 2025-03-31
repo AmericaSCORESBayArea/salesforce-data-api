@@ -14,7 +14,7 @@
 		<apikit:router config-ref="salesforce-data-api-config" />
         <flow-ref doc:name="Log Response" doc:id="553e8f82-198b-4c48-829e-7117c3c7634d" name="exit-flow"/>
 		<error-handler>
-			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="a0f1f919-7033-446f-be52-c49a7341cb34" type="APIKIT:BAD_REQUEST, CUSTOM:BAD_REQUEST">
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="a0f1f919-7033-446f-be52-c49a7341cb34" type="APIKIT:BAD_REQUEST, CUSTOM:BAD_REQUEST, SALESFORCE:INVALID_INPUT">
 				<ee:transform doc:name="Transform Message" doc:id="9e09454e-d82f-4a26-854e-16807ca0c340">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
@@ -203,7 +203,7 @@
 	                            message: "An unknown error occurred",
 	                            error: (error.description default ""),
 	                            detailedError: (error.detailedDescription default ""),
-	                            errorType: "Global Error Handler: " ++ (error.errorType.namespace default "") ++ ":" ++ (error.errorType.identifier default "")
+	                            errorType: "UNKNOWN:" ++ (error.errorType.namespace default "") ++ ":" ++ (error.errorType.identifier default "")
                             }
                             ]]></ee:set-payload>
 					</ee:message>
