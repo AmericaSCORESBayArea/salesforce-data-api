@@ -1191,7 +1191,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 		</salesforce:update>
 		<choice doc:name="Update successful?" doc:id="81cab58f-3b0f-4844-9155-b03821c88f6f">
 			<when expression="#[payload.successful == false]">
-				<set-variable value="#['SALESFORCE_ATTENDANCE_CREATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="de0127f1-9543-4247-98f0-4919cad5e132" variableName="errorCustomType" />
+				<set-variable value="#['SALESFORCE_ATTENDANCE_UPDATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="de0127f1-9543-4247-98f0-4919cad5e132" variableName="errorCustomType" />
 				<set-variable value='#[%dw 2.0&#10;output text/plain&#10;---&#10;(payload.items[0].message default "Error While Updating Attendances.") ++ &#10;(&#10;  payload.items map ((payload01, indexOfPayload01) -&gt; &#10;    " Message: " ++ write(payload01.payload default "", "application/json")&#10;  ) joinBy ""&#10;)]' doc:name="Set Custom Error Message" doc:id="8d77c108-0e3c-4930-9f49-9734837df79c" variableName="errorCustomMessage" />
 				<raise-error doc:name="Raise error" doc:id="a938155b-3242-4787-a33d-46ab6e9cdfaa" type="CUSTOM:CUSTOM_ERROR" description="Something went while creating an attendance record." />
 			</when>

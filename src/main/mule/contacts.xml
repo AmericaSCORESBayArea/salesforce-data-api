@@ -1142,37 +1142,15 @@ output application/java
       </ee:message>
     </ee:transform>
     <salesforce:update config-ref="Salesforce_Config" doc:id="22d1f2d0-03bc-4987-82e8-200abcd9b67a" doc:name="Update" type="Contact"></salesforce:update>
-    <choice doc:id="61a478f2-2c8f-430b-a6ad-a5435c432f7a" doc:name="Update successful?">
-      <when expression="#[payload.items[0].successful == false]">
-        <ee:transform doc:id="7c3a7df0-eb2b-4a4d-9182-1fcfd74a48fb" doc:name="Transform Message">
-          <ee:message>
-            <ee:set-payload>
-                            							
-              
-              <![CDATA[%dw 2.0
-output application/json
----
-{
-	message: payload.items[0].message
-}]]>
-                            						
-            
-            </ee:set-payload>
-          </ee:message>
-          <ee:variables>
-            <ee:set-variable variableName="httpStatus">
-                            							
-              
-              <![CDATA[400]]>
-                            						
-            
-            </ee:set-variable>
-          </ee:variables>
-        </ee:transform>
-      </when>
-      <otherwise>
-        <flow-ref name="get:\contacts\(contactId):salesforce-data-api-config"></flow-ref>
-        <ee:transform doc:name="Create Response" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+    <choice doc:name="Update successful?" doc:id="c09390f1-d74b-458c-8fec-c93ce0b08f8f">
+			<when expression="#[payload.successful == false]">
+				<set-variable value="#['SALESFORCE_CONTACT_UPDATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="7ad844ad-82d9-4148-9596-96f4a5f508b1" variableName="errorCustomType" />
+				<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="fd73d10f-89d1-4744-b11d-9c8e02b886d6" variableName="errorCustomMessage" />
+				<raise-error doc:name="Raise error" doc:id="42cf2f5b-f5ef-4d5b-9ef5-6eae1595fb5e" type="CUSTOM:CUSTOM_ERROR" description="Something went while creating an attendance record." />
+			</when>
+		</choice>
+		<flow-ref name="get:\contacts\(contactId):salesforce-data-api-config"></flow-ref>
+		<ee:transform doc:name="Create Response" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
           <ee:message>
             <ee:set-payload>
                             							
@@ -1189,9 +1167,7 @@ output application/json
             </ee:set-payload>
           </ee:message>
         </ee:transform>
-      </otherwise>
-    </choice>
-    <logger doc:id="07b47086-0cbc-4db9-9012-faaabb58cff9" doc:name="Log Created Response" level="INFO" message="#[payload]"></logger>
+		<logger doc:id="07b47086-0cbc-4db9-9012-faaabb58cff9" doc:name="Log Created Response" level="INFO" message="#[payload]"></logger>
   </flow>
   <flow doc:id="912d6ddf-b2bf-4f75-837a-21b1feccf869" name="get:\contacts\(contactId)\waiver\(waiverId):salesforce-data-api-config">
     <logger doc:id="c42d1dd4-9901-45ee-927f-9d59626fafc0" doc:name="Log entry-flow" level="INFO" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]"></logger>
