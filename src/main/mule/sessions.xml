@@ -187,31 +187,14 @@ output application/java
 			doc:name="Update"
 			doc:id="8c8e7dd2-d781-47cf-86ea-22b015e314d3"
 			config-ref="Salesforce_Config" />
-		<choice
-			doc:name="Update successful?"
-			doc:id="02923d83-7d61-4a29-98cc-02e7ebd9c287">
-			<when expression="#[payload.items[0].successful == false]">
-				<ee:transform
-					doc:name="Create Error Response"
-					doc:id="92521a9b-a8a5-4f91-ac00-166310c64545">
-					<ee:message>
-						<ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-	message: payload.items[0].message
-}]]></ee:set-payload>
-					</ee:message>
-					<ee:variables>
-						<ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
-					</ee:variables>
-				</ee:transform>
+		<choice doc:name="Update successful?" doc:id="f4c85f06-f54f-497d-b69b-9007eb30e2f0">
+			<when expression="#[payload.successful == false]">
+				<set-variable value="#['SALESFORCE_SESSION_UPDATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="9fbbe3a1-79b5-4f6d-800f-8beadaaad609" variableName="errorCustomType" />
+				<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="2f5302d7-ac4c-4e32-883c-ab45aa802497" variableName="errorCustomMessage" />
+				<raise-error doc:name="Raise error" doc:id="fb063b28-d382-4f8f-b234-d2f6ff1e150e" type="CUSTOM:CUSTOM_ERROR" description="Something went while updating a session record." />
 			</when>
-			<otherwise>
-				<ee:transform
-					xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
-					doc:name="Create Response"
-					doc:id="e4941d73-e82e-40a0-b233-d8ab1b1563c2">
+		</choice>
+		<ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response" doc:id="e4941d73-e82e-40a0-b233-d8ab1b1563c2">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -221,8 +204,6 @@ output application/json
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-			</otherwise>
-		</choice>
 		<logger
 			level="INFO"
 			doc:name="Log Created Response"
@@ -257,31 +238,14 @@ output application/java
 			doc:name="Create"
 			doc:id="b3d05b31-6ff5-4009-8e65-d5e947bf452c"
 			config-ref="Salesforce_Config" />
-		<choice
-			doc:name="Session creation successful?"
-			doc:id="08fb00d4-b2b7-4713-b742-8f985875bb70">
-			<when expression="#[payload.items[0].successful == false]">
-				<ee:transform
-					doc:name="Create Error Response"
-					doc:id="bab61664-0548-4e6c-aeb9-c2801cc89ff2">
-					<ee:message>
-						<ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-	message: payload.items[0].message
-}]]></ee:set-payload>
-					</ee:message>
-					<ee:variables>
-						<ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
-					</ee:variables>
-				</ee:transform>
+		<choice doc:name="Update successful?" doc:id="5ea52270-6369-44a8-aaef-22ec7832b131">
+			<when expression="#[payload.successful == false]">
+				<set-variable value="#['SALESFORCE_SESSION_CREATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="80d0ee96-1184-465b-a512-34155d33db9d" variableName="errorCustomType" />
+				<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="6e50136b-e978-4594-9c21-44076456a2e9" variableName="errorCustomMessage" />
+				<raise-error doc:name="Raise error" doc:id="c6e24563-2fc9-426c-bc46-6955bc1d402b" type="CUSTOM:CUSTOM_ERROR" description="Something went wrong while creating a session record." />
 			</when>
-			<otherwise>
-				<ee:transform
-					xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
-					doc:name="Create Response"
-					doc:id="6779c4d0-a8dc-4e33-befa-a4b77df09562">
+		</choice>
+		<ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response" doc:id="6779c4d0-a8dc-4e33-befa-a4b77df09562">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -291,8 +255,6 @@ output application/json
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-			</otherwise>
-		</choice>
 		<logger
 			level="INFO"
 			doc:name="Log Created Response"

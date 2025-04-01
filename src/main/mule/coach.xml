@@ -585,6 +585,13 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	ExternalId__c: payload01.StudentId ++ '-' ++ vars.sessionId
 }]]]></salesforce:records>
 		</salesforce:upsert>
+		<choice doc:name="Upsert successful?" doc:id="ec201558-e363-41ba-90be-362ae01fbc41">
+			<when expression="#[payload.successful == false]">
+				<set-variable value="#['SALESFORCE_ATTENDANCE_CREATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="fcf6ce12-9747-44d5-a210-1bdf9a8e87c7" variableName="errorCustomType" />
+				<set-variable value='#[%dw 2.0&#10;output text/plain&#10;---&#10;(payload.items[0].message default "Error While Creating Attendances.") ++ &#10;(&#10;  payload.items map ((payload01, indexOfPayload01) -&gt; &#10;    " Message: " ++ write(payload01.payload default "", "application/json")&#10;  ) joinBy ""&#10;)]' doc:name="Set Custom Error Message" doc:id="d63cc331-c4c7-42ca-86b3-97f9ab84820f" variableName="errorCustomMessage" />
+				<raise-error doc:name="Raise error" doc:id="0186bc58-0909-4a09-a760-10b16852fbec" type="CUSTOM:CUSTOM_ERROR" description="Something went wrong while updating an attendance record." />
+			</when>
+		</choice>
 		<logger
 			level="INFO"
 			doc:name="Log Upsert"
@@ -1182,31 +1189,14 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	Attended__c: payload01.Attended,
 }]]]></salesforce:records>
 		</salesforce:update>
-		<choice
-			doc:name="Update successful?"
-			doc:id="3cf4d8b6-1188-40ca-af80-45874cd50d38">
-			<when expression="#[payload.items[0].successful == false]">
-				<ee:transform
-					doc:name="Create Error Response"
-					doc:id="52593c7f-e10a-4e17-89f4-17311b977136">
-					<ee:message>
-						<ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-	message: payload.items[0].message
-}]]></ee:set-payload>
-					</ee:message>
-					<ee:variables>
-						<ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
-					</ee:variables>
-				</ee:transform>
+		<choice doc:name="Update successful?" doc:id="81cab58f-3b0f-4844-9155-b03821c88f6f">
+			<when expression="#[payload.successful == false]">
+				<set-variable value="#['SALESFORCE_ATTENDANCE_UPDATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="de0127f1-9543-4247-98f0-4919cad5e132" variableName="errorCustomType" />
+				<set-variable value='#[%dw 2.0&#10;output text/plain&#10;---&#10;(payload.items[0].message default "Error While Updating Attendances.") ++ &#10;(&#10;  payload.items map ((payload01, indexOfPayload01) -&gt; &#10;    " Message: " ++ write(payload01.payload default "", "application/json")&#10;  ) joinBy ""&#10;)]' doc:name="Set Custom Error Message" doc:id="8d77c108-0e3c-4930-9f49-9734837df79c" variableName="errorCustomMessage" />
+				<raise-error doc:name="Raise error" doc:id="a938155b-3242-4787-a33d-46ab6e9cdfaa" type="CUSTOM:CUSTOM_ERROR" description="Something went while updating an attendance record." />
 			</when>
-			<otherwise>
-				<ee:transform
-					doc:name="Create Response"
-					doc:id="fb3860fc-e16f-4661-ac7a-6df2a8cb4053"
-					xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+		</choice>
+		<ee:transform doc:name="Create Response" doc:id="fb3860fc-e16f-4661-ac7a-6df2a8cb4053" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -1216,13 +1206,7 @@ output application/json
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-			</otherwise>
-		</choice>
-		<logger
-			level="INFO"
-			doc:name="Log Created Response"
-			doc:id="6277debb-2aa4-4703-97d1-66d20cd0d8e0"
-			message="#[payload]" />
+		<logger level="INFO" doc:name="Log Created Response" doc:id="6277debb-2aa4-4703-97d1-66d20cd0d8e0" message="#[payload]" />
 	</flow>
 	<flow
 		name="post:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\assessments:application\json:salesforce-data-api-config">
@@ -1266,31 +1250,14 @@ output application/json
 			doc:name="Create"
 			doc:id="b126f117-35b4-46a1-b69d-df1514f0915c"
 			config-ref="Salesforce_Config" />
-		<choice
-			doc:name="Assessment creation successful?"
-			doc:id="1c1e9ccb-357f-4ef7-8c80-10ce38ec8913">
-			<when expression="#[payload.items[0].successful == false]">
-				<ee:transform
-					doc:name="Create Error Response"
-					doc:id="7f75a24d-38cd-4ac0-b13a-3383a1bd303e">
-					<ee:message>
-						<ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-    message: payload.items[0].message
-}]]></ee:set-payload>
-					</ee:message>
-					<ee:variables>
-						<ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
-					</ee:variables>
-				</ee:transform>
+		<choice doc:name="Upsert successful?" doc:id="dfe49b47-2fee-468f-94de-a249c892f867">
+			<when expression="#[payload.successful == false]">
+				<set-variable value="#['SALESFORCE_ASSESSMENT_CREATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="116d4fa4-38ec-4d54-aa7e-5a37736d91c3" variableName="errorCustomType" />
+				<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="69573011-d907-4da1-9113-f1eff05db828" variableName="errorCustomMessage" />
+				<raise-error doc:name="Raise error" doc:id="2be38cb1-dd0f-47cc-be2f-6fa6cc505545" type="CUSTOM:CUSTOM_ERROR" description="Something went while creating an assessment record." />
 			</when>
-			<otherwise>
-				<ee:transform
-					xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
-					doc:name="Create Response"
-					doc:id="aa2451bf-0b3f-4de0-9be9-fd354e65d674">
+		</choice>
+		<ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response" doc:id="aa2451bf-0b3f-4de0-9be9-fd354e65d674">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -1300,8 +1267,6 @@ output application/json
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-			</otherwise>
-		</choice>
 		<logger
 			level="INFO"
 			doc:name="Log Created Response"
@@ -1327,7 +1292,7 @@ output application/json
 output application/json
 ---
 {
-  message: "Assessment updated"
+  message: "(not implemented)"
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>

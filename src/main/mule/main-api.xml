@@ -14,7 +14,7 @@
 		<apikit:router config-ref="salesforce-data-api-config" />
         <flow-ref doc:name="Log Response" doc:id="553e8f82-198b-4c48-829e-7117c3c7634d" name="exit-flow"/>
 		<error-handler>
-			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="a0f1f919-7033-446f-be52-c49a7341cb34" type="APIKIT:BAD_REQUEST, CUSTOM:BAD_REQUEST">
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="a0f1f919-7033-446f-be52-c49a7341cb34" type="APIKIT:BAD_REQUEST, CUSTOM:BAD_REQUEST, SALESFORCE:INVALID_INPUT">
 				<ee:transform doc:name="Transform Message" doc:id="9e09454e-d82f-4a26-854e-16807ca0c340">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
@@ -24,7 +24,8 @@
 	                            message: "Invalid Request Format",
 	                            error: (error.description default ""),
 	                            detailedError: (error.detailedDescription default ""),
-	                            errorType: (error.errorType.namespace default "") ++ ":" ++ (error.errorType.identifier default "")
+	                            errorType: (error.errorType.namespace default "") ++ ":" ++ (error.errorType.identifier default ""),
+	                            errorSource: (error.dslSource  default "")
                             }
                             ]]></ee:set-payload>
 					</ee:message>
@@ -167,6 +168,16 @@
 				<flow-ref doc:name="Flow Reference: Slack" doc:id="4b9c6834-bdea-4c69-8ea9-233bae3a559c" name="global-error-handler" />
 			</on-error-propagate>
             <on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="67896d39-b9c7-4032-9762-8194362c31d7" type="CUSTOM:CUSTOM_ERROR">
+				<choice doc:name="Choice" doc:id="1c191d29-1312-4e97-a1a9-f5d37d8be49a">
+					<when expression='#[(vars.errorCustomType contains "DUPLICATES_DETECTED") or (vars.errorCustomMessage contains "DUPLICATES_DETECTED" )]'>
+						<set-variable value="409" doc:name="Set Status Code" doc:id="ce66e384-6022-462c-ba5e-342621113bb5" variableName="httpStatus" />
+						<set-variable value='#[vars.errorCustomType replace "UNKNOWN" with "DUPLICATES_DETECTED"]' doc:name="Update errorCustomType" doc:id="fa24b860-a1da-478a-8fcb-4c209b129de7" variableName="errorCustomType" />
+					</when>
+					<when expression='#[(vars.errorCustomType contains "MALFORMED_ID") or (vars.errorCustomMessage contains "MALFORMED_ID" )]'>
+						<set-variable value="400" doc:name="Set Status Code" doc:id="51fbd79f-5402-4a83-8ca3-b8680e3b81e0" variableName="httpStatus" />
+						<set-variable value='#[vars.errorCustomType replace "UNKNOWN" with "MALFORMED_ID"]' doc:name="Update errorCustomType" doc:id="5049dfed-7516-4f02-b8b1-b273863b706b" variableName="errorCustomType"/>
+					</when>
+				</choice>
 				<ee:transform doc:name="Transform Message" doc:id="e7421cb1-862d-4dc7-bbee-e8ab29f998fe">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
@@ -194,7 +205,7 @@
 	                            message: "An unknown error occurred",
 	                            error: (error.description default ""),
 	                            detailedError: (error.detailedDescription default ""),
-	                            errorType: "Global Error Handler: " ++ (error.errorType.namespace default "") ++ ":" ++ (error.errorType.identifier default "")
+	                            errorType: "UNKNOWN:" ++ (error.errorType.namespace default "") ++ ":" ++ (error.errorType.identifier default "")
                             }
                             ]]></ee:set-payload>
 					</ee:message>
@@ -254,11 +265,11 @@
                                            ++ "*Error Type:* " ++ (vars.errorPayload.errorType default "N/A") ++ "\n"
 						                   ++ "*Error Message:* " ++ (vars.errorPayload.error default "N/A") ++ "\n"
 						                   ++ "*Detailed Error Description:* " ++ (vars.errorPayload.detailedError default "N/A") ++ "\n"
-						                   ++ "*Source:* " ++ (error.dslSource default "N/A")
+						                   ++ "*Source:* " ++ (vars.errorPayload.errorSource default "N/A")
 						                   ++ (
 						                       if (!isEmpty(vars.originalPayload)) 
 						                       "\n*Payload Attached:* ```" ++ (write(vars.originalPayload, "application/json") default "No payload available") ++ "```"
-						                       else ""
+						                       else "\n*Payload Attached:* No payload attached."
 					                   		)
 				                   }
 				            	}
