@@ -216,8 +216,9 @@
         </error-handler>
     </flow>
     <flow name="global-error-handler" doc:id="a1be3754-f0ea-41f0-abcb-137e877e5b4d">
+		<logger level="ERROR" doc:name="Log Everything" doc:id="7f0fcdd4-ff75-49ec-9615-7dc6f1e85b3c" message='#[%dw 2.0&#10;import p from Mule&#10;fun format(d: DateTime) = d as String {format: "MMM dd, yyyy hh:mm:ss a"}&#10;output application/json&#10;var errorMsg = vars.errorPayload.message default "N/A"&#10;var payloadStr = (write(vars.originalPayload, "application/json") default "No payload available")&#10;output application/json&#10;---&#10;{&#10;    "Environment": p("env"),&#10;    "Origin": (vars.originalAttributes.headers.Origin default "N/A"),&#10;    "Endpoint": (vars.originalAttributes.method default "N/A") ++ " " ++ (vars.originalAttributes.maskedRequestPath default "N/A"),&#10;    "Query_Parameters": (vars.originalAttributes.queryString default "N/A"),&#10;    "Timestamp": format(now() &gt;&gt; "America/Los_Angeles"),&#10;    "Message": errorMsg,&#10;    "Error_Type": (vars.errorPayload.errorType default "N/A"),&#10;    "Error_Message": (vars.errorPayload.error default "N/A"),&#10;    "Detailed_Error_Description": (vars.errorPayload.detailedError default "N/A"),&#10;    "Source": (vars.errorPayload.errorSource default "N/A"),&#10;    "Payload": payloadStr&#10;}]'/>
 		<choice doc:name="Choice: " doc:id="f9d0778b-d45e-4b67-89b6-cf6b1ffed3af" >
-			<when expression="#[ (trim(p('slack.enabled') as String)) as Boolean ]">
+			<when expression="#[(trim(p('slack.enabled') as String)) as Boolean]">
 				<slack:create-chatpost-message doc:name="Send Slack Message" doc:id="b991cd72-5997-4e02-ad87-a324cfcfa707" config-ref="Slack_Connector_Config">
 				<slack:chatpost-message-content><![CDATA[#[%dw 2.0
 			import p from Mule
@@ -245,38 +246,82 @@
 		</slack:create-chatpost-message>
 		<set-variable value="#[payload]" variableName="firstMessageResponse"  doc:name="Save Response" doc:id="d2585c63-91d7-47a7-a06b-8f5e3ffd7ecd" />
 			<slack:create-chatpost-message
-                doc:name="Send Additional Slack Message"
+                doc:name="Send The Error Message"
                 doc:id="1e59cb6e-6637-4e1f-b069-d755ed1519b3"
                 config-ref="Slack_Connector_Config">
                 <slack:chatpost-message-content><![CDATA[#[%dw 2.0
-                    import p from Mule
-                    output application/json
-                    ---
-                    {
-                        channel: "mule-api-" ++ p('env') ++ "-errors",
-                        text:"More info:",
-					   	blocks: [
-				        	{
-				            	"type": "section",
-	                        	text: {
-			                        "type": "mrkdwn",
-			                        text: 
-                                           "*Message:* " ++ (vars.errorPayload.message default "N/A") ++ "\n"
-                                           ++ "*Error Type:* " ++ (vars.errorPayload.errorType default "N/A") ++ "\n"
-						                   ++ "*Error Message:* " ++ (vars.errorPayload.error default "N/A") ++ "\n"
-						                   ++ "*Detailed Error Description:* " ++ (vars.errorPayload.detailedError default "N/A") ++ "\n"
-						                   ++ "*Source:* " ++ (vars.errorPayload.errorSource default "N/A")
-						                   ++ (
-						                       if (!isEmpty(vars.originalPayload)) 
-						                       "\n*Payload Attached:* ```" ++ (write(vars.originalPayload, "application/json") default "No payload available") ++ "```"
-						                       else "\n*Payload Attached:* No payload attached."
-					                   		)
-				                   }
-				            	}
-			            ],
-                        thread_ts: vars.firstMessageResponse.ts
-                    }]]]></slack:chatpost-message-content>
+import p from Mule
+output application/json
+var errorMsg = vars.errorPayload.message default "N/A"
+var safeErrorMsg = if (sizeOf(errorMsg) <= 2500) errorMsg else "(truncated, only 2500 chars)\n" ++ errorMsg[0 to 2499]
+---
+{
+    channel: "mule-api-" ++ p("env") ++ "-errors",
+    text: "More info:",
+    blocks: [
+        {
+            "type": "section",
+            text: {
+                "type": "mrkdwn",
+                text: "*Message:* " ++ safeErrorMsg
+            }
+        }
+    ],
+    thread_ts: vars.firstMessageResponse.ts
+}]]]></slack:chatpost-message-content>
             </slack:create-chatpost-message>
+				<slack:create-chatpost-message doc:name="Send The Error Details Message" doc:id="7a328254-c580-40d6-9ad4-74d48f56957c" config-ref="Slack_Connector_Config" >
+					<slack:chatpost-message-content ><![CDATA[#[%dw 2.0
+import p from Mule
+output application/json
+---
+{
+    channel: "mule-api-" ++ p('env') ++ "-errors",
+    text:"More info:",
+   	blocks: [
+    	{
+        	"type": "section",
+        	text: {
+                "type": "mrkdwn",
+                text:
+                       "*Error Type:* " ++ (vars.errorPayload.errorType default "N/A") ++ "\n"
+	                   ++ "*Error Message:* " ++ (vars.errorPayload.error default "N/A") ++ "\n"
+	                   ++ "*Detailed Error Description:* " ++ (vars.errorPayload.detailedError default "N/A") ++ "\n"
+	                   ++ "*Source:* " ++ (vars.errorPayload.errorSource default "N/A")
+	             
+               }
+        	}
+    ],
+    thread_ts: vars.firstMessageResponse.ts
+}]]]></slack:chatpost-message-content>
+				</slack:create-chatpost-message>
+				<slack:create-chatpost-message doc:name="Send The Original Payload" doc:id="bf2cacc3-61ea-4d16-b113-f88b75c67ff2" config-ref="Slack_Connector_Config" >
+					<slack:chatpost-message-content ><![CDATA[#[%dw 2.0
+import p from Mule
+output application/json
+var payloadStr = (write(vars.originalPayload, "application/json") default "No payload available")
+var safePayload = if (sizeOf(payloadStr) <= 2500) 
+                     payloadStr 
+                  else 
+                     "(truncated, only 2500 chars)\n" ++ payloadStr[0 to 2499]
+---
+{
+    channel: "mule-api-" ++ p("env") ++ "-errors",
+    text: "More info:",
+    blocks: [
+        {
+            "type": "section",
+            text: {
+                "type": "mrkdwn",
+                text: if (!isEmpty(vars.originalPayload))
+                        "*Payload Attached:* ```" ++ safePayload ++ "```"
+                      else "\n*Payload Attached:* No payload attached."
+            }
+        }
+    ],
+    thread_ts: vars.firstMessageResponse.ts
+}]]]></slack:chatpost-message-content>
+				</slack:create-chatpost-message>
 			</when>
 		</choice>
 	</flow>
