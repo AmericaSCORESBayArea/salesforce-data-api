@@ -1732,7 +1732,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url_s}}/coach/003UQ00000EiAy9YAF/teamseasons/a0qcX000000GEggQAG/enrollments",
+							"raw": "{{base_url_s}}/coach/003UQ00000EiAy9YAF/teamseasons/a0qcX000000GEggQAG/enrollments?onlyLatest=true",
 							"host": [
 								"{{base_url_s}}"
 							],
@@ -1742,6 +1742,12 @@
 								"teamseasons",
 								"a0qcX000000GEggQAG",
 								"enrollments"
+							],
+							"query": [
+								{
+									"key": "onlyLatest",
+									"value": "true"
+								}
 							]
 						}
 					},
