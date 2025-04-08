@@ -414,6 +414,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			doc:name="Log entry-flow"
 			doc:id="5f5fe59f-a13b-4ef1-9c1c-2772b5c7643c"
 			message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]." />
+		<set-variable value="#[%dw 2.0&#10;import * from dw::util::Coercions&#10;---&#10;toBoolean(attributes.queryParams.onlyLatest) default false]" doc:name='Set Variable "LatestEnrollmentsOnly"' doc:id="665fb71b-3eaa-4f71-a958-7915c1dc8581" variableName="LatestEnrollmentsOnly" />
 		<ee:transform
 			doc:name="Store URI parameters"
 			doc:id="6ad6fba9-9cc0-4bc5-9582-39a1a552e4d3">
@@ -427,10 +428,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			doc:name="Log Stored URI Params"
 			doc:id="5a22dfa1-fcbc-4f88-ad3a-107abbcaac12"
 			message="URI Param - coachId: #[vars.coachId], teamseasonId: #[vars.teamSeasonId] - storfed as vars" />
-		<salesforce:query
-			doc:name="Query"
-			doc:id="2938911f-53b8-43a5-a53e-14fca711003d"
-			config-ref="Salesforce_Config">
+		<salesforce:query doc:name="Query" doc:id="2938911f-53b8-43a5-a53e-14fca711003d" config-ref="Salesforce_Config">
 			<salesforce:salesforce-query><![CDATA[
 			SELECT 
 				Contact__r.Name,
@@ -494,9 +492,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	coachid : vars.coachId
 }]]]></salesforce:parameters>
 		</salesforce:query>
-		<ee:transform
-			xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
-			doc:id="f83b6a71-b77b-42de-871b-11e4a3508eb1">
+		<ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="f83b6a71-b77b-42de-871b-11e4a3508eb1">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -542,6 +538,30 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+		<choice doc:name="Choice" doc:id="b9f967ce-6a5c-49e2-9dc1-134478f1d4d6" >
+			<when expression="#[vars.LatestEnrollmentsOnly]">
+				<ee:transform doc:name="Transform Message" doc:id="3ffc63ad-9fa7-4f37-a4f9-5c7208731143" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+valuesOf(
+    payload
+    groupBy ((item) -> item.StudentId)
+    mapObject (valueArray, key) -> 
+    {
+        (key): valueArray reduce ((item, acc) -> 
+        if (item.LastModifiedDate as DateTime > acc.LastModifiedDate as DateTime) 
+            item 
+        else 
+            acc
+        )
+    })
+    ]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+		</choice>
 		<logger
 			level="INFO"
 			doc:name="Log Created Response"
