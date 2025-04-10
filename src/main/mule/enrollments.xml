@@ -350,9 +350,18 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<salesforce:delete doc:name="Delete" doc:id="85d7c28c-124a-472b-bfa1-541ab9396aff" config-ref="Salesforce_Config">
-			<salesforce:ids ><![CDATA[#[payload.Id]]]></salesforce:ids>
-		</salesforce:delete>
+		<ee:transform doc:name="Create Request" doc:id="0eadd2d2-6cb7-4742-86f0-a9d047830288">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+[{
+	Id: payload.Id,
+	End_Date__c: (now() as DateTime {timezone: "America/Los_Angeles"}) as Date,
+}]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce:update type="Enrollment__c" doc:name="Update" doc:id="ea81031c-d937-45e1-9e76-c1356a515feb" config-ref="Salesforce_Config" />
 		<ee:transform doc:name="Transform Message" doc:id="7ff0dfbc-49fc-4b13-9fd5-e7f45ecd92a9" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
