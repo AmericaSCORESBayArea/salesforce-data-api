@@ -605,12 +605,45 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			doc:name="Log Stored URI Params"
 			doc:id="89586974-34cf-4491-9ece-93f323634c60"
 			message="URI Param - coachId: #[vars.coachId], teamseasonId: #[vars.teamSeasonId], sessionId: #[vars.sessionId] - stored as vars" />
-		<salesforce:upsert
-			doc:name="Upsert"
-			doc:id="96226f7b-9c73-4b6c-80d2-bce874e4cfb2"
-			config-ref="Salesforce_Config"
-			objectType="Attendance__c"
-			externalIdFieldName="ExternalId__c">
+		<set-variable value="#[payload]" doc:name="Set Request Payload" doc:id="c22892ba-6597-4a1f-8b88-952e10784fa6" variableName="RequestPayload"/>
+		<set-variable value="#[%dw 2.0&#10;var ids = payload map ((item) -&gt; item.StudentId)&#10;output text/plain&#10;---&#10;&quot;('&quot; ++ (distinctBy(ids, (id) -&gt; id) joinBy &quot;', '&quot;) ++ &quot;')&quot;]" doc:name="Set Ids From Payload" doc:id="b0d04526-1cd2-4de1-ade8-84b09ceb3541" variableName="IdsFromPayload" />
+		<salesforce:query doc:name="Get Session Details (Session Date)" doc:id="484337d3-a18d-4e7a-8716-3cb41e3e1a21" config-ref="Salesforce_Config">
+			<salesforce:salesforce-query ><![CDATA[SELECT Id, Session_Date__c FROM Session__c WHERE Id = ':sessionId']]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[output application/java
+---
+{
+	sessionId : vars.sessionId
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<set-variable value="#[payload[0].Session_Date__c]" doc:name="Set Session Date" doc:id="0a12ac43-03bb-4488-8164-8b6dedf29411" variableName="SessionDate"/>
+		<salesforce:query doc:name="Retrieve Enrollment Records" doc:id="3ce28747-3720-4490-bb4c-51b8f69a5bd9" config-ref="Salesforce_Config" >
+			<salesforce:salesforce-query ><![CDATA[SELECT Start_Date__c, End_Date__c, Team_Season__c, Contact__c 
+FROM Enrollment__c
+WHERE Team_Season__c = ':teamSeasonId'
+AND Contact__c IN :contactIds
+AND Start_Date__c <= :sessionDate
+AND End_Date__c >= :sessionDate]]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[output application/java
+---
+{
+	teamSeasonId : vars.teamSeasonId,
+	contactIds: vars.IdsFromPayload,
+	sessionDate: vars.SessionDate,
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<set-variable value="#[payload]" doc:name="Set Enrollments Payload" doc:id="053b0008-141b-45bc-896d-3ff68c1b3a6f" variableName="EnrollmentsPayload" />
+		<ee:transform doc:name="Transform Message" doc:id="d8cc26bb-23d7-41a7-bb31-2147d52f5c89" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+import distinctBy from dw::core::Arrays
+var validContactIds = (vars.EnrollmentsPayload map (e) -> e.Contact__c) distinctBy (id) -> id
+---
+vars.RequestPayload filter((item, index) -> (validContactIds contains (item.StudentId as String)))]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<set-variable value="#[payload]" doc:name="Set Filtered Payload" doc:id="a15e0265-2a7e-4bef-89a8-4d8bee4d1177" variableName="FilteredPayload" />
+		<salesforce:upsert doc:name="Upsert" doc:id="96226f7b-9c73-4b6c-80d2-bce874e4cfb2" config-ref="Salesforce_Config" objectType="Attendance__c" externalIdFieldName="ExternalId__c">
 			<salesforce:records><![CDATA[#[%dw 2.0
 output application/java
 ---
@@ -634,8 +667,9 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 output application/json
 ---
 {
-	Message: "Attendance taken",
-	Attendance_Taken: payload.successful
+	Message: "Attendances taken",
+	Attendance_Taken: payload.successful,
+	FilteredPayload: vars.FilteredPayload
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
