@@ -14,7 +14,7 @@ http://www.mulesoft.org/schema/mule/slack http://www.mulesoft.org/schema/mule/sl
 	<slack:config name="Slack_Connector_Config" doc:name="Slack Connector Config" doc:id="e48f990e-cbe1-444e-b5e7-e6cc4ce85843" >
 		<slack:slack-auth-connection >
 			<slack:oauth-authorization-code consumerKey="${slack.client_id}" consumerSecret="${slack.client_secret}" scopes="chat:write:bot"/>
-			<slack:oauth-callback-config listenerConfig="salesforce-data-api-httpListenerConfig" callbackPath="/slack/callback" authorizePath="/slack/authorize" externalCallbackUrl="https://${fullDomain}/slack/callback"/>
+			<slack:oauth-callback-config listenerConfig="salesforce-data-api-httpListenerConfig" callbackPath="/api-internal/slack/callback" authorizePath="/api-internal/slack/authorize" externalCallbackUrl="https://${fullDomain}/slack/callback"/>
 		</slack:slack-auth-connection>
 	</slack:config>
 </mule>
