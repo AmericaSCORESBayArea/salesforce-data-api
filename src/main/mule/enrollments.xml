@@ -346,19 +346,9 @@ output application/json
 output application/java
 ---
 payload map ( payload01 , indexOfPayload01 ) -> {
-	Id: payload01.EnrollmentId
+	Id: payload01.EnrollmentId,
+	End_Date__c: (now() as DateTime {timezone: "America/Los_Angeles"}) as Date
 }]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-		<ee:transform doc:name="Create Request" doc:id="0eadd2d2-6cb7-4742-86f0-a9d047830288">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
-output application/java
----
-[{
-	Id: payload.Id,
-	End_Date__c: (now() as DateTime {timezone: "America/Los_Angeles"}) as Date,
-}]]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 		<salesforce:update type="Enrollment__c" doc:name="Update" doc:id="ea81031c-d937-45e1-9e76-c1356a515feb" config-ref="Salesforce_Config" />
