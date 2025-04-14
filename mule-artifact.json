@@ -9,7 +9,7 @@
   ],
   "redeploymentEnabled": true,
   "name": "secure-properties",
-  "minMuleVersion": "4.6.8",
+  "minMuleVersion": "4.6.14",
   "requiredProduct": "MULE_EE",
   "classLoaderModelLoaderDescriptor": {
     "id": "mule",
