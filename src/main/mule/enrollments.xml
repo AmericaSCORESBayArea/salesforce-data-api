@@ -66,6 +66,8 @@ output application/json
 payload map ( payload01 , indexOfPayload01 ) -> {
 	EnrollmentId: payload01.Id default "",
 	EnrollmentName: payload01.Name default "",
+	StartDate: payload01.Start_Date__c default "",
+	EndDate: payload01.End_Date__c default "",
 	TeamSeasonId: payload01.Team_Season__c default "",
 	StudentId: payload01.Contact__c default "",
 	StudentName: payload01.Contact__r.Name default "",
@@ -143,6 +145,8 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 					payload map ( payload01 , indexOfPayload01 ) -> {
 						EnrollmentId: payload01.Id default "",
 						EnrollmentName: payload01.Name default "",
+						StartDate: payload01.Start_Date__c default "",
+						EndDate: payload01.End_Date__c default "",
 						TeamSeasonId: payload01.Team_Season__c default "",
 						StudentId: payload01.Contact__c default "",
 						StudentName: payload01.Contact__r.Name default "",
@@ -172,6 +176,8 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 							payload map ( payload01 , indexOfPayload01 ) -> {
 								EnrollmentId: payload01.EnrollmentId default "",
 								EnrollmentName: payload01.EnrollmentName default "",
+								StartDate: payload01.StartDate default "",
+								EndDate: payload01.EndDate default "",
 								TeamSeasonId: payload01.TeamSeasonId default "",
 								StudentId: payload01.StudentId default "",
 								StudentName: payload01.StudentName default "",
