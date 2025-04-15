@@ -217,6 +217,9 @@ output application/json
 			doc:name="Log entry-flow"
 			doc:id="eeb32be2-c86a-4bb7-a34d-7258ee797f6a"
 			message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
+		<set-variable value="#[attributes.queryParams.createAttendances as Boolean default false]" doc:name="Set CreateAttendances" doc:id="8728d853-7e61-4646-86cb-d1cfd593450a" variableName="createAttendances"/>
+		<set-variable value="#[payload.TeamSeasonId]" doc:name="Set TeamSeasonId" doc:id="e19555a7-5f6e-4b6c-9e7c-0d66f9b6bf8f" variableName="teamSeasonId" />
+		<set-variable value="#[payload.SessionDate]" doc:name="Set SessionDate" doc:id="d52910ea-c4e3-47b8-9b98-e043c13b4d85" variableName="sessionDate" />
 		<ee:transform
 			doc:name="Create Request"
 			doc:id="38bd186d-e6af-481c-9dd1-3405eba1e8d8">
@@ -245,16 +248,94 @@ output application/java
 				<raise-error doc:name="Raise error" doc:id="c6e24563-2fc9-426c-bc46-6955bc1d402b" type="CUSTOM:CUSTOM_ERROR" description="Something went wrong while creating a session record." />
 			</when>
 		</choice>
-		<ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response" doc:id="6779c4d0-a8dc-4e33-befa-a4b77df09562">
+		<set-variable value="#[payload.items[0].id]" doc:name="Set SessionId" doc:id="1bb65f85-ccb1-44dd-a649-6037aca328c7" variableName="sessionId" />
+		<choice doc:name="Choice" doc:id="f3a5ffb3-7fe7-4b3d-842c-f9a33d815e97" >
+			<when expression="#[vars.createAttendances]">
+				<salesforce:query doc:name="Select Query with TeamSeasonId and SessionDate from Enrollment object" doc:id="4885618a-3146-49d5-8577-ea7d7b952dfd" config-ref="Salesforce_Config" target="enrollmentResponse">
+			<salesforce:salesforce-query><![CDATA[
+				SELECT Contact__c
+				FROM Enrollment__c 
+				WHERE Team_Season__c = ':teamSeasonId' 
+				AND Start_Date__c <= :sessionDate
+				AND End_Date__c >= :sessionDate
+				GROUP BY Contact__c
+				]]></salesforce:salesforce-query>
+			<salesforce:parameters><![CDATA[#[output application/java
+				---
+				{
+					teamSeasonId : vars.teamSeasonId,
+					sessionDate : vars.sessionDate
+				}]]]></salesforce:parameters>
+		</salesforce:query>
+				<choice doc:name="Choice" doc:id="f8b015c6-811d-4767-b2d4-fbdc06f5cbe9">
+					<when expression="#[sizeOf(vars.enrollmentResponse) &gt; 0]">
+						<ee:transform doc:name="Prepare Upsert" doc:id="71f3c55e-4143-4e4c-b79f-8ba9edffa0af">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+vars.enrollmentResponse map ( payload01 , indexOfPayload01 ) -> {
+	Contact__c: payload01.Contact__c,
+	Session__c: vars.sessionId,
+	Attended__c: false,
+	ExternalId__c: payload01.Contact__c ++ '-' ++ vars.sessionId
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+						<salesforce:upsert objectType="Attendance__c" externalIdFieldName="ExternalId__c" doc:name="Upsert Attendance" doc:id="f1d1f788-a0cf-454a-9084-bcec15198cd7" config-ref="Salesforce_Config">
+				<salesforce:records><![CDATA[#[%dw 2.0
+output application/java
+---
+payload]]]></salesforce:records>
+			</salesforce:upsert>
+						<choice doc:name="Update successful?" doc:id="61cd491c-b2d8-443b-9a6d-8d94f8a6430a">
+					<when expression="#[payload.successful == false]">
+						<set-variable value="#['SALESFORCE_ATTENDANCE_CREATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="072cca5f-6026-438d-9191-c6a827d70cb4" variableName="errorCustomType" />
+						<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="089a7668-1b0b-475f-8a91-1c225fe1598a" variableName="errorCustomMessage" />
+						<raise-error doc:name="Raise error" doc:id="17098c84-335f-42b4-bcd5-d8d18ce4aba4" type="CUSTOM:CUSTOM_ERROR" description="Session is created, but something went wrong while creating related attendances." />
+					</when>
+					<otherwise>
+						<ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response" doc:id="6779c4d0-a8dc-4e33-befa-a4b77df09562">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
-  SessionId: payload.items[0].id
+  SessionId: vars.sessionId,
+  Attendances: payload
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
+					</otherwise>
+				</choice>
+					</when>
+					<otherwise >
+						<ee:transform doc:name="Create Response" doc:id="ddd986f8-234f-45dc-a10a-15b74b2736c4" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+							<ee:message >
+								<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  SessionId: vars.sessionId,
+}]]></ee:set-payload>
+							</ee:message>
+						</ee:transform>
+					</otherwise>
+				</choice>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Create Response" doc:id="1f8861ce-ac3c-49ea-b90f-6e0c661f2e20" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  SessionId: vars.sessionId,
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
 		<logger
 			level="INFO"
 			doc:name="Log Created Response"

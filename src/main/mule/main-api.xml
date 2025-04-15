@@ -169,7 +169,7 @@
 			</on-error-propagate>
             <on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="67896d39-b9c7-4032-9762-8194362c31d7" type="CUSTOM:CUSTOM_ERROR">
 				<choice doc:name="Choice" doc:id="1c191d29-1312-4e97-a1a9-f5d37d8be49a">
-					<when expression='#[(vars.errorCustomType contains "DUPLICATES_DETECTED") or (vars.errorCustomMessage contains "DUPLICATES_DETECTED" )]'>
+					<when expression='#[(vars.errorCustomType contains "DUPLICATES_DETECTED") or (lower(vars.errorCustomMessage) contains "duplicate")]'>
 						<set-variable value="409" doc:name="Set Status Code" doc:id="ce66e384-6022-462c-ba5e-342621113bb5" variableName="httpStatus" />
 						<set-variable value='#[vars.errorCustomType replace "UNKNOWN" with "DUPLICATES_DETECTED"]' doc:name="Update errorCustomType" doc:id="fa24b860-a1da-478a-8fcb-4c209b129de7" variableName="errorCustomType" />
 					</when>
