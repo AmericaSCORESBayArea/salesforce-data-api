@@ -236,11 +236,8 @@
 				},
 				{
 					"name": "/teamSeasons/{teamSeasonId}/contacts/{contactId}/enrollments/{enrollmentId}",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
-						"method": "GET",
+						"method": "PATCH",
 						"header": [
 							{
 								"key": "client_id",
@@ -266,25 +263,19 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/teamSeasons/",
+							"raw": "{{base_url_s}}/teamSeasons/a0qcX000000vBmjQAE/contacts/003cX000009v3aHQAQ/enrollments/a0mcX000000HF7VQAW",
 							"host": [
-								"{{base_url}}"
+								"{{base_url_s}}"
 							],
 							"path": [
 								"teamSeasons",
-								""
+								"a0qcX000000vBmjQAE",
+								"contacts",
+								"003cX000009v3aHQAQ",
+								"enrollments",
+								"a0mcX000000HF7VQAW"
 							],
 							"query": [
-								{
-									"key": "date",
-									"value": "2024-01-01",
-									"disabled": true
-								},
-								{
-									"key": "endDate",
-									"value": "2025-09-01",
-									"disabled": true
-								},
 								{
 									"key": "isWithinDateRange",
 									"value": "true",
@@ -1221,7 +1212,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"SessionDate\": \"2024-11-19\",\n    \"SessionTopic\": \"Game Day\",\n    \"TeamSeasonId\": \"a0qcX000000GEggQAG\",\n    \"SessionStart\": \"16:00:00.000Z\",\n    \"SessionEnd\": \"18:00:00.000Z\" \n  \n}",
+							"raw": "{\n    \"SessionDate\": \"2025-11-19\",\n    \"SessionTopic\": \"Game Day\",\n    \"TeamSeasonId\": \"a0qcX000000GEggQAG\",\n    \"SessionStart\": \"16:00:00.000Z\",\n    \"SessionEnd\": \"18:00:00.000Z\" \n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1229,12 +1220,18 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url_s}}/sessions",
+							"raw": "{{base_url_s}}/sessions?createAttendances=True",
 							"host": [
 								"{{base_url_s}}"
 							],
 							"path": [
 								"sessions"
+							],
+							"query": [
+								{
+									"key": "createAttendances",
+									"value": "True"
+								}
 							]
 						}
 					},
@@ -1852,7 +1849,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "[\n    {\n    \"StudentId\": \"003UQ00000J6mNBYAZ\",\n    \"Attended\": true\n    }\n]",
+							"raw": "[\n    {\n    \"StudentId\": \"003UQ00000J6mNBYAZ\",\n    \"Attended\": true\n    },\n     {\n    \"StudentId\": \"003cX00000Hn0GpQAJ\",\n    \"Attended\": true\n     },\n     {\n        \"StudentId\": \"003cX00000Hti6iQAB\",\n        \"Attended\": true\n     }\n]",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1860,7 +1857,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url_s}}/coach/003UQ00000EiAy9YAF/teamseasons/a0qcX000000GEggQAG/sessions/a0pcX0000004gn3QAA/attendances",
+							"raw": "{{base_url_s}}/coach/003UQ00000EiAy9YAF/teamseasons/a0qcX000000GEggQAG/sessions/a0pcX0000004gn3QAA/attendances?disableChecks=false",
 							"host": [
 								"{{base_url_s}}"
 							],
@@ -1872,6 +1869,12 @@
 								"sessions",
 								"a0pcX0000004gn3QAA",
 								"attendances"
+							],
+							"query": [
+								{
+									"key": "disableChecks",
+									"value": "false"
+								}
 							]
 						}
 					},

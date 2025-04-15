@@ -500,6 +500,8 @@ output application/json
 payload map ( payload01 , indexOfPayload01 ) -> {
 	EnrollmentId: payload01.Id default "",
 	EnrollmentName: payload01.Name default "",
+	StartDate: payload01.Start_Date__c default "",
+	EndDate: payload01.End_Date__c default "",
 	StudentId: payload01.Contact__c default "",
 	StudentName: payload01.Contact__r.Name default "",
 	FirstName: payload01.Contact__r.FirstName,
@@ -589,6 +591,53 @@ valuesOf(
 			doc:name="Log Stored URI Params"
 			doc:id="89586974-34cf-4491-9ece-93f323634c60"
 			message="URI Param - coachId: #[vars.coachId], teamseasonId: #[vars.teamSeasonId], sessionId: #[vars.sessionId] - stored as vars" />
+		<set-variable value="#[attributes.queryParams.disableChecks]" doc:name="Set disableChecks" doc:id="9fa37561-e2d6-48d9-91bc-722aeb1d16b0" variableName="disableChecks"/>
+		<choice doc:name="Choice" doc:id="765f0860-ca3b-4eb2-874b-3e3fa345bdbb">
+			<when expression="#[vars.disableChecks]">
+				<logger level="INFO" doc:name="Logger" doc:id="8606ac75-207f-485a-9264-eea2e791e8af" message="Checks are disabled..." />
+			</when>
+			<otherwise>
+				<set-variable value="#[payload]" doc:name="Set Request Payload" doc:id="8cbe1849-f7cb-45eb-aca2-1347bc39d156" variableName="RequestPayload" />
+				<set-variable value="#[%dw 2.0&#10;var ids = payload map ((item) -&gt; item.StudentId)&#10;output text/plain&#10;---&#10;&quot;('&quot; ++ (distinctBy(ids, (id) -&gt; id) joinBy &quot;', '&quot;) ++ &quot;')&quot;]" doc:name="Set Ids From Payload" doc:id="bfa06495-d28e-4f7c-aea8-54c48edb3117" variableName="IdsFromPayload" />
+				<salesforce:query doc:name="Get Session Details (Session Date)" doc:id="937a4b29-51ae-4f14-b24e-e3f960061f40" config-ref="Salesforce_Config">
+					<salesforce:salesforce-query><![CDATA[SELECT Id, Session_Date__c FROM Session__c WHERE Id = ':sessionId']]></salesforce:salesforce-query>
+					<salesforce:parameters><![CDATA[#[output application/java
+---
+{
+	sessionId : vars.sessionId
+}]]]></salesforce:parameters>
+				</salesforce:query>
+				<set-variable value="#[payload[0].Session_Date__c]" doc:name="Set Session Date" doc:id="0d2a6581-23f7-4a8f-bfa5-8582bf93dd17" variableName="SessionDate" />
+				<salesforce:query doc:name="Retrieve Enrollment Records" doc:id="c9a213fc-b4a7-445f-9a8b-f1f9116eb4ab" config-ref="Salesforce_Config">
+					<salesforce:salesforce-query><![CDATA[SELECT Start_Date__c, End_Date__c, Team_Season__c, Contact__c 
+FROM Enrollment__c
+WHERE Team_Season__c = ':teamSeasonId'
+AND Contact__c IN :contactIds
+AND Start_Date__c <= :sessionDate
+AND End_Date__c >= :sessionDate]]></salesforce:salesforce-query>
+					<salesforce:parameters><![CDATA[#[output application/java
+---
+{
+	teamSeasonId : vars.teamSeasonId,
+	contactIds: vars.IdsFromPayload,
+	sessionDate: vars.SessionDate,
+}]]]></salesforce:parameters>
+				</salesforce:query>
+				<set-variable value="#[payload]" doc:name="Set Enrollments Payload" doc:id="023760b2-934d-434c-8b87-6e4ab33855c3" variableName="EnrollmentsPayload" />
+				<ee:transform doc:name="Transform Message" doc:id="11c130be-a1f5-459f-b81c-ba3fecceb386">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+import distinctBy from dw::core::Arrays
+var validContactIds = (vars.EnrollmentsPayload map (e) -> e.Contact__c) distinctBy (id) -> id
+---
+vars.RequestPayload filter((item, index) -> (validContactIds contains (item.StudentId as String)))]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="#[payload]" doc:name="Set Filtered Payload" doc:id="ee6a9883-a5be-4ec3-807f-8fabb9185059" variableName="FilteredPayload" />
+			</otherwise>
+		</choice>
+		<set-variable value="#[attributes.queryParams.disableChecks default false]" doc:name="Set disableChecks" doc:id="fb8cd8c7-ea9c-4bf9-8be1-d08ae77d43fa" variableName="disableChecks" />
 		<salesforce:upsert
 			doc:name="Upsert"
 			doc:id="96226f7b-9c73-4b6c-80d2-bce874e4cfb2"
@@ -612,24 +661,19 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 				<raise-error doc:name="Raise error" doc:id="0186bc58-0909-4a09-a760-10b16852fbec" type="CUSTOM:CUSTOM_ERROR" description="Something went wrong while updating an attendance record." />
 			</when>
 		</choice>
-		<logger
-			level="INFO"
-			doc:name="Log Upsert"
-			doc:id="3e70143c-8c88-4080-95ad-7efe4bd82a1e"
-			message="#[output application/json  --- payload.items map ( payload01 , indexOfPayload01 ) -&gt; {  Message: payload01.payload default &quot;&quot; }]" />
-		<ee:transform
-			xsi:schemaLocation=" http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
-			doc:id="02b48aab-bddb-4054-8872-ac1433da5ffd">
+		<ee:transform doc:name="Transform Message1" doc:id="66f13bec-bf90-42e7-9407-0b93bbd3e132" xsi:schemaLocation=" http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
-	Message: "Attendance taken",
-	Attendance_Taken: payload.successful
+	Message: "Attendances taken",
+	Attendance_Taken: payload.successful,
+	FilteredPayload: vars.FilteredPayload default "Checks are disabled."
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+		<logger level="INFO" doc:name="Log Upsert" doc:id="3e70143c-8c88-4080-95ad-7efe4bd82a1e" message="#[output application/json  --- payload.items map ( payload01 , indexOfPayload01 ) -&gt; {  Message: payload01.payload default &quot;&quot; }]" />
 	</flow>
 	<flow
 		name="get:\coach\(coachId)\teamseasons\(teamSeasonId)\sessions\(sessionId)\attendances:salesforce-data-api-config">
