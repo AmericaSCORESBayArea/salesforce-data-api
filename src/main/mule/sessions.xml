@@ -193,7 +193,7 @@ output application/java
 	(Session_Date__c: payload.SessionDate as Date {format: 'yyyy-MM-dd'}) if payload.SessionDate != null,
 	(Session_Start__c: payload.SessionStart as Time) if payload.SessionStart != null,
 	(Session_End__c: payload.SessionEnd as Time) if payload.SessionEnd != null,
-	(Session_Topic__c: payload.SessionTopic) if payload.SessionTopic != null,
+	(Session_Topic__c: payload.SessionTopic replace "_" with (" ")) if payload.SessionTopic != null,
 	(Team_Season__c: payload.TeamSeasonId) if payload.TeamSeasonId != null,
 	(Boys_Present__c: payload.BoysPresent) if payload.BoysPresent != null,
 	(Girls_Present__c: payload.GirlsPresent) if payload.GirlsPresent != null,
