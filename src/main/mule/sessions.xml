@@ -281,7 +281,7 @@ output application/java
 	Session_Date__c: payload.SessionDate as Date {format: 'yyyy-MM-dd'},
 	(Session_Start__c: payload.SessionStart as Time) if payload.SessionStart != null,
 	(Session_End__c: payload.SessionEnd as Time) if payload.SessionEnd != null,
-	Session_Topic__c: payload.SessionTopic,
+	Session_Topic__c: payload.SessionTopic replace "_" with (" ")  ,
 	Team_Season__c: payload.TeamSeasonId
 }]]]></ee:set-payload>
 			</ee:message>
