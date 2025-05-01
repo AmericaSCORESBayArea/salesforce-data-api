@@ -50,7 +50,7 @@ slack.client_secret=
 ```
 
 5. Configure Runtime
--  Add `-M-Denv=local` and `-M-Danypoint.platform.gatekeeper=disabled` to [Default Runtime Arguments](https://docs.mulesoft.com/anypoint-code-builder/ref-mule-settings)
+-  Add `-M-Denv=local`, `-Duser.timezone=UTC` and `-M-Danypoint.platform.gatekeeper=disabled` to [Default Runtime Arguments](https://docs.mulesoft.com/anypoint-code-builder/ref-mule-settings)
 -  Select Mule and Java versions 
 (click on any xml file in `src/main/mule` -> "Set Versions" button should appear; if not, right-click on any xml file in `src/main/mule` and select `Project Properties`). At the moment, we use Mule 4.6.X and Java 17
 6. Install Java seperately (depends on the system, visit https://www.java.com)
@@ -117,7 +117,7 @@ slack.client_secret=
 - Select the project to launch: `salesforce-data-api`
 - Scroll down, click "Install Runtime" and install `Mule Server 4.6.X`. Once installed and the Studio is restarted (you can trace progress at the right bottom), go back to the menu and select the correct Mule server
 - Click "Apply"
-- Switch to 'Arguments' and  add `-M-Denv=local` and `-M-Danypoint.platform.gatekeeper=disabled` to VM arguments
+- Switch to 'Arguments' and  add `-M-Denv=local`, `-Duser.timezone=UTC` and `-M-Danypoint.platform.gatekeeper=disabled` to VM arguments
 - Click "Apply"
 - Switch to 'JRE' and make sure that 17+ version is selected
 - Close configurations window
