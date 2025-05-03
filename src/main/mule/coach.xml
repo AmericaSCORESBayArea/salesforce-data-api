@@ -211,8 +211,8 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	SessionId: payload01.Id default "",
 	SessionName: payload01.Name default "",
 	SessionDate: payload01.Session_Date__c as String default "",
-	SessionStartTime: payload01.Session_Start__c as String default "",
-	SessionEndTime: payload01.Session_End__c as String default "",
+	SessionStartTime: payload01.Session_Start__c as LocalTime as String default "",
+	SessionEndTime: payload01.Session_End__c as LocalTime as String default "",
 	SessionTopic: payload01.Session_Topic__c default ""
 }]]></ee:set-payload>
 			</ee:message>
@@ -382,8 +382,8 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 		SessionId: sessionsr.Id,
 		SessionName: sessionsr.Name,
 		SessionDate: sessionsr.Session_Date__c as String,
-		SessionStartTime: payload01.Session_Start__c as String default "",
-		SessionEndTime: payload01.Session_End__c as String default "",
+		SessionStartTime: payload01.Session_Start__c as LocalTime as String default "",
+		SessionEndTime: payload01.Session_End__c as LocalTime as String default "",
 		SessionTopic: sessionsr.Session_Topic__c,
 		TotalStudentsPresent: sessionsr.Number_of_Students_Present__c
 	},
@@ -1128,8 +1128,8 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	SessionId: payload01.Id default "",
 	SessionName: payload01.Name default "",
 	SessionDate: payload01.Session_Date__c as String default "",
-	SessionStartTime: payload01.Session_Start__c as String default "",
-	SessionEndTime: payload01.Session_End__c as String default "",
+	SessionStartTime: payload01.Session_Start__c as LocalTime as String default "",
+	SessionEndTime: payload01.Session_End__c as LocalTime as String default "",
 	Weekday: payload01.Session_Weekday__c default "",
 	SessionTopic: payload01.Session_Topic__c default "",
 	IsDeleted: payload01.IsDeleted,
