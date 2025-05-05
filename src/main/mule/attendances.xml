@@ -62,5 +62,78 @@ payload.items.*payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 	</flow>
-	<flow name="createAttendancesForSessionBasedOnTeamSeasonId" doc:id="d2f0a7a1-82d1-4a8a-813a-f159fb27bab6" />
+	<flow name="createAttendancesForSessionBasedOnTeamSeasonId" doc:id="d2f0a7a1-82d1-4a8a-813a-f159fb27bab6" doc:description="You need to provide `vars.sessionId` and `vars.teamSeasonId` to make this flow working.">
+		<salesforce:query doc:name="Select Query with TeamSeasonId and SessionDate from Enrollment object" doc:id="31397a86-3870-4697-92ae-f734c7d86be6" config-ref="Salesforce_Config" target="enrollmentResponse" >
+			<salesforce:salesforce-query ><![CDATA[
+				SELECT Contact__c
+				FROM Enrollment__c 
+				WHERE Team_Season__c = ':teamSeasonId' 
+				AND Start_Date__c <= :sessionDate
+				AND End_Date__c >= :sessionDate
+				GROUP BY Contact__c
+				]]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[output application/java
+				---
+				{
+					teamSeasonId : vars.teamSeasonId,
+					sessionDate : vars.sessionDate
+				}]]]></salesforce:parameters>
+		</salesforce:query>
+		<choice doc:name="Choice" doc:id="86473c10-da93-4ecf-adca-280a0853a1fc" >
+			<when expression="#[sizeOf(vars.enrollmentResponse) &gt; 0]" >
+				<ee:transform doc:name="Prepare Upsert" doc:id="37d4e96a-7adf-4ebc-8de6-d8b8c1098ab5" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+vars.enrollmentResponse map ( payload01 , indexOfPayload01 ) -> {
+	Contact__c: payload01.Contact__c,
+	Session__c: vars.sessionId,
+	Attended__c: false,
+	ExternalId__c: payload01.Contact__c ++ '-' ++ vars.sessionId
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<salesforce:upsert objectType="Attendance__c" externalIdFieldName="ExternalId__c" doc:name="Upsert Attendance" doc:id="8d6075d3-7f89-4f0f-b73d-5c968b34dbcf" config-ref="Salesforce_Config" >
+					<salesforce:records ><![CDATA[#[%dw 2.0
+output application/java
+---
+payload]]]></salesforce:records>
+				</salesforce:upsert>
+				<choice doc:name="Update successful?" doc:id="ea900b69-0047-4bef-ac0f-15da9e01b99d" >
+					<when expression="#[payload.successful == false]" >
+						<set-variable value="#['SALESFORCE_ATTENDANCE_CREATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="8375d93a-a7f5-4e2d-a92a-53ba380b0323" variableName="errorCustomType" />
+						<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="a7e6ab49-248a-4c8b-9ddd-e0a24ab6c201" variableName="errorCustomMessage" />
+						<raise-error doc:name="Raise error" doc:id="b2875b59-8341-4d5e-b0b7-b4b0563d5c28" type="CUSTOM:CUSTOM_ERROR" description="Session is created, but something went wrong while creating related attendances." />
+					</when>
+					<otherwise >
+						<ee:transform doc:name="Create Response" doc:id="5bada35e-878c-4cb8-88eb-2d05f2db4a17" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+							<ee:message >
+								<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  SessionId: vars.sessionId,
+  Attendances: payload.items map ((item, itemIndex) -> item.payload)
+}]]></ee:set-payload>
+							</ee:message>
+						</ee:transform>
+					</otherwise>
+				</choice>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Create Response" doc:id="807a31fe-7d01-43b3-991b-e733db1f3ef8" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  SessionId: vars.sessionId,
+  Attendances: []
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+	</flow>
 	</mule>
