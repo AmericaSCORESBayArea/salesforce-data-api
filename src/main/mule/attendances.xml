@@ -62,4 +62,5 @@ payload.items.*payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 	</flow>
+	<flow name="createAttendancesForSessionBasedOnTeamSeasonId" doc:id="d2f0a7a1-82d1-4a8a-813a-f159fb27bab6" />
 	</mule>
