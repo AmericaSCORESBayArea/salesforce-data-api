@@ -90,7 +90,11 @@
   </flow>
   <flow name="get:\tasks\(taskId):salesforce-data-api-config" doc:id="ee845f40-8d5f-450d-9ff4-dbf60c921d59" >
 		<logger level="INFO" doc:name="Logger" doc:id="1ade37fb-3af9-4776-97b0-14e7c3d5b619" message="get:\tasks:salesforce-data-api-config" />
-		<set-variable value="#[attributes.uriParams.'taskId']" doc:name="Set taskId" doc:id="2bd2507a-0698-4868-b0cd-51593e14fe2a" variableName="taskId"/>
+		<choice doc:name="Choice" doc:id="f3d4c2fe-c966-41ab-88b6-f7908a91af55" >
+			<when expression="#[isEmpty(vars.taskId)]">
+				<set-variable value="#[attributes.uriParams.'taskId']" doc:name="Set taskId" doc:id="2bd2507a-0698-4868-b0cd-51593e14fe2a" variableName="taskId" />
+			</when>
+		</choice>
 		<salesforce:query doc:name="Retrieve task by ID" doc:id="7c493213-e573-4102-83cb-db950a9f5a2c" config-ref="Salesforce_Config" >
 			<salesforce:salesforce-query ><![CDATA[
 				SELECT 
@@ -189,9 +193,7 @@ vars.task]]></ee:set-payload>
 					</when>
 				</choice>
 				<flow-ref doc:name="Call `createAttendancesForSessionBasedOnTeamSeasonId`" doc:id="698c33b1-167a-446d-9db8-beac679f1b71" name="createAttendancesForSessionBasedOnTeamSeasonId" />
-			</when>
-		</choice>
-		<ee:transform doc:name="Create Response" doc:id="e5549aed-9eb8-49c8-8b90-8fbeefd18c13" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+				<ee:transform doc:name="Create Response" doc:id="e5549aed-9eb8-49c8-8b90-8fbeefd18c13" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -199,6 +201,18 @@ output application/json
 vars.task ++ { Attendances: payload default [] }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
+			</when>
+			<otherwise>
+				<ee:transform doc:name="Create Response" doc:id="58983b9f-7ecf-4cfa-bfef-e959c992fb60" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+vars.task ++ { Attendances: [] }]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
 	</flow>
 	<flow name="get:\tasks\(taskId)\tags:salesforce-data-api-config">
     <logger level="INFO" message="get:\tasks\(taskId)\tags:salesforce-data-api-config"></logger>
@@ -334,9 +348,7 @@ vars.task ++ { Attendances: payload default [] }]]></ee:set-payload>
 		<choice doc:name="Choice" doc:id="b87648ee-0f55-4f8d-9a4c-444c5583432f" >
 			<when expression='#[vars.originalPayload.TaskType == "Take Attendance"]'>
 				<flow-ref doc:name="Call `createAttendancesForSessionBasedOnTeamSeasonId`" doc:id="80deb6ec-4e06-4b64-8d20-44291f8784b9" name="createAttendancesForSessionBasedOnTeamSeasonId" />
-			</when>
-		</choice>
-		<ee:transform doc:id="291c1936-dfea-4dd5-aaba-c320a5a5b4311" doc:name="Create Response" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+				<ee:transform doc:id="291c1936-dfea-4dd5-aaba-c320a5a5b4311" doc:name="Create Response" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
           <ee:message>
             <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -348,6 +360,21 @@ output application/json
             </ee:set-payload>
           </ee:message>
         </ee:transform>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Create Response" doc:id="24a76fb6-3fee-42a2-b158-dc7e93f66bf1" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	TaskId: vars.taskId,
+	Attendances: []
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
 		<logger doc:id="640a58eb-a8ab-40f9-bcc23-a9cadcf86bb5" doc:name="Log Created Response" level="INFO" message="#[payload]"></logger>
   </flow>
   <flow name="patch:\tasks\(taskId):application\json:salesforce-data-api-config">
@@ -385,26 +412,31 @@ output application/json
       </salesforce:records>
     </salesforce:update>
     <!-- Log Updated Response -->
-    <choice doc:name="Update successful?" doc:id="144c3f86-70f6-4c27-a17c-f66e53b9c09a">
+		<choice doc:name="Update successful? Attendance creation needed?" doc:id="144c3f86-70f6-4c27-a17c-f66e53b9c09a">
 			<when expression="#[payload.successful == false]">
 				<set-variable value="#['SALESFORCE_TASK_UPDATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="ccedeaca-059e-42c7-a1f1-7e366f3491a8" variableName="errorCustomType" />
 				<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="2a56b6a0-da4b-42be-8724-c1d6755eed24" variableName="errorCustomMessage" />
 				<raise-error doc:name="Raise error" doc:id="72edbd97-752e-404a-a756-3b0f5fa9d27b" type="CUSTOM:CUSTOM_ERROR" description="Something went while updating a task record." />
 			</when>
-		</choice>
-		<ee:transform doc:id="fedcba98-7654-3210-fedc-ba9876543210" doc:name="Create Response">
+			<when expression='#[vars.originalPayload.TaskType == "Take Attendance"]'>
+				<flow-ref doc:name="Flow Reference" doc:id="47a9d17a-8757-4a4b-a248-5aec5c4df102" name="get:\tasks\(taskId):salesforce-data-api-config"/>
+			</when>
+			<otherwise >
+				<ee:transform doc:id="fedcba98-7654-3210-fedc-ba9876543210" doc:name="Create Response">
           <ee:message>
-            <ee:set-payload>
-              <![CDATA[%dw 2.0
-						output application/json
-						---
-						{
-							message: "Task updated successfully",
-							TaskId: vars.taskId
-						}]]>
+            <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Task updated successfully",
+	TaskId: vars.taskId,
+	Attendances: []
+}]]>
             </ee:set-payload>
           </ee:message>
         </ee:transform>
+			</otherwise>
+		</choice>
 		<logger doc:id="log12345-67890-abcdef-ghijk" doc:name="Log Update Response" level="INFO" message="#[payload]"></logger>
     <!-- Exit Flow -->
   </flow>
