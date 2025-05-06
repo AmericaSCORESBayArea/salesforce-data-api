@@ -88,7 +88,119 @@
       </ee:message>
     </ee:transform>
   </flow>
-  <flow name="get:\tasks\(taskId)\tags:salesforce-data-api-config">
+  <flow name="get:\tasks\(taskId):salesforce-data-api-config" doc:id="ee845f40-8d5f-450d-9ff4-dbf60c921d59" >
+		<logger level="INFO" doc:name="Logger" doc:id="1ade37fb-3af9-4776-97b0-14e7c3d5b619" message="get:\tasks:salesforce-data-api-config" />
+		<set-variable value="#[attributes.uriParams.'taskId']" doc:name="Set taskId" doc:id="2bd2507a-0698-4868-b0cd-51593e14fe2a" variableName="taskId"/>
+		<salesforce:query doc:name="Retrieve task by ID" doc:id="7c493213-e573-4102-83cb-db950a9f5a2c" config-ref="Salesforce_Config" >
+			<salesforce:salesforce-query ><![CDATA[
+				SELECT 
+					Id,
+					Assigned_By__c,
+					Assigned_To__c,
+					CreatedById,
+					Created_By_Contact__c,
+					Description__c,
+					Due_Date__c,
+					LastModifiedById,
+					Last_Modified_By_Contact__c,
+					OwnerId,
+					Priority__c,
+					Priority_Icon__c,
+					Resource_Link__c,
+					Session__c,
+					Name,
+					Task_Status__c,
+					Task_Type__c
+				FROM 
+					SCORES_Task__c
+				WHERE 
+					Id = ':taskId'
+				LIMIT 1
+			]]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[output application/java
+				---
+				{
+					taskId : vars.taskId,
+				}]]]></salesforce:parameters>
+		</salesforce:query>
+		<ee:transform doc:name="Transform Message" doc:id="e085a7fa-dde1-4050-87d5-3f7eacba69cf" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfpayload01 ) -> {
+	"Id": payload01.Id,
+	"AssignedBy": payload01.Assigned_By__c as String default "",
+	"AssignedTo": payload01.Assigned_To__c as String default "",
+	"CreatedBy": payload01.CreatedById as String default "",
+	"CreatedContact": payload01.Created_By_Contact__c as String default "",
+	"Description": payload01.Description__c as String default "",
+	"DueDate": payload01.Due_Date__c as String default "",
+	"LastModifiedBy": payload01.LastModifiedById as String default "",
+	"LastModifiedContact": payload01.Last_Modified_By_Contact__c as String default "",
+	"OwnerId": payload01.OwnerId as String default "",
+	"Priority": payload01.Priority__c as String default "",
+	"PriorityIcon": payload01.Priority_Icon__c as String default "",
+	"ResourceLink": payload01.Resource_Link__c as String default "",
+	"Session": payload01.Session__c as String default "",
+	"Name": payload01.Name as String default "",
+	"TaskStatus": payload01.Task_Status__c as String default "",
+	"TaskType": payload01.Task_Type__c as String default ""
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<set-variable value="#[payload[0]]" doc:name="Set task" doc:id="48c84f65-33f8-4dd1-98b2-edebce736627" variableName="task"/>
+		<ee:transform doc:name="Create Response" doc:id="d8122893-51ba-46bc-a6b2-16753ee3426f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+vars.task]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<choice doc:name="Do we retrieve attendances?" doc:id="c3f4c5d9-605f-443c-a94e-ec85c809b45c" doc:description='When session is empty, but task type is "Take Attendance", we throw an error.' >
+			<when expression='#[vars.task.TaskType == "Take Attendance"]' >
+				<set-variable value="#[vars.task.Session]" doc:name="Set sessionId" doc:id="ca8c94e6-3b56-4e41-b929-64629b707e03" variableName="sessionId" />
+				<salesforce:query doc:name="Query to get teamSeadonId from sessionId" doc:id="f073f661-d986-46dc-bc8f-6d62857c144d" config-ref="Salesforce_Config" >
+					<salesforce:salesforce-query ><![CDATA[
+				SELECT 
+					Id,
+					Session_Date__c,
+					Team_Season__c
+				FROM 
+					Session__c
+				WHERE 
+					id = ':sessionId' 
+				LIMIT 1
+			]]></salesforce:salesforce-query>
+					<salesforce:parameters ><![CDATA[#[output application/java
+				---
+				{
+						sessionId : vars.sessionId
+				}]]]></salesforce:parameters>
+				</salesforce:query>
+				<set-variable value="#[payload[0].Team_Season__c]" doc:name="Set teamSeasonId" doc:id="0ff98eeb-2149-43f1-9082-5fafeec98a75" variableName="teamSeasonId" />
+				<set-variable value="#[payload[0].Session_Date__c]" doc:name="Set sessionDate" doc:id="b3ba57a3-042e-4b78-a891-3a97d633b797" variableName="sessionDate" />
+				<choice doc:name="Choice" doc:id="0e2c3bfc-21c5-4acd-815e-c31e5f7e9d15" doc:description="TO_DELETE: Delete once all sessions have dates." >
+					<when expression="#[isEmpty(vars.sessionDate)]" >
+						<set-variable value="#['SALESFORCE_TASK_CREATE:BAD_REQUEST']" doc:name="Set Custom Error Type" doc:id="14384c39-deb4-4f66-b847-04b61e455036" variableName="errorCustomType" />
+						<set-variable value="The given session doesn’t have a date. Cannot proceed with creating a task and attendance records." doc:name="Set Custom Error Message" doc:id="d3132527-7cda-480d-b28d-3aa2fe12c502" variableName="errorCustomMessage" />
+						<raise-error doc:name="Raise error" doc:id="fe77e915-6316-4296-bf94-dfb8b47eb37b" type="CUSTOM:CUSTOM_ERROR" description="Something went while creating a task record." />
+					</when>
+				</choice>
+				<flow-ref doc:name="Call `createAttendancesForSessionBasedOnTeamSeasonId`" doc:id="698c33b1-167a-446d-9db8-beac679f1b71" name="createAttendancesForSessionBasedOnTeamSeasonId" />
+			</when>
+		</choice>
+		<ee:transform doc:name="Create Response" doc:id="e5549aed-9eb8-49c8-8b90-8fbeefd18c13" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+vars.task ++ { Attendances: payload.Attendances default [] }]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+	</flow>
+	<flow name="get:\tasks\(taskId)\tags:salesforce-data-api-config">
     <logger level="INFO" message="get:\tasks\(taskId)\tags:salesforce-data-api-config"></logger>
     <ee:transform doc:id="7e56aada-f163-47f0-8ffc-213f1acd09a8" doc:name="Store Query parameters">
       <ee:variables>
@@ -98,8 +210,7 @@
       </ee:variables>
     </ee:transform>
     <salesforce:query config-ref="Salesforce_Config" doc:id="1d085a1-e15b-412b-a836-10142557a9abd" doc:name="Search By ownerId (contactId)">
-      <salesforce:salesforce-query>
-        <![CDATA[
+      <salesforce:salesforce-query><![CDATA[
 				SELECT 
 					Id,
 					SCORES_Task__c,
@@ -115,13 +226,11 @@
 					SCORES_Task__c = ':taskId'
 			]]>
       </salesforce:salesforce-query>
-      <salesforce:parameters>
-        <![CDATA[#[output application/java
+      <salesforce:parameters><![CDATA[#[output application/java
 				---
 				{
 					taskId : vars.taskId,
-				}
-			]]]>
+				}]]]>
       </salesforce:parameters>
     </salesforce:query>
     <ee:transform doc:id="cca12834-e1ee-4c39-90ef-91c9be555af9" doc:name="Transform Message">
