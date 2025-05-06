@@ -27,8 +27,7 @@
       </ee:variables>
     </ee:transform>
     <salesforce:query config-ref="Salesforce_Config" doc:id="1d085a1a-e15b-412b-a836-1014557a9abd" doc:name="Query to get tasks by contactId">
-      <salesforce:salesforce-query>
-        <![CDATA[
+      <salesforce:salesforce-query><![CDATA[
 				SELECT 
 					Id,
 					Assigned_By__c,
@@ -53,13 +52,11 @@
 					:query
 			]]>
       </salesforce:salesforce-query>
-      <salesforce:parameters>
-        <![CDATA[#[output application/java
+      <salesforce:parameters><![CDATA[#[output application/java
 				---
 				{
 					query: vars.query,
-				}
-			]]]>
+				}]]]>
       </salesforce:parameters>
     </salesforce:query>
     <ee:transform doc:id="cca12834-e1ee-4339-90ef-91c9be555af9" doc:name="Transform Message">
@@ -159,7 +156,44 @@
         </ee:set-variable>
       </ee:variables>
     </ee:transform>
-    <salesforce:create config-ref="Salesforce_Config" doc:id="dd33ee35c-1b02-4cc9-a47b-733ddccb4800" doc:name="Create" type="SCORES_Task__c">
+		<choice doc:name="Data check &amp; pre-load" doc:id="44870db5-ba71-49e7-a9d5-6872bd7160bc" doc:description='When session is empty, but task type is "Take Attendance", we throw an error.'>
+			<when expression='#[isEmpty(vars.originalPayload.Session) and vars.originalPayload.TaskType == "Take Attendance"]'>
+				<set-variable value="#['SALESFORCE_TASK_CREATE:BAD_REQUEST']" doc:name="Set Custom Error Type" doc:id="3046647c-9c65-4558-a74d-b6078713e542" variableName="errorCustomType" />
+				<set-variable value='The "Take Attendance" task is required to have a "Session".' doc:name="Set Custom Error Message" doc:id="1bd8ec9a-e801-487c-bbdb-f0a4264f4983" variableName="errorCustomMessage" />
+				<raise-error doc:name="Raise error" doc:id="e6795de9-af7c-4319-af47-636d2a40a4d1" type="CUSTOM:CUSTOM_ERROR" description="Something went while creating a task record." />
+			</when>
+				<when expression='#[vars.originalPayload.TaskType == "Take Attendance"]'>
+				<set-variable value="#[vars.originalPayload.Session]" doc:name="Set sessionId" doc:id="e427cb8b-01d6-4f14-be2c-5bec7aab7bb1" variableName="sessionId" />
+				<salesforce:query doc:name="Query to get teamSeadonId from sessionId" doc:id="dbdf786d-1b72-46a4-a36f-3b7e232f02a5" config-ref="Salesforce_Config" >
+					<salesforce:salesforce-query ><![CDATA[
+				SELECT 
+					Id,
+					Session_Date__c,
+					Team_Season__c
+				FROM 
+					Session__c
+				WHERE 
+					id = ':sessionId' 
+				LIMIT 1
+			]]></salesforce:salesforce-query>
+					<salesforce:parameters ><![CDATA[#[output application/java
+				---
+				{
+						sessionId : vars.sessionId
+				}]]]></salesforce:parameters>
+				</salesforce:query>
+				<set-variable value="#[payload[0].Team_Season__c]" doc:name="Set teamSeasonId" doc:id="d3307533-fec0-49d0-b3f3-c7b32c66e7b2" variableName="teamSeasonId" />
+				<set-variable value="#[payload[0].Session_Date__c]" doc:name="Set sessionDate" doc:id="a1e322bc-20af-48f4-9433-7ab679c0d374" variableName="sessionDate" />
+				<choice doc:name="Choice" doc:id="14436a51-5822-47c3-a672-ff566d203342" doc:description="TO_DELETE: Delete once all sessions have dates.">
+					<when expression="#[isEmpty(vars.sessionDate)]">
+						<set-variable value="#['SALESFORCE_TASK_CREATE:BAD_REQUEST']" doc:name="Set Custom Error Type" doc:id="64f6bf38-d982-450a-8071-903dcbff612f" variableName="errorCustomType" />
+						<set-variable value='The given session doesn’t have a date. Cannot proceed with creating a task and attendance records.' doc:name="Set Custom Error Message" doc:id="fa1c9ac2-ce7e-4f04-b051-664b0d3ec8f2" variableName="errorCustomMessage" />
+						<raise-error doc:name="Raise error" doc:id="a7f01881-a713-4c3c-824d-5094d17fe4eb" type="CUSTOM:CUSTOM_ERROR" description="Something went while creating a task record." />
+					</when>
+				</choice>
+			</when>
+		</choice>
+		<salesforce:create config-ref="Salesforce_Config" doc:id="dd33ee35c-1b02-4cc9-a47b-733ddccb4800" doc:name="Create" type="SCORES_Task__c">
       <salesforce:records>
         <![CDATA[#[output application/java
 				---
@@ -187,15 +221,21 @@
 				<raise-error doc:name="Raise error" doc:id="140608b5-54cf-46b4-bb71-72fc3936666b" type="CUSTOM:CUSTOM_ERROR" description="Something went while creating a task record." />
 			</when>
 		</choice>
-    <ee:transform doc:id="291c1936-dfea-4dd5-aaba-c320a5a5b4311" doc:name="Create Response" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+		<set-variable value="#[payload.items[0].id]" doc:name="Set taskId" doc:id="9d95ea48-739e-446d-935c-de8565d88720" variableName="taskId" />
+		<choice doc:name="Choice" doc:id="b87648ee-0f55-4f8d-9a4c-444c5583432f" >
+			<when expression='#[vars.originalPayload.TaskType == "Take Attendance"]'>
+				<flow-ref doc:name="Call `createAttendancesForSessionBasedOnTeamSeasonId`" doc:id="80deb6ec-4e06-4b64-8d20-44291f8784b9" name="createAttendancesForSessionBasedOnTeamSeasonId" />
+			</when>
+		</choice>
+		<ee:transform doc:id="291c1936-dfea-4dd5-aaba-c320a5a5b4311" doc:name="Create Response" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
           <ee:message>
-            <ee:set-payload>
-              <![CDATA[%dw 2.0
-								output application/json
-								---
-								{
-								TaskId: payload.items[0].id
-								}]]>
+            <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	TaskId: vars.taskId,
+	Attendances: payload.Attendances default []
+}]]>
             </ee:set-payload>
           </ee:message>
         </ee:transform>
