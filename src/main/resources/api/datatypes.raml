@@ -355,6 +355,10 @@ types:
         type: date-only
       Attended:
         type: boolean
+      Dropped:
+        type: boolean
+      DropReason:
+        type: string
     examples: !include enrollment-examples.raml
 
   EnrollmentByContactID:
@@ -386,6 +390,12 @@ types:
       EndDate: 
         type: date-only
         required: false
+      Dropped:
+        type: boolean
+        required: false
+      DropReason:
+        type: string
+        required: false
 
   EnrollmentUpdateModel:
     type: object
@@ -402,6 +412,12 @@ types:
         required: false
       EndDate: 
         type: date-only
+        required: false
+      Dropped:
+        type: boolean
+        required: false
+      DropReason:
+        type: string
         required: false
   EnrollmentUpdateModelDatesOnly:
     type: object

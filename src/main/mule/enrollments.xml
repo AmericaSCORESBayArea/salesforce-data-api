@@ -43,7 +43,9 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 				Name,
 				Number_of_Enrollments__c,
 				Start_Date__c,
-				Team_Season__c 
+				Team_Season__c,
+				Dropped__c,
+				Drop_Reason__c
 			FROM 
 				Enrollment__c 
 			WHERE 
@@ -79,7 +81,9 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	ZipCode: payload01.Contact__r.Zip_First_Five_Digits__c default "",
 	ParentEmail: payload01.Contact__r.Parent_Email_Address__c default "",
 	ParentFirstName: payload01.Contact__r.Parent_First_Name__c default "",
-	ParentLastName: payload01.Contact__r.Parent_Last_Name__c default ""
+	ParentLastName: payload01.Contact__r.Parent_Last_Name__c default "",
+	Dropped: payload01.Dropped__c as Boolean default false,
+	DropReason: payload01.Drop_Reason__c default ""
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
@@ -121,7 +125,9 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 				Name,
 				Number_of_Enrollments__c,
 				Start_Date__c,
-				Team_Season__c 
+				Team_Season__c,
+				Dropped__c,
+				Drop_Reason__c
 			FROM 
 				Enrollment__c 
 			WHERE 
@@ -155,7 +161,9 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 						Birthdate: payload01.Contact__r.Birthdate default "",
 						Gender: payload01.Contact__r.Gender__c default "",
 						Ethnicity: payload01.Contact__r.Ethnicity__c default "",
-						ZipCode: payload01.Contact__r.Zip_First_Five_Digits__c default ""
+						ZipCode: payload01.Contact__r.Zip_First_Five_Digits__c default "",
+						Dropped: payload01.Dropped__c as Boolean default false,
+						DropReason: payload01.Drop_Reason__c default ""
 					}]]>
 				</ee:set-payload>
 			</ee:message>
@@ -186,7 +194,9 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 								Birthdate: payload01.Birthdate default "",
 								Gender: payload01.Gender default "",
 								Ethnicity: payload01.Ethnicity default "",
-								ZipCode: payload01.ZipCode default ""
+								ZipCode: payload01.ZipCode default "",
+								Dropped: payload01.Dropped as Boolean default false,
+								DropReason: payload01.DropReason default ""
 							}]]>
 						</ee:set-payload>
 					</ee:message>
@@ -243,7 +253,9 @@ output application/java
 	(Contact__c: payload.StudentId) if payload.StudentId != null,
 	(Start_Date__c: payload.StartDate as Date {format: 'yyyy-MM-dd'}) if payload.StartDate != null,
 	(End_Date__c: payload.EndDate as Date {format: 'yyyy-MM-dd'}) if payload.EndDate != null,
-	(Team_Season__c: payload.TeamSeasonId) if payload.TeamSeasonId != null
+	(Team_Season__c: payload.TeamSeasonId) if payload.TeamSeasonId != null,
+	(Dropped__c: payload.Dropped) if payload.Dropped != null,
+	(Drop_Reason__c: payload.DropReason) if payload.DropReason != null
 }]]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
@@ -293,7 +305,9 @@ output application/java
 	Contact__c: payload.StudentId,
 	Team_Season__c: payload.TeamSeasonId,
 	(Start_Date__c: payload.StartDate as Date {format: 'yyyy-MM-dd'}) if payload.StartDate != null,
-	(End_Date__c: payload.EndDate as Date {format: 'yyyy-MM-dd'}) if payload.EndDate != null
+	(End_Date__c: payload.EndDate as Date {format: 'yyyy-MM-dd'}) if payload.EndDate != null,
+	(Dropped__c: payload.Dropped) if payload.Dropped != null,
+	(Drop_Reason__c: payload.DropReason) if payload.DropReason != null
 }]]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
