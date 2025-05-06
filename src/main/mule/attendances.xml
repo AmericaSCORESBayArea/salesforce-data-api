@@ -79,11 +79,9 @@ payload.items.*payload]]></ee:set-payload>
 					sessionDate : vars.sessionDate
 				}]]]></salesforce:parameters>
 		</salesforce:query>
-		<choice doc:name="Choice" doc:id="86473c10-da93-4ecf-adca-280a0853a1fc" >
-			<when expression="#[sizeOf(vars.enrollmentResponse) &gt; 0]" >
-				<ee:transform doc:name="Prepare Upsert" doc:id="37d4e96a-7adf-4ebc-8de6-d8b8c1098ab5" >
-					<ee:message >
-						<ee:set-payload ><![CDATA[%dw 2.0
+		<ee:transform doc:name="Prepare Upsert" doc:id="37d4e96a-7adf-4ebc-8de6-d8b8c1098ab5">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 vars.enrollmentResponse map ( payload01 , indexOfPayload01 ) -> {
@@ -94,6 +92,50 @@ vars.enrollmentResponse map ( payload01 , indexOfPayload01 ) -> {
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
+		<set-variable value="#[payload]" doc:name='Set "upsert"' doc:id="9cebf1b6-9abb-4e0a-a5fa-0f6d79241265" variableName="upsert" />
+		<salesforce:query doc:name="Query to retrieve existing attendance records" doc:id="d825c898-0dd2-42be-9aa3-f15c41f5ed96" config-ref="Salesforce_Config">
+					<salesforce:salesforce-query><![CDATA[
+			SELECT 
+				Id,
+				Contact__r.Name,
+				Contact__c,
+				Attended__c 
+			FROM 
+				Attendance__c 
+			WHERE 
+				Session__c = ':sessionId' 
+			AND Contact_Record_Type__c = 'SCORES Student']]></salesforce:salesforce-query>
+					<salesforce:parameters><![CDATA[#[output application/java
+				---
+				{
+						sessionId : vars.sessionId
+				}]]]></salesforce:parameters>
+				</salesforce:query>
+		<ee:transform doc:name="Prepare Retrieve" doc:id="52395af1-4af3-4c4e-a910-7cf0d02e7831">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	AttendanceId: payload01.Id,
+	StudentName: payload01.Contact__r.Name,
+	Attended: payload01.Attended__c default false,
+	StudentId: payload01.Contact__c default ""
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+		<set-variable value="#[payload]" doc:name='Set "retrieve"' doc:id="0922b1bf-c176-4f5b-8d1c-8f9b52aa0920" variableName="retrieve" />
+		<ee:transform doc:name="Filter Items" doc:id="49acf3f1-f654-4a91-9aa1-cda2bebadd62" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+var exists = vars.retrieve map (item, index) -> item.StudentId
+---
+vars.upsert filter (item) -> not (exists contains item.Contact__c)]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+		<choice doc:name="Choice" doc:id="86473c10-da93-4ecf-adca-280a0853a1fc" >
+			<when expression="#[sizeOf(payload) &gt; 0]" >
 				<salesforce:upsert objectType="Attendance__c" externalIdFieldName="ExternalId__c" doc:name="Upsert Attendance" doc:id="8d6075d3-7f89-4f0f-b73d-5c968b34dbcf" config-ref="Salesforce_Config" >
 					<salesforce:records ><![CDATA[#[%dw 2.0
 output application/java
@@ -106,34 +148,40 @@ payload]]]></salesforce:records>
 						<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="a7e6ab49-248a-4c8b-9ddd-e0a24ab6c201" variableName="errorCustomMessage" />
 						<raise-error doc:name="Raise error" doc:id="b2875b59-8341-4d5e-b0b7-b4b0563d5c28" type="CUSTOM:CUSTOM_ERROR" description="Session is created, but something went wrong while creating related attendances." />
 					</when>
-					<otherwise >
-						<ee:transform doc:name="Create Response" doc:id="5bada35e-878c-4cb8-88eb-2d05f2db4a17" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
-							<ee:message >
-								<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
+				</choice>
+			</when>
+		</choice>
+		<salesforce:query doc:name="Retrieve All Attendances" doc:id="cbcdb96a-6d9b-4ed7-b31a-a2b9b712e481" config-ref="Salesforce_Config">
+							<salesforce:salesforce-query><![CDATA[
+			SELECT 
+				Id,
+				Contact__r.Name,
+				Contact__c,
+				Attended__c 
+			FROM 
+				Attendance__c 
+			WHERE 
+				Session__c = ':sessionid' 
+			AND Contact_Record_Type__c = 'SCORES Student'
+			]]></salesforce:salesforce-query>
+							<salesforce:parameters><![CDATA[#[output application/java
 ---
 {
-  SessionId: vars.sessionId,
-  Attendances: payload.items map ((item, itemIndex) -> item.payload)
+	sessionid : vars.sessionId
+}]]]></salesforce:parameters>
+						</salesforce:query>
+		<ee:transform doc:name="Transform Message" doc:id="006ce91a-0d6c-48b5-91d8-cf3d8ec0d15a" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+							<ee:message>
+								<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	AttendanceId: payload01.Id,
+	StudentName: payload01.Contact__r.Name,
+	Attended: payload01.Attended__c default false,
+	StudentId: payload01.Contact__c default ""
 }]]></ee:set-payload>
 							</ee:message>
 						</ee:transform>
-					</otherwise>
-				</choice>
-			</when>
-			<otherwise >
-				<ee:transform doc:name="Create Response" doc:id="807a31fe-7d01-43b3-991b-e733db1f3ef8" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
-					<ee:message >
-						<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
----
-{
-  SessionId: vars.sessionId,
-  Attendances: []
-}]]></ee:set-payload>
-					</ee:message>
-				</ee:transform>
-			</otherwise>
-		</choice>
 	</flow>
 	</mule>

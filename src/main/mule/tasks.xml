@@ -196,7 +196,7 @@ vars.task]]></ee:set-payload>
 						<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-vars.task ++ { Attendances: payload.Attendances default [] }]]></ee:set-payload>
+vars.task ++ { Attendances: payload default [] }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
 	</flow>
@@ -343,7 +343,7 @@ output application/json
 ---
 {
 	TaskId: vars.taskId,
-	Attendances: payload.Attendances default []
+	Attendances: payload default []
 }]]>
             </ee:set-payload>
           </ee:message>

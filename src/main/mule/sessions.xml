@@ -273,7 +273,11 @@ output application/json
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-payload]]></ee:set-payload>
+{
+    "SessionId": vars.sessionId,
+    "Attendances": payload
+}
+]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 	</flow>
