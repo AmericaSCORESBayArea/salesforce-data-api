@@ -472,7 +472,9 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 				Number_of_Enrollments__c,
 				Start_Date__c,
 				SystemModstamp,
-				Team_Season__c 
+				Team_Season__c,
+				Dropped__c,
+				Drop_Reason__c
 			FROM 
 				Enrollment__c 
 			WHERE 
@@ -515,6 +517,8 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	CurrentAddress: payload01.Contact__r.npsp__Current_Address__c default "", 
 	HomeAddress: payload01.Contact__r.npe01__Home_Address__c default "",
 	StudentRecordComplete: (payload01.Contact__r.Student_Record_Complete__c as String) as Boolean default false,
+	Dropped: payload01.Dropped__c as Boolean default false,
+	DropReason: payload01.Drop_Reason__c default "",
 	ParentInfo: {
 		FirstName: payload01.Contact__r.Parent_First_Name__c default "",
 		LastName: payload01.Contact__r.Parent_Last_Name__c default "",
