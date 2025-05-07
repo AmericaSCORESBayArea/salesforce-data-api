@@ -420,6 +420,18 @@ output application/json
 			</when>
 			<when expression='#[vars.originalPayload.TaskType == "Take Attendance"]'>
 				<flow-ref doc:name="Flow Reference" doc:id="47a9d17a-8757-4a4b-a248-5aec5c4df102" name="get:\tasks\(taskId):salesforce-data-api-config"/>
+				<ee:transform doc:name="Create Response" doc:id="1a3697e3-53dd-4fc1-ae29-4f4a9794a3ba" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Task updated successfully",
+	TaskId: payload.Id,
+	Attendances: payload.Attendances
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
 			</when>
 			<otherwise >
 				<ee:transform doc:id="fedcba98-7654-3210-fedc-ba9876543210" doc:name="Create Response">

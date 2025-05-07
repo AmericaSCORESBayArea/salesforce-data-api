@@ -252,6 +252,18 @@ output application/java
 		<choice doc:name="Choice" doc:id="636e0665-a408-4d9e-9339-8b0345da5589" >
 			<when expression="#[vars.createAttendances]">
 				<flow-ref doc:name="Call `createAttendancesForSessionBasedOnTeamSeasonId`" doc:id="26220665-5702-4b5f-9199-6ed08d3c4191" name="createAttendancesForSessionBasedOnTeamSeasonId" />
+				<ee:transform doc:name="Create Response" doc:id="a4e94cf9-897d-425c-8a69-8fea59b8728b" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "SessionId": vars.sessionId,
+    "Attendances": payload
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 			</when>
 			<otherwise >
 				<ee:transform doc:name="Create Response" doc:id="bb26a451-14f2-416c-9d61-2c9e0953227d" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
@@ -268,18 +280,6 @@ output application/json
 			</otherwise>
 		</choice>
 		<logger level="INFO" doc:name="Log Created Response" doc:id="640a58eb-a8ab-40f9-bcc2-a9cadcf86bb5" message="#[payload]" />
-		<ee:transform doc:name="Create Response" doc:id="a4e94cf9-897d-425c-8a69-8fea59b8728b" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-    "SessionId": vars.sessionId,
-    "Attendances": payload
-}
-]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
 	</flow>
 	<flow name="delete:\sessions\(sessionId):salesforce-data-api-config" doc:id="d97b31a5-0ea7-46d3-a346-cbca136228e3" >
 		<logger level="INFO" doc:name="Log entry-flow" doc:id="9ae3dcc8-74f5-4189-b3c1-bd9656a059ec" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
