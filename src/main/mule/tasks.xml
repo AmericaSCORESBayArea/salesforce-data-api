@@ -187,8 +187,8 @@ vars.task]]></ee:set-payload>
 				<set-variable value="#[payload[0].Session_Date__c]" doc:name="Set sessionDate" doc:id="b3ba57a3-042e-4b78-a891-3a97d633b797" variableName="sessionDate" />
 				<choice doc:name="Choice" doc:id="0e2c3bfc-21c5-4acd-815e-c31e5f7e9d15" doc:description="TO_DELETE: Delete once all sessions have dates." >
 					<when expression="#[isEmpty(vars.sessionDate)]" >
-						<set-variable value="#['SALESFORCE_TASK_CREATE:BAD_REQUEST']" doc:name="Set Custom Error Type" doc:id="14384c39-deb4-4f66-b847-04b61e455036" variableName="errorCustomType" />
-						<set-variable value="The given session doesn’t have a date. Cannot proceed with creating a task and attendance records." doc:name="Set Custom Error Message" doc:id="d3132527-7cda-480d-b28d-3aa2fe12c502" variableName="errorCustomMessage" />
+						<set-variable value="#['SALESFORCE_TASK_GET:BAD_REQUEST']" doc:name="Set Custom Error Type" doc:id="14384c39-deb4-4f66-b847-04b61e455036" variableName="errorCustomType" />
+						<set-variable value="The given session doesn’t have a date or does not exist. Cannot proceed with creating a task and attendance records." doc:name="Set Custom Error Message" doc:id="d3132527-7cda-480d-b28d-3aa2fe12c502" variableName="errorCustomMessage" />
 						<raise-error doc:name="Raise error" doc:id="fe77e915-6316-4296-bf94-dfb8b47eb37b" type="CUSTOM:CUSTOM_ERROR" description="Something went while creating a task record." />
 					</when>
 				</choice>
@@ -310,7 +310,7 @@ vars.task ++ { Attendances: [] }]]></ee:set-payload>
 				<choice doc:name="Choice" doc:id="14436a51-5822-47c3-a672-ff566d203342" doc:description="TO_DELETE: Delete once all sessions have dates.">
 					<when expression="#[isEmpty(vars.sessionDate)]">
 						<set-variable value="#['SALESFORCE_TASK_CREATE:BAD_REQUEST']" doc:name="Set Custom Error Type" doc:id="64f6bf38-d982-450a-8071-903dcbff612f" variableName="errorCustomType" />
-						<set-variable value='The given session doesn’t have a date. Cannot proceed with creating a task and attendance records.' doc:name="Set Custom Error Message" doc:id="fa1c9ac2-ce7e-4f04-b051-664b0d3ec8f2" variableName="errorCustomMessage" />
+						<set-variable value='The given session doesn’t have a date or does not exist. Cannot proceed with creating a task and attendance records.' doc:name="Set Custom Error Message" doc:id="fa1c9ac2-ce7e-4f04-b051-664b0d3ec8f2" variableName="errorCustomMessage" />
 						<raise-error doc:name="Raise error" doc:id="a7f01881-a713-4c3c-824d-5094d17fe4eb" type="CUSTOM:CUSTOM_ERROR" description="Something went while creating a task record." />
 					</when>
 				</choice>
