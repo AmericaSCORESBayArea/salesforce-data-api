@@ -2123,6 +2123,51 @@
 					"response": []
 				},
 				{
+					"name": "/tasks/{taskId}",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							},
+							{
+								"key": "Origin",
+								"value": "Postman",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url_s}}/tasks/a40cX000000S43tQAC",
+							"host": [
+								"{{base_url_s}}"
+							],
+							"path": [
+								"tasks",
+								"a40cX000000S43tQAC"
+							]
+						},
+						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
+					},
+					"response": []
+				},
+				{
 					"name": "/tasks",
 					"request": {
 						"method": "POST",
@@ -2143,7 +2188,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"AssignedBy\": \"\",\n    \"AssignedTo\": \"003cX000008IZnXQAW\",\n    \"CreatedByContact\": \"0051T000009eHfvQAE\",\n    \"CreatedContact\": \"\",\n    \"Description\": \"This is a test of the a task with a session ID\",\n    \"DueDate\": \"2024-11-30T00:00:00Z\",\n    \"LastModifiedBy\": \"0051T000009eHfvQAE\",\n    \"LastModifiedContact\": \"\",\n    \"OwnerId\": \"0051T000009eHfvQAE\",\n    \"Priority\": 76.2,\n    \"ResourceLink\": \"\",\n    \"Session\": \"a0pcX0000008y3pQAA\",\n    \"Name\": \"Third task to do!\",\n    \"TaskStatus\": \"Complete\",\n    \"TaskType\": \"HR Requirement\" \n}",
+							"raw": "{\n    \"AssignedBy\": \"\",\n    \"AssignedTo\": \"003cX000008IZnXQAW\",\n    \"CreatedByContact\": \"0051T000009eHfvQAE\",\n    \"CreatedContact\": \"\",\n    \"Description\": \"This is a test of the a task with a session ID\",\n    \"DueDate\": \"2024-11-30\",\n    \"LastModifiedBy\": \"0051T000009eHfvQAE\",\n    \"LastModifiedContact\": \"\",\n    \"OwnerId\": \"0051T000009eHfvQAE\",\n    \"Priority\": 76.2,\n    \"ResourceLink\": \"\",\n    \"Session\": \"a0pcX0000008y3pQAA\",\n    \"Name\": \"Third task to do!\",\n    \"TaskStatus\": \"Complete\",\n    \"TaskType\": \"HR Requirement\" \n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2184,7 +2229,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"AssignedBy\": \"\",\n    \"AssignedTo\": \"003cX000008IZnXQAW\",\n    \"CreatedByContact\": \"0051T000009eHfvQAE\",\n    \"CreatedContact\": \"\",\n    \"Description\": \"This is a test of the POST method #2.\",\n    \"DueDate\": \"2024-11-30T00:00:00Z\",\n    \"LastModifiedBy\": \"0051T000009eHfvQAE\",\n    \"LastModifiedContact\": \"\",\n    \"OwnerId\": \"0051T000009eHfvQAE\",\n    \"Priority\": 90.2,\n    \"ResourceLink\": \"\",\n    \"Session\": \"\",\n    \"Name\": \"Third task to do!!\",\n    \"TaskStatus\": \"Complete\",\n    \"TaskType\": \"HR Requirement\" \n}",
+							"raw": "{\n    \"AssignedBy\": \"\",\n    \"AssignedTo\": \"003cX000008IZnXQAW\",\n    \"CreatedByContact\": \"0051T000009eHfvQAE\",\n    \"CreatedContact\": \"\",\n    \"Description\": \"This is a test of the POST method #2.\",\n    \"DueDate\": \"2024-11-30\",\n    \"LastModifiedBy\": \"0051T000009eHfvQAE\",\n    \"LastModifiedContact\": \"\",\n    \"OwnerId\": \"0051T000009eHfvQAE\",\n    \"Priority\": 90.2,\n    \"ResourceLink\": \"\",\n    \"Session\": \"\",\n    \"Name\": \"Third task to do!!\",\n    \"TaskStatus\": \"Complete\",\n    \"TaskType\": \"HR Requirement\" \n}",
 							"options": {
 								"raw": {
 									"language": "json"

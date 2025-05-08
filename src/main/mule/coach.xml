@@ -700,43 +700,32 @@ output application/json
 			doc:name="Log Stored URI Params"
 			doc:id="f5fb5455-22c7-4d1f-b316-fa26806f3f1b"
 			message="URI Param - coachId: #[vars.coachId], teamseasonId: #[vars.teamSeasonId], sessionId: #[vars.sessionId] - stored as vars" />
-		<salesforce:query
-			doc:name="Query"
-			doc:id="2c95dcd3-8d07-446c-883b-98f1ae79ed9c"
-			config-ref="Salesforce_Config">
+		<salesforce:query doc:name="Query to get SessionDate from sessionId" doc:id="1ba5db69-b60e-4902-aee9-aad169f60f32" config-ref="Salesforce_Config">
 			<salesforce:salesforce-query><![CDATA[
-			SELECT 
-				Id,
-				Contact__r.Name,
-				Contact__c,
-				Attended__c 
-			FROM 
-				Attendance__c 
-			WHERE 
-				Session__c = ':sessionid' 
-			AND Contact_Record_Type__c = 'SCORES Student'
+				SELECT 
+					Id,
+					Session_Date__c
+				FROM 
+					Session__c
+				WHERE 
+					id = ':sessionId' 
+				LIMIT 1
 			]]></salesforce:salesforce-query>
 			<salesforce:parameters><![CDATA[#[output application/java
----
-{
-	sessionid : vars.sessionId
-}]]]></salesforce:parameters>
+				---
+				{
+						sessionId : vars.sessionId
+				}]]]></salesforce:parameters>
 		</salesforce:query>
-		<ee:transform
-			xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd"
-			doc:id="cc0b30b2-4bb2-4b3c-bfa8-72626dc8dc02">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-payload map ( payload01 , indexOfPayload01 ) -> {
-	AttendanceId: payload01.Id,
-	StudentName: payload01.Contact__r.Name,
-	Attended: payload01.Attended__c default false,
-	StudentId: payload01.Contact__c default ""
-}]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
+		<set-variable value="#[payload[0].Session_Date__c]" doc:name="Set sessionDate" doc:id="363e64d3-c8d5-421d-b28f-c04f9262b79d" variableName="sessionDate" />
+		<choice doc:name="Choice" doc:id="6d8e6d25-2088-410e-828e-51b13da45dd2" doc:description="TO_DELETE: Delete once all sessions have dates.">
+			<when expression="#[isEmpty(vars.sessionDate)]">
+				<set-variable value="#['SALESFORCE_TASK_CREATE:BAD_REQUEST']" doc:name="Set Custom Error Type" doc:id="52e68134-0915-494b-b10b-9d832344936f" variableName="errorCustomType" />
+				<set-variable value="The given session doesn’t have a date or does not exist. Cannot proceed with creating a task and attendance records." doc:name="Set Custom Error Message" doc:id="151cdac2-c9a1-4387-95da-8ec9bee0e995" variableName="errorCustomMessage" />
+				<raise-error doc:name="Raise error" doc:id="e64e98e4-8893-4b7b-be3b-f03f5d774cef" type="CUSTOM:CUSTOM_ERROR" description="Something went while creating a task record." />
+			</when>
+		</choice>
+		<flow-ref doc:name="Call `createAttendancesForSessionBasedOnTeamSeasonId`" doc:id="d2c9a729-d4e7-454a-9891-0b02770a9749" name="createAttendancesForSessionBasedOnTeamSeasonId" />
 		<logger
 			level="INFO"
 			doc:name="Log Created Response"

@@ -249,98 +249,37 @@ output application/java
 			</when>
 		</choice>
 		<set-variable value="#[payload.items[0].id]" doc:name="Set SessionId" doc:id="1bb65f85-ccb1-44dd-a649-6037aca328c7" variableName="sessionId" />
-		<choice doc:name="Choice" doc:id="f3a5ffb3-7fe7-4b3d-842c-f9a33d815e97" >
+		<choice doc:name="Choice" doc:id="636e0665-a408-4d9e-9339-8b0345da5589" >
 			<when expression="#[vars.createAttendances]">
-				<salesforce:query doc:name="Select Query with TeamSeasonId and SessionDate from Enrollment object" doc:id="4885618a-3146-49d5-8577-ea7d7b952dfd" config-ref="Salesforce_Config" target="enrollmentResponse">
-			<salesforce:salesforce-query><![CDATA[
-				SELECT Contact__c
-				FROM Enrollment__c 
-				WHERE Team_Season__c = ':teamSeasonId' 
-				AND Start_Date__c <= :sessionDate
-				AND End_Date__c >= :sessionDate
-				GROUP BY Contact__c
-				]]></salesforce:salesforce-query>
-			<salesforce:parameters><![CDATA[#[output application/java
-				---
-				{
-					teamSeasonId : vars.teamSeasonId,
-					sessionDate : vars.sessionDate
-				}]]]></salesforce:parameters>
-		</salesforce:query>
-				<choice doc:name="Choice" doc:id="f8b015c6-811d-4767-b2d4-fbdc06f5cbe9">
-					<when expression="#[sizeOf(vars.enrollmentResponse) &gt; 0]">
-						<ee:transform doc:name="Prepare Upsert" doc:id="71f3c55e-4143-4e4c-b79f-8ba9edffa0af">
-					<ee:message>
-						<ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-vars.enrollmentResponse map ( payload01 , indexOfPayload01 ) -> {
-	Contact__c: payload01.Contact__c,
-	Session__c: vars.sessionId,
-	Attended__c: false,
-	ExternalId__c: payload01.Contact__c ++ '-' ++ vars.sessionId
-}]]></ee:set-payload>
-					</ee:message>
-				</ee:transform>
-						<salesforce:upsert objectType="Attendance__c" externalIdFieldName="ExternalId__c" doc:name="Upsert Attendance" doc:id="f1d1f788-a0cf-454a-9084-bcec15198cd7" config-ref="Salesforce_Config">
-				<salesforce:records><![CDATA[#[%dw 2.0
-output application/java
----
-payload]]]></salesforce:records>
-			</salesforce:upsert>
-						<choice doc:name="Update successful?" doc:id="61cd491c-b2d8-443b-9a6d-8d94f8a6430a">
-					<when expression="#[payload.successful == false]">
-						<set-variable value="#['SALESFORCE_ATTENDANCE_CREATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="072cca5f-6026-438d-9191-c6a827d70cb4" variableName="errorCustomType" />
-						<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="089a7668-1b0b-475f-8a91-1c225fe1598a" variableName="errorCustomMessage" />
-						<raise-error doc:name="Raise error" doc:id="17098c84-335f-42b4-bcd5-d8d18ce4aba4" type="CUSTOM:CUSTOM_ERROR" description="Session is created, but something went wrong while creating related attendances." />
-					</when>
-					<otherwise>
-						<ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response" doc:id="6779c4d0-a8dc-4e33-befa-a4b77df09562">
-					<ee:message>
-						<ee:set-payload><![CDATA[%dw 2.0
+				<flow-ref doc:name="Call `createAttendancesForSessionBasedOnTeamSeasonId`" doc:id="26220665-5702-4b5f-9199-6ed08d3c4191" name="createAttendancesForSessionBasedOnTeamSeasonId" />
+				<ee:transform doc:name="Create Response" doc:id="a4e94cf9-897d-425c-8a69-8fea59b8728b" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
-  SessionId: vars.sessionId,
-  Attendances: payload
-}]]></ee:set-payload>
-					</ee:message>
-				</ee:transform>
-					</otherwise>
-				</choice>
-					</when>
-					<otherwise >
-						<ee:transform doc:name="Create Response" doc:id="ddd986f8-234f-45dc-a10a-15b74b2736c4" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
-							<ee:message >
-								<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
----
-{
-  SessionId: vars.sessionId,
-}]]></ee:set-payload>
-							</ee:message>
-						</ee:transform>
-					</otherwise>
-				</choice>
+    "SessionId": vars.sessionId,
+    "Attendances": payload
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 			</when>
 			<otherwise >
-				<ee:transform doc:name="Create Response" doc:id="1f8861ce-ac3c-49ea-b90f-6e0c661f2e20" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+				<ee:transform doc:name="Create Response" doc:id="bb26a451-14f2-416c-9d61-2c9e0953227d" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
 					<ee:message >
 						<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
 {
-  SessionId: vars.sessionId,
+    "SessionId": vars.sessionId,
+    "Attendances": []
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
 			</otherwise>
 		</choice>
-		<logger
-			level="INFO"
-			doc:name="Log Created Response"
-			doc:id="640a58eb-a8ab-40f9-bcc2-a9cadcf86bb5"
-			message="#[payload]" />
+		<logger level="INFO" doc:name="Log Created Response" doc:id="640a58eb-a8ab-40f9-bcc2-a9cadcf86bb5" message="#[payload]" />
 	</flow>
 	<flow name="delete:\sessions\(sessionId):salesforce-data-api-config" doc:id="d97b31a5-0ea7-46d3-a346-cbca136228e3" >
 		<logger level="INFO" doc:name="Log entry-flow" doc:id="9ae3dcc8-74f5-4189-b3c1-bd9656a059ec" message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
@@ -350,38 +289,65 @@ output application/json
 				]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<salesforce:query doc:name="Select Query with sessionId from Assessment object" doc:id="1e288924-44bc-4e3c-b544-5b51936d7367" config-ref="Salesforce_Config" target="assesmentResponse" targetValue="#[output application/json &#10;---&#10;payload]">
-			<salesforce:salesforce-query ><![CDATA[SELECT Id FROM Assessment__c WHERE Session__c = ':sessionId'
+		<salesforce:query doc:name="Select Query with sessionId from Session object" doc:id="95a75432-c90d-4d93-8c18-fd4608b87383" config-ref="Salesforce_Config" target="sessionResponse" targetValue="#[output application/json &#10;---&#10;payload]">
+			<salesforce:salesforce-query><![CDATA[SELECT Id FROM Session__c WHERE Id = ':sessionId' LIMIT 1
 			]]></salesforce:salesforce-query>
-			<salesforce:parameters ><![CDATA[#[output application/java
+			<salesforce:parameters><![CDATA[#[output application/java
 ---
 {
 	sessionId : vars.sessionId
 }]]]></salesforce:parameters>
 		</salesforce:query>
-		<salesforce:query doc:name="Select Query with sessionId from Attendence object" doc:id="cfe08f1a-cc1a-4102-bf59-a6aaeb021ec5" config-ref="Salesforce_Config" target="attendanceResponse" targetValue="#[output application/json &#10;---&#10;payload]">
-			<salesforce:salesforce-query ><![CDATA[SELECT Id FROM Attendance__c WHERE  Session__c = ':sessionId' AND Attended__c = true
+		<choice doc:name="Choice" doc:id="fc9a823d-ec3d-43fa-9f0b-2a0b5c64f622" >
+			<when expression="isEmpty(vars.sessionResponse)">
+				<set-variable value="404" doc:name="Set Status Code" doc:id="11ceb518-30ca-42fd-be2d-719126a99750" variableName="httpStatus" />
+				<ee:transform doc:name="Session does not exist" doc:id="1011e495-7284-4c5b-a1fa-3164d3ace732" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message" : "Session does not exist",
+	"assessmentIds": [],
+	"attendenceIds": [],
+	"success": false
+		
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<salesforce:query doc:name="Select Query with sessionId from Assessment object" doc:id="1e288924-44bc-4e3c-b544-5b51936d7367" config-ref="Salesforce_Config" target="assesmentResponse" targetValue="#[output application/json &#10;---&#10;payload]">
+			<salesforce:salesforce-query><![CDATA[SELECT Id FROM Assessment__c WHERE Session__c = ':sessionId'
 			]]></salesforce:salesforce-query>
-			<salesforce:parameters ><![CDATA[#[output application/java
+			<salesforce:parameters><![CDATA[#[output application/java
 ---
 {
 	sessionId : vars.sessionId
 }]]]></salesforce:parameters>
 		</salesforce:query>
-		<set-variable value='#["true"]' doc:name="Set Variable" doc:id="6ed36b25-91dd-4429-bf78-2f5cb16190a2" variableName="sessionFlag"/>
-		<choice doc:name="Choice" doc:id="92f74e31-c84b-4d92-96a8-a54282a8f912" >
-			<when expression='#[isEmpty(vars.assesmentResponse) and isEmpty(vars.attendanceResponse)]'>
+				<salesforce:query doc:name="Select Query with sessionId from Attendence object" doc:id="cfe08f1a-cc1a-4102-bf59-a6aaeb021ec5" config-ref="Salesforce_Config" target="attendanceResponse" targetValue="#[output application/json &#10;---&#10;payload]">
+			<salesforce:salesforce-query><![CDATA[SELECT Id, Attended__c FROM Attendance__c WHERE  Session__c = ':sessionId'
+			]]></salesforce:salesforce-query>
+			<salesforce:parameters><![CDATA[#[output application/java
+---
+{
+	sessionId : vars.sessionId
+}]]]></salesforce:parameters>
+		</salesforce:query>
+				<set-variable value='#[%dw 2.0&#10;output application/json&#10;var attendedTrue = vars.attendanceResponse filter (item, itemIndex) -&gt; (item.Attended__c == "true")&#10;---&#10;{&#10;    toRemove: isEmpty(attendedTrue),&#10;    ids: vars.attendanceResponse map (item, itemIndex) -&gt; (item.Id),&#10;    idsTrue: attendedTrue map (item, itemIndex) -&gt; (item.Id)&#10;}]' doc:name="Set Attendances `toRemove` and `Ids`" doc:id="803dbfac-430e-491a-9576-ba7644ba9ccd" variableName="attendanceResponsePrepared"/>
+				<choice doc:name="Choice" doc:id="92f74e31-c84b-4d92-96a8-a54282a8f912">
+			<when expression="#[isEmpty(vars.assesmentResponse) and vars.attendanceResponsePrepared.toRemove]">
 				<ee:transform doc:name="sessionIds" doc:id="0fbc4a8b-63a7-4921-a442-cb27583294c7">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
 output application/java
 ---
-[vars.sessionId]]]></ee:set-payload>
+vars.attendanceResponsePrepared.ids + vars.sessionId]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-				<salesforce:delete doc:name="Delete" doc:id="b57d6d95-dcd0-48de-a55e-f5bb0f1186d5" config-ref="Salesforce_Config" >
-				</salesforce:delete>
-				<ee:transform doc:name="Transform Message" doc:id="903290a7-d881-491c-801e-80979a824387">
+				<salesforce:delete doc:name="Delete" doc:id="6f2a821e-2e0f-416d-a109-983073873bba" config-ref="Salesforce_Config" />
+						<ee:transform doc:name="Transform Message" doc:id="903290a7-d881-491c-801e-80979a824387">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -389,52 +355,47 @@ output application/json
 payload]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-				<choice doc:name="Choice" doc:id="100917c1-dab8-4514-a8f8-9f37f8ab0948">
-					<when expression="#[payload.successful == true]">
-						<ee:transform doc:name="success response" doc:id="6f9995d5-7f26-43e0-84b5-37947225a965" >
-							<ee:message >
-								<ee:set-payload ><![CDATA[%dw 2.0
+						<choice doc:name="Update successful?" doc:id="57cfc27f-d39b-489a-a941-195e88648fa2" >
+							<when expression="#[payload.successful == false]" >
+								<set-variable value="#['SALESFORCE_SESSION_CREATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="599e729e-d7a1-4679-91a0-694cf584353c" variableName="errorCustomType" />
+								<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="cb64c6a4-6537-4a20-a9ad-fb2248e6bb68" variableName="errorCustomMessage" />
+								<raise-error doc:name="Raise error" doc:id="d432f898-eca8-410d-b79b-50cf1dffbd6f" type="CUSTOM:CUSTOM_ERROR" description="Something went wrong while creating a session record." />
+							</when>
+							<otherwise >
+								<ee:transform doc:name="Success Response" doc:id="6f9995d5-7f26-43e0-84b5-37947225a965">
+							<ee:message>
+								<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
-	"message" : "session is deleted successfully",
+	"message" : "Session and related attendances are deleted successfully",
 	"sessionId": vars.sessionId,
+	"attendenceIds": vars.attendanceResponsePrepared.ids,
 	"success": true
 }]]></ee:set-payload>
 							</ee:message>
 						</ee:transform>
-					</when>
-					<otherwise >
-						<ee:transform doc:name="Error response" doc:id="d4dc91ae-9b28-418d-9dfe-93075831d489" >
-							<ee:message >
-								<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
----
-{
-	"message" : "Error while deleting session",
-	"sessionId": vars.sessionId,
-	"success": false
-}]]></ee:set-payload>
-							</ee:message>
-						</ee:transform>
-					</otherwise>
-				</choice>
+							</otherwise>
+						</choice>
 			</when>
-			<otherwise >
-				<ee:transform doc:name="Session is active" doc:id="cb95577e-30b3-42c4-9320-2d4238060952" >
-					<ee:message >
-						<ee:set-payload ><![CDATA[%dw 2.0
+			<otherwise>
+				<set-variable value="409" doc:name="Set Status Code" doc:id="160ffd55-710a-4baa-88f4-82c6f288f3ef" variableName="httpStatus" />
+						<ee:transform doc:name="Session is active" doc:id="cb95577e-30b3-42c4-9320-2d4238060952">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
-	"message" : "Session is active",
+	"message" : "There are students attended this session, therefore the session is active and cannot be removed",
 	"assessmentIds": vars.assesmentResponse,
-	"attendenceIds": vars.attendanceResponse,
+	"attendenceIds": vars.attendanceResponsePrepared.idsTrue,
 	"success": false
 		
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
+			</otherwise>
+		</choice>
 			</otherwise>
 		</choice>
 	</flow>
