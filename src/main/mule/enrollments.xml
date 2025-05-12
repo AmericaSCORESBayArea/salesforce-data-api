@@ -93,6 +93,21 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			doc:id="23d190d2-b7d1-4e34-ac23-2b48a62d2b98"
 			message="#[payload]" />
 	</flow>
+	<flow name="get:\enrollments\dropreasons:salesforce-data-api-config" doc:id="d609ae10-5ce1-43f1-8756-e09b41d942b2" >
+		<salesforce:describe-sobject doc:name="Describe sobject" doc:id="657c0c7d-b832-4b3f-b28c-8a81eca2be28" config-ref="Salesforce_Config" type="Enrollment__c"/>
+		<ee:transform doc:name="Transform Message" doc:id="d59d23e8-5f54-4874-9824-1f1392c37307" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+(
+    payload.fields 
+        filter (field) -> field.name == "Drop_Reason__c"
+)[0].picklistValues 
+    map (item) -> item.value]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
 	<flow
 		name="get:\enrollments\(enrollmentId):salesforce-data-api-config">
 		<logger

@@ -250,6 +250,23 @@ uses:
           application/json:
             example:
               message: Enrollment/s deleted successfully 
+  /dropreasons:
+    get:
+      description: Retrieve a list of valid drop reasons for enrollments.
+      responses:
+        200:
+          body:
+            application/json:
+              type: string[]
+              example: |
+                [
+                  "Schedule Conflict",
+                  "Moved Away",
+                  "Lost Interest",
+                  "Health Reasons",
+                  "Disciplinary Action",
+                  "Other"
+                ]
   /{enrollmentId}:
     get:
       responses:
