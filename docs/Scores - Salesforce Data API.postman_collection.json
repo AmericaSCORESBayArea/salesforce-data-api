@@ -2209,6 +2209,40 @@
 					"response": []
 				},
 				{
+					"name": "/tasks/{coachId}/stats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							},
+							{
+								"key": "Origin",
+								"value": "Postman",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url_s}}/tasks/003cX000008IZnXQAW/stats",
+							"host": [
+								"{{base_url_s}}"
+							],
+							"path": [
+								"tasks",
+								"003cX000008IZnXQAW",
+								"stats"
+							]
+						},
+						"description": "Response Example:\n\n{ \"Not Started\": 1, \"Started\": 0, \"Complete\": 41}"
+					},
+					"response": []
+				},
+				{
 					"name": "/tasks/{taskId}",
 					"request": {
 						"method": "PATCH",
