@@ -214,6 +214,44 @@ vars.task ++ { Attendances: [] }]]></ee:set-payload>
 			</otherwise>
 		</choice>
 	</flow>
+	<flow name="get:\tasks\(coachId)\stats" doc:id="7460545c-3cf6-4ead-b850-398c204fe06b" >
+		<set-variable value="#[attributes.uriParams.'coachId']" doc:name='Save "coachId"' doc:id="3694e194-ef36-4f13-942b-a4c0c3f4e32e" variableName="coachId"/>
+		<salesforce:query doc:name='Query to gather stats based on "coachId"' doc:id="eb46a43b-fa44-4334-9db5-187bc74f87b1" config-ref="Salesforce_Config" target="availableStats">
+			<salesforce:salesforce-query ><![CDATA[SELECT Task_Status__c, COUNT(Id)
+FROM SCORES_Task__c
+WHERE Assigned_To__c = ':coachId'
+GROUP BY Task_Status__c]]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[output application/java
+				---
+{
+	coachId: vars.coachId,
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<salesforce:describe-sobject type="SCORES_Task__c" doc:name="Get SCORES_Task__c properties (Describe sobject)" doc:id="c1c6e3fb-40db-47d4-a353-7e53fb41197a" config-ref="Salesforce_Config" />
+		<ee:transform doc:name='Filter "Task_Status__c" values' doc:id="1ef0835c-8476-4229-9f92-069900bfcbd7" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+(
+    payload.fields 
+        filter (field) -> field.name == "Task_Status__c"
+)[0].picklistValues 
+    map (item) -> item.value]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="Prepare Stats" doc:id="5fcb5f09-d407-4c3c-ae4e-8b09c757672d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var memo = vars.availableStats reduce (item, acc = {}) -> 
+  acc ++ {(item.Task_Status__c): item.expr0}
+var result = payload map ((item, index) -> {(item): memo[item] default 0})
+---
+result reduce ((item, acc = {}) -> acc ++ item)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
 	<flow name="get:\tasks\(taskId)\tags:salesforce-data-api-config">
     <logger level="INFO" message="get:\tasks\(taskId)\tags:salesforce-data-api-config"></logger>
     <ee:transform doc:id="7e56aada-f163-47f0-8ffc-213f1acd09a8" doc:name="Store Query parameters">
