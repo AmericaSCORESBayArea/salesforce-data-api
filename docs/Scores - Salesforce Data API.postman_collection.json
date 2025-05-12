@@ -560,6 +560,39 @@
 					"response": []
 				},
 				{
+					"name": "/enrollments/dropreasons",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							},
+							{
+								"key": "Origin",
+								"value": "Postman",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/enrollments/dropreasons",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"enrollments",
+								"dropreasons"
+							]
+						},
+						"description": "Response example:\n\n\\[ \"Schedule Conflict\", \"Moved Away\", \"Lost Interest\", \"Health Reasons\", \"Disciplinary Action\", \"Other\"\\]"
+					},
+					"response": []
+				},
+				{
 					"name": "/enrollments",
 					"request": {
 						"method": "DELETE",
