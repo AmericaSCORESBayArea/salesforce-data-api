@@ -283,7 +283,7 @@ output application/java
 			<when expression="#[payload.successful == false]">
 				<set-variable value="#['SALESFORCE_ENROLLMENT_UPDATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="b9040877-1f5b-4788-a786-b5384e68f239" variableName="errorCustomType" />
 				<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="7c6fec7f-dbc4-46a3-917a-183fd5bc796b" variableName="errorCustomMessage" />
-				<raise-error doc:name="Raise error" doc:id="844ccc3d-6ada-4719-aa14-1fad90ea1000" type="CUSTOM:CUSTOM_ERROR" description="Something went while updating an enrollment record." />
+				<raise-error doc:name="Raise error" doc:id="844ccc3d-6ada-4719-aa14-1fad90ea1000" type="CUSTOM:CUSTOM_ERROR" description="Something went wrong while updating an enrollment record." />
 			</when>
 		</choice>
 		<ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Create Response" doc:id="5cd8fa6a-e3d1-44de-9625-aff048e5fc8f">
