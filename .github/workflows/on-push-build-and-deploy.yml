@@ -125,6 +125,8 @@ jobs:
           -Dslack.client_id="${{ secrets.SLACK_CLIENT_ID }}" \
           -Dslack.client_secret="${{ secrets.SLACK_CLIENT_SECRET }}" \
           -Dslack.enabled=true \
+          -DworkerType=MEDIUM \
+          -Dworkers=1 \
           -DskipTests
  
 
