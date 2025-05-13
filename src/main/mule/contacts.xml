@@ -1146,7 +1146,7 @@ output application/java
 			<when expression="#[payload.successful == false]">
 				<set-variable value="#['SALESFORCE_CONTACT_UPDATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="7ad844ad-82d9-4148-9596-96f4a5f508b1" variableName="errorCustomType" />
 				<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="fd73d10f-89d1-4744-b11d-9c8e02b886d6" variableName="errorCustomMessage" />
-				<raise-error doc:name="Raise error" doc:id="42cf2f5b-f5ef-4d5b-9ef5-6eae1595fb5e" type="CUSTOM:CUSTOM_ERROR" description="Something went while updating a contact record." />
+				<raise-error doc:name="Raise error" doc:id="42cf2f5b-f5ef-4d5b-9ef5-6eae1595fb5e" type="CUSTOM:CUSTOM_ERROR" description="Something went wrong while updating a contact record." />
 			</when>
 		</choice>
 		<flow-ref name="get:\contacts\(contactId):salesforce-data-api-config"></flow-ref>
@@ -1474,13 +1474,13 @@ attributes.queryParams.'searchString' replace /[&|!(){}\[\]^"~*?:\\'+\-]/ with("
 				<set-variable value="SEARCH:BAD_REQUEST" doc:name="Set Custom Error Type" doc:id="93817aa7-88f2-480e-b17e-172c65934d04" variableName="errorCustomType" />
 				<set-variable value="`searchString` is empty or includes only special characters" doc:name="Set Custom Error Message" doc:id="2bd394d4-e6fc-4155-ae4b-f7de594c0286" variableName="errorCustomMessage" />
 				<set-variable value="400" doc:name="Set Status Code" doc:id="0c98deb5-8566-4366-832d-f7f2ca65ed3e" variableName="httpStatus" />
-				<raise-error doc:name="Raise error1" doc:id="5ddc84e5-66a7-4edb-a986-c4990d471b8e" type="CUSTOM:CUSTOM_ERROR" description="Something went while performing a search." />
+				<raise-error doc:name="Raise error1" doc:id="5ddc84e5-66a7-4edb-a986-c4990d471b8e" type="CUSTOM:CUSTOM_ERROR" description="Something went wrong while performing a search." />
 			</when>
 			<when expression="#[sizeOf(vars.searchString) == 1]">
 				<set-variable value="SEARCH:BAD_REQUEST" doc:name="Set Custom Error Type" doc:id="907c8a99-990b-43e2-a2a9-90a8d01f14b7" variableName="errorCustomType" />
 				<set-variable value="`searchString` must be more than 1 character after cleaning from special characters." doc:name="Set Custom Error Message" doc:id="0617dfe4-bb94-47de-993c-547978c7ef6e" variableName="errorCustomMessage" />
 				<set-variable value="422" doc:name="Set Status Code" doc:id="dd0a4f31-e1a3-49ed-ba19-dfdfba7d1fd2" variableName="httpStatus" />
-				<raise-error doc:name="Raise error1" doc:id="23438120-62a7-4e1c-8dfe-e517777ff937" type="CUSTOM:CUSTOM_ERROR" description="Something went while performing a search." />
+				<raise-error doc:name="Raise error1" doc:id="23438120-62a7-4e1c-8dfe-e517777ff937" type="CUSTOM:CUSTOM_ERROR" description="Something went wrong while performing a search." />
 			</when>
 		</choice>
 		<salesforce:search config-ref="Salesforce_Config" doc:id="count-query" doc:name="Get Total Count">

@@ -189,7 +189,7 @@ vars.task]]></ee:set-payload>
 					<when expression="#[isEmpty(vars.sessionDate)]" >
 						<set-variable value="#['SALESFORCE_TASK_GET:BAD_REQUEST']" doc:name="Set Custom Error Type" doc:id="14384c39-deb4-4f66-b847-04b61e455036" variableName="errorCustomType" />
 						<set-variable value="The given session doesn’t have a date or does not exist. Cannot proceed with creating a task and attendance records." doc:name="Set Custom Error Message" doc:id="d3132527-7cda-480d-b28d-3aa2fe12c502" variableName="errorCustomMessage" />
-						<raise-error doc:name="Raise error" doc:id="fe77e915-6316-4296-bf94-dfb8b47eb37b" type="CUSTOM:CUSTOM_ERROR" description="Something went while creating a task record." />
+						<raise-error doc:name="Raise error" doc:id="fe77e915-6316-4296-bf94-dfb8b47eb37b" type="CUSTOM:CUSTOM_ERROR" description="Something went wrong while creating a task record." />
 					</when>
 				</choice>
 				<flow-ref doc:name="Call `createAttendancesForSessionBasedOnTeamSeasonId`" doc:id="698c33b1-167a-446d-9db8-beac679f1b71" name="createAttendancesForSessionBasedOnTeamSeasonId" />
@@ -213,6 +213,44 @@ vars.task ++ { Attendances: [] }]]></ee:set-payload>
 				</ee:transform>
 			</otherwise>
 		</choice>
+	</flow>
+	<flow name="get:\tasks\(coachId)\stats" doc:id="7460545c-3cf6-4ead-b850-398c204fe06b" >
+		<set-variable value="#[attributes.uriParams.'coachId']" doc:name='Save "coachId"' doc:id="3694e194-ef36-4f13-942b-a4c0c3f4e32e" variableName="coachId"/>
+		<salesforce:query doc:name='Query to gather stats based on "coachId"' doc:id="eb46a43b-fa44-4334-9db5-187bc74f87b1" config-ref="Salesforce_Config" target="availableStats">
+			<salesforce:salesforce-query ><![CDATA[SELECT Task_Status__c, COUNT(Id)
+FROM SCORES_Task__c
+WHERE Assigned_To__c = ':coachId'
+GROUP BY Task_Status__c]]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[output application/java
+				---
+{
+	coachId: vars.coachId,
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<salesforce:describe-sobject type="SCORES_Task__c" doc:name="Get SCORES_Task__c properties (Describe sobject)" doc:id="c1c6e3fb-40db-47d4-a353-7e53fb41197a" config-ref="Salesforce_Config" />
+		<ee:transform doc:name='Filter "Task_Status__c" values' doc:id="1ef0835c-8476-4229-9f92-069900bfcbd7" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+(
+    payload.fields 
+        filter (field) -> field.name == "Task_Status__c"
+)[0].picklistValues 
+    map (item) -> item.value]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="Prepare Stats" doc:id="5fcb5f09-d407-4c3c-ae4e-8b09c757672d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var memo = vars.availableStats reduce (item, acc = {}) -> 
+  acc ++ {(item.Task_Status__c): item.expr0}
+var result = payload map ((item, index) -> {(item): memo[item] default 0})
+---
+result reduce ((item, acc = {}) -> acc ++ item)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 	</flow>
 	<flow name="get:\tasks\(taskId)\tags:salesforce-data-api-config">
     <logger level="INFO" message="get:\tasks\(taskId)\tags:salesforce-data-api-config"></logger>
@@ -283,7 +321,7 @@ vars.task ++ { Attendances: [] }]]></ee:set-payload>
 			<when expression='#[isEmpty(vars.originalPayload.Session) and vars.originalPayload.TaskType == "Take Attendance"]'>
 				<set-variable value="#['SALESFORCE_TASK_CREATE:BAD_REQUEST']" doc:name="Set Custom Error Type" doc:id="3046647c-9c65-4558-a74d-b6078713e542" variableName="errorCustomType" />
 				<set-variable value='The "Take Attendance" task is required to have a "Session".' doc:name="Set Custom Error Message" doc:id="1bd8ec9a-e801-487c-bbdb-f0a4264f4983" variableName="errorCustomMessage" />
-				<raise-error doc:name="Raise error" doc:id="e6795de9-af7c-4319-af47-636d2a40a4d1" type="CUSTOM:CUSTOM_ERROR" description="Something went while creating a task record." />
+				<raise-error doc:name="Raise error" doc:id="e6795de9-af7c-4319-af47-636d2a40a4d1" type="CUSTOM:CUSTOM_ERROR" description="Something went wrong while creating a task record." />
 			</when>
 				<when expression='#[vars.originalPayload.TaskType == "Take Attendance"]'>
 				<set-variable value="#[vars.originalPayload.Session]" doc:name="Set sessionId" doc:id="e427cb8b-01d6-4f14-be2c-5bec7aab7bb1" variableName="sessionId" />
@@ -311,7 +349,7 @@ vars.task ++ { Attendances: [] }]]></ee:set-payload>
 					<when expression="#[isEmpty(vars.sessionDate)]">
 						<set-variable value="#['SALESFORCE_TASK_CREATE:BAD_REQUEST']" doc:name="Set Custom Error Type" doc:id="64f6bf38-d982-450a-8071-903dcbff612f" variableName="errorCustomType" />
 						<set-variable value='The given session doesn’t have a date or does not exist. Cannot proceed with creating a task and attendance records.' doc:name="Set Custom Error Message" doc:id="fa1c9ac2-ce7e-4f04-b051-664b0d3ec8f2" variableName="errorCustomMessage" />
-						<raise-error doc:name="Raise error" doc:id="a7f01881-a713-4c3c-824d-5094d17fe4eb" type="CUSTOM:CUSTOM_ERROR" description="Something went while creating a task record." />
+						<raise-error doc:name="Raise error" doc:id="a7f01881-a713-4c3c-824d-5094d17fe4eb" type="CUSTOM:CUSTOM_ERROR" description="Something went wrong while creating a task record." />
 					</when>
 				</choice>
 			</when>
@@ -341,7 +379,7 @@ vars.task ++ { Attendances: [] }]]></ee:set-payload>
 			<when expression="#[payload.successful == false]">
 				<set-variable value="#['SALESFORCE_TASK_CREATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="f249a0dc-5aa0-4602-8892-7d3f88d9803e" variableName="errorCustomType" />
 				<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="981e406e-d3b3-40ef-a6eb-ed275aefe119" variableName="errorCustomMessage" />
-				<raise-error doc:name="Raise error" doc:id="140608b5-54cf-46b4-bb71-72fc3936666b" type="CUSTOM:CUSTOM_ERROR" description="Something went while creating a task record." />
+				<raise-error doc:name="Raise error" doc:id="140608b5-54cf-46b4-bb71-72fc3936666b" type="CUSTOM:CUSTOM_ERROR" description="Something went wrong while creating a task record." />
 			</when>
 		</choice>
 		<set-variable value="#[payload.items[0].id]" doc:name="Set taskId" doc:id="9d95ea48-739e-446d-935c-de8565d88720" variableName="taskId" />
@@ -416,7 +454,7 @@ output application/json
 			<when expression="#[payload.successful == false]">
 				<set-variable value="#['SALESFORCE_TASK_UPDATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="ccedeaca-059e-42c7-a1f1-7e366f3491a8" variableName="errorCustomType" />
 				<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="2a56b6a0-da4b-42be-8724-c1d6755eed24" variableName="errorCustomMessage" />
-				<raise-error doc:name="Raise error" doc:id="72edbd97-752e-404a-a756-3b0f5fa9d27b" type="CUSTOM:CUSTOM_ERROR" description="Something went while updating a task record." />
+				<raise-error doc:name="Raise error" doc:id="72edbd97-752e-404a-a756-3b0f5fa9d27b" type="CUSTOM:CUSTOM_ERROR" description="Something went wrong while updating a task record." />
 			</when>
 			<when expression='#[vars.originalPayload.TaskType == "Take Attendance"]'>
 				<flow-ref doc:name="Flow Reference" doc:id="47a9d17a-8757-4a4b-a248-5aec5c4df102" name="get:\tasks\(taskId):salesforce-data-api-config"/>

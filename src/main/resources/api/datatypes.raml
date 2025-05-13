@@ -359,6 +359,9 @@ types:
         type: boolean
       DropReason:
         type: string
+      OtherDropReason:
+        type: string
+        required: false
     examples: !include enrollment-examples.raml
 
   EnrollmentByContactID:
@@ -396,6 +399,9 @@ types:
       DropReason:
         type: string
         required: false
+      OtherDropReason:
+        type: string
+        required: false
 
   EnrollmentUpdateModel:
     type: object
@@ -417,6 +423,9 @@ types:
         type: boolean
         required: false
       DropReason:
+        type: string
+        required: false
+      OtherDropReason:
         type: string
         required: false
   EnrollmentUpdateModelDatesOnly:

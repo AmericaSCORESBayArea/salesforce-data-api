@@ -144,7 +144,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			<when expression="#[payload.successful == false]">
 				<set-variable value="#['SALESFORCE_ENROLLMENT_UPDATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="228e9700-a1a4-4746-bc33-551331da7d44" variableName="errorCustomType" />
 				<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="d36375c3-f397-4add-b0f3-0fca23cd0f52" variableName="errorCustomMessage" />
-				<raise-error doc:name="Raise error" doc:id="579e74cf-ed44-48c6-b31f-03e9e4def9e6" type="CUSTOM:CUSTOM_ERROR" description="Something went while updating an enrollment record." />
+				<raise-error doc:name="Raise error" doc:id="579e74cf-ed44-48c6-b31f-03e9e4def9e6" type="CUSTOM:CUSTOM_ERROR" description="Something went wrong while updating an enrollment record." />
 			</when>
 		</choice>
 		<ee:transform doc:name="Create Response" doc:id="8790764d-7b54-4f5f-b7ee-c9b6b3bc11f0" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
@@ -435,7 +435,7 @@ output application/java
 			<when expression="#[payload.successful == false]">
 				<set-variable value="#['SALESFORCE_TEAMSEASON_UPDATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="026cd259-9726-425e-bb66-154541a22d73" variableName="errorCustomType" />
 				<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="0170e543-819b-4a25-8da1-6bcde2b9d375" variableName="errorCustomMessage" />
-				<raise-error doc:name="Raise error" doc:id="b2683551-d1b1-4f78-ab99-b790a30616ff" type="CUSTOM:CUSTOM_ERROR" description="Something went while creating a TeamSeason record." />
+				<raise-error doc:name="Raise error" doc:id="b2683551-d1b1-4f78-ab99-b790a30616ff" type="CUSTOM:CUSTOM_ERROR" description="Something went wrong while creating a TeamSeason record." />
 			</when>
 		</choice>
 		<ee:transform doc:id="72afa280-ab53-48ec-ada3-2965f6254973" doc:name="Create Response" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">

@@ -250,6 +250,23 @@ uses:
           application/json:
             example:
               message: Enrollment/s deleted successfully 
+  /dropreasons:
+    get:
+      description: Retrieve a list of valid drop reasons for enrollments.
+      responses:
+        200:
+          body:
+            application/json:
+              type: string[]
+              example: |
+                [
+                  "Schedule Conflict",
+                  "Moved Away",
+                  "Lost Interest",
+                  "Health Reasons",
+                  "Disciplinary Action",
+                  "Other"
+                ]
   /{enrollmentId}:
     get:
       responses:
@@ -1225,6 +1242,20 @@ uses:
           application/json:
             example:
               message: Task created
+  /{coachId}/stats:
+    get:
+      description: Retrieve summary statistics of SCORES tasks assigned to a specific coach, grouped by status
+      responses:
+        200:
+          body:
+            application/json:
+              type: object
+              example: |
+                {
+                  "Not Started": 1,
+                  "Started": 0,
+                  "Complete": 42
+                }
   /{taskId}:
     uriParameters:
       taskId:
