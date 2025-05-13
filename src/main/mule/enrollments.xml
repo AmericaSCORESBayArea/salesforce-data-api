@@ -45,7 +45,8 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 				Start_Date__c,
 				Team_Season__c,
 				Dropped__c,
-				Drop_Reason__c
+				Drop_Reason__c,
+				Other_Drop_Reason_If_Selected__c
 			FROM 
 				Enrollment__c 
 			WHERE 
@@ -83,7 +84,8 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	ParentFirstName: payload01.Contact__r.Parent_First_Name__c default "",
 	ParentLastName: payload01.Contact__r.Parent_Last_Name__c default "",
 	Dropped: payload01.Dropped__c as Boolean default false,
-	DropReason: payload01.Drop_Reason__c default ""
+	DropReason: payload01.Drop_Reason__c default "",
+	OtherDropReason: payload01.Other_Drop_Reason_If_Selected__c default ""
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
@@ -142,7 +144,8 @@ output application/json
 				Start_Date__c,
 				Team_Season__c,
 				Dropped__c,
-				Drop_Reason__c
+				Drop_Reason__c,
+				Other_Drop_Reason_If_Selected__c
 			FROM 
 				Enrollment__c 
 			WHERE 
@@ -178,7 +181,8 @@ output application/json
 						Ethnicity: payload01.Contact__r.Ethnicity__c default "",
 						ZipCode: payload01.Contact__r.Zip_First_Five_Digits__c default "",
 						Dropped: payload01.Dropped__c as Boolean default false,
-						DropReason: payload01.Drop_Reason__c default ""
+						DropReason: payload01.Drop_Reason__c default "",
+						OtherDropReason: payload01.Other_Drop_Reason_If_Selected__c default ""
 					}]]>
 				</ee:set-payload>
 			</ee:message>
@@ -211,7 +215,8 @@ output application/json
 								Ethnicity: payload01.Ethnicity default "",
 								ZipCode: payload01.ZipCode default "",
 								Dropped: payload01.Dropped as Boolean default false,
-								DropReason: payload01.DropReason default ""
+								DropReason: payload01.DropReason default "",
+								OtherDropReason: payload01.OtherDropReason default ""
 							}]]>
 						</ee:set-payload>
 					</ee:message>
@@ -270,7 +275,8 @@ output application/java
 	(End_Date__c: payload.EndDate as Date {format: 'yyyy-MM-dd'}) if payload.EndDate != null,
 	(Team_Season__c: payload.TeamSeasonId) if payload.TeamSeasonId != null,
 	(Dropped__c: payload.Dropped) if payload.Dropped != null,
-	(Drop_Reason__c: payload.DropReason) if payload.DropReason != null
+	(Drop_Reason__c: payload.DropReason) if payload.DropReason != null,
+	(Other_Drop_Reason_If_Selected__c: payload.OtherDropReason) if payload.OtherDropReason != null
 }]]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
@@ -322,7 +328,8 @@ output application/java
 	(Start_Date__c: payload.StartDate as Date {format: 'yyyy-MM-dd'}) if payload.StartDate != null,
 	(End_Date__c: payload.EndDate as Date {format: 'yyyy-MM-dd'}) if payload.EndDate != null,
 	(Dropped__c: payload.Dropped) if payload.Dropped != null,
-	(Drop_Reason__c: payload.DropReason) if payload.DropReason != null
+	(Drop_Reason__c: payload.DropReason) if payload.DropReason != null,
+	(Other_Drop_Reason_If_Selected__c: payload.OtherDropReason) if payload.OtherDropReason != null
 }]]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
@@ -330,7 +337,7 @@ output application/java
 			<salesforce:create type="Enrollment__c" doc:name="Create" doc:id="c3404357-77e8-49ee-80c6-499595b2b643" config-ref="Salesforce_Config" />
 			<choice doc:name="Enrollment creation successful?" doc:id="ee82b0c8-2c09-4456-a51a-80fba2c1e448">
 			<when expression="#[payload.items[0].successful == false]">
-				<set-variable value="#['SALESFORCE_ENROLLMENT_CREATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="d5c68077-bb4c-4245-b6c5-68396295759c" variableName="errorCustomType" />
+					<set-variable value="#['SALESFORCE_ENROLLMENT_CREATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="d5c68077-bb4c-4245-b6c5-68396295759c" variableName="errorCustomType" />
 				<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="f52e5839-b9ee-4a28-8944-62b63c974bc6" variableName="errorCustomMessage" />
 				<raise-error doc:name="Raise error" doc:id="20ccb42b-2476-402d-a634-7c7ae8243959" type="CUSTOM:CUSTOM_ERROR" description="Something went wrong while creating an enrollment record. " />
 			</when>
