@@ -1332,3 +1332,25 @@ uses:
                       "TaskTagName": "Urgency Tag"
                     }
                   ]
+  /statuses:
+    get:
+      displayName: Get Task Statuses
+      description: Get all possible task status values from Salesforce
+      responses:
+        200:
+          body:
+            application/json:
+              type: array
+              items:
+                type: string
+              example: ["Not Started", "In Progress", "Completed"]
+        400:
+          body:
+            application/json:
+              example:
+                message: Bad request
+        404:
+          body:
+            application/json:
+              example:
+                message: Task statuses not found
