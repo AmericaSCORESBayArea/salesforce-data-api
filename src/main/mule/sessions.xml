@@ -217,9 +217,10 @@ output application/json
 			doc:name="Log entry-flow"
 			doc:id="eeb32be2-c86a-4bb7-a34d-7258ee797f6a"
 			message="Method and Request Path stored as vars: method=#[vars.method], request path=#[vars.requestPath]. queryparams=#[attributes.queryParams]" />
-		<set-variable value="#[attributes.queryParams.createAttendances as Boolean default false]" doc:name="Set CreateAttendances" doc:id="8728d853-7e61-4646-86cb-d1cfd593450a" variableName="createAttendances"/>
 		<set-variable value="#[payload.TeamSeasonId]" doc:name="Set TeamSeasonId" doc:id="e19555a7-5f6e-4b6c-9e7c-0d66f9b6bf8f" variableName="teamSeasonId" />
 		<set-variable value="#[payload.SessionDate]" doc:name="Set SessionDate" doc:id="d52910ea-c4e3-47b8-9b98-e043c13b4d85" variableName="sessionDate" />
+		<set-variable value="#[payload.CoachId]" doc:name="Set Coach" doc:id="71ea2ada-69c8-4564-b64b-0ba92f60882b" variableName="coachId" />
+		<set-variable value="#[attributes.queryParams.createAttendanceTask]" doc:name='Set Variable "createAttendanceTask"' doc:id="1b9a368e-4346-46e0-b7bc-3083b2c1a243" variableName="createAttendanceTask"/>
 		<ee:transform
 			doc:name="Create Request"
 			doc:id="38bd186d-e6af-481c-9dd1-3405eba1e8d8">
@@ -249,36 +250,36 @@ output application/java
 			</when>
 		</choice>
 		<set-variable value="#[payload.items[0].id]" doc:name="Set SessionId" doc:id="1bb65f85-ccb1-44dd-a649-6037aca328c7" variableName="sessionId" />
-		<choice doc:name="Choice" doc:id="636e0665-a408-4d9e-9339-8b0345da5589" >
-			<when expression="#[vars.createAttendances]">
-				<flow-ref doc:name="Call `createAttendancesForSessionBasedOnTeamSeasonId`" doc:id="26220665-5702-4b5f-9199-6ed08d3c4191" name="createAttendancesForSessionBasedOnTeamSeasonId" />
-				<ee:transform doc:name="Create Response" doc:id="a4e94cf9-897d-425c-8a69-8fea59b8728b" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
+		<choice doc:name="Choice" doc:id="ad29689f-5ade-4792-a9ea-dea7eb927af2">
+			<when expression="#[vars.coachId != null and ((vars.createAttendanceTask as Boolean) default true)]" >
+				<set-payload value='#[%dw 2.0
 output application/json
 ---
 {
-    "SessionId": vars.sessionId,
-    "Attendances": payload
-}
-]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
+    "AssignedTo": vars.coachId,
+    "CreatedByContact": vars.coachId,
+    "DueDate": vars.sessionDate,
+    "LastModifiedBy": vars.coachId,
+    "OwnerId": "0051T000009eHfvQAE",
+    "Session": vars.sessionId,
+    "TaskType": "Take Attendance",
+    "Name": "Take attendance " ++ (vars.sessionDate as Date) as String default ""
+}]' doc:name="Set Payload" doc:id="1f7ed8e0-874b-485a-b9bf-a02c35ff996a" />
+				<flow-ref doc:name="Flow Reference" doc:id="46118eaf-9e3c-4c76-804b-4f5ace196354" name="post:\tasks:application\json:salesforce-data-api-config"/>
 			</when>
-			<otherwise >
-				<ee:transform doc:name="Create Response" doc:id="bb26a451-14f2-416c-9d61-2c9e0953227d" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+		</choice>
+						<ee:transform doc:name="Create Response" doc:id="55d45f1a-8a01-4141-a272-b76c478eb509" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
 					<ee:message >
 						<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
 {
     "SessionId": vars.sessionId,
-    "Attendances": []
+    "TaskId": payload.TaskId default null,
+    "Attendances": payload.Attendances default []
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-			</otherwise>
-		</choice>
 		<logger level="INFO" doc:name="Log Created Response" doc:id="640a58eb-a8ab-40f9-bcc2-a9cadcf86bb5" message="#[payload]" />
 	</flow>
 	<flow name="delete:\sessions\(sessionId):salesforce-data-api-config" doc:id="d97b31a5-0ea7-46d3-a346-cbca136228e3" >
@@ -330,7 +331,9 @@ payload]">
 	sessionId : vars.sessionId
 }]]]></salesforce:parameters>
 		</salesforce:query>
-				<salesforce:query doc:name="Select Query with sessionId from SCORES_Task Object" doc:id="d60136d3-1af9-4f3e-8d6d-55a308800149" config-ref="Salesforce_Config" target="tasksResponse" targetValue="#[output application/json &#10;---&#10;payload]">
+				<salesforce:query doc:name="Select Query with sessionId from SCORES_Task Object" doc:id="d60136d3-1af9-4f3e-8d6d-55a308800149" config-ref="Salesforce_Config" target="tasksResponse" targetValue="#[output application/json 
+---
+payload]">
 					<salesforce:salesforce-query><![CDATA[SELECT Id, Session__c FROM SCORES_Task__c WHERE Session__c = ':sessionId'
 			]]></salesforce:salesforce-query>
 					<salesforce:parameters><![CDATA[#[output application/java
@@ -350,8 +353,21 @@ payload]">
 	sessionId : vars.sessionId
 }]]]></salesforce:parameters>
 		</salesforce:query>
-				<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;    ids: vars.tasksResponse map (item, itemIndex) -&gt; (item.Id) default [],&#10;}]' doc:name="Set Tasks Ids" doc:id="63c78d85-abc5-4fe8-8dbf-d900258c9935" variableName="tasksResponsePrepared" />
-				<set-variable value='#[%dw 2.0&#10;output application/json&#10;var attendedTrue = vars.attendanceResponse filter (item, itemIndex) -&gt; (item.Attended__c == "true")&#10;---&#10;{&#10;    toRemove: isEmpty(attendedTrue),&#10;    ids: vars.attendanceResponse map (item, itemIndex) -&gt; (item.Id) default [],&#10;    idsTrue: attendedTrue map (item, itemIndex) -&gt; (item.Id) default []&#10;}]' doc:name="Set Attendances `toRemove` and `Ids`" doc:id="803dbfac-430e-491a-9576-ba7644ba9ccd" variableName="attendanceResponsePrepared"/>
+				<set-variable value='#[%dw 2.0
+output application/json
+---
+{
+    ids: vars.tasksResponse map (item, itemIndex) -&gt; (item.Id) default [],
+}]' doc:name="Set Tasks Ids" doc:id="63c78d85-abc5-4fe8-8dbf-d900258c9935" variableName="tasksResponsePrepared" />
+				<set-variable value='#[%dw 2.0
+output application/json
+var attendedTrue = vars.attendanceResponse filter (item, itemIndex) -&gt; (item.Attended__c == "true")
+---
+{
+    toRemove: isEmpty(attendedTrue),
+    ids: vars.attendanceResponse map (item, itemIndex) -&gt; (item.Id) default [],
+    idsTrue: attendedTrue map (item, itemIndex) -&gt; (item.Id) default []
+}]' doc:name="Set Attendances `toRemove` and `Ids`" doc:id="803dbfac-430e-491a-9576-ba7644ba9ccd" variableName="attendanceResponsePrepared"/>
 				<choice doc:name="Choice" doc:id="92f74e31-c84b-4d92-96a8-a54282a8f912">
 			<when expression="#[isEmpty(vars.assesmentResponse) and vars.attendanceResponsePrepared.toRemove]">
 				<ee:transform doc:name="tasksIds + attendancesIds + sessionId" doc:id="0fbc4a8b-63a7-4921-a442-cb27583294c7">
