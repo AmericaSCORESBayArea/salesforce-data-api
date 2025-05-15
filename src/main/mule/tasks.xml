@@ -574,4 +574,19 @@ output application/json
           </otherwise>
         </choice>
   </flow>
+  <flow name="get:\tasks\statuses:salesforce-data-api-config" doc:id="3988c28e-09bb-40db-a39e-b1524d410a3d" >
+		<salesforce:describe-sobject doc:name="Describe sobject" doc:id="8d649a07-4555-4fb6-a044-bb90dd7fc44e" config-ref="Salesforce_Config" type="SCORES_Task__c"/>
+		<ee:transform doc:name="Transform Message" doc:id="270568a7-7791-4198-ab7e-30342c2b23b6" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+(
+    payload.fields 
+        filter (field) -> field.name == "Task_Status__c"
+)[0].picklistValues 
+    map (item) -> item.value]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
 </mule>
