@@ -388,7 +388,7 @@ output application/json
 	"message" : "Session, related attendances and tasks are deleted successfully",
 	"sessionId": vars.sessionId,
 	"attendenceIds": vars.attendanceResponsePrepared.ids,
-	"tasksIds": vars.tasksResponsePrepared.ids,
+	"taskIds": vars.tasksResponsePrepared.ids,
 	"success": true
 }]]></ee:set-payload>
 							</ee:message>
