@@ -330,6 +330,15 @@ payload]">
 	sessionId : vars.sessionId
 }]]]></salesforce:parameters>
 		</salesforce:query>
+				<salesforce:query doc:name="Select Query with sessionId from SCORES_Task Object" doc:id="d60136d3-1af9-4f3e-8d6d-55a308800149" config-ref="Salesforce_Config" target="tasksResponse" targetValue="#[output application/json &#10;---&#10;payload]">
+					<salesforce:salesforce-query><![CDATA[SELECT Id, Session__c FROM SCORES_Task__c WHERE Session__c = ':sessionId'
+			]]></salesforce:salesforce-query>
+					<salesforce:parameters><![CDATA[#[output application/java
+---
+{
+	sessionId : vars.sessionId
+}]]]></salesforce:parameters>
+				</salesforce:query>
 				<salesforce:query doc:name="Select Query with sessionId from Attendence object" doc:id="cfe08f1a-cc1a-4102-bf59-a6aaeb021ec5" config-ref="Salesforce_Config" target="attendanceResponse" targetValue="#[output application/json 
 ---
 payload]">
@@ -341,26 +350,20 @@ payload]">
 	sessionId : vars.sessionId
 }]]]></salesforce:parameters>
 		</salesforce:query>
-				<set-variable value='#[%dw 2.0
-output application/json
-var attendedTrue = vars.attendanceResponse filter (item, itemIndex) -&gt; (item.Attended__c == "true")
----
-{
-    toRemove: isEmpty(attendedTrue),
-    ids: vars.attendanceResponse map (item, itemIndex) -&gt; (item.Id),
-    idsTrue: attendedTrue map (item, itemIndex) -&gt; (item.Id)
-}]' doc:name="Set Attendances `toRemove` and `Ids`" doc:id="803dbfac-430e-491a-9576-ba7644ba9ccd" variableName="attendanceResponsePrepared"/>
+				<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;    ids: vars.tasksResponse map (item, itemIndex) -&gt; (item.Id) default [],&#10;}]' doc:name="Set Tasks Ids" doc:id="63c78d85-abc5-4fe8-8dbf-d900258c9935" variableName="tasksResponsePrepared" />
+				<set-variable value='#[%dw 2.0&#10;output application/json&#10;var attendedTrue = vars.attendanceResponse filter (item, itemIndex) -&gt; (item.Attended__c == "true")&#10;---&#10;{&#10;    toRemove: isEmpty(attendedTrue),&#10;    ids: vars.attendanceResponse map (item, itemIndex) -&gt; (item.Id) default [],&#10;    idsTrue: attendedTrue map (item, itemIndex) -&gt; (item.Id) default []&#10;}]' doc:name="Set Attendances `toRemove` and `Ids`" doc:id="803dbfac-430e-491a-9576-ba7644ba9ccd" variableName="attendanceResponsePrepared"/>
 				<choice doc:name="Choice" doc:id="92f74e31-c84b-4d92-96a8-a54282a8f912">
 			<when expression="#[isEmpty(vars.assesmentResponse) and vars.attendanceResponsePrepared.toRemove]">
-				<ee:transform doc:name="sessionIds" doc:id="0fbc4a8b-63a7-4921-a442-cb27583294c7">
+				<ee:transform doc:name="tasksIds + attendancesIds + sessionId" doc:id="0fbc4a8b-63a7-4921-a442-cb27583294c7">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
 output application/java
 ---
-vars.attendanceResponsePrepared.ids + vars.sessionId]]></ee:set-payload>
+vars.tasksResponsePrepared.ids ++ vars.attendanceResponsePrepared.ids + vars.sessionId]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-				<salesforce:delete doc:name="Delete" doc:id="6f2a821e-2e0f-416d-a109-983073873bba" config-ref="Salesforce_Config" />
+						<salesforce:delete doc:name="Delete All" doc:id="6f2a821e-2e0f-416d-a109-983073873bba" config-ref="Salesforce_Config">
+						</salesforce:delete>
 						<ee:transform doc:name="Transform Message" doc:id="903290a7-d881-491c-801e-80979a824387">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
@@ -382,9 +385,10 @@ payload]]></ee:set-payload>
 output application/json
 ---
 {
-	"message" : "Session and related attendances are deleted successfully",
+	"message" : "Session, related attendances and tasks are deleted successfully",
 	"sessionId": vars.sessionId,
 	"attendenceIds": vars.attendanceResponsePrepared.ids,
+	"tasksIds": vars.tasksResponsePrepared.ids,
 	"success": true
 }]]></ee:set-payload>
 							</ee:message>
@@ -400,7 +404,7 @@ output application/json
 output application/json
 ---
 {
-	"message" : "There are students attended this session, therefore the session is active and cannot be removed",
+	"message" : "There are students attended this session OR there are associated assessment responses, therefore the session is active and cannot be removed",
 	"assessmentIds": vars.assesmentResponse,
 	"attendenceIds": vars.attendanceResponsePrepared.idsTrue,
 	"success": false
