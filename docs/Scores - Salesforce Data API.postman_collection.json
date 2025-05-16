@@ -1245,7 +1245,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"SessionDate\": \"2025-11-19\",\n    \"SessionTopic\": \"Game Day\",\n    \"TeamSeasonId\": \"a0qcX000000GEggQAG\",\n    \"SessionStart\": \"16:00:00.000Z\",\n    \"SessionEnd\": \"18:00:00.000Z\" \n}",
+							"raw": "{\n    \"SessionDate\": \"2025-11-19\",\n    \"SessionTopic\": \"Game Day\",\n    \"TeamSeasonId\": \"a0qcX000000GEggQAG\",\n    \"SessionStart\": \"16:00:00.000Z\",\n    \"SessionEnd\": \"18:00:00.000Z\",\n    \"CoachId\": \"003UQ00000EiAy9YAF\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1253,7 +1253,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url_s}}/sessions?createAttendances=True",
+							"raw": "{{base_url_s}}/sessions?createAttendanceTask=true",
 							"host": [
 								"{{base_url_s}}"
 							],
@@ -1262,8 +1262,8 @@
 							],
 							"query": [
 								{
-									"key": "createAttendances",
-									"value": "True"
+									"key": "createAttendanceTask",
+									"value": "true"
 								}
 							]
 						}
@@ -2402,6 +2402,38 @@
 							]
 						},
 						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
+					},
+					"response": []
+				},
+				{
+					"name": "/tasks/statuses",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							},
+							{
+								"key": "Origin",
+								"value": "Postman",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/tasks/statuses",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"statuses"
+							]
+						}
 					},
 					"response": []
 				}

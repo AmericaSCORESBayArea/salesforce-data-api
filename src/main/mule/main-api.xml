@@ -177,6 +177,9 @@
 						<set-variable value="400" doc:name="Set Status Code" doc:id="51fbd79f-5402-4a83-8ca3-b8680e3b81e0" variableName="httpStatus" />
 						<set-variable value='#[vars.errorCustomType replace "UNKNOWN" with "MALFORMED_ID"]' doc:name="Update errorCustomType" doc:id="5049dfed-7516-4f02-b8b1-b273863b706b" variableName="errorCustomType"/>
 					</when>
+					<when expression='#[(vars.errorCustomType contains "NOT_FOUND")]'>
+						<set-variable value="404" doc:name="Set Status Code" doc:id="b287636a-e58c-4f72-9bd4-311dd2428e3c" variableName="httpStatus" />
+					</when>
 				</choice>
 				<ee:transform doc:name="Transform Message" doc:id="e7421cb1-862d-4dc7-bbee-e8ab29f998fe">
 					<ee:message>
