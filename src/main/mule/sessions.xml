@@ -252,19 +252,7 @@ output application/java
 		<set-variable value="#[payload.items[0].id]" doc:name="Set SessionId" doc:id="1bb65f85-ccb1-44dd-a649-6037aca328c7" variableName="sessionId" />
 		<choice doc:name="Choice" doc:id="ad29689f-5ade-4792-a9ea-dea7eb927af2">
 			<when expression="#[vars.coachId != null and ((vars.createAttendanceTask as Boolean) default true)]" >
-				<set-payload value='#[%dw 2.0
-output application/json
----
-{
-    "AssignedTo": vars.coachId,
-    "CreatedByContact": vars.coachId,
-    "DueDate": vars.sessionDate,
-    "LastModifiedBy": vars.coachId,
-    "OwnerId": "0051T000009eHfvQAE",
-    "Session": vars.sessionId,
-    "TaskType": "Take Attendance",
-    "Name": "Take attendance " ++ (vars.sessionDate as Date) as String default ""
-}]' doc:name="Set Payload" doc:id="1f7ed8e0-874b-485a-b9bf-a02c35ff996a" />
+				<set-payload value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;    "AssignedTo": vars.coachId,&#10;    "CreatedByContact": vars.coachId,&#10;    "DueDate": vars.sessionDate,&#10;    "LastModifiedBy": vars.coachId,&#10;    "OwnerId": "0051T000009eHfvQAE",&#10;    "Session": vars.sessionId,&#10;    "TaskType": "Take Attendance",&#10;    "TaskStatus": "To Do",&#10;    "Name": "Take attendance"&#10;}]' doc:name="Set Payload" doc:id="1f7ed8e0-874b-485a-b9bf-a02c35ff996a" />
 				<flow-ref doc:name="Flow Reference" doc:id="46118eaf-9e3c-4c76-804b-4f5ace196354" name="post:\tasks:application\json:salesforce-data-api-config"/>
 			</when>
 		</choice>
