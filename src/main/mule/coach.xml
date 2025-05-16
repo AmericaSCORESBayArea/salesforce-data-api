@@ -901,7 +901,7 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			<ee:message />
 			<ee:variables>
 				<ee:set-variable variableName="coachId"><![CDATA[attributes.uriParams.'coachId']]></ee:set-variable>
-				<ee:set-variable variableName="regions" ><![CDATA[attributes.queryParams.regions]]></ee:set-variable>
+				<ee:set-variable variableName="regions" ><![CDATA[(if (attributes.queryParams.regions startsWith "'") attributes.queryParams.regions else "'" ++ attributes.queryParams.regions) ++ (if (attributes.queryParams.regions endsWith "'") "" else "'")]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
 		<choice doc:name="Choice" doc:id="64954967-58fa-4695-b812-6d707edcf0d2" >
