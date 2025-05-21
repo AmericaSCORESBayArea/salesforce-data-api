@@ -351,6 +351,11 @@ if __name__ == "__main__":
         identical, details = are_files_identical("salesforce-data-api.zip", "new_salesforce-data-api.zip", ignore_list=ignore_patterns)
         if identical:
             print("Files are identical. No need to upload asset.")
+            if change_api_specification(latest_version, token):
+                print("API specification updated successfully.")
+            else:
+                print("Failed to update API specification.")
+                exit(1)
             print("=======================================")
             print("  SUCCESS: Asset updated successfully")
             print("=======================================")

@@ -1,0 +1,14 @@
+SELECT
+    Id,
+    Session_Date__c,
+    Team_Season__c,
+    Session_Topic__c,
+    Team_Season__r.Coach_Soccer__c,
+    Team_Season__r.Coach_Writing__c
+FROM Session__c
+WHERE
+    Session_Date__c >= 2025-01-01 AND
+    Id NOT IN (
+        SELECT Session__c
+        FROM SCORES_Task__c
+    )
