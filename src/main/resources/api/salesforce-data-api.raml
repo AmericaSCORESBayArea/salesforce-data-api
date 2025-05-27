@@ -1354,3 +1354,29 @@ uses:
             application/json:
               example:
                 message: Task statuses not found
+
+/scripts:
+  /custom:
+    post:
+      description: Execute a custom script
+      body:
+        application/json:
+          type: object
+          example: |
+            {
+              "scriptName": "example-script",
+              "parameters": {
+                "param1": "value1",
+                "param2": "value2"
+              }
+            }
+      responses:
+        200:
+          body:
+            application/json:
+              type: object
+              example: |
+                {
+                  "message": "Script executed successfully",
+                  "status": "success"
+                }

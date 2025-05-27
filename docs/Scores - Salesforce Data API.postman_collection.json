@@ -2438,6 +2438,34 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Execute Custom Script",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"scriptName\": \"example-script\",\n    \"parameters\": {\n        \"param1\": \"value1\",\n        \"param2\": \"value2\"\n    }\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/scripts/custom",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"scripts",
+						"custom"
+					]
+				},
+				"description": "Execute a custom script with parameters"
+			},
+			"response": []
 		}
 	],
 	"event": [
