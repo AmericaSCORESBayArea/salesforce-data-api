@@ -2010,7 +2010,7 @@
 					"response": []
 				},
 				{
-					"name": "/coach/{coachId}/stats",
+					"name": "/coach/{teamSeasonId}/{coachId}/stats",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -2029,12 +2029,13 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url_s}}/coach/003cX000008IZnXQAW/stats",
+							"raw": "{{base_url_s}}/coach/a0qcX000000GEggQAG/003cX000008IZnXQAW/stats",
 							"host": [
 								"{{base_url_s}}"
 							],
 							"path": [
 								"coach",
+								"a0qcX000000GEggQAG",
 								"003cX000008IZnXQAW",
 								"stats"
 							]

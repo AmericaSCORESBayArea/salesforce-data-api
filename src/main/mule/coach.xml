@@ -1356,8 +1356,9 @@ output application/json
 			</ee:message>
 		</ee:transform>
 	</flow>
-	<flow name="get:\coach\(coachId)\stats" doc:id="59de02c6-9de9-4b00-9b6c-f7af6438b90e" >
+	<flow name="get:\coach\(teamSeasonId)\(coachId)\stats" doc:id="59de02c6-9de9-4b00-9b6c-f7af6438b90e" >
 		<set-variable value="#[attributes.uriParams.'coachId']" doc:name='Save "coachId"' doc:id="66df3a39-36f9-4328-81d5-ed4a29902fb1" variableName="coachId" />
+		<set-variable value="#[attributes.uriParams.'teamSeasonId']" doc:name='Save "teamSeasonId"' doc:id="477fb233-3b92-4da4-b1c3-8300ce9323ee" variableName="teamSeasonId" />
 		<set-variable value='#[%dw 2.0&#10;import * from dw::core::Dates&#10;&#10;output application/json&#10;var first = atBeginningOfMonth(now()) as Date&#10;var last = (atBeginningOfMonth(now() + |P1M|) - |P1D|) as Date&#10;&#10;output application/json&#10;---&#10;{&#10;    "firstDay": first,&#10;    "lastDay": last&#10;}]' doc:name="Set Month Dates" doc:id="59c93df1-71bb-4dc5-8f4a-1622673783c8" variableName="currentMonth"/>
 		<salesforce:query doc:name="Query to retrieve total number of sessions this month" doc:id="df72a5a4-d117-4e5d-94ca-33372e77bbec" config-ref="Salesforce_Config" target="totalSessionsThisMonth">
 			<salesforce:salesforce-query ><![CDATA[SELECT 
@@ -1374,6 +1375,19 @@ AND (Session_Date__c >= :firstDay AND Session_Date__c <= :lastDay)]]></salesforc
 }]]]></salesforce:parameters>
 		</salesforce:query>
 		<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;vars.totalSessionsThisMonth map (item, i) -&gt; &#10;item ++ {&#10;        "Session_DateTime": &#10;        (item.Session_Date__c ++ "T" ++ item.Session_End__c) &#10;        as DateTime&#10;  }]' doc:name='Set Variable "totalSessionsThisMonth" with a combined DateTime field' doc:id="d7f2b182-afb9-4a4e-8dfa-70e2fa4b5b3e" variableName="totalSessionsThisMonth"/>
+		<salesforce:query doc:name="Query to retrieve total tasks for this teamseason" doc:id="e4d8d4ab-b728-442e-a74e-2e32995f7598" config-ref="Salesforce_Config" target="totalTasksThisTeamSeason">
+			<salesforce:salesforce-query><![CDATA[SELECT 
+Id, Assigned_To__c, Session__c, Session__r.Team_Season__c, Task_Status__c
+FROM SCORES_Task__c 
+WHERE Assigned_To__c = ':coachId'
+AND Session__r.Team_Season__c = ':teamSeasonId']]></salesforce:salesforce-query>
+			<salesforce:parameters><![CDATA[#[output application/java
+				---
+{
+	coachId: vars.coachId,
+	teamSeasonId: vars.teamSeasonId
+}]]]></salesforce:parameters>
+		</salesforce:query>
 		<ee:transform doc:name="Prepare Response" doc:id="2a9bf057-e618-4767-8d9f-ac63a99127fc">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
@@ -1383,9 +1397,15 @@ output application/json
 ---
 {
 	"sessions": {
-		"month":{ 
+		"current_month":{ 
 			"completed": sizeOf(vars.totalSessionsThisMonth filter (item, i) -> (item.Session_DateTime) <= rightNow) default 0,
-			total: sizeOf(vars.totalSessionsThisMonth) default 0
+			"total": sizeOf(vars.totalSessionsThisMonth) default 0
+		}
+	},
+	"tasks": {
+		"current_teamseason": {
+			"done": sizeOf(vars.totalTasksThisTeamSeason filter (item, i) -> item.Task_Status__c == "Done"),
+			"total": sizeOf(vars.totalTasksThisTeamSeason) default 0
 		}
 	}
 }]]></ee:set-payload>

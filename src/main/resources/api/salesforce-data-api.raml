@@ -870,7 +870,7 @@ uses:
               message: Bad data
     
 
-/coach/{coachId}:
+/coach/{teamSeasonId}/{coachId}:
   /stats:
     get:
       description: Retrieve summary statistics of SCORES tasks assigned to a specific coach, grouped by status
@@ -885,6 +885,7 @@ uses:
                   "Started": 0,
                   "Complete": 42
                 }
+/coach/{coachId}:
   /regions:
     get:
       displayName: Get Regions
