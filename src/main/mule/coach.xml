@@ -1388,11 +1388,32 @@ AND Session__r.Team_Season__c = ':teamSeasonId']]></salesforce:salesforce-query>
 	teamSeasonId: vars.teamSeasonId
 }]]]></salesforce:parameters>
 		</salesforce:query>
+		<salesforce:query doc:name="Query to retrieve attendance records for particular coach and teamseason" doc:id="9eba5095-dd10-4ee1-a117-d1e0cee3e90f" config-ref="Salesforce_Config" target="totalAttendancesThisTeamseason">
+			<salesforce:salesforce-query><![CDATA[SELECT Attended__c,Id,Session__c, Session__r.Team_Season__c, Session__r.Team_Season__r.Coach_Soccer__c, Session__r.Team_Season__r.Coach_Writing__c 
+FROM Attendance__c
+WHERE Session__r.Team_Season__c = ':teamSeasonId'
+AND 
+(Session__r.Team_Season__r.Coach_Writing__c = ':coachId' OR Session__r.Team_Season__r.Coach_Soccer__c = ':coachId')]]></salesforce:salesforce-query>
+			<salesforce:parameters><![CDATA[#[output application/java
+				---
+{
+	coachId: vars.coachId,
+	teamSeasonId: vars.teamSeasonId
+}]]]></salesforce:parameters>
+		</salesforce:query>
 		<ee:transform doc:name="Prepare Response" doc:id="2a9bf057-e618-4767-8d9f-ac63a99127fc">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 var rightNow = (now() >> "America/Los_Angeles") as LocalDateTime
 
+var true_attendances = sizeOf(vars.totalAttendancesThisTeamseason filter (item, i) -> item.Attended__c == "true") default 0
+var total_attendances = sizeOf(vars.totalAttendancesThisTeamseason) default 1
+var attendances_ratio = 
+    if (total_attendances != 0) 
+        ((true_attendances as Number / total_attendances) * 100)
+        as String {format: "##0.00", roundMode: "HALF_UP"} ++ "%" 
+    else "0%"
+    
 output application/json
 ---
 {
@@ -1407,8 +1428,12 @@ output application/json
 			"done": sizeOf(vars.totalTasksThisTeamSeason filter (item, i) -> item.Task_Status__c == "Done"),
 			"total": sizeOf(vars.totalTasksThisTeamSeason) default 0
 		}
+	},
+	"attendances":{
+		"current_teamseason_ratio": attendances_ratio
 	}
-}]]></ee:set-payload>
+}
+]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 		<!-- [STUDIO:"Query to gather stats based on &quot;coachId&quot;"]<salesforce:query doc:name='Query to gather stats based on "coachId"' doc:id="4495ba6e-b4ac-4345-a66e-f1d783fe6db1" config-ref="Salesforce_Config" target="availableStats" >
