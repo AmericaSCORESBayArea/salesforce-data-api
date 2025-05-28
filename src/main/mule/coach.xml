@@ -1407,12 +1407,12 @@ AND
 var rightNow = (now() >> "America/Los_Angeles") as LocalDateTime
 
 var true_attendances = sizeOf(vars.totalAttendancesThisTeamseason filter (item, i) -> item.Attended__c == "true") default 0
-var total_attendances = sizeOf(vars.totalAttendancesThisTeamseason) default 1
+var total_attendances = sizeOf(vars.totalAttendancesThisTeamseason) default 0
 var attendances_ratio = 
     if (total_attendances != 0) 
         ((true_attendances as Number / total_attendances) * 100)
         as String {format: "##0.00", roundMode: "HALF_UP"} ++ "%" 
-    else "0%"
+    else "100%"
     
 output application/json
 ---
