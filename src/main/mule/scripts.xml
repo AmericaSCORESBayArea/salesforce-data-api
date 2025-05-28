@@ -1,5 +1,177 @@
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
 	
+	<flow name="createTasksForAllSessionsWithNoTasksSinceJan2025" doc:id="e684ebc1-d149-4d36-b9ef-9da77a3dba97" >
+		<salesforce:query doc:name="Get All Records" doc:id="2d2b305d-607a-4ca1-8249-3f07c534d1e9" config-ref="Salesforce_Config">
+					<salesforce:salesforce-query><![CDATA[SELECT
+    Id, 
+    Session_Date__c,
+    Team_Season__c, 
+    Session_Topic__c,
+    Team_Season__r.Coach_Soccer__c, 
+    Team_Season__r.Coach_Writing__c,
+    Team_Season__r.Season_End_Date__c
+FROM Session__c
+WHERE 
+    Session_Date__c >= 2025-01-01 
+AND 
+    Id NOT IN (
+        SELECT Session__c 
+        FROM SCORES_Task__c
+    )
+AND (Team_Season__r.Coach_Soccer__c != null OR Team_Season__r.Coach_Writing__c != null)]]></salesforce:salesforce-query>
+				</salesforce:query>
+		<ee:transform doc:name="Transform Message" doc:id="eb80625b-935f-4501-8ee9-bc845ab52d46">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+		<foreach doc:name="For Each" doc:id="878c5292-91b6-4ced-bc35-cdcefb02286f" collection="#[payload]">
+					<set-variable value="#[%dw 2.0&#10;output application/json&#10;---&#10;payload]" doc:name="Set Current Item" doc:id="d78e7d38-c6dd-4eb8-8ab7-9d99f1c96964" variableName="currentItem" />
+					<salesforce:query doc:name="Retrieve Related Attendance Records" doc:id="0453e8a8-95a5-4311-a6a0-fa7671b234bb" config-ref="Salesforce_Config">
+						<salesforce:salesforce-query><![CDATA[SELECT Attended__c FROM Attendance__c WHERE Session__c = ':session']]></salesforce:salesforce-query>
+						<salesforce:parameters><![CDATA[#[output application/java
+---
+{
+	"session" : payload.Id
+}]]]></salesforce:parameters>
+					</salesforce:query>
+					<ee:transform doc:name="Transform To JSON" doc:id="374c2a49-b3f3-49f6-b5c4-8e36534ed936">
+						<ee:message>
+							<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+					<set-variable value="#[payload]" doc:name="Set Attendance Records" doc:id="f5b04bdf-b8db-4eb3-86d7-55942d34d3e5" variableName="attendanceRecords" />
+					<ee:transform doc:name="Count Attendence Records Marked as True" doc:id="a5699023-b994-4f38-ae72-c5720e4066b1">
+						<ee:message>
+							<ee:set-payload><![CDATA[%dw 2.0
+var trues = vars.attendanceRecords filter (item, it) -> (item.Attended__c as Boolean == true)
+
+output application/json
+---
+sizeOf(trues)]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+					<set-variable value="#[payload]" doc:name="Set Attendance Records Length" doc:id="2a6624d3-c823-46a3-9185-1b02fcc23114" variableName="attendanceRecordsLen" />
+					<choice doc:name="attendanceRecordsLen" doc:id="3eb420c5-5171-41fa-9fd8-c144eb7833c8">
+						<when expression="#[vars.attendanceRecordsLen &gt; 1]">
+							<logger level="INFO" doc:name="Done" doc:id="5d824e03-344e-486d-ae27-21db1018ebb0" message='A task marked as "done" will be created here' />
+							<choice doc:name="Choice1" doc:id="6159faa5-5b52-494b-9b7c-cac5a79cd6a9">
+								<when expression="#[vars.currentItem.Team_Season__r.Coach_Writing__c != null]">
+									<ee:transform doc:name="Coach_Writing__c" doc:id="0c14ec08-ba6c-40e2-9ee6-659368ef52e0">
+										<ee:message>
+											<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "AssignedBy": "",
+    "AssignedTo": vars.currentItem.Team_Season__r.Coach_Writing__c,
+    "CreatedByContact": "0051T000009eHfvQAE",
+    "CreatedContact": "",
+    "LastModifiedBy": "0051T000009eHfvQAE",
+    "LastModifiedContact": "",
+    "OwnerId": "0051T000009eHfvQAE",
+    "DueDate": vars.currentItem.Team_Season__r.Season_End_Date__c,
+    "Session": vars.currentItem.Id,
+    "Name": "Catch-up attendance",
+    "TaskStatus": "Done",
+    "TaskType": "Take Attendance"
+}]]></ee:set-payload>
+										</ee:message>
+									</ee:transform>
+									<flow-ref doc:name="post TASKS" doc:id="5898c462-5ace-4558-8712-f1a79aab0fb0" name="post:\tasks:application\json:salesforce-data-api-config" />
+								</when>
+							</choice>
+							<choice doc:name="Choice" doc:id="82da10e1-7fdd-4a25-9fd6-47f1ce448675">
+								<when expression="#[vars.currentItem.Team_Season__r.Coach_Soccer__c != null]">
+									<ee:transform doc:name="Coach_Soccer__c" doc:id="ecb79a55-6fd8-47da-85fb-8874f92f98f2">
+								<ee:message>
+									<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "AssignedBy": "",
+    "AssignedTo": vars.currentItem.Team_Season__r.Coach_Soccer__c,
+    "CreatedByContact": "0051T000009eHfvQAE",
+    "CreatedContact": "",
+    "LastModifiedBy": "0051T000009eHfvQAE",
+    "LastModifiedContact": "",
+    "OwnerId": "0051T000009eHfvQAE",
+    "DueDate": vars.currentItem.Team_Season__r.Season_End_Date__c,
+    "Session": vars.currentItem.Id,
+    "Name": "Catch-up attendance",
+    "TaskStatus": "Done",
+    "TaskType": "Take Attendance"
+}]]></ee:set-payload>
+								</ee:message>
+							</ee:transform>
+									<flow-ref doc:name="post TASKS" doc:id="1066fce4-30c0-4c05-863a-ded75289b7e9" name="post:\tasks:application\json:salesforce-data-api-config" />
+								</when>
+							</choice>
+						</when>
+						<otherwise>
+							<logger level="INFO" doc:name="To Do" doc:id="0c427212-c873-420a-acf8-53e4c6d6159e" message='A task marked as "to do" will be created here' />
+							<choice doc:name="Choice" doc:id="9acbbfde-02b8-43ca-8a55-5385372d1bd7">
+								<when expression="#[vars.currentItem.Team_Season__r.Coach_Writing__c != null]">
+									<ee:transform doc:name="Coach_Writing__c" doc:id="70657783-b6e2-45a6-898a-6db806437dea">
+										<ee:message>
+											<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "AssignedBy": "",
+    "AssignedTo": vars.currentItem.Team_Season__r.Coach_Writing__c,
+    "CreatedByContact": "0051T000009eHfvQAE",
+    "CreatedContact": "",
+    "LastModifiedBy": "0051T000009eHfvQAE",
+    "LastModifiedContact": "",
+    "OwnerId": "0051T000009eHfvQAE",
+    "DueDate": vars.currentItem.Team_Season__r.Season_End_Date__c,
+    "Session": vars.currentItem.Id,
+    "Name": "Catch-up attendance",
+    "TaskStatus": "To Do",
+    "TaskType": "Take Attendance"
+}]]></ee:set-payload>
+										</ee:message>
+									</ee:transform>
+									<flow-ref doc:name="post TASKS" doc:id="b5fa4a42-ce66-4ea3-bede-cfdc665f4d83" name="post:\tasks:application\json:salesforce-data-api-config" />
+								</when>
+							</choice>
+							<choice doc:name="Choice1" doc:id="31755f92-c63b-441f-a63b-6f25c2f1d0a1">
+								<when expression="#[vars.currentItem.Team_Season__r.Coach_Soccer__c != null]">
+									<ee:transform doc:name="Coach_Soccer__c" doc:id="7a8fa83d-8097-4ce8-b67a-778687a582b2">
+										<ee:message>
+											<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "AssignedBy": "",
+    "AssignedTo": vars.currentItem.Team_Season__r.Coach_Soccer__c,
+    "CreatedByContact": "0051T000009eHfvQAE",
+    "CreatedContact": "",
+    "LastModifiedBy": "0051T000009eHfvQAE",
+    "LastModifiedContact": "",
+    "OwnerId": "0051T000009eHfvQAE",
+    "DueDate": vars.currentItem.Team_Season__r.Season_End_Date__c,
+    "Session": vars.currentItem.Id,
+    "Name": "Catch-up attendance",
+    "TaskStatus": "To Do",
+    "TaskType": "Take Attendance"
+}]]></ee:set-payload>
+										</ee:message>
+									</ee:transform>
+									<flow-ref doc:name="post TASKS" doc:id="035bdcab-0d6b-4b96-9c4b-d17fd8b6c0b6" name="post:\tasks:application\json:salesforce-data-api-config" />
+								</when>
+							</choice>
+						</otherwise>
+					</choice>
+				</foreach>
+	</flow>
 	<flow name="post:\scripts\custom:application\json:salesforce-data-api-config">
 		<choice doc:name="Choice" doc:id="5f5701a6-0392-419d-b4bb-e14fad7aeabd" >
 			<when expression='#[p("customScript") default false]'>
@@ -13,6 +185,7 @@ output application/json
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
+				<!-- [STUDIO:"Flow Ref: `createTasksForAllSessionsWithNoTasksSinceJan2025`"]<flow-ref doc:name="Flow Ref: `createTasksForAllSessionsWithNoTasksSinceJan2025`" doc:id="99a66fa3-75e7-4d43-a042-c8186d984c6b" name="createTasksForAllSessionsWithNoTasksSinceJan2025" /> [STUDIO] -->
 			</when>
 			<otherwise>
 				<ee:transform doc:name="Transform Message" doc:id="1151c86d-8fe0-4c71-9713-327a0afcfb48" >
