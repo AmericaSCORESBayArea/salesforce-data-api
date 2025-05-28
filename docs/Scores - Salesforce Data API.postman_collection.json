@@ -2008,6 +2008,40 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "/coach/{coachId}/stats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							},
+							{
+								"key": "Origin",
+								"value": "Postman",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url_s}}/coach/003cX000008IZnXQAW/stats",
+							"host": [
+								"{{base_url_s}}"
+							],
+							"path": [
+								"coach",
+								"003cX000008IZnXQAW",
+								"stats"
+							]
+						},
+						"description": "Response Example:\n\n{ \"Not Started\": 1, \"Started\": 0, \"Complete\": 41}"
+					},
+					"response": []
 				}
 			]
 		},
@@ -2238,40 +2272,6 @@
 							]
 						},
 						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
-					},
-					"response": []
-				},
-				{
-					"name": "/tasks/{coachId}/stats",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "client_id",
-								"value": "{{sandbox_client_id}}"
-							},
-							{
-								"key": "client_secret",
-								"value": "{{sandbox_client_secret}}"
-							},
-							{
-								"key": "Origin",
-								"value": "Postman",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{base_url_s}}/tasks/003cX000008IZnXQAW/stats",
-							"host": [
-								"{{base_url_s}}"
-							],
-							"path": [
-								"tasks",
-								"003cX000008IZnXQAW",
-								"stats"
-							]
-						},
-						"description": "Response Example:\n\n{ \"Not Started\": 1, \"Started\": 0, \"Complete\": 41}"
 					},
 					"response": []
 				},

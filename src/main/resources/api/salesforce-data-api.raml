@@ -871,6 +871,20 @@ uses:
     
 
 /coach/{coachId}:
+  /stats:
+    get:
+      description: Retrieve summary statistics of SCORES tasks assigned to a specific coach, grouped by status
+      responses:
+        200:
+          body:
+            application/json:
+              type: object
+              example: |
+                {
+                  "Not Started": 1,
+                  "Started": 0,
+                  "Complete": 42
+                }
   /regions:
     get:
       displayName: Get Regions
@@ -1242,20 +1256,6 @@ uses:
           application/json:
             example:
               message: Task created
-  /{coachId}/stats:
-    get:
-      description: Retrieve summary statistics of SCORES tasks assigned to a specific coach, grouped by status
-      responses:
-        200:
-          body:
-            application/json:
-              type: object
-              example: |
-                {
-                  "Not Started": 1,
-                  "Started": 0,
-                  "Complete": 42
-                }
   /{taskId}:
     uriParameters:
       taskId:

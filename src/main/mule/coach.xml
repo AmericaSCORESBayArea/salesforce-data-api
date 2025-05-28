@@ -1356,4 +1356,42 @@ output application/json
 			</ee:message>
 		</ee:transform>
 	</flow>
+	<flow name="get:\coach\(coachId)\stats" doc:id="59de02c6-9de9-4b00-9b6c-f7af6438b90e" >
+		<set-variable value="#[attributes.uriParams.'coachId']" doc:name='Save "coachId"' doc:id="66df3a39-36f9-4328-81d5-ed4a29902fb1" variableName="coachId" />
+		<salesforce:query doc:name='Query to gather stats based on "coachId"' doc:id="4495ba6e-b4ac-4345-a66e-f1d783fe6db1" config-ref="Salesforce_Config" target="availableStats" >
+			<salesforce:salesforce-query ><![CDATA[SELECT Task_Status__c, COUNT(Id)
+FROM SCORES_Task__c
+WHERE Assigned_To__c = ':coachId'
+GROUP BY Task_Status__c]]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[output application/java
+				---
+{
+	coachId: vars.coachId,
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<salesforce:describe-sobject type="SCORES_Task__c" doc:name="Get SCORES_Task__c properties (Describe sobject)" doc:id="aa3fb261-8e5f-4771-8d40-10573952c376" config-ref="Salesforce_Config" />
+		<ee:transform doc:name='Filter "Task_Status__c" values' doc:id="adfe6d6d-fe2e-4bb6-9a66-67008c63ba80" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+(
+    payload.fields 
+        filter (field) -> field.name == "Task_Status__c"
+)[0].picklistValues 
+    map (item) -> item.value]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="Prepare Stats" doc:id="edf8e8cd-aa0d-4693-9799-b8a43616dafd" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var memo = vars.availableStats reduce (item, acc = {}) -> 
+  acc ++ {(item.Task_Status__c): item.expr0}
+var result = payload map ((item, index) -> {(item): memo[item] default 0})
+---
+result reduce ((item, acc = {}) -> acc ++ item)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
 </mule>
