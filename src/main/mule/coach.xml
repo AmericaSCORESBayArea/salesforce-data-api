@@ -150,6 +150,7 @@ payload map ( payload01 ,
 				<ee:set-variable variableName="teamSeasonId"><![CDATA[attributes.uriParams.'teamSeasonId']]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
+		<set-variable value='#[%dw 2.0&#10;var startDateCond =    if (!isEmpty(attributes.queryParams.startDate)) &#10;        " AND Session_Date__c &gt;= " ++ (attributes.queryParams.startDate as Date)&#10;    else ""&#10;&#10;var endDateCond = &#10;    if (!isEmpty(attributes.queryParams.endDate)) &#10;        " AND Session_Date__c &lt;= " ++ (attributes.queryParams.endDate as Date)&#10;    else ""&#10;output text/plain&#10;---&#10;startDateCond ++ endDateCond]' doc:name='Set Variable "dateQuery"' doc:id="a615ab70-d45d-4622-8cb8-cfdf865b383e" variableName="dateQuery"/>
 		<logger
 			level="INFO"
 			doc:name="Log Stored URI Params"
@@ -191,12 +192,14 @@ payload map ( payload01 ,
 					OR Team_Season__r.SCORES_Program_Coordinator__c = ':coachid' 
 					OR Team_Season__r.SCORES_Program_Manager__c = ':coachid'
 					)
+					:dateQuery
 			]]></salesforce:salesforce-query>
 			<salesforce:parameters><![CDATA[#[output application/java
 ---
 {
 	teamseasonid : vars.teamSeasonId,
-	coachid : vars.coachId
+	coachid : vars.coachId,
+	dateQuery : vars.dateQuery
 }]]]></salesforce:parameters>
 		</salesforce:query>
 		<ee:transform
