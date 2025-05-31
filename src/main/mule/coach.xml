@@ -1359,7 +1359,7 @@ output application/json
 			</ee:message>
 		</ee:transform>
 	</flow>
-	<flow name="get:\coach\(teamSeasonId)\(coachId)\stats" doc:id="59de02c6-9de9-4b00-9b6c-f7af6438b90e" >
+	<flow name="get:\coach\(coachId)\teamseasons\(teamSeasonId)\stats" doc:id="59de02c6-9de9-4b00-9b6c-f7af6438b90e" >
 		<set-variable value="#[attributes.uriParams.'coachId']" doc:name='Save "coachId"' doc:id="66df3a39-36f9-4328-81d5-ed4a29902fb1" variableName="coachId" />
 		<set-variable value="#[attributes.uriParams.'teamSeasonId']" doc:name='Save "teamSeasonId"' doc:id="477fb233-3b92-4da4-b1c3-8300ce9323ee" variableName="teamSeasonId" />
 		<set-variable value='#[%dw 2.0&#10;import * from dw::core::Dates&#10;&#10;output application/json&#10;var first = atBeginningOfMonth(now()) as Date&#10;var last = (atBeginningOfMonth(now() + |P1M|) - |P1D|) as Date&#10;&#10;output application/json&#10;---&#10;{&#10;    "firstDay": first,&#10;    "lastDay": last&#10;}]' doc:name="Set Month Dates" doc:id="59c93df1-71bb-4dc5-8f4a-1622673783c8" variableName="currentMonth"/>

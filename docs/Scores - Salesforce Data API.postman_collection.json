@@ -2010,7 +2010,7 @@
 					"response": []
 				},
 				{
-					"name": "/coach/{teamSeasonId}/{coachId}/stats",
+					"name": "/coach/{coachId}/teamseasons/{teamSeasonId}/stats",
 					"request": {
 						"method": "GET",
 						"header": [
