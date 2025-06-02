@@ -1378,6 +1378,27 @@ AND (Session_Date__c >= :firstDay AND Session_Date__c <= :lastDay)]]></salesforc
 }]]]></salesforce:parameters>
 		</salesforce:query>
 		<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;vars.totalSessionsThisMonth map (item, i) -&gt; &#10;item ++ {&#10;        "Session_DateTime": &#10;        (item.Session_Date__c ++ "T" ++ item.Session_End__c) &#10;        as DateTime&#10;  }]' doc:name='Set Variable "totalSessionsThisMonth" with a combined DateTime field' doc:id="d7f2b182-afb9-4a4e-8dfa-70e2fa4b5b3e" variableName="totalSessionsThisMonth"/>
+		<salesforce:query doc:name="Query to retrieve total tasks overall" doc:id="8af0615e-b248-45f9-a01f-690ea9dfafcc" config-ref="Salesforce_Config" target="totalTasksOverall">
+			<salesforce:salesforce-query><![CDATA[SELECT COUNT()
+FROM SCORES_Task__c 
+WHERE Assigned_To__c = ':coachId']]></salesforce:salesforce-query>
+			<salesforce:parameters><![CDATA[#[output application/java
+				---
+{
+	coachId: vars.coachId
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<salesforce:query doc:name='Query to retrieve total tasks overall marked as "Done"' doc:id="4f648ab5-a088-4a54-bde3-32688cad8aa6" config-ref="Salesforce_Config" target="totalTasksOverallDone">
+			<salesforce:salesforce-query><![CDATA[SELECT COUNT()
+FROM SCORES_Task__c 
+WHERE Assigned_To__c = ':coachId'
+AND Task_Status__c = 'Done']]></salesforce:salesforce-query>
+			<salesforce:parameters><![CDATA[#[output application/java
+				---
+{
+	coachId: vars.coachId
+}]]]></salesforce:parameters>
+		</salesforce:query>
 		<salesforce:query doc:name="Query to retrieve total tasks for this teamseason" doc:id="e4d8d4ab-b728-442e-a74e-2e32995f7598" config-ref="Salesforce_Config" target="totalTasksThisTeamSeason">
 			<salesforce:salesforce-query><![CDATA[SELECT 
 Id, Assigned_To__c, Session__c, Session__r.Team_Season__c, Task_Status__c
@@ -1427,6 +1448,10 @@ output application/json
 		}
 	},
 	"tasks": {
+		"overall": {
+			"done": sizeOf(vars.totalTasksOverallDone) default 0,
+			"total": sizeOf(vars.totalTasksOverall) default 0
+		},
 		"current_teamseason": {
 			"done": sizeOf(vars.totalTasksThisTeamSeason filter (item, i) -> item.Task_Status__c == "Done"),
 			"total": sizeOf(vars.totalTasksThisTeamSeason) default 0
