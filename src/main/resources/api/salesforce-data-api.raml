@@ -869,7 +869,6 @@ uses:
             example:
               message: Bad data
     
-
 /coach/{coachId}:
   /regions:
     get:
@@ -980,7 +979,20 @@ uses:
             application/json:
               example:
                 message: Team-Seasons Not Found
-
+    /{teamSeasonId}/stats:
+      get:
+        description: Retrieve summary statistics of SCORES tasks assigned to a specific coach, grouped by status
+        responses:
+          200:
+            body:
+              application/json:
+                type: object
+                example: |
+                  {
+                    "Not Started": 1,
+                    "Started": 0,
+                    "Complete": 42
+                  }
     /{teamSeasonId}/sessions:
       get:
         displayName: Get Sessions
@@ -1242,20 +1254,6 @@ uses:
           application/json:
             example:
               message: Task created
-  /{coachId}/stats:
-    get:
-      description: Retrieve summary statistics of SCORES tasks assigned to a specific coach, grouped by status
-      responses:
-        200:
-          body:
-            application/json:
-              type: object
-              example: |
-                {
-                  "Not Started": 1,
-                  "Started": 0,
-                  "Complete": 42
-                }
   /{taskId}:
     uriParameters:
       taskId:
@@ -1354,3 +1352,29 @@ uses:
             application/json:
               example:
                 message: Task statuses not found
+
+/scripts:
+  /custom:
+    post:
+      description: Execute a custom script
+      body:
+        application/json:
+          type: object
+          example: |
+            {
+              "scriptName": "example-script",
+              "parameters": {
+                "param1": "value1",
+                "param2": "value2"
+              }
+            }
+      responses:
+        200:
+          body:
+            application/json:
+              type: object
+              example: |
+                {
+                  "message": "Script executed successfully",
+                  "status": "success"
+                }

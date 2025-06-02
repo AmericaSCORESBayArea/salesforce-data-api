@@ -56,3 +56,4 @@ src/main/resources/deploy.json
 src/main/resources/keystore.jks
 /bin/
 /venv
+/docs/data

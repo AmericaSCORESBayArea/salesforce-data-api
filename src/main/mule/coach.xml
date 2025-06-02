@@ -150,6 +150,7 @@ payload map ( payload01 ,
 				<ee:set-variable variableName="teamSeasonId"><![CDATA[attributes.uriParams.'teamSeasonId']]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
+		<set-variable value='#[%dw 2.0&#10;var startDateCond =    if (!isEmpty(attributes.queryParams.startDate)) &#10;        " AND Session_Date__c &gt;= " ++ (attributes.queryParams.startDate as Date)&#10;    else ""&#10;&#10;var endDateCond = &#10;    if (!isEmpty(attributes.queryParams.endDate)) &#10;        " AND Session_Date__c &lt;= " ++ (attributes.queryParams.endDate as Date)&#10;    else ""&#10;output text/plain&#10;---&#10;startDateCond ++ endDateCond]' doc:name='Set Variable "dateQuery"' doc:id="a615ab70-d45d-4622-8cb8-cfdf865b383e" variableName="dateQuery"/>
 		<logger
 			level="INFO"
 			doc:name="Log Stored URI Params"
@@ -191,12 +192,14 @@ payload map ( payload01 ,
 					OR Team_Season__r.SCORES_Program_Coordinator__c = ':coachid' 
 					OR Team_Season__r.SCORES_Program_Manager__c = ':coachid'
 					)
+					:dateQuery
 			]]></salesforce:salesforce-query>
 			<salesforce:parameters><![CDATA[#[output application/java
 ---
 {
 	teamseasonid : vars.teamSeasonId,
-	coachid : vars.coachId
+	coachid : vars.coachId,
+	dateQuery : vars.dateQuery
 }]]]></salesforce:parameters>
 		</salesforce:query>
 		<ee:transform
@@ -1355,5 +1358,146 @@ output application/json
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+	</flow>
+	<flow name="get:\coach\(coachId)\teamseasons\(teamSeasonId)\stats" doc:id="59de02c6-9de9-4b00-9b6c-f7af6438b90e" >
+		<set-variable value="#[attributes.uriParams.'coachId']" doc:name='Save "coachId"' doc:id="66df3a39-36f9-4328-81d5-ed4a29902fb1" variableName="coachId" />
+		<set-variable value="#[attributes.uriParams.'teamSeasonId']" doc:name='Save "teamSeasonId"' doc:id="477fb233-3b92-4da4-b1c3-8300ce9323ee" variableName="teamSeasonId" />
+		<set-variable value='#[%dw 2.0&#10;import * from dw::core::Dates&#10;&#10;output application/json&#10;var first = atBeginningOfMonth(now()) as Date&#10;var last = (atBeginningOfMonth(now() + |P1M|) - |P1D|) as Date&#10;&#10;output application/json&#10;---&#10;{&#10;    "firstDay": first,&#10;    "lastDay": last&#10;}]' doc:name="Set Month Dates" doc:id="59c93df1-71bb-4dc5-8f4a-1622673783c8" variableName="currentMonth"/>
+		<salesforce:query doc:name="Query to retrieve total number of sessions this month" doc:id="df72a5a4-d117-4e5d-94ca-33372e77bbec" config-ref="Salesforce_Config" target="totalSessionsThisMonth">
+			<salesforce:salesforce-query ><![CDATA[SELECT 
+Id, Team_Season__r.Coach_Soccer__c, Team_Season__r.Coach_Writing__c, Session_Date__c, Session_End__c
+FROM Session__c
+WHERE (Team_Season__r.Coach_Writing__c = ':coachId' OR Team_Season__r.Coach_Soccer__c = ':coachId')
+AND (Session_Date__c >= :firstDay AND Session_Date__c <= :lastDay)]]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[output application/java
+				---
+{
+	coachId: vars.coachId,
+	firstDay: vars.currentMonth.firstDay,
+	lastDay: vars.currentMonth.firstDay
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;vars.totalSessionsThisMonth map (item, i) -&gt; &#10;item ++ {&#10;        "Session_DateTime": &#10;        (item.Session_Date__c ++ "T" ++ item.Session_End__c) &#10;        as DateTime&#10;  }]' doc:name='Set Variable "totalSessionsThisMonth" with a combined DateTime field' doc:id="d7f2b182-afb9-4a4e-8dfa-70e2fa4b5b3e" variableName="totalSessionsThisMonth"/>
+		<salesforce:query doc:name="Query to retrieve total tasks overall" doc:id="8af0615e-b248-45f9-a01f-690ea9dfafcc" config-ref="Salesforce_Config" target="totalTasksOverall">
+			<salesforce:salesforce-query><![CDATA[SELECT COUNT()
+FROM SCORES_Task__c 
+WHERE Assigned_To__c = ':coachId']]></salesforce:salesforce-query>
+			<salesforce:parameters><![CDATA[#[output application/java
+				---
+{
+	coachId: vars.coachId
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<salesforce:query doc:name='Query to retrieve total tasks overall marked as "Done"' doc:id="4f648ab5-a088-4a54-bde3-32688cad8aa6" config-ref="Salesforce_Config" target="totalTasksOverallDone">
+			<salesforce:salesforce-query><![CDATA[SELECT COUNT()
+FROM SCORES_Task__c 
+WHERE Assigned_To__c = ':coachId'
+AND Task_Status__c = 'Done']]></salesforce:salesforce-query>
+			<salesforce:parameters><![CDATA[#[output application/java
+				---
+{
+	coachId: vars.coachId
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<salesforce:query doc:name="Query to retrieve total tasks for this teamseason" doc:id="e4d8d4ab-b728-442e-a74e-2e32995f7598" config-ref="Salesforce_Config" target="totalTasksThisTeamSeason">
+			<salesforce:salesforce-query><![CDATA[SELECT 
+Id, Assigned_To__c, Session__c, Session__r.Team_Season__c, Task_Status__c
+FROM SCORES_Task__c 
+WHERE Assigned_To__c = ':coachId'
+AND Session__r.Team_Season__c = ':teamSeasonId']]></salesforce:salesforce-query>
+			<salesforce:parameters><![CDATA[#[output application/java
+				---
+{
+	coachId: vars.coachId,
+	teamSeasonId: vars.teamSeasonId
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<salesforce:query doc:name="Query to retrieve attendance records for particular coach and teamseason" doc:id="9eba5095-dd10-4ee1-a117-d1e0cee3e90f" config-ref="Salesforce_Config" target="totalAttendancesThisTeamseason">
+			<salesforce:salesforce-query><![CDATA[SELECT Attended__c,Id,Session__c, Session__r.Team_Season__c, Session__r.Team_Season__r.Coach_Soccer__c, Session__r.Team_Season__r.Coach_Writing__c 
+FROM Attendance__c
+WHERE Session__r.Team_Season__c = ':teamSeasonId'
+AND 
+(Session__r.Team_Season__r.Coach_Writing__c = ':coachId' OR Session__r.Team_Season__r.Coach_Soccer__c = ':coachId')]]></salesforce:salesforce-query>
+			<salesforce:parameters><![CDATA[#[output application/java
+				---
+{
+	coachId: vars.coachId,
+	teamSeasonId: vars.teamSeasonId
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<ee:transform doc:name="Prepare Response" doc:id="2a9bf057-e618-4767-8d9f-ac63a99127fc">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+var rightNow = (now() >> "America/Los_Angeles") as LocalDateTime
+
+var true_attendances = sizeOf(vars.totalAttendancesThisTeamseason filter (item, i) -> item.Attended__c == "true") default 0
+var total_attendances = sizeOf(vars.totalAttendancesThisTeamseason) default 0
+var attendances_ratio = 
+    if (total_attendances != 0) 
+        ((true_attendances as Number / total_attendances) * 100)
+        as String {format: "##0.00", roundMode: "HALF_UP"} ++ "%" 
+    else "100%"
+    
+output application/json
+---
+{
+	"sessions": {
+		"current_month":{ 
+			"completed": sizeOf(vars.totalSessionsThisMonth filter (item, i) -> (item.Session_DateTime) <= rightNow) default 0,
+			"total": sizeOf(vars.totalSessionsThisMonth) default 0
+		}
+	},
+	"tasks": {
+		"overall": {
+			"done": sizeOf(vars.totalTasksOverallDone) default 0,
+			"total": sizeOf(vars.totalTasksOverall) default 0
+		},
+		"current_teamseason": {
+			"done": sizeOf(vars.totalTasksThisTeamSeason filter (item, i) -> item.Task_Status__c == "Done"),
+			"total": sizeOf(vars.totalTasksThisTeamSeason) default 0
+		}
+	},
+	"attendances":{
+		"current_teamseason_ratio": attendances_ratio
+	}
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<!-- [STUDIO:"Query to gather stats based on &quot;coachId&quot;"]<salesforce:query doc:name='Query to gather stats based on "coachId"' doc:id="4495ba6e-b4ac-4345-a66e-f1d783fe6db1" config-ref="Salesforce_Config" target="availableStats" >
+			<salesforce:salesforce-query ><![CDATA[SELECT Task_Status__c, COUNT(Id)
+FROM SCORES_Task__c
+WHERE Assigned_To__c = ':coachId'
+GROUP BY Task_Status__c&#93;&#93;></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[output application/java
+				&#45;&#45;-
+{
+	coachId: vars.coachId,
+}&#93;&#93;&#93;></salesforce:parameters>
+		</salesforce:query> [STUDIO] -->
+		<!-- [STUDIO:"Get SCORES_Task__c properties (Describe sobject)"]<salesforce:describe-sobject type="SCORES_Task__c" doc:name="Get SCORES_Task__c properties (Describe sobject)" doc:id="aa3fb261-8e5f-4771-8d40-10573952c376" config-ref="Salesforce_Config" /> [STUDIO] -->
+		<!-- [STUDIO:"Filter &quot;Task_Status__c&quot; values"]<ee:transform doc:name='Filter "Task_Status__c" values' doc:id="adfe6d6d-fe2e-4bb6-9a66-67008c63ba80" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+&#45;&#45;-
+(
+    payload.fields 
+        filter (field) -> field.name == "Task_Status__c"
+)[0&#93;.picklistValues 
+    map (item) -> item.value&#93;&#93;></ee:set-payload>
+			</ee:message>
+		</ee:transform> [STUDIO] -->
+		<!-- [STUDIO:"Prepare Stats"]<ee:transform doc:name="Prepare Stats" doc:id="edf8e8cd-aa0d-4693-9799-b8a43616dafd" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var memo = vars.availableStats reduce (item, acc = {}) -> 
+  acc ++ {(item.Task_Status__c): item.expr0}
+var result = payload map ((item, index) -> {(item): memo[item&#93; default 0})
+&#45;&#45;-
+result reduce ((item, acc = {}) -> acc ++ item)&#93;&#93;></ee:set-payload>
+			</ee:message>
+		</ee:transform> [STUDIO] -->
 	</flow>
 </mule>

@@ -242,6 +242,7 @@
 			                text: "🚨 *Error Notification* 🚨\n"
 			                   ++ "*Environment:* " ++ p('env') ++ "\n" 
 			                   ++ "*Source of Request:* " ++ (if (platform != null and buildVersion != null) (origin ++ " [" ++ platform ++ ", " ++ buildVersion ++ "]") else origin) ++ "\n"
+			   			       ++ "*Firebase ID:* " ++ (vars.originalAttributes.headers.'X-Firebase-UID' default "N/A") ++ "\n"
 			                   ++ "*Endpoint:* `" ++ (vars.originalAttributes.method default "N/A") ++ " " ++ (vars.originalAttributes.maskedRequestPath default "N/A") ++ "`\n"
 			                   ++ "*Query Parameters:* " ++ (vars.originalAttributes.queryString default "N/A") ++ "\n"
 			                   ++ "*Timestamp (PT):* " ++ (format(now() >> "America/Los_Angeles"))
