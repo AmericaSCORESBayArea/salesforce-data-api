@@ -378,9 +378,9 @@ payload]]></ee:set-payload>
 				</ee:transform>
 						<choice doc:name="Update successful?" doc:id="57cfc27f-d39b-489a-a941-195e88648fa2" >
 							<when expression="#[payload.successful == false]" >
-								<set-variable value="#['SALESFORCE_SESSION_CREATE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="599e729e-d7a1-4679-91a0-694cf584353c" variableName="errorCustomType" />
+								<set-variable value="#['SALESFORCE_SESSION_DELETE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="599e729e-d7a1-4679-91a0-694cf584353c" variableName="errorCustomType" />
 								<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="cb64c6a4-6537-4a20-a9ad-fb2248e6bb68" variableName="errorCustomMessage" />
-								<raise-error doc:name="Raise error" doc:id="d432f898-eca8-410d-b79b-50cf1dffbd6f" type="CUSTOM:CUSTOM_ERROR" description="Something went wrong while creating a session record." />
+								<raise-error doc:name="Raise error" doc:id="d432f898-eca8-410d-b79b-50cf1dffbd6f" type="CUSTOM:CUSTOM_ERROR" description="Something went wrong while deleting a session record." />
 							</when>
 							<otherwise >
 								<ee:transform doc:name="Success Response" doc:id="6f9995d5-7f26-43e0-84b5-37947225a965">
