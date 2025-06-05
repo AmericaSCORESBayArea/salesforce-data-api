@@ -1216,6 +1216,22 @@ uses:
         description: The ID of the session to retrieve tasks for
         type: string
         required: false
+      teamSeasonId:
+        description: The ID of the team season to retrieve tasks for
+        type: string
+        required: false
+      seasonId:
+        description: The ID of the season to retrieve tasks for
+        type: string
+        required: false
+      startDate:
+        description: The start date to filter tasks (format: YYYY-MM-DD)
+        type: string
+        required: false
+      endDate:
+        description: The end date to filter tasks (format: YYYY-MM-DD)
+        type: string
+        required: false
     responses:
       200:
         body:

@@ -2168,7 +2168,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url_s}}/tasks?contactId=003cX000008IZnXQAW&sessionId=a0pcX0000008y3pQAA",
+							"raw": "{{base_url_s}}/tasks?contactId=003cX000008IZnXQAW&sessionId=a0pcX0000008y3pQAA&teamSeasonId=a0qUQ000003FNvRYAW&seasonId=a0oUQ000001MNBtYAO&startDate=2025-05-03&endDate=2024-05-03",
 							"host": [
 								"{{base_url_s}}"
 							],
@@ -2176,14 +2176,12 @@
 								"tasks"
 							],
 							"query": [
-								{
-									"key": "contactId",
-									"value": "003cX000008IZnXQAW"
-								},
-								{
-									"key": "sessionId",
-									"value": "a0pcX0000008y3pQAA"
-								}
+								{ "key": "contactId", "value": "003cX000008IZnXQAW" },
+								{ "key": "sessionId", "value": "a0pcX0000008y3pQAA" },
+								{ "key": "teamSeasonId", "value": "a0qUQ000003FNvRYAW" },
+								{ "key": "seasonId", "value": "a0oUQ000001MNBtYAO" },
+								{ "key": "startDate", "value": "2025-05-03" },
+								{ "key": "endDate", "value": "2024-05-03" }
 							]
 						},
 						"description": "BODY/JSON:\n\n{  \n\"TeamSeasonName\": \"\",  \n\"TeamId\": \"\",  \n\"SeasonId\": \"\",  \n\"SchoolSite\": \"\",  \n\"Partnership\": \"\",  \n\"TotalNoOfPlayers\": 0,  \n\"TotalNoOfSessions\": 0,  \n\"SeasonStartDate\": \"\",  \n\"SeasonEndDate\": \"\",  \n\"CoachSoccer\": \"\",  \n\"CoachWriting\": \"\",  \n\"ProgramCoordinator\": \"\",  \n\"ProgramManager\": \"\"  \n}"
