@@ -39,13 +39,13 @@ var seasonCond =
 	
 var sessionStartDateCond = 
 	if (vars.startDate != null)
-	"Session__r.Session_Date__c >= " ++ (vars.startDate default "not_provided")
+	"Due_Date__c >= " ++ (vars.startDate default "not_provided")
 	else 
 	""
 	
 var sessionEndDateCond = 
 	if (vars.endDate != null)
-	"Session__r.Session_Date__c <= " ++ (vars.endDate default "not_provided")
+	"Due_Date__c <= " ++ (vars.endDate default "not_provided")
 	else 
 	""
 
@@ -114,7 +114,7 @@ conditions joinBy " AND "]]>
 						"PriorityIcon": payload01.Priority_Icon__c as String default "",
 						"ResourceLink": payload01.Resource_Link__c as String default "",
 						"Session": payload01.Session__c as String default "",
-						"SessionDate": payload01.Session__r.Session_Date__c as String default "",
+//						"SessionDate": payload01.Session__r.Session_Date__c as String default "",
 						"Name": payload01.Name as String default "",
 						"TaskStatus": payload01.Task_Status__c as String default "",
 						"TaskType": payload01.Task_Type__c as String default "",
@@ -187,7 +187,7 @@ payload map ( payload01 , indexOfpayload01 ) -> {
 	"PriorityIcon": payload01.Priority_Icon__c as String default "",
 	"ResourceLink": payload01.Resource_Link__c as String default "",
 	"Session": payload01.Session__c as String default "",
-	"SessionDate": payload01.Session__r.Session_Date__c as String default "",
+//	"SessionDate": payload01.Session__r.Session_Date__c as String default "",
 	"Name": payload01.Name as String default "",
 	"TaskStatus": payload01.Task_Status__c as String default "",
 	"TaskType": payload01.Task_Type__c as String default "",
