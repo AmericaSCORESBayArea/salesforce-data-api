@@ -358,7 +358,7 @@ var attendedTrue = vars.attendanceResponse filter (item, itemIndex) -&gt; (item.
 }]' doc:name="Set Attendances `toRemove` and `Ids`" doc:id="803dbfac-430e-491a-9576-ba7644ba9ccd" variableName="attendanceResponsePrepared"/>
 				<choice doc:name="Choice" doc:id="92f74e31-c84b-4d92-96a8-a54282a8f912">
 			<when expression="#[isEmpty(vars.assesmentResponse) and vars.attendanceResponsePrepared.toRemove]">
-				<ee:transform doc:name="tasksIds + attendancesIds + sessionId" doc:id="0fbc4a8b-63a7-4921-a442-cb27583294c7">
+						<ee:transform doc:name="tasksIds + attendancesIds + sessionId" doc:id="0fbc4a8b-63a7-4921-a442-cb27583294c7">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
 output application/java
@@ -378,9 +378,30 @@ payload]]></ee:set-payload>
 				</ee:transform>
 						<choice doc:name="Update successful?" doc:id="57cfc27f-d39b-489a-a941-195e88648fa2" >
 							<when expression="#[payload.successful == false]" >
-								<set-variable value="#['SALESFORCE_SESSION_DELETE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="599e729e-d7a1-4679-91a0-694cf584353c" variableName="errorCustomType" />
-								<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="cb64c6a4-6537-4a20-a9ad-fb2248e6bb68" variableName="errorCustomMessage" />
-								<raise-error doc:name="Raise error" doc:id="d432f898-eca8-410d-b79b-50cf1dffbd6f" type="CUSTOM:CUSTOM_ERROR" description="Something went wrong while deleting a session record." />
+								<set-variable value='#[%dw 2.0&#10;output application/json&#10;&#10;var errors = payload.items filter (item) -&gt; (item.payload.success == false)&#10;var filtered_errors = errors filter (item) -&gt; !(errors[0].exception.message contains ("ENTITY_IS_DELETED"))&#10;&#10;---&#10;sizeOf(filtered_errors) == 0]' doc:name="All Errors Says That The Entity Was Deleted Before?" doc:id="879368d7-0170-4294-bfcc-172da507083d" variableName="deletedBefore"/>
+								<choice doc:name="Choice" doc:id="0443b0fe-9fad-4636-a8fc-3d6d8c26f2e8">
+									<when expression="#[vars.deletedBefore]">
+										<ee:transform doc:name="Success Response" doc:id="24d1ad1d-6e15-4394-a416-69201a784f68" >
+											<ee:message >
+												<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message" : "Session, related attendances and tasks are deleted successfully, but some records were delete before",
+	"sessionId": vars.sessionId,
+	"attendenceIds": vars.attendanceResponsePrepared.ids,
+	"taskIds": vars.tasksResponsePrepared.ids,
+	"success": true
+}]]></ee:set-payload>
+											</ee:message>
+										</ee:transform>
+									</when>
+									<otherwise >
+										<set-variable value="#['SALESFORCE_SESSION_DELETE:' ++ (payload.items[0].statusCode default 'UNKNOWN')]" doc:name="Set Custom Error Type" doc:id="599e729e-d7a1-4679-91a0-694cf584353c" variableName="errorCustomType" />
+										<set-variable value="#[payload.items[0].message default 'Unknown Error']" doc:name="Set Custom Error Message" doc:id="cb64c6a4-6537-4a20-a9ad-fb2248e6bb68" variableName="errorCustomMessage" />
+										<raise-error doc:name="Raise error" doc:id="d432f898-eca8-410d-b79b-50cf1dffbd6f" type="CUSTOM:CUSTOM_ERROR" description="Something went wrong while deleting a session record." />
+									</otherwise>
+								</choice>
 							</when>
 							<otherwise >
 								<ee:transform doc:name="Success Response" doc:id="6f9995d5-7f26-43e0-84b5-37947225a965">
