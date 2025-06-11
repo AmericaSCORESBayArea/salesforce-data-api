@@ -1359,6 +1359,162 @@ output application/json
 			</ee:message>
 		</ee:transform>
 	</flow>
+			<flow name="get:\coach\(coachId)\stats" doc:id="ffd9b198-afcf-48f3-9378-d284e6a8290f" >
+		<set-variable value="#[attributes.uriParams.'coachId']" doc:name='Save "coachId"' doc:id="741cebb4-072d-4d8e-9af8-7bcf4bb79e4e" variableName="coachId" />
+		<set-variable value="#[attributes.queryParams.'interval' default &quot;overall&quot;]" doc:name='Save "interval"' doc:id="9c99f9b4-5bd8-4801-b234-db24ca47c389" variableName="interval" />
+		<set-variable value="#[attributes.queryParams.'teamSeasonId']" doc:name='Save "teamSeasonId"' doc:id="e219a9fd-c2c6-47ed-851d-39b229927b1a" variableName="teamSeasonId" />
+		<set-variable value="#[attributes.queryParams.'seasonId']" doc:name='Save "seasonId"' doc:id="0bab0beb-a972-4a89-b6e2-ba31b3902cf7" variableName="seasonId" />
+		<choice doc:name="Choice" doc:id="c26ef9b8-ee01-4386-b285-b20f62423ff7">
+			<when expression="#[vars.interval != 'overall']">
+				<set-variable value='#[%dw 2.0&#10;import * from dw::core::Dates&#10;import floor from dw::core::Numbers&#10;&#10;output application/json&#10;&#10;var interval = vars.interval&#10;var today    = now() as Date&#10;&#10;fun quarterStart(d: Date): Date =&#10;  date({&#10;    year:  d.year,&#10;    month: floor(((d.month) - 1) / 3) * 3 + 1,&#10;    day:   1&#10;  })&#10;&#10;var first =&#10;  if      (interval == "month")   atBeginningOfMonth(today)&#10;  else if (interval == "quarter") quarterStart(today)&#10;  else if (interval == "year")    atBeginningOfYear(today)&#10;  else if (interval == "week")    atBeginningOfWeek(today)&#10;  else                            today&#10;&#10;var last =&#10;  if      (interval == "month")   (atBeginningOfMonth(today + |P1M|) - |P1D|) as Date&#10;  else if (interval == "quarter") (quarterStart(today + |P3M|)      - |P1D|) as Date&#10;  else if (interval == "year")    (atBeginningOfYear(today + |P1Y|) - |P1D|) as Date&#10;  else if (interval == "week")    (atBeginningOfWeek(today + |P7D|) - |P1D|) as Date&#10;  else                            today&#10;&#10;---&#10;{&#10;  firstDay: first,&#10;  lastDay : last&#10;}]' doc:name="Set Dates" doc:id="e6d6fe3e-ed67-4f99-941b-19027f57b0ee" variableName="dates" />
+			</when>
+		</choice>
+		<set-variable doc:name="query" doc:id="b267385d-523f-491d-97cf-9fbb7109d686" variableName="query" value="#[%dw 2.0&#10;import * from dw::core::Dates&#10;import floor from dw::core::Numbers&#10;&#10;output application/json&#10;&#10;var firstDay = vars.dates.firstDay default &quot;&quot;&#10;var lastDay = vars.dates.lastDay default &quot;&quot;&#10;var interval = vars.interval&#10;var teamSeasonId = vars.teamSeasonId&#10;var seasonId = vars.seasonId&#10;&#10;&#10;var tq1 = if (interval == 'overall') &quot;&quot; else &#10;&quot;Session__r.Session_Date__c &gt;= $(firstDay) AND Session__r.Session_Date__c &lt;= $(lastDay)&quot;&#10;var tq2 = if (isEmpty(teamSeasonId)) &quot;&quot; else &#10;&quot;Session__r.Team_Season__c = '$(teamSeasonId)'&quot; &#10;var tq3 = if (isEmpty(seasonId)) &quot;&quot; else &#10;&quot;Session__r.Team_Season__r.Season__c = '$(seasonId)'&quot; &#10;var taskQuery = ([tq1, tq2, tq3] filter (item) -&gt; item != &quot;&quot;) joinBy  &quot; AND &quot;&#10;&#10;var sq1 = if (interval == 'overall') &quot;&quot; else &#10;&quot;Session_Date__c &gt;= $(firstDay) AND Session_Date__c &lt;= $(lastDay)&quot;&#10;var sq2 = if (isEmpty(teamSeasonId)) &quot;&quot; else &#10;&quot;Team_Season__c = '$(teamSeasonId)'&quot; &#10;var sq3 = if (isEmpty(seasonId)) &quot;&quot; else &#10;&quot;Team_Season__r.Season__c = '$(seasonId)'&quot; &#10;var sessionQuery = ([sq1, sq2, sq3] filter (item) -&gt; item != &quot;&quot;) joinBy  &quot; AND &quot;&#10;&#10;&#10;var attendanceQuery = taskQuery&#10;&#10;&#10;---&#10;{&#10;    &quot;tasksQuery&quot;: taskQuery,&#10;    &quot;sessionsQuery&quot;: sessionQuery,&#10;    &quot;attendancesQuery&quot;: attendanceQuery&#10;}]"/>
+		<salesforce:query doc:name="Attendances" doc:id="a8fac832-eb95-4309-aecf-9be8eeb63cb4" config-ref="Salesforce_Config" target="attendances">
+			<salesforce:salesforce-query><![CDATA[SELECT COUNT()
+FROM Attendance__c
+WHERE (Session__r.Team_Season__r.Coach_Writing__c = ':coachId' OR Session__r.Team_Season__r.Coach_Soccer__c = ':coachId')
+:q]]></salesforce:salesforce-query>
+			<salesforce:parameters><![CDATA[#[%dw 2.0
+output application/java
+---
+{
+  coachId: vars.coachId,
+  q: if (isEmpty((vars.query.attendancesQuery default "") as String)) 
+        "" 
+     else 
+        " AND " ++ (vars.query.attendancesQuery default "") as String
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<salesforce:query doc:name='Attendances "True"' doc:id="13ddeea7-b74c-4a82-99ef-f2a49c53aab8" config-ref="Salesforce_Config" target="attendancesTrue">
+			<salesforce:salesforce-query><![CDATA[SELECT COUNT()
+FROM Attendance__c
+WHERE (Session__r.Team_Season__r.Coach_Writing__c = ':coachId' OR Session__r.Team_Season__r.Coach_Soccer__c = ':coachId')
+AND Attended__c = true
+:q]]></salesforce:salesforce-query>
+			<salesforce:parameters><![CDATA[#[%dw 2.0
+output application/java
+---
+{
+  coachId: vars.coachId,
+  q: if (isEmpty((vars.query.attendancesQuery default "") as String)) 
+        "" 
+     else 
+        " AND " ++ (vars.query.attendancesQuery default "") as String
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<salesforce:query doc:name="Sessions" doc:id="98be4b7b-ed86-4faa-afe2-8036661a4047" config-ref="Salesforce_Config" target="sessions">
+			<salesforce:salesforce-query><![CDATA[SELECT COUNT()
+FROM Session__c
+WHERE (Team_Season__r.Coach_Writing__c = ':coachId' OR Team_Season__r.Coach_Soccer__c = ':coachId')
+:q]]></salesforce:salesforce-query>
+			<salesforce:parameters><![CDATA[#[%dw 2.0
+output application/java
+---
+{
+  coachId: vars.coachId,
+  q: if (isEmpty((vars.query.sessionsQuery default "") as String)) 
+        "" 
+     else 
+        " AND " ++ (vars.query.sessionsQuery default "") as String
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<salesforce:query doc:name='Sessions "Completed"' doc:id="fff15502-7569-4860-a491-a9237522b7d9" config-ref="Salesforce_Config" target="sessionsCompleted">
+			<salesforce:salesforce-query><![CDATA[SELECT COUNT()
+FROM Session__c
+WHERE (Team_Season__r.Coach_Writing__c = ':coachId' OR Team_Season__r.Coach_Soccer__c = ':coachId')
+:subquery
+:q]]></salesforce:salesforce-query>
+			<salesforce:parameters><![CDATA[#[%dw 2.0
+import * from dw::core::Dates          // atBeginningOfDay, etc. (not used here)
+
+var dateTime = now() >> "America/Los_Angeles"
+var nowDate = (dateTime as Date) as String
+var nowTime = dateTime as String { format: "HH:mm:ss" } ++ 'Z'
+
+output application/java
+---
+{
+  coachId: vars.coachId,
+  subquery: " AND Session_Date__c <= $(nowDate) AND Session_End__c <= $(nowTime)",
+  q: if (isEmpty((vars.query.sessionsQuery default "") as String)) 
+        "" 
+     else 
+        " AND " ++ (vars.query.sessionsQuery default "") as String
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<salesforce:query doc:name="Tasks" doc:id="34d761e8-bdca-46bd-b7ee-5b915c82f688" config-ref="Salesforce_Config" target="tasks">
+			<salesforce:salesforce-query><![CDATA[SELECT COUNT()
+FROM SCORES_Task__c 
+WHERE Assigned_To__c = ':coachId'
+:q]]></salesforce:salesforce-query>
+			<salesforce:parameters><![CDATA[#[%dw 2.0
+output application/java
+---
+{
+  coachId: vars.coachId,
+  q: if (isEmpty((vars.query.tasksQuery default "") as String)) 
+        "" 
+     else 
+        " AND " ++ (vars.query.tasksQuery default "") as String
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<salesforce:query doc:name='Tasks "Done"' doc:id="6087d402-6845-4c26-b01f-19513c816964" config-ref="Salesforce_Config" target="tasksDone">
+			<salesforce:salesforce-query><![CDATA[SELECT COUNT()
+FROM SCORES_Task__c 
+WHERE Assigned_To__c = ':coachId'
+AND Task_Status__c = 'Done'
+:q]]></salesforce:salesforce-query>
+			<salesforce:parameters><![CDATA[#[%dw 2.0
+output application/java
+---
+{
+  coachId: vars.coachId,
+  q: if (isEmpty((vars.query.tasksQuery default "") as String)) 
+        "" 
+     else 
+        " AND " ++ (vars.query.tasksQuery default "") as String
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<ee:transform doc:name="Prepare Response" doc:id="e67b671b-2a19-4189-884f-ce588b0fa2d3">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+
+fun ratio(trueList = [], totalList = []): String =
+  if (sizeOf(totalList default []) != 0)
+       ((sizeOf(trueList default []) as Number
+         / sizeOf(totalList default []) ) * 100)
+            as String { format: "##0.00", roundMode: "HALF_UP" } ++ "%"
+  else "100%"
+
+    
+output application/json
+---
+{	
+	"coach": vars.coachId,
+	"interval": vars.interval,
+	"teamseason": vars.teamSeasonId default "",
+	"season": vars.seasonId default "",
+	"sessions": {
+		"completed": sizeOf(vars.sessionsCompleted default []),
+		"total": sizeOf(vars.sessions default []),
+		"ratio": ratio(vars.sessionsCompleted, vars.sessions)
+	},
+	"tasks": {
+		"done": sizeOf(vars.tasksDone default []),
+		"total": sizeOf(vars.tasks default []),
+		"ratio": ratio(vars.tasksDone, vars.tasks)
+	},
+	"attendances":{
+		"true": sizeOf(vars.attendancesTrue default []),
+		"total": sizeOf(vars.attendances default []),
+		"ratio": ratio(vars.attendancesTrue, vars.attendances)
+	}
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
 	<flow name="get:\coach\(coachId)\teamseasons\(teamSeasonId)\stats" doc:id="59de02c6-9de9-4b00-9b6c-f7af6438b90e" >
 		<set-variable value="#[attributes.uriParams.'coachId']" doc:name='Save "coachId"' doc:id="66df3a39-36f9-4328-81d5-ed4a29902fb1" variableName="coachId" />
 		<set-variable value="#[attributes.uriParams.'teamSeasonId']" doc:name='Save "teamSeasonId"' doc:id="477fb233-3b92-4da4-b1c3-8300ce9323ee" variableName="teamSeasonId" />

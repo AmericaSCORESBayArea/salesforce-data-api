@@ -870,6 +870,87 @@ uses:
               message: Bad data
     
 /coach/{coachId}:
+  /stats:
+    get:
+      description: |
+        Retrieve summary statistics for a specific coach, including sessions, tasks, and attendances. 
+        
+        **Parameters:**
+        - `coachId` (path, required): The unique identifier of the coach.
+        - `interval` (query, optional, default: "overall"): Time range for stats. Supported values: `overall`, `month`, `quarter`, `year`, `week`.
+        - `teamSeasonId` (query, optional): Filter stats for a specific team season.
+        - `seasonId` (query, optional): Filter stats for a specific season.
+        
+        **Response:**
+        Returns a JSON object with the following structure:
+        ```json
+        {
+          "coach": "003XXXXXXXXXXXX",
+          "interval": "month",
+          "teamseason": "a1BXXXXXXXXXXXX",
+          "season": "a1CXXXXXXXXXXXX",
+          "sessions": {
+            "completed": 8,
+            "total": 10,
+            "ratio": "80.00%"
+          },
+          "tasks": {
+            "done": 5,
+            "total": 7,
+            "ratio": "71.43%"
+          },
+          "attendances": {
+            "true": 60,
+            "total": 75,
+            "ratio": "80.00%"
+          }
+        }
+        ```
+        
+        This endpoint aggregates and returns the number and percentage of completed sessions, done tasks, and attended attendances for the specified coach, optionally filtered by interval, team season, or season.
+      queryParameters:
+        interval:
+          displayName: Interval
+          description: Time range for stats (overall, month, quarter, year, week). Default is overall.
+          type: string
+          required: false
+        teamSeasonId:
+          displayName: Team Season Id
+          description: Filter stats for a specific team season.
+          type: string
+          required: false
+        seasonId:
+          displayName: Season Id
+          description: Filter stats for a specific season.
+          type: string
+          required: false
+      responses:
+        200:
+          body:
+            application/json:
+              type: object
+              example: |
+                {
+                  "coach": "003XXXXXXXXXXXX",
+                  "interval": "month",
+                  "teamseason": "a1BXXXXXXXXXXXX",
+                  "season": "a1CXXXXXXXXXXXX",
+                  "sessions": {
+                    "completed": 8,
+                    "total": 10,
+                    "ratio": "80.00%"
+                  },
+                  "tasks": {
+                    "done": 5,
+                    "total": 7,
+                    "ratio": "71.43%"
+                  },
+                  "attendances": {
+                    "true": 60,
+                    "total": 75,
+                    "ratio": "80.00%"
+                  }
+                }
   /regions:
     get:
       displayName: Get Regions
@@ -1214,6 +1295,22 @@ uses:
         required: true
       sessionId:
         description: The ID of the session to retrieve tasks for
+        type: string
+        required: false
+      teamSeasonId:
+        description: The ID of the team season to retrieve tasks for
+        type: string
+        required: false
+      seasonId:
+        description: The ID of the season to retrieve tasks for
+        type: string
+        required: false
+      startDate:
+        description: "The start date to filter tasks (format: YYYY-MM-DD)"
+        type: string
+        required: false
+      endDate:
+        description: "The end date to filter tasks (format: YYYY-MM-DD)"
         type: string
         required: false
     responses:

@@ -1,32 +1,64 @@
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd  http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd  http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
   <flow name="get:\tasks:salesforce-data-api-config">
     <logger level="INFO" message="get:\tasks:salesforce-data-api-config"></logger>
-    <ee:transform doc:id="7e56aada-f163-47f0-8ffc-213f3acd09a8" doc:name="Store Query parameters">
+    <set-variable value="#[attributes.queryParams.'contactId']" doc:name='Set "contactId"' doc:id="9edba73a-8441-465f-ab43-02a563d58f06" variableName="contactId" />
+		<set-variable value="#[attributes.queryParams.'sessionId']" doc:name='Set "sessionId"' doc:id="15c7e2f2-87f5-4235-861f-7b758e9374e3" variableName="sessionId"/>
+		<set-variable value="#[attributes.queryParams.'seasonId']" doc:name='Set "seasonId"' doc:id="3f28c949-f7c8-4538-9995-c72483a940fa" variableName="seasonId" />
+		<set-variable value="#[attributes.queryParams.'teamSeasonId']" doc:name='Set "teamSeasonId"' doc:id="6f013944-30d7-4750-9967-11eb07fb78d1" variableName="teamSeasonId" />
+		<set-variable value="#[attributes.queryParams.'startDate']" doc:name='Set "startDate"' doc:id="64150931-2428-43e4-94f9-ffd231cc8b27" variableName="startDate" />
+		<set-variable value="#[attributes.queryParams.'endDate']" doc:name='Set "endDate"' doc:id="324821c3-2447-4d4d-adca-d15fca536163" variableName="endDate" />
+		<ee:transform doc:id="7e56aada-f163-47f0-8ffc-213f3ecd09a8" doc:name="Prepare Query Condition">
       <ee:variables>
-        <ee:set-variable variableName="contactId">
-          <![CDATA[attributes.queryParams.'contactId']]>
-        </ee:set-variable>
-        <ee:set-variable variableName="sessionId">
-          <![CDATA[attributes.queryParams.'sessionId']]>
+        <ee:set-variable variableName="query"><![CDATA[
+%dw 2.0
+output application/json
+
+var assignedToCond = 
+	if (vars.contactId != null)
+	"Assigned_To__c = '" ++ (vars.contactId default "not_provided") ++ "'"
+	else 
+	""
+	
+var sessionCond = 
+	if (vars.sessionId != null)
+	"Session__c = '" ++ (vars.sessionId default "not_provided") ++ "'"
+	else 
+	""
+
+var teamSeasonCond = 
+	if (vars.teamSeasonId != null)
+	"Session__r.Team_Season__c = '" ++ (vars.teamSeasonId default "not_provided") ++ "'"
+	else 
+	""
+	
+var seasonCond = 
+	if (vars.seasonId != null)
+	"Session__r.Team_Season__r.Season__c = '" ++ (vars.seasonId default "not_provided") ++ "'"
+	else 
+	""
+	
+var sessionStartDateCond = 
+	if (vars.startDate != null)
+	"Due_Date__c >= " ++ (vars.startDate default "not_provided")
+	else 
+	""
+	
+var sessionEndDateCond = 
+	if (vars.endDate != null)
+	"Due_Date__c <= " ++ (vars.endDate default "not_provided")
+	else 
+	""
+
+var conditions = 
+[assignedToCond, sessionCond, teamSeasonCond, seasonCond, sessionStartDateCond, sessionEndDateCond] 
+filter (item) -> item != ""
+
+---
+conditions joinBy " AND "]]>
         </ee:set-variable>
       </ee:variables>
     </ee:transform>
-    <ee:transform doc:id="7e56aada-f163-47f0-8ffc-213f3ecd09a8" doc:name="Prepare Query Condition">
-      <ee:variables>
-        <ee:set-variable variableName="query">
-          <![CDATA[
-				%dw 2.0
-				output application/json
-				---
-				if (vars.sessionId != null) 
-				"Assigned_To__c = '" ++ (vars.contactId default "") ++ "' AND Session__c = '" ++ (vars.sessionId default "") ++ "'"
-				else 
-				"Assigned_To__c = '" ++ (vars.contactId default "") ++ "'"
-			]]>
-        </ee:set-variable>
-      </ee:variables>
-    </ee:transform>
-    <salesforce:query config-ref="Salesforce_Config" doc:id="1d085a1a-e15b-412b-a836-1014557a9abd" doc:name="Query to get tasks by contactId">
+		<salesforce:query config-ref="Salesforce_Config" doc:id="1d085a1a-e15b-412b-a836-1014557a9abd" doc:name="Query to get tasks by contactId">
       <salesforce:salesforce-query><![CDATA[
 				SELECT 
 					Id,
@@ -43,9 +75,12 @@
 					Priority_Icon__c,
 					Resource_Link__c,
 					Session__c,
+					Session__r.Session_Date__c,
 					Name,
 					Task_Status__c,
-					Task_Type__c
+					Task_Type__c,
+					Session__r.Team_Season__c,
+					Session__r.Team_Season__r.Season__c
 				FROM 
 					SCORES_Task__c
 				WHERE 
@@ -59,10 +94,9 @@
 				}]]]>
       </salesforce:parameters>
     </salesforce:query>
-    <ee:transform doc:id="cca12834-e1ee-4339-90ef-91c9be555af9" doc:name="Transform Message">
+		<ee:transform doc:id="cca12834-e1ee-4339-90ef-91c9be555af9" doc:name="Transform Message">
       <ee:message>
-        <ee:set-payload>
-          <![CDATA[%dw 2.0
+        <ee:set-payload><![CDATA[%dw 2.0
 					output application/json
 					---
 					payload map ( payload01 , indexOfpayload01 ) -> {
@@ -80,9 +114,12 @@
 						"PriorityIcon": payload01.Priority_Icon__c as String default "",
 						"ResourceLink": payload01.Resource_Link__c as String default "",
 						"Session": payload01.Session__c as String default "",
+//						"SessionDate": payload01.Session__r.Session_Date__c as String default "",
 						"Name": payload01.Name as String default "",
 						"TaskStatus": payload01.Task_Status__c as String default "",
-						"TaskType": payload01.Task_Type__c as String default ""
+						"TaskType": payload01.Task_Type__c as String default "",
+						"TeamSeason": payload01.Session__r.Team_Season__c as String default "",
+						"Season": payload01.Session__r.Team_Season__r.Season__c as String default ""
 					}]]>
         </ee:set-payload>
       </ee:message>
@@ -112,9 +149,12 @@
 					Priority_Icon__c,
 					Resource_Link__c,
 					Session__c,
+					Session__r.Session_Date__c,
 					Name,
 					Task_Status__c,
-					Task_Type__c
+					Task_Type__c,
+					Session__r.Team_Season__c,
+					Session__r.Team_Season__r.Season__c
 				FROM 
 					SCORES_Task__c
 				WHERE 
@@ -147,9 +187,12 @@ payload map ( payload01 , indexOfpayload01 ) -> {
 	"PriorityIcon": payload01.Priority_Icon__c as String default "",
 	"ResourceLink": payload01.Resource_Link__c as String default "",
 	"Session": payload01.Session__c as String default "",
+//	"SessionDate": payload01.Session__r.Session_Date__c as String default "",
 	"Name": payload01.Name as String default "",
 	"TaskStatus": payload01.Task_Status__c as String default "",
-	"TaskType": payload01.Task_Type__c as String default ""
+	"TaskType": payload01.Task_Type__c as String default "",
+	"TeamSeason": payload01.Session__r.Team_Season__c,
+	"Season": payload01.Session__r.Team_Season__r.Season__c
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>

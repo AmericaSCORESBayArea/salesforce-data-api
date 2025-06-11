@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "0e927c57-e663-43d7-b54f-7487525e3134",
+		"_postman_id": "43dbedd3-7e21-463c-8cf4-f199f2aa4f83",
 		"name": "Scores - Salesforce Data API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "34720049"
@@ -2010,6 +2010,55 @@
 					"response": []
 				},
 				{
+					"name": "/coach/{coachId}/stats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							},
+							{
+								"key": "Origin",
+								"value": "Postman",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/coach/003cX000005TYcvQAG/stats?interval&teamSeasonId&seasonid",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"coach",
+								"003cX000005TYcvQAG",
+								"stats"
+							],
+							"query": [
+								{
+									"key": "interval",
+									"value": null,
+									"description": "overall (default) | year | quarter | month | week"
+								},
+								{
+									"key": "teamSeasonId",
+									"value": null
+								},
+								{
+									"key": "seasonId",
+									"value": null
+								}
+							]
+						},
+						"description": "Response Example:\n\n{ \"Not Started\": 1, \"Started\": 0, \"Complete\": 41}"
+					},
+					"response": []
+				},
+				{
 					"name": "/coach/{coachId}/teamseasons/{teamSeasonId}/stats",
 					"request": {
 						"method": "GET",
@@ -2029,13 +2078,50 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url_s}}/coach/a0qcX000000GEggQAG/003cX000008IZnXQAW/stats",
+							"raw": "{{base_url_s}}/coach/a0qcX000000GEggQAG/teamseasons/003cX000008IZnXQAW/stats",
 							"host": [
 								"{{base_url_s}}"
 							],
 							"path": [
 								"coach",
 								"a0qcX000000GEggQAG",
+								"teamseasons",
+								"003cX000008IZnXQAW",
+								"stats"
+							]
+						},
+						"description": "Response Example:\n\n{ \"Not Started\": 1, \"Started\": 0, \"Complete\": 41}"
+					},
+					"response": []
+				},
+				{
+					"name": "/coach/{coachId}/teamseasons/{teamSeasonId}/stats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "client_id",
+								"value": "{{sandbox_client_id}}"
+							},
+							{
+								"key": "client_secret",
+								"value": "{{sandbox_client_secret}}"
+							},
+							{
+								"key": "Origin",
+								"value": "Postman",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url_s}}/coach/a0qcX000000GEggQAG/teamseasons/003cX000008IZnXQAW/stats",
+							"host": [
+								"{{base_url_s}}"
+							],
+							"path": [
+								"coach",
+								"a0qcX000000GEggQAG",
+								"teamseasons",
 								"003cX000008IZnXQAW",
 								"stats"
 							]
@@ -2168,7 +2254,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url_s}}/tasks?contactId=003cX000008IZnXQAW&sessionId=a0pcX0000008y3pQAA",
+							"raw": "{{base_url_s}}/tasks?contactId=003cX000008IZnXQAW&sessionId=a0pcX0000008y3pQAA&teamSeasonId=a0qUQ000003FNvRYAW&seasonId=a0oUQ000001MNBtYAO&startDate=2025-05-03&endDate=2024-05-03",
 							"host": [
 								"{{base_url_s}}"
 							],
@@ -2183,6 +2269,22 @@
 								{
 									"key": "sessionId",
 									"value": "a0pcX0000008y3pQAA"
+								},
+								{
+									"key": "teamSeasonId",
+									"value": "a0qUQ000003FNvRYAW"
+								},
+								{
+									"key": "seasonId",
+									"value": "a0oUQ000001MNBtYAO"
+								},
+								{
+									"key": "startDate",
+									"value": "2025-05-03"
+								},
+								{
+									"key": "endDate",
+									"value": "2024-05-03"
 								}
 							]
 						},
