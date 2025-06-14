@@ -47,7 +47,7 @@ with open('./data/attendance-task/results.csv', newline='') as csvfile:
                 "DueDate": endOfTeamSeason,
                 "Session": session,
                 "Name": "Catch-up attendance",
-                "TaskStatus": "To Do",
+                "TaskStatus": "Not Started",
                 "TaskType": "Take Attendance"
             }
 

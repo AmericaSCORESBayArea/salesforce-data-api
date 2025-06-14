@@ -115,7 +115,7 @@ output application/json
 							</choice>
 						</when>
 						<otherwise>
-							<logger level="INFO" doc:name="To Do" doc:id="0c427212-c873-420a-acf8-53e4c6d6159e" message='A task marked as "to do" will be created here' />
+							<logger level="INFO" doc:name="Not Started" doc:id="0c427212-c873-420a-acf8-53e4c6d6159e" message='A task marked as "Not Started" will be created here' />
 							<choice doc:name="Choice" doc:id="9acbbfde-02b8-43ca-8a55-5385372d1bd7">
 								<when expression="#[vars.currentItem.Team_Season__r.Coach_Writing__c != null]">
 									<ee:transform doc:name="Coach_Writing__c" doc:id="70657783-b6e2-45a6-898a-6db806437dea">
@@ -134,7 +134,7 @@ output application/json
     "DueDate": vars.currentItem.Team_Season__r.Season_End_Date__c,
     "Session": vars.currentItem.Id,
     "Name": "Catch-up attendance",
-    "TaskStatus": "To Do",
+    "TaskStatus": "Not Started",
     "TaskType": "Take Attendance"
 }]]></ee:set-payload>
 										</ee:message>
@@ -160,7 +160,7 @@ output application/json
     "DueDate": vars.currentItem.Team_Season__r.Season_End_Date__c,
     "Session": vars.currentItem.Id,
     "Name": "Catch-up attendance",
-    "TaskStatus": "To Do",
+    "TaskStatus": "Not Started",
     "TaskType": "Take Attendance"
 }]]></ee:set-payload>
 										</ee:message>
