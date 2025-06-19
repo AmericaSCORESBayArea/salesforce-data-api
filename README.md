@@ -10,7 +10,7 @@ Our core Mulesoft app was built to interact with Scores data in Salesforce datab
 ### 🕺  [Postman Collection (API Documentation)](https://github.com/AmericaSCORESBayArea/salesforce-data-api/blob/master/docs/Scores%20-%20Salesforce%20Data%20API.postman_collection.json)
 
 ---
-# Development and Testing the app
+## Development and Testing the app
 
 For development and testing purposes, we have 2 IDEs:
 1) [Anypoint Code Builder](https://www.mulesoft.com/platform/api/anypoint-code-builder) (based on VS Code)
@@ -74,7 +74,7 @@ mv keystore.jks `/src/main/resources`
 
 9. Run the project using VS Code Start button (`Debug Mule Application`). Ta-da! 🚀
 
-### ☁️ What if I want to run a cloud instance?
+## ☁️ What if I want to run a cloud instance?
 
 1. Create [Anypoint Platform Account](https://anypoint.mulesoft.com/login/)
 2. Go to [the main dashboard](https://anypoint.mulesoft.com/)
@@ -83,7 +83,7 @@ mv keystore.jks `/src/main/resources`
 5. Click `Launch` button (if it's greyed out, refresh the page and wait)
 6. Wait for the environment to get allocated and load. The first time it might take a while
 
-# 🚀 Anypoint Studio Project Setup Guide
+## Anypoint Studio Project Setup Guide
 
 Follow the steps below to set up and run the **salesforce-data-api** MuleSoft project in **Anypoint Studio**.
 
@@ -98,14 +98,11 @@ Download and install Anypoint Studio from the official site:
 ---
 
 ## 🧬 2. Clone the Repository
-
-1. In **Anypoint Studio**, locate the **Git** panel (usually in the upper-right corner).
-2. Clone the repository:
-
+  Clone the repository:
    ```
    salesforce-data-api
    ```
-3. **Import** the project folder without copying its contents to the Studio workspace.
+
 
 ---
 
@@ -162,7 +159,7 @@ slack.client_secret=
 5. Select the installed **Mule Server 4.6.X**
 6. Click **Apply**
 
-### Add VM Arguments (under **Arguments** tab):
+## Add VM Arguments (under **Arguments** tab):
 
 ```text
 -M-Denv=local
@@ -170,7 +167,7 @@ slack.client_secret=
 -M-Danypoint.platform.gatekeeper=disabled
 ```
 
-### Set Java Version (under **JRE** tab):
+## Set Java Version (under **JRE** tab):
 
 * Ensure Java **11 or 17+** is selected
 
