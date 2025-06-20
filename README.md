@@ -87,32 +87,26 @@ mv keystore.jks `/src/main/resources`
 
 Follow the steps below to set up and run the **salesforce-data-api** MuleSoft project in **Anypoint Studio**.
 
----
 
-## 📅 1. Download Anypoint Studio
+📅 1. Download Anypoint Studio
 
 Download and install Anypoint Studio from the official site:
 
 🔗  [Anypoint Studio](https://www.mulesoft.com/lp/dl/anypoint-mule-studio)
 
----
 
-## 🧬 2. Clone the Repository
+🧬 2. Clone the Repository
   Clone the repository:
    ```
    salesforce-data-api
    ```
 
 
----
-
-## 🔀 3. Switch to Mule Perspective
+🔀 3. Switch to Mule Perspective
 
 Click on the **Mule Perspective** icon (next to Git) to switch your view for Mule development.
 
----
-
-## 💠 4. Create `local.properties` File
+💠 4. Create `local.properties` File
 
 Create a file named `local.properties` inside:
 
@@ -146,8 +140,7 @@ slack.client_secret=
 ```
 
 ---
-
-## ⚙️ 5. Configure Mule Runtime
+ ⚙️ 5. Configure Mule Runtime
 
 1. Right-click the project → `Run As` → `Run Configurations...`
 2. Create a new config under **Mule Applications**
@@ -159,7 +152,7 @@ slack.client_secret=
 5. Select the installed **Mule Server 4.6.X**
 6. Click **Apply**
 
-## Add VM Arguments (under **Arguments** tab):
+Add VM Arguments (under **Arguments** tab):
 
 ```text
 -M-Denv=local
@@ -167,24 +160,21 @@ slack.client_secret=
 -M-Danypoint.platform.gatekeeper=disabled
 ```
 
-## Set Java Version (under **JRE** tab):
+**Set Java Version (under **JRE** tab)**:
 
 * Ensure Java **11 or 17+** is selected
 
 Click **Apply** and close the config window.
 
----
-
-## ☕ 6. Verify Runtime & Java Versions
+☕ 6. Verify Runtime & Java Versions
 
 * Mule Runtime: **4.6.X**
 * Java: **11 or 17+**
 
 If the Mule runtime is not 4.6.x, you can install the correct version during step 5.
 
----
 
-## 🔐 7. Install Java (if not present)
+🔐 7. Install Java (if not present)
 
 Install Java from the official site:
 🔗 [https://www.java.com/](https://www.java.com)
@@ -218,7 +208,7 @@ mv keystore.jks src/main/resources/
 
 ---
 
-## 🔑 9. Add Keystore Passwords
+🔑 9. Add Keystore Passwords
 
 In your `local.properties` file, add:
 
@@ -229,6 +219,6 @@ keystore.password=YOUR_STOREPASS_PASSWORD
 
 ---
 
-## ▶️ 10. Run the Project
+▶️ 10. Run the Project
 
 Click the **Run** or **Debug** button in Anypoint Studio and let the app deploy 🎉
