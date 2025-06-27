@@ -181,7 +181,7 @@ Install Java from the official site:
 
 ---
 
-## 🗑️ 8. Generate Keystore and Certificate
+🗑️ 8. Generate Keystore and Certificate
 
 Use your terminal or CMD to run the following command in the **project root directory**:
 
