@@ -978,6 +978,37 @@ uses:
     get:
       displayName: Get All Sessions
       description: Retrieves a list of all sessions a Coach has in the lastest Season
+      queryParameters:
+        regions:
+          displayName: Regions
+          description: Regions to be selected
+          type: string
+          required: true
+        startDate:
+          displayName: Start Date 
+          description: Interval filtering - start date
+          type: date-only
+          required: true
+        endDate:
+          displayName: End Date
+          description: Interval filtering - end date
+          type: date-only
+          required: false
+        limit:
+          displayName: Limit
+          description: Limit how many records to be returned
+          type: number
+          required: true
+        offset:
+          displayName: Offset
+          description: How many records to be skipped. Default - 0
+          type: number
+          required: false
+        teamseasonId:
+          displayName: TeamSeasonId
+          description: Filter by teamseason
+          type: string
+          required: false
       responses:
         200:
           description: Succesfully retrieved all Sessions
