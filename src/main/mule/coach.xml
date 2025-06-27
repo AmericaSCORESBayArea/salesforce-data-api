@@ -1417,7 +1417,10 @@ output application/json
 		<salesforce:query doc:name="Attendances" doc:id="a8fac832-eb95-4309-aecf-9be8eeb63cb4" config-ref="Salesforce_Config" target="attendances">
 			<salesforce:salesforce-query><![CDATA[SELECT COUNT()
 FROM Attendance__c
-WHERE (Session__r.Team_Season__r.Coach_Writing__c = ':coachId' OR Session__r.Team_Season__r.Coach_Soccer__c = ':coachId')
+WHERE (Session__r.Team_Season__r.Coach_Writing__c = ':coachId' 
+OR Session__r.Team_Season__r.Coach_Soccer__c = ':coachId'
+OR Session__r.Team_Season__r.SCORES_Program_Coordinator__c = ':coachId'
+OR Session__r.Team_Season__r.SCORES_Program_Manager__c = ':coachId')
 :q]]></salesforce:salesforce-query>
 			<salesforce:parameters><![CDATA[#[%dw 2.0
 output application/java
@@ -1433,7 +1436,10 @@ output application/java
 		<salesforce:query doc:name='Attendances "True"' doc:id="13ddeea7-b74c-4a82-99ef-f2a49c53aab8" config-ref="Salesforce_Config" target="attendancesTrue">
 			<salesforce:salesforce-query><![CDATA[SELECT COUNT()
 FROM Attendance__c
-WHERE (Session__r.Team_Season__r.Coach_Writing__c = ':coachId' OR Session__r.Team_Season__r.Coach_Soccer__c = ':coachId')
+WHERE (Session__r.Team_Season__r.Coach_Writing__c = ':coachId' 
+OR Session__r.Team_Season__r.Coach_Soccer__c = ':coachId'
+OR Session__r.Team_Season__r.SCORES_Program_Coordinator__c = ':coachId'
+OR Session__r.Team_Season__r.SCORES_Program_Manager__c = ':coachId')
 AND Attended__c = true
 :q]]></salesforce:salesforce-query>
 			<salesforce:parameters><![CDATA[#[%dw 2.0
@@ -1450,7 +1456,10 @@ output application/java
 		<salesforce:query doc:name="Sessions" doc:id="98be4b7b-ed86-4faa-afe2-8036661a4047" config-ref="Salesforce_Config" target="sessions">
 			<salesforce:salesforce-query><![CDATA[SELECT COUNT()
 FROM Session__c
-WHERE (Team_Season__r.Coach_Writing__c = ':coachId' OR Team_Season__r.Coach_Soccer__c = ':coachId')
+WHERE (Team_Season__r.Coach_Writing__c = ':coachId' 
+OR Team_Season__r.Coach_Soccer__c = ':coachId'
+OR Team_Season__r.SCORES_Program_Coordinator__c = ':coachId'
+OR Team_Season__r.SCORES_Program_Manager__c = ':coachId')
 :q]]></salesforce:salesforce-query>
 			<salesforce:parameters><![CDATA[#[%dw 2.0
 output application/java
@@ -1466,7 +1475,10 @@ output application/java
 		<salesforce:query doc:name='Sessions "Completed"' doc:id="fff15502-7569-4860-a491-a9237522b7d9" config-ref="Salesforce_Config" target="sessionsCompleted">
 			<salesforce:salesforce-query><![CDATA[SELECT COUNT()
 FROM Session__c
-WHERE (Team_Season__r.Coach_Writing__c = ':coachId' OR Team_Season__r.Coach_Soccer__c = ':coachId')
+WHERE (Team_Season__r.Coach_Writing__c = ':coachId' 
+OR Team_Season__r.Coach_Soccer__c = ':coachId'
+OR Team_Season__r.SCORES_Program_Coordinator__c = ':coachId'
+OR Team_Season__r.SCORES_Program_Manager__c = ':coachId')
 :subquery
 :q]]></salesforce:salesforce-query>
 			<salesforce:parameters><![CDATA[#[%dw 2.0
