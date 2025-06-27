@@ -905,11 +905,9 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 				<ee:set-variable variableName="regions" ><![CDATA[attributes.queryParams.regions]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<choice doc:name="Choice" doc:id="64954967-58fa-4695-b812-6d707edcf0d2" >
-			<when expression="#[attributes.queryParams.endDate != null]">
-				<choice doc:name="Choice" doc:id="cf77025e-c568-4c70-9d1d-00a3e1788b6d" >
-					<when expression="#[attributes.queryParams.teamseasonId != null]">
-						<salesforce:query doc:name="Query" doc:id="fc538db1-ecb3-4e50-b07e-6e831fdfa28d" config-ref="Salesforce_Config">
+		<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;if (attributes.queryParams.endDate == null)&#10;    "(Session_Date__c &gt;= " ++ attributes.queryParams.startDate ++ ")"&#10;else &#10;    "(Session_Date__c &gt;= " ++ attributes.queryParams.startDate ++ " AND Session_Date__c &lt;= " ++ attributes.queryParams.endDate ++ ")"]' doc:name="Set Dates Query" doc:id="98760d2b-fe41-4eed-a5ac-f51308a6dd52" variableName="d_query"/>
+		<set-variable value="#[%dw 2.0&#10;output application/json&#10;---&#10;if (attributes.queryParams.teamseasonId == null)&#10;    &quot;&quot;&#10;else &#10;    &quot;AND Team_Season__c = '&quot; ++ attributes.queryParams.teamseasonId ++  &quot;'&quot;]" doc:name="Set TeamSeason Query" doc:id="38d058b0-8e9c-4376-a092-321783d65c49" variableName="t_query"/>
+		<salesforce:query doc:name="Query" doc:id="fc538db1-ecb3-4e50-b07e-6e831fdfa28d" config-ref="Salesforce_Config">
 					<salesforce:salesforce-query><![CDATA[			SELECT 
 				Id,
 				IsDeleted,
@@ -934,219 +932,28 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 			FROM 
 				Session__c 
 			WHERE 
-			(
-				Team_Season__r.Coach_Writing__c = ':coachid' 
+				(Team_Season__r.Coach_Writing__c = ':coachid' 
 				OR Team_Season__r.Coach_Soccer__c = ':coachid' 
 				OR Team_Season__r.SCORES_Program_Coordinator__c = ':coachid' 
-				OR Team_Season__r.SCORES_Program_Manager__c = ':coachid'
-			) 
+				OR Team_Season__r.SCORES_Program_Manager__c = ':coachid') 
 			AND 
-			(
-			Session_Date__c >= :firstDate
-			) 
+				:d_query
 			AND 
-			(
-			Session_Date__c <= :secondDate
-			) 
-			AND 
-			(
-			Team_Season__r.Team__r.School_Site__r.Region__c IN (:region)
-			) 
-			AND 
-			(
-			Team_Season__r.Id = ':teamseasonId'
-			) 
+				(Team_Season__r.Team__r.School_Site__r.Region__c IN (:region)) 
+				:t_query
 			LIMIT :limit
-					OFFSET :offset]]></salesforce:salesforce-query>
+			OFFSET :offset]]></salesforce:salesforce-query>
 					<salesforce:parameters><![CDATA[#[output application/java
 ---
 {
-	teamseasonId : attributes.queryParams.teamseasonId,
-	offset : attributes.queryParams.offset,
-	firstDate : attributes.queryParams.startDate,
+	t_query : (vars.t_query default "") as String,
+	offset : (attributes.queryParams.offset default 0) as Number,
+	d_query : vars.d_query,
 	limit : attributes.queryParams.limit,
 	region : vars.regions,
-	coachid : vars.coachId,
-	secondDate : attributes.queryParams.endDate
+	coachid : vars.coachId
 }]]]></salesforce:parameters>
 				</salesforce:query>
-					</when>
-					<otherwise>
-						<salesforce:query doc:name="Query" doc:id="b6be748e-bb55-4053-9987-e45c3232e911" config-ref="Salesforce_Config" >
-							<salesforce:salesforce-query ><![CDATA[			SELECT 
-				Id,
-				IsDeleted,
-				Name,
-				Number_of_Students_Absent__c,
-				Number_of_Students_Present__c,
-				Percent_of_Students_Present__c,
-				Session_Date__c,
-				Session_Start__c,
-				Session_End__c,
-				Session_Topic__c,
-				Team_Season__c,
-				Team_Season__r.Name,
-				Team_Season__r.Team__r.Name,
-				Team_Season__r.Season__r.Name,
-				Team_Season__r.Team__r.School_Site__r.Region__c,
-				Team_Season__r.Team__r.SCORES_Program_Type__c,
-				Team_Season__r.Team__r.Uses_Headcount__c,
-				Session_Weekday__c,
-				Count_Attendance_True__c,
-				Count_Attendance_False__c 
-			FROM 
-				Session__c 
-			WHERE 
-			(
-				Team_Season__r.Coach_Writing__c = ':coachid' 
-				OR Team_Season__r.Coach_Soccer__c = ':coachid' 
-				OR Team_Season__r.SCORES_Program_Coordinator__c = ':coachid' 
-				OR Team_Season__r.SCORES_Program_Manager__c = ':coachid'
-			) 
-			AND 
-			(
-			Session_Date__c >= :firstDate
-			) 
-			AND 
-			(
-			Session_Date__c <= :secondDate
-			) 
-			AND 
-			(
-			Team_Season__r.Team__r.School_Site__r.Region__c IN (:region)
-			) 
-			LIMIT :limit
-					OFFSET :offset]]></salesforce:salesforce-query>
-							<salesforce:parameters ><![CDATA[#[output application/java
----
-{
-	offset : attributes.queryParams.offset,
-	firstDate : attributes.queryParams.startDate,
-	limit : attributes.queryParams.limit,
-	region : vars.regions,
-	coachid : vars.coachId,
-	secondDate : attributes.queryParams.endDate
-}]]]></salesforce:parameters>
-						</salesforce:query>
-					</otherwise>
-				</choice>
-			</when>
-			<otherwise >
-				<choice doc:name="Choice" doc:id="b8b66863-0721-49ab-a2fb-e45d85dcf4e4" >
-					<when expression="#[attributes.queryParams.teamseasonId != null]">
-						<salesforce:query doc:name="Query" doc:id="24aaebf4-25af-45bd-9b18-f9672f23598c" config-ref="Salesforce_Config">
-			<salesforce:salesforce-query><![CDATA[			SELECT 
-				Id,
-				IsDeleted,
-				Name,
-				Number_of_Students_Absent__c,
-				Number_of_Students_Present__c,
-				Percent_of_Students_Present__c,
-				Session_Date__c,
-				Session_Start__c,
-				Session_End__c,
-				Session_Topic__c,
-				Team_Season__c,
-				Team_Season__r.Name,
-				Team_Season__r.Team__r.Name,
-				Team_Season__r.Season__r.Name,
-				Team_Season__r.Team__r.School_Site__r.Region__c,
-				Team_Season__r.Team__r.SCORES_Program_Type__c,
-				Team_Season__r.Team__r.Uses_Headcount__c,
-				Session_Weekday__c,
-				Count_Attendance_True__c,
-				Count_Attendance_False__c 
-			FROM 
-				Session__c 
-			WHERE 
-			(
-				Team_Season__r.Coach_Writing__c = ':coachid' 
-				OR Team_Season__r.Coach_Soccer__c = ':coachid' 
-				OR Team_Season__r.SCORES_Program_Coordinator__c = ':coachid' 
-				OR Team_Season__r.SCORES_Program_Manager__c = ':coachid'
-			) 
-			AND 
-			(
-			Session_Date__c = :startDate
-			) 
-			AND 
-			(
-			Team_Season__r.Team__r.School_Site__r.Region__c IN (:region)
-			) 
-			AND 
-			(
-			Team_Season__r.Id != null AND (Team_Season__r.Id = ':teamseasonId')
-			) 
-			LIMIT :limit
-					OFFSET :offset]]></salesforce:salesforce-query>
-			<salesforce:parameters><![CDATA[#[output application/java
----
-{
-	date : vars.date,
-	teamseasonId : attributes.queryParams.teamseasonId,
-	offset : attributes.queryParams.offset,
-	limit : attributes.queryParams.limit,
-	region : vars.regions,
-	coachId : vars.coachId
-}]]]></salesforce:parameters>
-		</salesforce:query>
-					</when>
-					<otherwise >
-						<salesforce:query doc:name="Query" doc:id="62494fde-0d93-47a1-9edd-343ec93ee0d1" config-ref="Salesforce_Config" >
-							<salesforce:salesforce-query ><![CDATA[			SELECT 
-				Id,
-				IsDeleted,
-				Name,
-				Number_of_Students_Absent__c,
-				Number_of_Students_Present__c,
-				Percent_of_Students_Present__c,
-				Session_Date__c,
-				Session_Start__c,
-				Session_End__c,
-				Session_Topic__c,
-				Team_Season__c,
-				Team_Season__r.Name,
-				Team_Season__r.Team__r.Name,
-				Team_Season__r.Season__r.Name,
-				Team_Season__r.Team__r.School_Site__r.Region__c,
-				Team_Season__r.Team__r.SCORES_Program_Type__c,
-				Team_Season__r.Team__r.Uses_Headcount__c,
-				Session_Weekday__c,
-				Count_Attendance_True__c,
-				Count_Attendance_False__c 
-			FROM 
-				Session__c 
-			WHERE 
-			(
-				Team_Season__r.Coach_Writing__c = ':coachid' 
-				OR Team_Season__r.Coach_Soccer__c = ':coachid' 
-				OR Team_Season__r.SCORES_Program_Coordinator__c = ':coachid' 
-				OR Team_Season__r.SCORES_Program_Manager__c = ':coachid'
-			) 
-			AND 
-			(
-			Session_Date__c = :startDate
-			) 
-			AND 
-			(
-			Team_Season__r.Team__r.School_Site__r.Region__c IN (:region)
-			) 
-			LIMIT :limit
-					OFFSET :offset]]></salesforce:salesforce-query>
-							<salesforce:parameters ><![CDATA[#[output application/java
----
-{
-	date : vars.date,
-	offset : attributes.queryParams.offset,
-	limit : attributes.queryParams.limit,
-	region : vars.regions,
-	coachId : vars.coachId
-}]]]></salesforce:parameters>
-						</salesforce:query>
-					</otherwise>
-				</choice>
-			</otherwise>
-		</choice>
 		<ee:transform
 			doc:name="Create Response"
 			doc:id="e829cd3e-8fa5-45c3-a9bc-79ffebb63c7c"
