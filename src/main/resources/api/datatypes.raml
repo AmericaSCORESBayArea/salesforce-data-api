@@ -149,7 +149,7 @@ types:
         type: date-only
       SessionTopic:
         type: string
-        enum: [ "Soccer", "Writing", "Game_Day", "Soccer_and_Writing"]
+        enum: [ "Soccer", "Writing", "Game Day", "Soccer and Writing", "Service Learning", "Service Learning and Soccer"]
       TeamSeasonId:
         type: SalesforceUniqueId
       AttendanceList:
@@ -246,7 +246,7 @@ types:
         type: date-only
       SessionTopic:
         type: string
-        enum: [ "Soccer", "Writing", "Game Day", "Soccer and Writing", "Service Learning"]
+        enum: [ "Soccer", "Writing", "Game Day", "Soccer and Writing", "Service Learning", "Service Learning and Soccer"]
       TeamSeasonId:
         type: SalesforceUniqueId
     examples: !include sessioncreatemodel-examples.raml
@@ -263,7 +263,7 @@ types:
         required: false
       SessionTopic:
         type: string
-        enum: [ "Soccer", "Writing", "Game Day", "Soccer and Writing", "Service Learning"]
+        enum: [ "Soccer", "Writing", "Game Day", "Soccer and Writing", "Service Learning", "Service Learning and Soccer"]
         required: false
       TeamSeasonId:
         type: SalesforceUniqueId
